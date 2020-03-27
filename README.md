@@ -26,5 +26,4 @@ A modular League of Legends integration for RGB LED devices.
 - Razer Chroma integration
 
 ## Contributing
-Check out the [contributing guide](CONTRIBUTING.md). Help is greatly appreciated for implementing animations for multiple champions.
-
+Check out the [contributing guide](CONTRIBUTING.md). Help is greatly appreciated with anything, really.
