@@ -25,5 +25,9 @@ A modular League of Legends integration for RGB LED devices.
 - Effects for items
 - Razer Chroma integration
 
+## Known Issues
+- Window focus isn't taken into account
+- Game chat isn't taken into account (keypresses are treated as ability casts)
+
 ## Contributing
 Check out the [contributing guide](CONTRIBUTING.md). Help is greatly appreciated with anything, really.
