@@ -1,5 +1,5 @@
 # leagueoflegends-led
-A flexible League of Legends integration for RGB LED devices.
+A modular League of Legends integration for RGB LED devices.
 
 ![](repo/video-gif.gif)
 
