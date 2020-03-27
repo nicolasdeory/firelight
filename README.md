@@ -1,5 +1,5 @@
 # leagueoflegends-led
-A modular League of Legends integration for RGB LED devices.
+A modular League of Legends integration for Razer Chroma and RGB LED devices.
 
 ![](repo/video-gif.gif)
 
