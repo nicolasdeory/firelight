@@ -10,6 +10,7 @@ A modular League of Legends integration for RGB LED devices.
 - Keeps track of cooldowns and mana
 - Custom spellcast animations for several champions
 - Compatible with E1.31 devices
+- Razer Chroma support
 
 ![Death light](repo/img-death.png)
 ![Out of Mana light](repo/img-oom.png)
@@ -24,7 +25,6 @@ A modular League of Legends integration for RGB LED devices.
 - Animation sets for each champion
 - Effects for summoner spells
 - Effects for items
-- Razer Chroma integration
 
 ## Known Issues
 - Window focus isn't taken into account
