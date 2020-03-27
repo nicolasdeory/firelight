@@ -19,6 +19,12 @@ A modular League of Legends integration for RGB LED devices.
 - When the game loads, open the program
 - Enjoy the lights!
 
+## Roadmap / Planned Features
+- Animation sets for each champion
+- Effects for summoner spells
+- Effects for items
+- Razer Chroma integration
+
 ## Contributing
 Check out the [contributing guide](CONTRIBUTING.md). Help is greatly appreciated for implementing animations for multiple champions.
 
