@@ -23,6 +23,47 @@ namespace LedDashboard
             }
         }
 
+        public void FadeToColorBy(HSVColor c, float factor)
+        {
+            if (color.h < c.h)
+            {
+                color.h = color.h + (c.h - color.h) * factor;
+            } else
+            {
+                color.h = color.h - (color.h - c.h) * factor;
+            }
+            if(Math.Abs(color.h - c.h) <= 0.025f)
+            {
+                color.h = c.h;
+            }
+
+            if (color.s < c.s)
+            {
+                color.s = color.s + (c.s - color.s) * factor;
+            }
+            else
+            {
+                color.s = color.s - (color.s - c.s) * factor;
+            }
+            if (Math.Abs(color.s - c.s) <= 0.025f)
+            {
+                color.s = c.s;
+            }
+
+            if (color.v < c.v)
+            {
+                color.v = color.v + (c.v - color.v) * factor;
+            }
+            else
+            {
+                color.v = color.v - (color.v - c.v) * factor;
+            }
+            if (Math.Abs(color.h - c.h) <= 0.025f)
+            {
+                color.v = c.v;
+            }
+        }
+
         public void SetBlack()
         {
             color = HSVColor.Black;

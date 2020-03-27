@@ -21,6 +21,8 @@ namespace LedDashboard.Modules.LeagueOfLegends
         HSVColor DeadColor = new HSVColor(0f, 0.8f, 0.77f);
         HSVColor NoManaColor = new HSVColor(0.52f, 0.66f, 1f);
 
+        HSVColor KillColor = new HSVColor(0.06f, 0.96f, 1f);
+
         // Variables
 
         Led[] leds;
@@ -35,6 +37,7 @@ namespace LedDashboard.Modules.LeagueOfLegends
 
         ulong msSinceLastExternalFrameReceived = 30000;
         ulong msAnimationTimerThreshold = 1500; // how long to wait for animation data until health bar kicks back in.
+        double currentGameTimestamp = 0;
 
         // Events
 
@@ -63,7 +66,7 @@ namespace LedDashboard.Modules.LeagueOfLegends
             if (pname.Length == 0) throw new InvalidOperationException("Game client is not open.");
 
             // Queries the game information
-            QueryPlayerInfo();
+            QueryPlayerInfo(true);
 
             // LED Initialization
             //reverseOrder = reverse;
@@ -105,7 +108,7 @@ namespace LedDashboard.Modules.LeagueOfLegends
         /// <summary>
         /// Queries updated game data from the LoL live client API.
         /// </summary>
-        private void QueryPlayerInfo()
+        private void QueryPlayerInfo(bool firstTime = false)
         {
             
             string json;
@@ -130,6 +133,8 @@ namespace LedDashboard.Modules.LeagueOfLegends
             activePlayer.IsDead = playerChampion.IsDead;
             // Update champion LED module information
             if (championModule != null) championModule.UpdatePlayerInfo(activePlayer);
+            // Process game events
+            ProcessGameEvents(firstTime);
             
         }
 
@@ -159,6 +164,43 @@ namespace LedDashboard.Modules.LeagueOfLegends
             if (s != CurrentLEDSource) return; // If it's from a different source that what we're listening too, ignore it
             NewFrameReady?.Invoke(this, data);
             msSinceLastExternalFrameReceived = 0;
+        }
+
+        /// <summary>
+        /// Processes game events such as kills
+        /// </summary>
+        private void ProcessGameEvents(bool firstTime = false)
+        {
+            if (firstTime)
+            {
+                currentGameTimestamp = gameEvents[gameEvents.Count - 1].EventTime;
+                return;
+            }
+            foreach(Event ev in gameEvents)
+            {
+                if (ev.EventTime <= currentGameTimestamp) continue;
+                currentGameTimestamp = ev.EventTime;
+                switch (ev.EventName)
+                {
+                    case "ChampionKill":
+                        OnChampionKill(ev);
+                        break;
+                    default:
+                        break;
+                }
+            }
+        }
+
+        private void OnChampionKill(Event ev)
+        {
+            if(ev.KillerName == activePlayer.SummonerName)
+            {
+                CurrentLEDSource = animationModule;
+                animationModule.ColorBurst(KillColor, 0.01f, HealthColor).ContinueWith((t) =>
+                {
+                    CurrentLEDSource = championModule;
+                });
+            }
         }
 
         /// <summary>

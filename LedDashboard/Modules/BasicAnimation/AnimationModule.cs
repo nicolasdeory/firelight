@@ -133,8 +133,9 @@ namespace LedDashboard.Modules.BasicAnimation
         /// </summary>
         /// <param name="color">The burst color.</param>
         /// <param name="fadeoutRate">The burst fade-out rate.</param>
+        /// <param name="destinationColor">The color to progressively fade to after the color burst (black by default)</param>
         /// <returns></returns>
-        public Task ColorBurst(HSVColor color, float fadeoutRate = 0.15f)
+        public Task ColorBurst(HSVColor color, float fadeoutRate = 0.15f, HSVColor destinationColor = default)
         {
             if (currentlyRunningAnim != null) currentlyRunningAnim.Cancel();
             currentlyRunningAnim = new CancellationTokenSource();
@@ -148,11 +149,24 @@ namespace LedDashboard.Modules.BasicAnimation
                 NewFrameReady.Invoke(this, this.leds);
                 if (fadeoutRate > 0)
                 {
-                    await FadeOutToBlack(fadeoutRate, currentlyRunningAnim.Token);
+                    if (destinationColor.Equals(HSVColor.Black))
+                    {
+                        await FadeOutToBlack(fadeoutRate, currentlyRunningAnim.Token);
+                    } else
+                    {
+                        await FadeOutToColor(fadeoutRate, destinationColor, currentlyRunningAnim.Token);
+                    }
+                    
                 }
                 else
                 {
-                    this.leds.SetAllToBlack();
+                    if (!destinationColor.Equals(HSVColor.Black))
+                    {
+                        this.leds.SetAllToColor(destinationColor);
+                    } else
+                    {
+                        this.leds.SetAllToBlack();
+                    }
                     NewFrameReady.Invoke(this, this.leds);
                 }
             });
@@ -252,6 +266,21 @@ namespace LedDashboard.Modules.BasicAnimation
             }
             this.leds.SetAllToBlack();
 
+        }
+
+        private async Task FadeOutToColor(float rate, HSVColor color, CancellationToken cancelToken) 
+        {
+            int msCounter = 0;
+            int fadeoutTime = (int)(GetFadeToBlackTime(rate) * 1000);
+            while (msCounter < fadeoutTime) // TODO: calculate animation duration (rn its 1s) 
+            {
+                this.leds.FadeToColorAllLeds(color,rate);
+                if (cancelToken.IsCancellationRequested) throw new TaskCanceledException();
+                NewFrameReady.Invoke(this, this.leds);
+                await Task.Delay(30);
+                msCounter += 30;
+            }
+            this.leds.SetAllToColor(color);
         }
 
         /// <summary>

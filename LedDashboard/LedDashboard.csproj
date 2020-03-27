@@ -102,6 +102,7 @@
     <Compile Include="Modules\LeagueOfLegends\Model\SpellInformation.cs" />
     <Compile Include="Modules\LeagueOfLegends\Model\SummonerSpellLoadout.cs" />
     <Compile Include="Modules\LeagueOfLegends\WebRequestUtil.cs" />
+    <Compile Include="RazerChromaController.cs" />
     <Compile Include="SACNController.cs" />
     <Compile Include="Utils.cs" />
     <Compile Include="UtilsLED.cs" />
@@ -142,6 +143,12 @@
     </Reference>
     <Reference Include="Python.Runtime.NETStandard, Version=3.7.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\Python.Runtime.NETStandard.3.7.0\lib\netstandard2.0\Python.Runtime.NETStandard.dll</HintPath>
+    </Reference>
+    <Reference Include="RazerChroma.Net">
+      <HintPath>C:\Users\Nico\Desktop\RazerChroma.Net-master\RazerChroma.Net\bin\Release\RazerChroma.Net.dll</HintPath>
+    </Reference>
+    <Reference Include="RazerChromaFrameEngine">
+      <HintPath>C:\Users\Nico\Desktop\RazerChroma.Net-master\RazerChromaFrameEngine\bin\Release\RazerChromaFrameEngine.dll</HintPath>
     </Reference>
     <Reference Include="SciColorMaps.Portable, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\ar1st0crat.SciColorMaps.Portable.1.0.2\lib\portable40-net40+win8+wpa81\SciColorMaps.Portable.dll</HintPath>

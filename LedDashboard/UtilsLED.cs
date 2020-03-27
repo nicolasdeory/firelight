@@ -60,6 +60,14 @@ namespace LedDashboard
             }
         }
 
+        public static void FadeToColorAllLeds(this Led[] leds, HSVColor color, float fadeToColorFactor = 0.3f)
+        {
+            foreach (var led in leds)
+            {
+                led.FadeToColorBy(color,fadeToColorFactor);
+            }
+        }
+
         public static HSVColor ValueToHSV(int numLeds, int led, double val)
         {
             // Rainbow
@@ -69,12 +77,16 @@ namespace LedDashboard
             return hsvCol;
         }
 
-        public static void SetAllToBlack(this Led[] leds)
+        public static void SetAllToColor(this Led[] leds, HSVColor col)
         {
             foreach (var led in leds)
             {
-                led.Color(HSVColor.Black);
+                led.Color(col);
             }
+        }
+        public static void SetAllToBlack(this Led[] leds)
+        {
+            leds.SetAllToColor(HSVColor.Black);
         }
     }
 }

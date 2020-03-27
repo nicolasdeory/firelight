@@ -1,4 +1,6 @@
-﻿using LedDashboard.Modules.LeagueOfLegends;
+﻿
+using LedDashboard.Modules.BlinkWhite;
+using LedDashboard.Modules.LeagueOfLegends;
 
 namespace LedDashboard
 {
@@ -32,6 +34,8 @@ namespace LedDashboard
 
             LEDModule lolModule = LeagueOfLegendsModule.Create(ledCount);
             lolModule.NewFrameReady += UpdateLEDDisplay;
+            /*LEDModule blinkModule = BlinkWhiteModule.Create(leds.Length);
+            blinkModule.NewFrameReady += UpdateLEDDisplay;*/
             UpdateLEDDisplay(this, this.leds);
 
         }
@@ -86,7 +90,8 @@ namespace LedDashboard
         /// </summary>
         public async void SendData()
         {
-            await SACNController.Send(this.ToByteArray(reverseOrder));
+            //await SACNController.Send(this.ToByteArray(reverseOrder));
+            RazerChromaController.SendData(this.leds.Length, this.ToByteArray());
         }
 
     }
