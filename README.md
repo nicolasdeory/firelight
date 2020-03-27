@@ -9,6 +9,7 @@ A modular League of Legends integration for RGB LED devices.
 - Death Lights
 - Keeps track of cooldowns and mana
 - Custom spellcast animations for several champions
+- Compatible with E1.31 devices
 
 ![Death light](repo/img-death.png)
 ![Out of Mana light](repo/img-oom.png)
