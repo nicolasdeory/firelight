@@ -166,5 +166,10 @@ namespace LedDashboard.Modules.LeagueOfLegends
                 AbilitiesOnCooldowns[ability] = false;
             });
         }
+
+        public void Dispose()
+        {
+            //
+        }
     }
 }

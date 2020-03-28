@@ -6,34 +6,42 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 
 namespace LedDashboard
 {
-    class RazerChromaController : LightController, IDisposable
+    class RazerChromaController : LightController
     {
         public static RazerChromaController Create()
         {
             return new RazerChromaController();
         }
 
-        private static KeyboradFrame keyboardFrame;
-        private static NativeRazerApi api;
+        private KeyboradFrame keyboardFrame;
+        private NativeRazerApi api;
 
         private RazerChromaController() // TODO: Dispose afterr a while if no data is received
+        {
+            Init();
+        }
+
+        private void Init()
         {
             try
             {
                 if (api == null) api = new NativeRazerApi();
                 if (keyboardFrame == null) keyboardFrame = new KeyboradFrame(api);
-            } catch (Exception e)
+            }
+            catch (Exception e)
             {
+                MessageBox.Show("Error initializing Razer Chroma controller. Is Razer Synapse installed?");
                 throw new InvalidOperationException("Error initializing Razer Chroma controller. Is Razer Synapse installed?", e);
             }
-            
         }
 
         public void SendData(int ledCount, byte[] colorArray)
-        { 
+        {
+            if (!enabled) return;
             List<Point> points = new List<Point>();
             for (int i = 0; i < ledCount; i++)
             {
@@ -52,11 +60,32 @@ namespace LedDashboard
             
         }
 
+        bool enabled = true;
+        public void SetEnabled(bool enabled)
+        {
+            if (this.enabled == enabled) return;
+            if(!enabled)
+            {
+                if (api != null) api.Dispose();
+                api = null;
+                keyboardFrame = null;
+            } else
+            {
+                Init();
+            }
+            this.enabled = enabled;
+        }
+
         public void Dispose()
         {
-            api.Dispose();
+            if (api != null) api.Dispose();
             api = null;
             keyboardFrame = null;
+        }
+
+        public bool IsEnabled()
+        {
+            return enabled;
         }
     }
 }

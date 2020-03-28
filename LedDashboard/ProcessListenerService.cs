@@ -9,29 +9,54 @@ namespace LedDashboard
 {
     public class ProcessListenerService
     {
-        static Dictionary<string, Action<string>> listenedProcesses = new Dictionary<string, Action<string>>();
-        public static void Init()
+        public delegate void ProcessChangedHandler(string name);
+        public static event ProcessChangedHandler ProcessInFocusChanged;
+
+        static List<string> listenedProcesses = new List<string>();
+
+        static string currentOpenedProcess = "";
+
+        public static void Start()
         {
             Task.Run(async () =>
             {
+                bool processChangedToARegisteredOne = false;
+                bool atLeastARegisteredProcessIsRunning = false;
                 for (;;)
                 {
-                    
-                    foreach(var process in listenedProcesses.Keys)
+                    processChangedToARegisteredOne = false;
+                    atLeastARegisteredProcessIsRunning = false;
+                    foreach (var process in listenedProcesses)
                     {
                         Process[] pname = Process.GetProcessesByName(process);
                         if (pname.Length == 0) continue;
-                        listenedProcesses[process].Invoke(process);
+                        if (process != currentOpenedProcess)
+                        {
+                            currentOpenedProcess = process;
+                            ProcessInFocusChanged?.Invoke(process);
+                            processChangedToARegisteredOne = true;
+                            break;
+                        }
+                        atLeastARegisteredProcessIsRunning = true;
                     }
-                    await Task.Delay(2000);
+                    if(!processChangedToARegisteredOne)
+                    {
+                        if (!atLeastARegisteredProcessIsRunning)
+                        {
+                            ProcessInFocusChanged?.Invoke(""); // no process is running
+                            currentOpenedProcess = "";
+                        }
+                        await Task.Delay(2000);
+                    }
+                    
                 }
                 
             });
         }
 
-        public static void Register(string name, Action<string> processOpenCallback)
+        public static void Register(string name)
         {
-            listenedProcesses.Add(name, processOpenCallback);
+            listenedProcesses.Add(name);
         }
     }
 }

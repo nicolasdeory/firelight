@@ -101,10 +101,6 @@ namespace LedDashboard.Modules.FourierAudioLED
             return this.leds;
         }
 
-        /*public void Destroy()
-        {
-            audio.Stop();
-        }*/
 
         bool newAudioAvailable = false;
 
@@ -113,8 +109,11 @@ namespace LedDashboard.Modules.FourierAudioLED
             DoFrame();
             NewFrameReady?.Invoke(this, this.leds);
             newAudioAvailable = true;
-        } 
+        }
 
-
+        public void Dispose()
+        {
+            audio.Stop();
+        }
     }
 }

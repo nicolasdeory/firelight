@@ -6,7 +6,11 @@ using System.Threading.Tasks;
 
 namespace LedDashboard
 {
-    public interface LEDModule
+    /// <summary>
+    /// Interface that should be used for any class that generates LED data.
+    /// The Dispose() method should be used to get rid of periodic tasks such as event loops.
+    /// </summary>
+    public interface LEDModule : IDisposable
     { 
 
         public delegate void FrameReadyHandler(object s, Led[] ls);

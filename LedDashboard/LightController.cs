@@ -6,8 +6,10 @@ using System.Threading.Tasks;
 
 namespace LedDashboard
 {
-    public interface LightController
+    public interface LightController : IDisposable
     {
         public void SendData(int ledCount, byte[] data);
+        public void SetEnabled(bool enabled);
+        public bool IsEnabled();
     }
 }

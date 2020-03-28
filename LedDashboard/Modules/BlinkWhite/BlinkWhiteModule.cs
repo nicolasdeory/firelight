@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace LedDashboard.Modules.BlinkWhite
@@ -11,6 +12,8 @@ namespace LedDashboard.Modules.BlinkWhite
         public event LEDModule.FrameReadyHandler NewFrameReady;
 
         Led[] leds;
+
+        CancellationTokenSource masterCancelToken = new CancellationTokenSource();
 
         public static LEDModule Create(int ledCount)
         {
@@ -32,7 +35,8 @@ namespace LedDashboard.Modules.BlinkWhite
             bool on = false;
             while (true)
             {
-                if(on)
+                if (masterCancelToken.IsCancellationRequested) return;
+                if (on)
                 {
                     foreach (Led l in this.leds)
                     {
@@ -51,5 +55,9 @@ namespace LedDashboard.Modules.BlinkWhite
             }
         }
 
+        public void Dispose()
+        {
+            throw new NotImplementedException();
+        }
     }
 }

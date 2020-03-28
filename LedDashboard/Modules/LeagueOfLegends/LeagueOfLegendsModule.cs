@@ -7,6 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Net;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace LedDashboard.Modules.LeagueOfLegends
@@ -15,6 +16,8 @@ namespace LedDashboard.Modules.LeagueOfLegends
     {
 
         // Constants
+
+        HSVColor LoadingColor = new HSVColor(0.09f, 0.8f, 1f);
 
         HSVColor HealthColor = new HSVColor(0.29f, 0.79f, 1f);
         HSVColor HurtColor = new HSVColor(0.09f, 0.8f, 1f);
@@ -38,6 +41,9 @@ namespace LedDashboard.Modules.LeagueOfLegends
         ulong msSinceLastExternalFrameReceived = 30000;
         ulong msAnimationTimerThreshold = 1500; // how long to wait for animation data until health bar kicks back in.
         double currentGameTimestamp = 0;
+
+        CancellationTokenSource loadingAnimToken = new CancellationTokenSource();
+        CancellationTokenSource masterCancelToken = new CancellationTokenSource();
 
         // Events
 
@@ -70,8 +76,27 @@ namespace LedDashboard.Modules.LeagueOfLegends
             for (int i = 0; i < ledCount; i++)
                 leds[i] = new Led();
 
+            // Load animation module
+            animationModule = AnimationModule.Create(this.leds.Length);
+            animationModule.NewFrameReady += OnNewFrameReceived;
+            CurrentLEDSource = animationModule;
+
+            Task.Run(() => PlayLoadingAnimation(loadingAnimToken.Token));
+
             WaitForGameInitialization();
 
+
+        }
+
+        private async Task PlayLoadingAnimation(CancellationToken cancelToken)
+        {
+            while(true)
+            {
+                if (cancelToken.IsCancellationRequested) return;
+                await animationModule.ColorBurst(HSVColor.Black, 0.05f, LoadingColor);
+                await animationModule.ColorBurst(LoadingColor, 0.05f);
+                await Task.Delay(500);
+            }
 
         }
 
@@ -81,6 +106,7 @@ namespace LedDashboard.Modules.LeagueOfLegends
             {
                 while (true)
                 {
+                    if (masterCancelToken.IsCancellationRequested) return;
                     try
                     {
                         if (await WebRequestUtil.IsLive("https://127.0.0.1:2999/liveclientdata/allgamedata"))
@@ -111,11 +137,6 @@ namespace LedDashboard.Modules.LeagueOfLegends
             // Queries the game information
             await QueryPlayerInfo(true);
 
-
-            // Load animation module
-            animationModule = AnimationModule.Create(this.leds.Length);
-            animationModule.NewFrameReady += OnNewFrameReceived;
-
             // Load champion module. Different modules will be loaded depending on the champion.
             // If there is no suitable module for the selected champion, just the health bar will be displayed.
 
@@ -133,6 +154,7 @@ namespace LedDashboard.Modules.LeagueOfLegends
             {
                 while (true)
                 {
+                    if (masterCancelToken.IsCancellationRequested) return;
                     await QueryPlayerInfo();
                     await Task.Delay(150);
                 }
@@ -183,7 +205,8 @@ namespace LedDashboard.Modules.LeagueOfLegends
         {
             while(true)
             {
-                if(msSinceLastExternalFrameReceived >= msAnimationTimerThreshold)
+                if (masterCancelToken.IsCancellationRequested) return;
+                if (msSinceLastExternalFrameReceived >= msAnimationTimerThreshold)
                 {
                     UpdateHealthBar();
                 }
@@ -297,6 +320,9 @@ namespace LedDashboard.Modules.LeagueOfLegends
             });
         }
 
-
+        public void Dispose()
+        {
+            masterCancelToken.Cancel();
+        }
     }
 }

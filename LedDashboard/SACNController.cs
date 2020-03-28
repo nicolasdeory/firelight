@@ -22,5 +22,13 @@ namespace LedDashboard
         }
 
         public void Dispose() { }
+
+        bool enabled; 
+        public void SetEnabled(bool enabled) { this.enabled = enabled; } // Kind of irrelevant for this controller / protocol but well.
+
+        public bool IsEnabled()
+        {
+            return enabled;
+        }
     }
 }

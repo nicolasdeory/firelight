@@ -24,7 +24,28 @@ namespace LedDashboard
         bool reverseOrder;
         LightController lightController;
 
-        LEDModule currentLEDModule;
+        LEDModule CurrentLEDModule
+        {
+            get
+            {
+                return _currentLEDModule;
+            }
+            set
+            {
+                if (value == null)
+                {
+                    SetEnabled(false);
+                } else
+                {
+                    SetEnabled(true);
+                }
+                if (_currentLEDModule != null) _currentLEDModule.Dispose();
+                _currentLEDModule = value;
+            }
+        }
+        LEDModule _currentLEDModule;
+
+        bool enabled = true;
 
         /// <param name="ledCount">Number of lights in the LED strip</param>
         /// <param name="reverseOrder">Set to true if you want the lights to be reverse in order (i.e. Color for LED 0 will be applied to the last LED in the strip)</param>
@@ -45,20 +66,41 @@ namespace LedDashboard
             /*LEDModule blinkModule = BlinkWhiteModule.Create(leds.Length);
             blinkModule.NewFrameReady += UpdateLEDDisplay;*/
             KeyboardHookService.Init();
-            ProcessListenerService.Init();
-            ProcessListenerService.Register("League of Legends", OnProcessOpened); // Listen when league of legends is opened
+
+            ProcessListenerService.ProcessInFocusChanged += OnProcessChanged;
+            ProcessListenerService.Start();
+            ProcessListenerService.Register("League of Legends"); // Listen when league of legends is opened
 
             UpdateLEDDisplay(this, this.leds);
 
         }
 
-        private void OnProcessOpened(string name)
+        private void OnProcessChanged(string name)
         {
-            if (name == "League of Legends" && !(currentLEDModule is LeagueOfLegendsModule))
+            if (name == "League of Legends" && !(CurrentLEDModule is LeagueOfLegendsModule)) // TODO: Account for client disconnections
             {
                 LEDModule lolModule = LeagueOfLegendsModule.Create(ledCount);
                 lolModule.NewFrameReady += UpdateLEDDisplay;
-                currentLEDModule = lolModule;
+                CurrentLEDModule = lolModule;
+            } else if (name == "")
+            {
+                CurrentLEDModule = null;
+                return;
+            }
+        }
+
+        private void SetEnabled(bool enable) // If set to false, deattach from razer chroma
+        {
+            if (this.enabled != enable)
+            {
+                this.enabled = enable;
+                if(enable)
+                {
+                    lightController.SetEnabled(true);
+                } else
+                {
+                    lightController.SetEnabled(false);
+                }
             }
         }
 
@@ -113,6 +155,7 @@ namespace LedDashboard
         public void SetController(LightControllerType type)
         {
             ((IDisposable)lightController).Dispose();
+            bool wasEnabled = lightController.IsEnabled();
             if (type == LightControllerType.LED_Strip)
             {
                 lightController = SACNController.Create();
@@ -120,6 +163,7 @@ namespace LedDashboard
             {
                 lightController = RazerChromaController.Create();
             }
+            lightController.SetEnabled(wasEnabled);
         }
 
         /// <summary>

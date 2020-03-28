@@ -17,7 +17,7 @@ namespace LedDashboard
         public void FadeToBlackBy(float factor)
         {
             color.v = color.v - color.v * factor;
-            if (color.v <= 0.05f)
+            if (color.v <= 0.025f)
             {
                 color.v = 0;
             }

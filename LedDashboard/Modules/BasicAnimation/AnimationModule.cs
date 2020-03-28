@@ -293,7 +293,10 @@ namespace LedDashboard.Modules.BasicAnimation
             return (4 / rate) * ((float)ms/1000); // 4 is a constant which is approximately ln(0.01). A formula to determine the approximate fadeout time.
 
         }
-            
 
+        public void Dispose()
+        {
+            currentlyRunningAnim.Cancel();
+        }
     }
 }
