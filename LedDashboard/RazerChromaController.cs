@@ -21,8 +21,15 @@ namespace LedDashboard
 
         private RazerChromaController()
         {
-            if (api == null) api = new NativeRazerApi();
-            if (keyboardFrame == null) keyboardFrame = new KeyboradFrame(api);
+            try
+            {
+                if (api == null) api = new NativeRazerApi();
+                if (keyboardFrame == null) keyboardFrame = new KeyboradFrame(api);
+            } catch (Exception e)
+            {
+                throw new InvalidOperationException("Error initializing Razer Chroma controller. Is Razer Synapse installed?", e);
+            }
+            
         }
 
         public void SendData(int ledCount, byte[] colorArray)
