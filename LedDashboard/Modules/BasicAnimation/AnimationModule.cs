@@ -128,6 +128,13 @@ namespace LedDashboard.Modules.BasicAnimation
             }
         }
 
+        public void AlternateBetweenTwoColors(HSVColor col1, HSVColor col2, float duration = 2000, float fadeRate = 0.15f) // -1 duration for indefinite
+        {
+            if (currentlyRunningAnim != null) currentlyRunningAnim.Cancel();
+            currentlyRunningAnim = new CancellationTokenSource();
+            Task.Run(() => FadeBetweenTwoColors(fadeRate, col1, col2, duration, currentlyRunningAnim.Token));
+        }
+
         /// <summary>
         /// Creates a color burst, starting at the given color and progressively fading to black.
         /// </summary>
@@ -281,6 +288,21 @@ namespace LedDashboard.Modules.BasicAnimation
                 msCounter += 30;
             }
             this.leds.SetAllToColor(color);
+        }
+
+        // Set duration to -1 for indefinite
+        private async Task FadeBetweenTwoColors(float rate, HSVColor col1, HSVColor col2, float duration, CancellationToken cancelToken)
+        {
+            int msCounter = 0;
+            while ((duration >= 0 && msCounter < duration) || duration < 0)
+            {
+                float sin = (float)Math.Sin((msCounter/1000f) * rate);
+                this.leds.SetAllToColor(HSVColor.Lerp(col1, col2, sin));
+                if (cancelToken.IsCancellationRequested) throw new TaskCanceledException();
+                NewFrameReady.Invoke(this, this.leds);
+                await Task.Delay(30);
+                msCounter += 30;
+            }
         }
 
         /// <summary>

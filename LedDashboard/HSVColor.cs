@@ -64,6 +64,16 @@ namespace LedDashboard
             return arr;
         }
 
+        public static HSVColor Lerp(HSVColor c1, HSVColor c2, float t)
+        {
+            return new HSVColor()
+            {
+                h = c1.h + (c2.h - c1.h) * t,
+                s = c1.s + (c2.s - c1.s) * t,
+                v = c1.v + (c2.v - c1.v) * t,
+            };
+        }
+
         /// <summary>
         /// Convert HSV to RGB
         /// h is from 0-360

@@ -42,7 +42,7 @@ namespace LedDashboard.Modules.LeagueOfLegends
         ulong msAnimationTimerThreshold = 1500; // how long to wait for animation data until health bar kicks back in.
         double currentGameTimestamp = 0;
 
-        CancellationTokenSource loadingAnimToken = new CancellationTokenSource();
+        //CancellationTokenSource loadingAnimToken = new CancellationTokenSource();
         CancellationTokenSource masterCancelToken = new CancellationTokenSource();
 
         // Events
@@ -81,23 +81,16 @@ namespace LedDashboard.Modules.LeagueOfLegends
             animationModule.NewFrameReady += OnNewFrameReceived;
             CurrentLEDSource = animationModule;
 
-            Task.Run(() => PlayLoadingAnimation(loadingAnimToken.Token));
-
+            PlayLoadingAnimation();
             WaitForGameInitialization();
 
 
         }
 
-        private async Task PlayLoadingAnimation(CancellationToken cancelToken)
+        // plays it indefinitely
+        private void PlayLoadingAnimation()
         {
-            while(true)
-            {
-                if (cancelToken.IsCancellationRequested) return;
-                await animationModule.ColorBurst(HSVColor.Black, 0.05f, LoadingColor);
-                await animationModule.ColorBurst(LoadingColor, 0.05f);
-                await Task.Delay(500);
-            }
-
+            animationModule.AlternateBetweenTwoColors(HSVColor.Black, LoadingColor, -1, 1.5f);
         }
 
         private void WaitForGameInitialization()
@@ -127,13 +120,15 @@ namespace LedDashboard.Modules.LeagueOfLegends
                     }
 
                 }
-                await InitializeModule();
+                await OnGameInitialized();
             });
 
         }
 
-        private async Task InitializeModule()
+        private async Task OnGameInitialized()
         {
+            animationModule.StopCurrentAnimation(); // stops the current anim
+
             // Queries the game information
             await QueryPlayerInfo(true);
 
@@ -323,6 +318,7 @@ namespace LedDashboard.Modules.LeagueOfLegends
         public void Dispose()
         {
             masterCancelToken.Cancel();
+            animationModule.StopCurrentAnimation();
         }
     }
 }
