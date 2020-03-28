@@ -284,7 +284,7 @@ namespace LedDashboard.Modules.LeagueOfLegends
                 {
                    // int index = reverseOrder ? this.leds.Length - 1 - i : i;
                     if (i < ledsToTurnOn)
-                        this.leds[i].MixNewColor(HealthColor, true);
+                        this.leds[i].MixNewColor(HealthColor, true,0.2f);
                     else
                     {
                         if (this.leds[i].color.AlmostEqual(HealthColor))

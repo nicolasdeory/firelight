@@ -74,7 +74,7 @@ namespace LedDashboard
             color = col;
         }
 
-        public void MixNewColor(HSVColor col, bool additive = false)
+        public void MixNewColor(HSVColor col, bool additive = false, float rate=0.5f)
         {
             if (!additive && color.Equals(HSVColor.Black))
             {
@@ -85,8 +85,8 @@ namespace LedDashboard
             }
             else
             {
-                color.h = 0.5f * color.h + 0.5f * col.h;
-                color.s = 0.5f * color.s + 0.5f * col.s;
+                color.h = (1-rate) * color.h + rate * col.h;
+                color.s = (1 - rate) * color.s + rate * col.s;
                 if (additive)
                 {
                     color.v = 0.5f * color.v + 0.5f * col.v;
