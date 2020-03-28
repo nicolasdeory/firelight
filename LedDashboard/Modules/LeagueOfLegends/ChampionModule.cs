@@ -24,6 +24,12 @@ namespace LedDashboard.Modules.LeagueOfLegends
         /// </summary>
         protected event PlayerInfoUpdatedHandle PlayerInfoUpdated;
 
+        protected delegate void ChampionInfoLoadedHandler(ChampionAttributes attributes);
+        /// <summary>
+        /// Raised when the player info was updated.
+        /// </summary>
+        protected event ChampionInfoLoadedHandler ChampionInfoLoaded;
+
         public delegate void OutOfManaHandler();
         /// <summary>
         /// Raised when the user tried to cast an ability but was out of mana.
@@ -50,7 +56,16 @@ namespace LedDashboard.Modules.LeagueOfLegends
         {
             Name = champName;
             PlayerInfo = playerInfo;
-            ChampionInfo = GetChampionInformation(champName);
+            LoadChampionInformation(champName);
+        }
+
+        private void LoadChampionInformation(string champName)
+        {
+            Task.Run(async () =>
+            {
+                ChampionInfo = await GetChampionInformation(champName);
+                ChampionInfoLoaded?.Invoke(ChampionInfo);
+            });
         }
 
         /// <summary>
@@ -58,12 +73,12 @@ namespace LedDashboard.Modules.LeagueOfLegends
         /// </summary>
         /// <param name="championName">Internal champion name (i.e. Vel'Koz -> Velkoz)</param>
         /// <returns></returns>
-        private ChampionAttributes GetChampionInformation(string championName)
+        private async Task<ChampionAttributes> GetChampionInformation(string championName)
         {
             string latestVersion;
             try
             {
-                string versionJSON = WebRequestUtil.GetResponse(VERSION_ENDPOINT);
+                string versionJSON = await WebRequestUtil.GetResponse(VERSION_ENDPOINT);
                 List<string> versions = JsonConvert.DeserializeObject<List<string>>(versionJSON);
                 latestVersion = versions[0];
             }
@@ -75,7 +90,7 @@ namespace LedDashboard.Modules.LeagueOfLegends
             string championJSON;
             try
             {
-                championJSON = WebRequestUtil.GetResponse(String.Format(CHAMPION_INFO_ENDPOINT, latestVersion, championName));
+                championJSON = await WebRequestUtil.GetResponse(String.Format(CHAMPION_INFO_ENDPOINT, latestVersion, championName));
                 
             }
             catch (WebException e)

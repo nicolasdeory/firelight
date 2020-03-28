@@ -12,6 +12,7 @@ namespace LedDashboard
         /// Array that contains LED color data for the LED strip.
         /// </summary>
         private Led[] leds;
+        private int ledCount;
 
         public delegate void UpdateDisplayHandler(Led[] leds);
 
@@ -21,14 +22,15 @@ namespace LedDashboard
         public event UpdateDisplayHandler UpdateDisplay;
 
         bool reverseOrder;
-
         LightController lightController;
 
+        LEDModule currentLEDModule;
 
         /// <param name="ledCount">Number of lights in the LED strip</param>
         /// <param name="reverseOrder">Set to true if you want the lights to be reverse in order (i.e. Color for LED 0 will be applied to the last LED in the strip)</param>
         public LedManager(int ledCount, bool reverseOrder)
         {
+            this.ledCount = ledCount;
             lightController = RazerChromaController.Create();
 
             this.leds = new Led[ledCount];
@@ -38,12 +40,26 @@ namespace LedDashboard
             }
             this.reverseOrder = reverseOrder;
 
-            LEDModule lolModule = LeagueOfLegendsModule.Create(ledCount);
-            lolModule.NewFrameReady += UpdateLEDDisplay;
+            /*LEDModule lolModule = LeagueOfLegendsModule.Create(ledCount);
+            lolModule.NewFrameReady += UpdateLEDDisplay;*/
             /*LEDModule blinkModule = BlinkWhiteModule.Create(leds.Length);
             blinkModule.NewFrameReady += UpdateLEDDisplay;*/
+            KeyboardHookService.Init();
+            ProcessListenerService.Init();
+            ProcessListenerService.Register("League of Legends", OnProcessOpened); // Listen when league of legends is opened
+
             UpdateLEDDisplay(this, this.leds);
 
+        }
+
+        private void OnProcessOpened(string name)
+        {
+            if (name == "League of Legends" && !(currentLEDModule is LeagueOfLegendsModule))
+            {
+                LEDModule lolModule = LeagueOfLegendsModule.Create(ledCount);
+                lolModule.NewFrameReady += UpdateLEDDisplay;
+                currentLEDModule = lolModule;
+            }
         }
 
         /// <summary>

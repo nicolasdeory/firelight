@@ -60,22 +60,60 @@ namespace LedDashboard.Modules.LeagueOfLegends
 
         private LeagueOfLegendsModule(int ledCount)
         {
-            
-            // League of Legends integration Initialization
-            Process[] pname = Process.GetProcessesByName("League of Legends");
-            if (pname.Length == 0) throw new InvalidOperationException("Game client is not open.");
 
-            // Queries the game information
-            QueryPlayerInfo(true);
+            // League of Legends integration Initialization
+            /*Process[] pname = Process.GetProcessesByName("League of Legends");
+            if (pname.Length == 0) throw new InvalidOperationException("Game client is not open.");*/
 
             // LED Initialization
-            //reverseOrder = reverse;
             this.leds = new Led[ledCount];
             for (int i = 0; i < ledCount; i++)
                 leds[i] = new Led();
 
+            WaitForGameInitialization();
+
+
+        }
+
+        private void WaitForGameInitialization()
+        {
+            Task.Run(async () =>
+            {
+                while (true)
+                {
+                    try
+                    {
+                        if (await WebRequestUtil.IsLive("https://127.0.0.1:2999/liveclientdata/allgamedata"))
+                        {
+                            break;
+                        } else
+                        {
+                            await Task.Delay(1000);
+                            continue;
+                        }
+                    }
+                    catch (WebException e)
+                    {
+                        // TODO: Account for League client disconnects, game ended, etc. without crashing the whole program
+                        //throw new InvalidOperationException("Couldn't connect with the game client", e);
+                        await Task.Delay(1000);
+                        continue;
+                    }
+
+                }
+                await InitializeModule();
+            });
+
+        }
+
+        private async Task InitializeModule()
+        {
+            // Queries the game information
+            await QueryPlayerInfo(true);
+
+
             // Load animation module
-            animationModule = AnimationModule.Create(ledCount);
+            animationModule = AnimationModule.Create(this.leds.Length);
             animationModule.NewFrameReady += OnNewFrameReceived;
 
             // Load champion module. Different modules will be loaded depending on the champion.
@@ -84,37 +122,37 @@ namespace LedDashboard.Modules.LeagueOfLegends
             // TODO: Make this easily extendable when there are many champion modules
             if (playerChampion.RawChampionName.ToLower().Contains("velkoz"))
             {
-                championModule = VelKozModule.Create(ledCount, activePlayer);
+                championModule = VelKozModule.Create(this.leds.Length, activePlayer);
                 championModule.NewFrameReady += OnNewFrameReceived;
                 championModule.TriedToCastOutOfMana += OnAbilityCastNoMana;
             }
             CurrentLEDSource = championModule;
 
             // Sets up a task to always check for updated player info
-            Task.Run(async () =>
+            _ = Task.Run(async () =>
             {
                 while (true)
                 {
-                    QueryPlayerInfo();
+                    await QueryPlayerInfo();
                     await Task.Delay(150);
                 }
             });
 
             // start frame timer
-            Task.Run(FrameTimer);
+            _ = Task.Run(FrameTimer);
 
         }
-        
+
         /// <summary>
         /// Queries updated game data from the LoL live client API.
         /// </summary>
-        private void QueryPlayerInfo(bool firstTime = false)
+        private async Task QueryPlayerInfo(bool firstTime = false)
         {
             
             string json;
             try
             {
-                json = WebRequestUtil.GetResponse("https://127.0.0.1:2999/liveclientdata/allgamedata");
+                json = await WebRequestUtil.GetResponse("https://127.0.0.1:2999/liveclientdata/allgamedata");
             }
             catch (WebException e)
             {
@@ -173,7 +211,11 @@ namespace LedDashboard.Modules.LeagueOfLegends
         {
             if (firstTime)
             {
-                currentGameTimestamp = gameEvents[gameEvents.Count - 1].EventTime;
+                if (gameEvents.Count > 0)
+                    currentGameTimestamp = gameEvents[gameEvents.Count - 1].EventTime;
+                else
+                    currentGameTimestamp = 0;
+
                 return;
             }
             foreach(Event ev in gameEvents)

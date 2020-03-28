@@ -104,6 +104,8 @@
     <Compile Include="Modules\LeagueOfLegends\Model\SpellInformation.cs" />
     <Compile Include="Modules\LeagueOfLegends\Model\SummonerSpellLoadout.cs" />
     <Compile Include="Modules\LeagueOfLegends\WebRequestUtil.cs" />
+    <Compile Include="MouseUtils.cs" />
+    <Compile Include="ProcessListenerService.cs" />
     <Compile Include="RazerChromaController.cs" />
     <Compile Include="SACNController.cs" />
     <Compile Include="Utils.cs" />
@@ -160,6 +162,12 @@
     </Reference>
     <Reference Include="ScottPlot.WinForms, Version=4.0.1.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\ScottPlot.WinForms.4.0.1\lib\net461\ScottPlot.WinForms.dll</HintPath>
+    </Reference>
+    <Reference Include="SharpDX, Version=4.2.0.0, Culture=neutral, PublicKeyToken=b4dcf0f35e5521f1, processorArchitecture=MSIL">
+      <HintPath>..\packages\SharpDX.4.2.0\lib\net45\SharpDX.dll</HintPath>
+    </Reference>
+    <Reference Include="SharpDX.RawInput, Version=4.2.0.0, Culture=neutral, PublicKeyToken=b4dcf0f35e5521f1, processorArchitecture=MSIL">
+      <HintPath>..\packages\SharpDX.RawInput.4.2.0\lib\net45\SharpDX.RawInput.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.AppContext, Version=4.1.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
@@ -310,6 +318,7 @@
     <Content Include="Animations\Vel%27Koz\w_close.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Include="ChromaAppInfo.xml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Modules\KeyboardListener\" />

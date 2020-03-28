@@ -19,7 +19,7 @@ namespace LedDashboard
         private static KeyboradFrame keyboardFrame;
         private static NativeRazerApi api;
 
-        private RazerChromaController()
+        private RazerChromaController() // TODO: Dispose afterr a while if no data is received
         {
             try
             {

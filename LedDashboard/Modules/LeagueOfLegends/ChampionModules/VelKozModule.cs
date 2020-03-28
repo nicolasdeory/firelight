@@ -1,6 +1,7 @@
 ﻿using LedDashboard.Modules.BasicAnimation;
 using LedDashboard.Modules.Common;
 using LedDashboard.Modules.LeagueOfLegends.Model;
+using SharpDX.RawInput;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
@@ -41,7 +42,12 @@ namespace LedDashboard.Modules.LeagueOfLegends.ChampionModules
             animator.PreloadAnimation(@"Animations/Vel'Koz/w_cast.txt");
             animator.PreloadAnimation(@"Animations/Vel'Koz/w_close.txt");
 
-            animator.NewFrameReady += (_,ls) => DispatchNewFrame(ls);
+            ChampionInfoLoaded += OnChampionInfoLoaded;
+        }
+
+        private void OnChampionInfoLoaded(ChampionAttributes champInfo)
+        {
+            animator.NewFrameReady += (_, ls) => DispatchNewFrame(ls);
 
             KeyboardHookService.Instance.OnMouseClicked += OnMouseClick;
             KeyboardHookService.Instance.OnKeyPressed += OnKeyPress;
@@ -50,7 +56,7 @@ namespace LedDashboard.Modules.LeagueOfLegends.ChampionModules
         /// <summary>
         /// Called when the mouse is clicked.
         /// </summary>
-        private void OnMouseClick(object sender, MouseEventArgs m) 
+        private void OnMouseClick(object s, MouseEventArgs m) 
         {
             // TODO: Quick cast support
 
@@ -126,7 +132,7 @@ namespace LedDashboard.Modules.LeagueOfLegends.ChampionModules
         /// <summary>
         /// Called when a key is pressed;
         /// </summary>
-        private void OnKeyPress(object sender, KeyPressEventArgs e)
+        private void OnKeyPress(object s, KeyPressEventArgs e)
         {
             if (e.KeyChar == 'q')
             {

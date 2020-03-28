@@ -1,30 +1,42 @@
 ﻿using Gma.System.MouseKeyHook;
+using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.Runtime.InteropServices;
+using System.Text;
 using System.Windows.Forms;
 
-namespace LedDashboard.Modules.Common
+namespace LedDashboard
 {
     public class KeyboardHookService
     {
+
         private static KeyboardHookService _instance;
         public static KeyboardHookService Instance
         {
             get
             {
-                if (_instance == null) _instance = new KeyboardHookService(); 
+                if (_instance == null) _instance = new KeyboardHookService();
                 return _instance;
             }
         }
+
         private IKeyboardMouseEvents m_GlobalHook;
 
         /// <summary>
         /// Raised when the mouse is clicked.
         /// </summary>
         public event MouseEventHandler OnMouseClicked; // TODO: Check window in focus. i.e for league of legends make sure it's when the client window is in focus.
-        
+
         /// <summary>
         /// Raised when a key is pressed
         /// </summary>
         public event KeyPressEventHandler OnKeyPressed;
+
+        public static void Init()
+        {
+            _instance = new KeyboardHookService();
+        }
 
         private KeyboardHookService()
         {
@@ -43,5 +55,6 @@ namespace LedDashboard.Modules.Common
         {
             OnKeyPressed?.Invoke(sender, e);
         }
+
     }
 }
