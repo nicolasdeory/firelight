@@ -20,6 +20,8 @@ namespace LedDashboard
         Graphics canvas;
         LedManager ledManager;
         FormsPlot plt;
+        Button chromabtn;
+        Button ledstripbtn;
 
         public MainUI()
         {
@@ -30,11 +32,24 @@ namespace LedDashboard
             box.BackColor = Color.White;
             canvas = box.CreateGraphics();
 
+            chromabtn = new Button();
+            chromabtn.Text = "Use Razer Chroma";
+            chromabtn.Size = new Size(200, 50);
+            chromabtn.Location = new Point(0, 300);
+            chromabtn.Click += UseRazerChromaClicked;
+            chromabtn.Enabled = false;
+
+            ledstripbtn = new Button();
+            ledstripbtn.Text = "Use LED Strip";
+            ledstripbtn.Size = new Size(200, 50);
+            ledstripbtn.Location = new Point(0, 350);
+            ledstripbtn.Click += UseLEDStripClicked;
+
             plt = new FormsPlot();
             plt.Location = new Point(0, 100);
             plt.Size = new Size(800, 200);
 
-            this.Controls.AddRange(new Control[] { box, plt });
+            this.Controls.AddRange(new Control[] { box, plt, chromabtn, ledstripbtn });
 
             Gradient.GeneratePalettes();
 
@@ -63,6 +78,20 @@ namespace LedDashboard
                 }
                 updatingUI = false;
             }   
+        }
+
+        public void UseRazerChromaClicked(object s, EventArgs e)
+        {
+            ledManager.SetController(LightControllerType.RazerChroma);
+            chromabtn.Enabled = false;
+            ledstripbtn.Enabled = true;
+        }
+
+        public void UseLEDStripClicked(object s, EventArgs e)
+        {
+            ledManager.SetController(LightControllerType.LED_Strip);
+            chromabtn.Enabled = true;
+            ledstripbtn.Enabled = false;
         }
 
     }

@@ -7,13 +7,20 @@ using System.Threading.Tasks;
 
 namespace LedDashboard
 {
-    class SACNController
+    class SACNController : LightController, IDisposable
     {
+        public static SACNController Create()
+        {
+            return new SACNController();
+        }
+
         static SACNSender sender;
-        public static async Task Send(byte[] data)
+        public void SendData(int ledCount, byte[] data)
         {
             if (sender == null) sender = new SACNSender(Guid.NewGuid(), "wled-nico");
-            await sender.Send(1, data);
+            Task.Run(() => sender.Send(1, data));
         }
+
+        public void Dispose() { }
     }
 }

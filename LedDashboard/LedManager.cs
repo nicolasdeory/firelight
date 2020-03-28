@@ -1,6 +1,7 @@
 ﻿
 using LedDashboard.Modules.BlinkWhite;
 using LedDashboard.Modules.LeagueOfLegends;
+using System;
 
 namespace LedDashboard
 {
@@ -21,10 +22,15 @@ namespace LedDashboard
 
         bool reverseOrder;
 
+        LightController lightController;
+
+
         /// <param name="ledCount">Number of lights in the LED strip</param>
         /// <param name="reverseOrder">Set to true if you want the lights to be reverse in order (i.e. Color for LED 0 will be applied to the last LED in the strip)</param>
         public LedManager(int ledCount, bool reverseOrder)
         {
+            lightController = RazerChromaController.Create();
+
             this.leds = new Led[ledCount];
             for (int i = 0; i < this.leds.Length; i++)
             {
@@ -84,6 +90,21 @@ namespace LedDashboard
 
             return data;
         }
+        
+        /// <summary>
+        /// Sets the light controller to be used
+        /// </summary>
+        public void SetController(LightControllerType type)
+        {
+            ((IDisposable)lightController).Dispose();
+            if (type == LightControllerType.LED_Strip)
+            {
+                lightController = SACNController.Create();
+            } else if (type == LightControllerType.RazerChroma)
+            {
+                lightController = RazerChromaController.Create();
+            }
+        }
 
         /// <summary>
         /// Sends LED data to a wireless LED strip using the E1.31 sACN protocol.
@@ -91,7 +112,7 @@ namespace LedDashboard
         public async void SendData()
         {
             //await SACNController.Send(this.ToByteArray(reverseOrder));
-            RazerChromaController.SendData(this.leds.Length, this.ToByteArray());
+            lightController.SendData(this.leds.Length, this.ToByteArray());
         }
 
     }

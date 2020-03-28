@@ -72,6 +72,8 @@
     <Compile Include="Led.cs" />
     <Compile Include="LedManager.cs" />
     <Compile Include="LEDModule.cs" />
+    <Compile Include="LightController.cs" />
+    <Compile Include="LightControllerType.cs" />
     <Compile Include="Main.cs" />
     <Compile Include="MainUI.cs">
       <SubType>Form</SubType>

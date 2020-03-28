@@ -9,20 +9,24 @@ using System.Threading.Tasks;
 
 namespace LedDashboard
 {
-    class RazerChromaController
+    class RazerChromaController : LightController, IDisposable
     {
-        public static void Init()
+        public static RazerChromaController Create()
         {
-            NativeRazerApi api = new NativeRazerApi();
-            keyboardFrame = new KeyboradFrame(api);
+            return new RazerChromaController();
         }
 
         private static KeyboradFrame keyboardFrame;
+        private static NativeRazerApi api;
 
-
-        public static void SendData(int ledCount, byte[] colorArray)
+        private RazerChromaController()
         {
-            if (keyboardFrame == null) Init();
+            if (api == null) api = new NativeRazerApi();
+            if (keyboardFrame == null) keyboardFrame = new KeyboradFrame(api);
+        }
+
+        public void SendData(int ledCount, byte[] colorArray)
+        { 
             List<Point> points = new List<Point>();
             for (int i = 0; i < ledCount; i++)
             {
@@ -41,5 +45,11 @@ namespace LedDashboard
             
         }
 
+        public void Dispose()
+        {
+            api.Dispose();
+            api = null;
+            keyboardFrame = null;
+        }
     }
 }
