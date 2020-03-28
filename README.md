@@ -17,8 +17,8 @@ A modular League of Legends integration for Razer Chroma and RGB LED devices.
 
 ## Usage
 - Setup a LED strip that listens to color data via sACN. If you don't have a LED strip, you will be able to see the simulated LED display in your screen. Alternatively, if you have a Razer Chroma Keyboard, the program should work out of the box!
+- Open the program. It will default to Razer Chroma mode. If you want to use it with an LED strip, click on "Use LED strip".
 - Load into a LoL game (preferably with Vel'Koz)
-- When the game loads, open the program. It will default to Razer Chroma mode. If you want to use it with an LED strip, click on "Use LED strip".
 - Enjoy the lights!
 
 ## Roadmap / Planned Features
