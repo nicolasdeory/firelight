@@ -18,5 +18,7 @@ namespace LedDashboard
         /// Raised when a new frame is ready to be processed and sent to the LED strip.
         /// </summary>
         public event FrameReadyHandler NewFrameReady;
+
+        public LEDModule Create(LightingMode mode, int ledCount);
     }
 }

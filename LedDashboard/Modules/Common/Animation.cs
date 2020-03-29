@@ -21,5 +21,13 @@ namespace LedDashboard.Modules.Common
         { 
             get => frames[index];
         }
+
+        public LightingMode AnimationMode
+        {
+            get
+            {
+                return frames[0].Length == 21 * 6 * 3 ? LightingMode.Keyboard : LightingMode.Line; // if there is the number of elements in the array that matches a keyboard frame 
+            }
+        }
     }
 }

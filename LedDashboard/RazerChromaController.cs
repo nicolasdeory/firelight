@@ -81,15 +81,18 @@ namespace LedDashboard
             {
                 for (int i = 0; i < 6; i++)
                 {
-                    for (int j = 0; j < 22; j++)
+                    for (int j = 0; j < 21; j++)
                     {
-                        int baseIndex = i * 22 + j;
+                        int baseIndex = i * 21 + j;
                         Color c = Color.FromArgb(colorArray[baseIndex * 3], colorArray[baseIndex * 3 + 1], colorArray[baseIndex * 3 + 2]);
                         points.Clear();
                         points.Add(new Point(j, i));
                         keyboardFrame.SetKeys(points, c);
                     }
                 }
+            } else
+            {
+                throw new ArgumentException("Invalid lighting mode");
             }
             
             keyboardFrame.Update();
