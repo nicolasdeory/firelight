@@ -85,7 +85,7 @@ namespace LedDashboard
             }
             else
             {
-                color.h = (1-rate) * color.h + rate * col.h;
+                color.h = (1 - rate) * color.h + rate * col.h;
                 color.s = (1 - rate) * color.s + rate * col.s;
                 if (additive)
                 {

@@ -68,6 +68,11 @@ namespace LedDashboard
             }
         }
 
+        public static Led GetLedIn2D(this Led[] leds, int x, int y, int rowSize=21)
+        {
+            return leds[y * rowSize + x];
+        }
+
         public static HSVColor ValueToHSV(int numLeds, int led, double val)
         {
             // Rainbow

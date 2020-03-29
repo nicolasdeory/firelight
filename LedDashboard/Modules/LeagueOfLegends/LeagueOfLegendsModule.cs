@@ -282,7 +282,6 @@ namespace LedDashboard.Modules.LeagueOfLegends
                 int ledsToTurnOn = (int)(healthPercentage * leds.Length);
                 for (int i = 0; i < leds.Length; i++)
                 {
-                   // int index = reverseOrder ? this.leds.Length - 1 - i : i;
                     if (i < ledsToTurnOn)
                         this.leds[i].MixNewColor(HealthColor, true,0.2f);
                     else

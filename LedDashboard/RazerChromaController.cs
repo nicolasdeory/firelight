@@ -10,6 +10,13 @@ using System.Windows.Forms;
 
 namespace LedDashboard
 {
+    public enum LightingMode
+    {
+        Point,
+        Line,
+        Keyboard
+    }
+
     class RazerChromaController : LightController
     {
         public static RazerChromaController Create()
@@ -39,23 +46,52 @@ namespace LedDashboard
             }
         }
 
-        public void SendData(int ledCount, byte[] colorArray)
+        public void SendData(int ledCount, byte[] colorArray, LightingMode mode)
         {
             if (!enabled) return;
             List<Point> points = new List<Point>();
-            for (int i = 0; i < ledCount; i++)
+            if (mode == LightingMode.Line)
             {
-                Color c = Color.FromArgb(colorArray[i * 3], colorArray[i * 3 + 1], colorArray[i * 3 + 2]);
-                int x = (int)Utils.Scale(i, 0, ledCount, 0, 22);
+                for (int i = 0; i < ledCount; i++)
+                {
+                    Color c = Color.FromArgb(colorArray[i * 3], colorArray[i * 3 + 1], colorArray[i * 3 + 2]);
+                    int x = (int)Utils.Scale(i, 0, ledCount, 0, 22);
+                    points.Clear();
+                    points.Add(new Point(x, 0));
+                    points.Add(new Point(x, 1));
+                    points.Add(new Point(x, 2));
+                    points.Add(new Point(x, 3));
+                    points.Add(new Point(x, 4));
+                    points.Add(new Point(x, 5));
+                    keyboardFrame.SetKeys(points, c);
+                }
+            } else if (mode == LightingMode.Point)
+            {
                 points.Clear();
-                points.Add(new Point(x, 0));
-                points.Add(new Point(x, 1));
-                points.Add(new Point(x, 2));
-                points.Add(new Point(x, 3));
-                points.Add(new Point(x, 4));
-                points.Add(new Point(x, 5));
-                keyboardFrame.SetKeys(points, c);
+                for (int i = 0; i < 22; i++)
+                {
+                    for (int j = 0; j < 6; j++)
+                    {
+                        points.Add(new Point(i, j));
+                        
+                    }
+                }
+                keyboardFrame.SetKeys(points, Color.FromArgb(colorArray[0], colorArray[1], colorArray[2]));
+            } else if (mode == LightingMode.Keyboard)
+            {
+                for (int i = 0; i < 6; i++)
+                {
+                    for (int j = 0; j < 22; j++)
+                    {
+                        int baseIndex = i * 22 + j;
+                        Color c = Color.FromArgb(colorArray[baseIndex * 3], colorArray[baseIndex * 3 + 1], colorArray[baseIndex * 3 + 2]);
+                        points.Clear();
+                        points.Add(new Point(j, i));
+                        keyboardFrame.SetKeys(points, c);
+                    }
+                }
             }
+            
             keyboardFrame.Update();
             
         }
