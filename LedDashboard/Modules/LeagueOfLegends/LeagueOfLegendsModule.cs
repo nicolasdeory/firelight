@@ -49,14 +49,15 @@ namespace LedDashboard.Modules.LeagueOfLegends
 
         public event LEDModule.FrameReadyHandler NewFrameReady;
 
+        LightingMode lightingMode;
 
         /// <summary>
         /// Creates a new <see cref="LeagueOfLegendsModule"/> instance.
         /// </summary>
         /// <param name="ledCount">Number of LEDs in the strip</param>
-        public static LeagueOfLegendsModule Create(int ledCount)
+        public static LeagueOfLegendsModule Create(LightingMode mode, int ledCount = 0)
         {
-            return new LeagueOfLegendsModule(ledCount);
+            return new LeagueOfLegendsModule(ledCount, mode);
         }
 
         /// <summary>
@@ -64,7 +65,7 @@ namespace LedDashboard.Modules.LeagueOfLegends
         /// </summary>
         LEDModule CurrentLEDSource;
 
-        private LeagueOfLegendsModule(int ledCount)
+        private LeagueOfLegendsModule(int ledCount, LightingMode mode)
         {
 
             // League of Legends integration Initialization
@@ -72,6 +73,7 @@ namespace LedDashboard.Modules.LeagueOfLegends
             if (pname.Length == 0) throw new InvalidOperationException("Game client is not open.");*/
 
             // LED Initialization
+            lightingMode = mode;
             this.leds = new Led[ledCount];
             for (int i = 0; i < ledCount; i++)
                 leds[i] = new Led();

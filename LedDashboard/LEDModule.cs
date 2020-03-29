@@ -19,6 +19,5 @@ namespace LedDashboard
         /// </summary>
         public event FrameReadyHandler NewFrameReady;
 
-        public LEDModule Create(LightingMode mode, int ledCount);
     }
 }

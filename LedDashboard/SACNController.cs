@@ -37,7 +37,7 @@ namespace LedDashboard
             }
             if (mode == LightingMode.Keyboard)
             {
-
+                throw new NotImplementedException();
             }
             else
             {

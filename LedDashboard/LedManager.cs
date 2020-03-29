@@ -79,7 +79,7 @@ namespace LedDashboard
         {
             if (name == "League of Legends" && !(CurrentLEDModule is LeagueOfLegendsModule)) // TODO: Account for client disconnections
             {
-                LEDModule lolModule = LeagueOfLegendsModule.Create(ledCount);
+                LEDModule lolModule = LeagueOfLegendsModule.Create(LightingMode.Line, ledCount);
                 lolModule.NewFrameReady += UpdateLEDDisplay;
                 CurrentLEDModule = lolModule;
             } else if (name == "")
@@ -172,7 +172,7 @@ namespace LedDashboard
         public async void SendData()
         {
             //await SACNController.Send(this.ToByteArray(reverseOrder));
-            lightController.SendData(this.leds.Length, this.ToByteArray());
+            lightController.SendData(this.leds.Length, this.ToByteArray(), LightingMode.Line);
         }
 
     }
