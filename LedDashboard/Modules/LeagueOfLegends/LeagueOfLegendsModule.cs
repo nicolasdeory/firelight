@@ -62,8 +62,14 @@ namespace LedDashboard.Modules.LeagueOfLegends
         /// Creates a new <see cref="LeagueOfLegendsModule"/> instance.
         /// </summary>
         /// <param name="ledCount">Number of LEDs in the strip</param>
-        public static LeagueOfLegendsModule Create(LightingMode preferLightMode, AbilityCastPreference castMode, int ledCount = 0)
+        public static LeagueOfLegendsModule Create(LightingMode preferLightMode, int ledCount, Dictionary<string,string> options)
         {
+            AbilityCastPreference castMode = AbilityCastPreference.Normal;
+            if (options.ContainsKey("castMode"))
+            {
+                if (options["castMode"] == "quick") castMode = AbilityCastPreference.Quick;
+                else if (options["castMode"] == "quickindicator") castMode = AbilityCastPreference.QuickWithIndicator;
+            }
             if(preferLightMode == LightingMode.Keyboard)
             {
                 return new LeagueOfLegendsModule(88, preferLightMode, castMode);
