@@ -80,6 +80,10 @@ namespace LedDashboard
                 keyboardFrame.SetKeys(points, Color.FromArgb(colorArray[0], colorArray[1], colorArray[2]));
             } else if (mode == LightingMode.Keyboard)
             {
+                foreach(RzKey key in numPadKeys)
+                {
+                    keyboardFrame.SetKey(key, Color.Black); // set numpad keys to black
+                }
                 for(int i = 0; i < 88;i++)
                 {
                     Color c = Color.FromArgb(colorArray[i * 3], colorArray[i * 3 + 1], colorArray[i * 3 + 2]);
@@ -148,7 +152,7 @@ namespace LedDashboard
             RzKey.A,RzKey.S,RzKey.D,RzKey.F,RzKey.G,RzKey.H,RzKey.J,RzKey.K,RzKey.L,
             RzKey.Oem_7,
             RzKey.Oem_8,
-            RzKey.Oem_6,
+            RzKey.Eur_1,
             RzKey.Lshift,
             RzKey.Eur_2, // << >> in spanish layout?
             RzKey.Z,RzKey.X,RzKey.C,RzKey.V,RzKey.B,RzKey.N,RzKey.M,
@@ -168,6 +172,27 @@ namespace LedDashboard
             RzKey.Left,
             RzKey.Down,
             RzKey.Right
+        };
+
+        static RzKey[] numPadKeys = new RzKey[]
+        {
+            RzKey.Numlock,
+            RzKey.Numpad_divide,
+            RzKey.Numpad_multiply,
+            RzKey.Numpad_subtract,
+            RzKey.Numpad7,
+            RzKey.Numpad8,
+            RzKey.Numpad9,
+            RzKey.Numpad_add,
+            RzKey.Numpad4,
+            RzKey.Numpad5,
+            RzKey.Numpad6,
+            RzKey.Numpad1,
+            RzKey.Numpad2,
+            RzKey.Numpad3,
+            RzKey.Numpad_enter,
+            RzKey.Numpad0,
+            RzKey.Numpad_decimal
         };
     }
 }
