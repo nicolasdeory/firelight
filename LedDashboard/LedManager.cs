@@ -169,13 +169,14 @@ namespace LedDashboard
             {
                 lightController = SACNController.Create();
                 this.preferredMode = LightingMode.Line;
+                InitLeds(this.preferredMode, ledCount, reverseOrder);
             } else if (type == LightControllerType.RazerChroma)
             {
                 lightController = RazerChromaController.Create();
                 this.preferredMode = LightingMode.Keyboard;
+                InitLeds(this.preferredMode);
             }
             CurrentLEDModule = null; // restart the whole service (force module reload)
-            InitLeds(this.preferredMode,ledCount, reverseOrder);
             ProcessListenerService.Restart();
            // lightController.SetEnabled(wasEnabled);
         }

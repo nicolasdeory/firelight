@@ -379,6 +379,7 @@ namespace LedDashboard.Modules.LeagueOfLegends
         {
             masterCancelToken.Cancel();
             animationModule.StopCurrentAnimation();
+            championModule?.Dispose();
         }
     }
 }

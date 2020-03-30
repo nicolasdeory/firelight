@@ -8,6 +8,7 @@ using System.Linq;
 using System.Net;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 
 namespace LedDashboard.Modules.LeagueOfLegends
 {
@@ -35,6 +36,9 @@ namespace LedDashboard.Modules.LeagueOfLegends
         /// Raised when the user tried to cast an ability but was out of mana.
         /// </summary>
         public event OutOfManaHandler TriedToCastOutOfMana;
+
+        public event EventHandler<MouseEventArgs> OnMouseClicked;
+        public event EventHandler<KeyPressEventArgs> OnKeyPressed;
 
         public string Name;
         protected ChampionAttributes ChampionInfo;
@@ -65,6 +69,8 @@ namespace LedDashboard.Modules.LeagueOfLegends
             Task.Run(async () =>
             {
                 ChampionInfo = await GetChampionInformation(champName);
+                KeyboardHookService.Instance.OnMouseClicked += OnMouseClick;
+                KeyboardHookService.Instance.OnKeyPressed += OnKeyPress;
                 ChampionInfoLoaded?.Invoke(ChampionInfo);
             });
         }
@@ -108,6 +114,16 @@ namespace LedDashboard.Modules.LeagueOfLegends
         protected void DispatchNewFrame(Led[] ls, LightingMode mode)
         {
             NewFrameReady?.Invoke(this, ls, mode);
+        }
+
+        private void OnMouseClick(object s, MouseEventArgs e)
+        {
+            OnMouseClicked?.Invoke(s,e);
+        }
+
+        private void OnKeyPress(object s, KeyPressEventArgs e)
+        {
+            OnKeyPressed?.Invoke(s,e);
         }
 
         /// <summary>
@@ -170,7 +186,8 @@ namespace LedDashboard.Modules.LeagueOfLegends
 
         public void Dispose()
         {
-            //
+            KeyboardHookService.Instance.OnMouseClicked -= OnMouseClick;
+            KeyboardHookService.Instance.OnKeyPressed -= OnKeyPress;
         }
     }
 }

@@ -48,9 +48,8 @@ namespace LedDashboard.Modules.LeagueOfLegends.ChampionModules
         private void OnChampionInfoLoaded(ChampionAttributes champInfo)
         {
             animator.NewFrameReady += (_, ls, mode) => DispatchNewFrame(ls,mode);
-
-            KeyboardHookService.Instance.OnMouseClicked += OnMouseClick;
-            KeyboardHookService.Instance.OnKeyPressed += OnKeyPress;
+            OnMouseClicked += OnMouseClick;
+            OnKeyPressed += OnKeyPress;
         }
 
         /// <summary>
