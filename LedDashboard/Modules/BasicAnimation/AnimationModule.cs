@@ -70,7 +70,7 @@ namespace LedDashboard.Modules.BasicAnimation
                     } else
                     {
                         this.leds.SetAllToBlack();
-                        NewFrameReady.Invoke(this, this.leds);
+                        NewFrameReady.Invoke(this, this.leds, LightingMode.Line);
                     }
                 }
                 //isAnimationRunning = false;
@@ -99,7 +99,7 @@ namespace LedDashboard.Modules.BasicAnimation
                 else
                 {
                     this.leds.SetAllToBlack();
-                    NewFrameReady.Invoke(this, this.leds);
+                    NewFrameReady.Invoke(this, this.leds, LightingMode.Line);
                 }
                 //isAnimationRunning = false;
             });
@@ -116,12 +116,12 @@ namespace LedDashboard.Modules.BasicAnimation
             {
                 currentlyRunningAnim.Cancel();
                 this.leds.SetAllToBlack();
-                NewFrameReady.Invoke(this, this.leds);
+                NewFrameReady.Invoke(this, this.leds, LightingMode.Line);
                 Task.Run(async () =>
                 {
                     // wait a bit for the current frame
                     await Task.Delay(50);
-                    NewFrameReady.Invoke(this, this.leds);
+                    NewFrameReady.Invoke(this, this.leds, LightingMode.Line);
                 });
                 
                 //isAnimationRunning = false;
@@ -153,7 +153,7 @@ namespace LedDashboard.Modules.BasicAnimation
                 {
                     l.Color(color);
                 }
-                NewFrameReady.Invoke(this, this.leds);
+                NewFrameReady.Invoke(this, this.leds, LightingMode.Line);
                 if (fadeoutRate > 0)
                 {
                     if (destinationColor.Equals(HSVColor.Black))
@@ -174,7 +174,7 @@ namespace LedDashboard.Modules.BasicAnimation
                     {
                         this.leds.SetAllToBlack();
                     }
-                    NewFrameReady.Invoke(this, this.leds);
+                    NewFrameReady.Invoke(this, this.leds, LightingMode.Line);
                 }
             });
         }
@@ -214,7 +214,7 @@ namespace LedDashboard.Modules.BasicAnimation
                     }
                     i++;
                     if (cancelToken.IsCancellationRequested) throw new TaskCanceledException();
-                    NewFrameReady.Invoke(this, this.leds);
+                    NewFrameReady.Invoke(this, this.leds, LightingMode.Line);
                     await Task.Delay(30);
                     if (i == anim.FrameCount) break;
                 }
@@ -250,7 +250,7 @@ namespace LedDashboard.Modules.BasicAnimation
                     }
                     i = (i + 1) % anim.FrameCount;
                     if (cancelToken.IsCancellationRequested) throw new TaskCanceledException();
-                    NewFrameReady.Invoke(this, this.leds);
+                    NewFrameReady.Invoke(this, this.leds, LightingMode.Line);
                     await Task.Delay(30);
                     msCounter += 30;
                     if (msCounter >= durationMs) break;
@@ -267,7 +267,7 @@ namespace LedDashboard.Modules.BasicAnimation
             {
                 this.leds.FadeToBlackAllLeds(rate);
                 if (cancelToken.IsCancellationRequested) throw new TaskCanceledException();
-                NewFrameReady.Invoke(this, this.leds);
+                NewFrameReady.Invoke(this, this.leds, LightingMode.Line);
                 await Task.Delay(30);
                 msCounter += 30;
             }
@@ -283,7 +283,7 @@ namespace LedDashboard.Modules.BasicAnimation
             {
                 this.leds.FadeToColorAllLeds(color,rate);
                 if (cancelToken.IsCancellationRequested) throw new TaskCanceledException();
-                NewFrameReady.Invoke(this, this.leds);
+                NewFrameReady.Invoke(this, this.leds, LightingMode.Line);
                 await Task.Delay(30);
                 msCounter += 30;
             }
@@ -299,7 +299,7 @@ namespace LedDashboard.Modules.BasicAnimation
                 float sin = (float)Math.Sin((msCounter/1000f) * rate);
                 this.leds.SetAllToColor(HSVColor.Lerp(col1, col2, sin));
                 if (cancelToken.IsCancellationRequested) throw new TaskCanceledException();
-                NewFrameReady.Invoke(this, this.leds);
+                NewFrameReady.Invoke(this, this.leds, LightingMode.Line);
                 await Task.Delay(30);
                 msCounter += 30;
             }

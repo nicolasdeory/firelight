@@ -18,7 +18,7 @@ namespace LedDashboard
         public void SendData(int ledCount, byte[] data, LightingMode mode) // todo: when on keyboard mode, ledCount still has to be correct for the strip!
         {
             if (sender == null) sender = new SACNSender(Guid.NewGuid(), "wled-nico");
-            Task.Run(() => sender.Send(1, data));
+            Task.Run(() => sender.Send(1, SanitizeDataArray(ledCount,data,mode)));
         }
 
         private byte[] SanitizeDataArray(int ledCount, byte[] data, LightingMode mode)

@@ -8,6 +8,7 @@ using System.Linq;
 using System.Net;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 
 namespace LedDashboard.Modules.LeagueOfLegends
 {
@@ -36,10 +37,13 @@ namespace LedDashboard.Modules.LeagueOfLegends
         /// </summary>
         public event OutOfManaHandler TriedToCastOutOfMana;
 
+        public event EventHandler<MouseEventArgs> OnMouseClicked;
+        public event EventHandler<KeyPressEventArgs> OnKeyPressed;
+
         public string Name;
         protected ChampionAttributes ChampionInfo;
         protected ActivePlayer PlayerInfo;
-
+        protected LightingMode LightingMode; // Preferred lighting mode. If set to keyboard, it should try to provide animations that look cooler on keyboards.
         /// <summary>
         /// Dictionary that keeps track of which abilities are currently on cooldown. 
         /// </summary>
@@ -52,10 +56,11 @@ namespace LedDashboard.Modules.LeagueOfLegends
             [AbilityKey.Passive] = false
         };
 
-        protected ChampionModule(string champName, ActivePlayer playerInfo)
+        protected ChampionModule(string champName, ActivePlayer playerInfo, LightingMode preferredLightingMode)
         {
             Name = champName;
             PlayerInfo = playerInfo;
+            LightingMode = preferredLightingMode;
             LoadChampionInformation(champName);
         }
 
@@ -64,6 +69,8 @@ namespace LedDashboard.Modules.LeagueOfLegends
             Task.Run(async () =>
             {
                 ChampionInfo = await GetChampionInformation(champName);
+                KeyboardHookService.Instance.OnMouseClicked += OnMouseClick;
+                KeyboardHookService.Instance.OnKeyPressed += OnKeyPress;
                 ChampionInfoLoaded?.Invoke(ChampionInfo);
             });
         }
@@ -104,9 +111,19 @@ namespace LedDashboard.Modules.LeagueOfLegends
         /// <summary>
         /// Dispatches a frame with the given LED data, raising the NewFrameReady event.
         /// </summary>
-        protected void DispatchNewFrame(Led[] ls)
+        protected void DispatchNewFrame(Led[] ls, LightingMode mode)
         {
-            NewFrameReady?.Invoke(this, ls);
+            NewFrameReady?.Invoke(this, ls, mode);
+        }
+
+        private void OnMouseClick(object s, MouseEventArgs e)
+        {
+            OnMouseClicked?.Invoke(s,e);
+        }
+
+        private void OnKeyPress(object s, KeyPressEventArgs e)
+        {
+            OnKeyPressed?.Invoke(s,e);
         }
 
         /// <summary>
@@ -169,7 +186,8 @@ namespace LedDashboard.Modules.LeagueOfLegends
 
         public void Dispose()
         {
-            //
+            KeyboardHookService.Instance.OnMouseClicked -= OnMouseClick;
+            KeyboardHookService.Instance.OnKeyPressed -= OnKeyPress;
         }
     }
 }

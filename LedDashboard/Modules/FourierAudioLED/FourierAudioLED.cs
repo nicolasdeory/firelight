@@ -107,7 +107,7 @@ namespace LedDashboard.Modules.FourierAudioLED
         void OnNewAudioData()
         {
             DoFrame();
-            NewFrameReady?.Invoke(this, this.leds);
+            NewFrameReady?.Invoke(this, this.leds, LightingMode.Line);
             newAudioAvailable = true;
         }
 

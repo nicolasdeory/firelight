@@ -14,7 +14,7 @@ namespace LedDashboard.Modules.LeagueOfLegends.ChampionModules
 
         AnimationModule animator; // Animator module that will be useful to display animations
         AbilityKey SelectedAbility = AbilityKey.None; // Currently selected ability (for example, if you pressed Q but you haven't yet clicked LMB to cast the ability, PressedKey = 'q' 
-
+        
         // Champion-specific Variables
 
         bool qCastInProgress = false;
@@ -25,12 +25,12 @@ namespace LedDashboard.Modules.LeagueOfLegends.ChampionModules
         /// </summary>
         /// <param name="ledCount">Number of LEDs in the strip</param>
         /// <param name="playerInfo">Player information data</param>
-        public static VelKozModule Create(int ledCount, ActivePlayer playerInfo)
+        public static VelKozModule Create(int ledCount, ActivePlayer playerInfo, LightingMode preferredMode)
         {
-            return new VelKozModule(ledCount, playerInfo, "Velkoz");
+            return new VelKozModule(ledCount, playerInfo, "Velkoz", preferredMode);
         }
 
-        private VelKozModule(int ledCount, ActivePlayer playerInfo, string championName) : base(championName, playerInfo)
+        private VelKozModule(int ledCount, ActivePlayer playerInfo, string championName, LightingMode preferredMode) : base(championName, playerInfo, preferredMode)
         {
             // Initialization for the champion module occurs here.
             // Preload all the animations you'll want to use. MAKE SURE that each animation file
@@ -47,10 +47,9 @@ namespace LedDashboard.Modules.LeagueOfLegends.ChampionModules
 
         private void OnChampionInfoLoaded(ChampionAttributes champInfo)
         {
-            animator.NewFrameReady += (_, ls) => DispatchNewFrame(ls);
-
-            KeyboardHookService.Instance.OnMouseClicked += OnMouseClick;
-            KeyboardHookService.Instance.OnKeyPressed += OnKeyPress;
+            animator.NewFrameReady += (_, ls, mode) => DispatchNewFrame(ls,mode);
+            OnMouseClicked += OnMouseClick;
+            OnKeyPressed += OnKeyPress;
         }
 
         /// <summary>
