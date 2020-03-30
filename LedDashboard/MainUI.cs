@@ -20,7 +20,7 @@ namespace LedDashboard
         PictureBox box;
         Graphics canvas;
         LedManager ledManager;
-        FormsPlot plt;
+        //FormsPlot plt;
         Button chromabtn;
         Button ledstripbtn;
 
@@ -56,6 +56,8 @@ namespace LedDashboard
             /*plt = new FormsPlot();
             plt.Location = new Point(0, 100);
             plt.Size = new Size(800, 200);*/
+
+            // TODO: Add selector for League of Legends cast modes (Normal, Quick Cast, Quick Cast with Indicator)
 
             this.Controls.AddRange(new Control[] { box, /*plt,*/ chromabtn, ledstripbtn });
 

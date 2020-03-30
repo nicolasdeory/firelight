@@ -88,7 +88,7 @@ namespace LedDashboard
         {
             if (name == "League of Legends" && !(CurrentLEDModule is LeagueOfLegendsModule)) // TODO: Account for client disconnections
             {
-                LEDModule lolModule = LeagueOfLegendsModule.Create(preferredMode, ledCount);
+                LEDModule lolModule = LeagueOfLegendsModule.Create(preferredMode, Modules.LeagueOfLegends.ChampionModules.Common.AbilityCastPreference.Normal, ledCount);
                 lolModule.NewFrameReady += UpdateLEDDisplay;
                 CurrentLEDModule = lolModule;
             } else if (name == "")

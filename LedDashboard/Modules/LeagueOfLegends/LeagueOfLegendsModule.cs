@@ -1,5 +1,6 @@
 ﻿using LedDashboard.Modules.BasicAnimation;
 using LedDashboard.Modules.LeagueOfLegends.ChampionModules;
+using LedDashboard.Modules.LeagueOfLegends.ChampionModules.Common;
 using LedDashboard.Modules.LeagueOfLegends.Model;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -30,6 +31,8 @@ namespace LedDashboard.Modules.LeagueOfLegends
 
         Led[] leds;
 
+        AbilityCastPreference preferredCastMode;
+
         ActivePlayer activePlayer;
         List<Champion> champions;
         Champion playerChampion;
@@ -59,14 +62,14 @@ namespace LedDashboard.Modules.LeagueOfLegends
         /// Creates a new <see cref="LeagueOfLegendsModule"/> instance.
         /// </summary>
         /// <param name="ledCount">Number of LEDs in the strip</param>
-        public static LeagueOfLegendsModule Create(LightingMode preferredMode, int ledCount = 0)
+        public static LeagueOfLegendsModule Create(LightingMode preferLightMode, AbilityCastPreference castMode, int ledCount = 0)
         {
-            if(preferredMode == LightingMode.Keyboard)
+            if(preferLightMode == LightingMode.Keyboard)
             {
-                return new LeagueOfLegendsModule(88, preferredMode);
+                return new LeagueOfLegendsModule(88, preferLightMode, castMode);
             } else
             {
-                return new LeagueOfLegendsModule(ledCount, preferredMode);
+                return new LeagueOfLegendsModule(ledCount, preferLightMode, castMode);
             }
         }
 
@@ -75,10 +78,12 @@ namespace LedDashboard.Modules.LeagueOfLegends
         /// </summary>
         LEDModule CurrentLEDSource;
 
-        private LeagueOfLegendsModule(int ledCount, LightingMode mode)
+        private LeagueOfLegendsModule(int ledCount, LightingMode mode, AbilityCastPreference castMode)
         {
 
             // League of Legends integration Initialization
+
+            this.preferredCastMode = castMode;
 
             // LED Initialization
             lightingMode = mode;
@@ -135,7 +140,7 @@ namespace LedDashboard.Modules.LeagueOfLegends
 
         }
 
-        private async Task OnGameInitialized()
+        private async Task OnGameInitialized() // TODO: Handle items and summoner spells
         {
             animationModule.StopCurrentAnimation(); // stops the current anim
 
@@ -148,7 +153,7 @@ namespace LedDashboard.Modules.LeagueOfLegends
             // TODO: Make this easily extendable when there are many champion modules
             if (playerChampion.RawChampionName.ToLower().Contains("velkoz"))
             {
-                championModule = VelKozModule.Create(this.leds.Length, activePlayer, this.lightingMode);
+                championModule = VelKozModule.Create(this.leds.Length, this.activePlayer, this.lightingMode, this.preferredCastMode);
                 championModule.NewFrameReady += OnNewFrameReceived;
                 championModule.TriedToCastOutOfMana += OnAbilityCastNoMana;
             }

@@ -1,4 +1,5 @@
-﻿using LedDashboard.Modules.LeagueOfLegends.Model;
+﻿using LedDashboard.Modules.LeagueOfLegends.ChampionModules.Common;
+using LedDashboard.Modules.LeagueOfLegends.Model;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
@@ -37,13 +38,21 @@ namespace LedDashboard.Modules.LeagueOfLegends
         /// </summary>
         public event OutOfManaHandler TriedToCastOutOfMana;
 
-        public event EventHandler<MouseEventArgs> OnMouseClicked;
-        public event EventHandler<KeyPressEventArgs> OnKeyPressed;
+        public event EventHandler<AbilityKey> AbilityCast;
+        public event EventHandler<AbilityKey> AbilityRecast;
 
         public string Name;
+
         protected ChampionAttributes ChampionInfo;
         protected ActivePlayer PlayerInfo;
         protected LightingMode LightingMode; // Preferred lighting mode. If set to keyboard, it should try to provide animations that look cooler on keyboards.
+
+        protected AbilityCastPreference PreferredCastMode; // User defined setting, preferred cast mode.
+        protected Dictionary<AbilityKey,AbilityCastMode> AbilityCastModes;
+
+        private AbilityKey SelectedAbility = AbilityKey.None; // Currently selected ability (for example, if you pressed Q but you haven't yet clicked LMB to cast the ability)
+        private char lastPressedKey = '\0';
+
         /// <summary>
         /// Dictionary that keeps track of which abilities are currently on cooldown. 
         /// </summary>
@@ -55,6 +64,20 @@ namespace LedDashboard.Modules.LeagueOfLegends
             [AbilityKey.R] = false,
             [AbilityKey.Passive] = false
         };
+
+        /// <summary>
+        /// Dictionary that keeps track of which abilities can currently be RE-CAST (eg. Zoe or Vel'Kozs Q)
+        /// </summary>
+        protected Dictionary<AbilityKey, bool> AbilitiesOnRecast = new Dictionary<AbilityKey, bool>()
+        {
+            [AbilityKey.Q] = false,
+            [AbilityKey.W] = false,
+            [AbilityKey.E] = false,
+            [AbilityKey.R] = false,
+            [AbilityKey.Passive] = false
+        };
+
+        // TODO: Handle champions with cooldown resets?
 
         protected ChampionModule(string champName, ActivePlayer playerInfo, LightingMode preferredLightingMode)
         {
@@ -69,8 +92,9 @@ namespace LedDashboard.Modules.LeagueOfLegends
             Task.Run(async () =>
             {
                 ChampionInfo = await GetChampionInformation(champName);
-                KeyboardHookService.Instance.OnMouseClicked += OnMouseClick;
+                KeyboardHookService.Instance.OnMouseClicked += OnMouseClick; // TODO. Abstract this to league of legends module, so it pairs with summoner spells and items.
                 KeyboardHookService.Instance.OnKeyPressed += OnKeyPress;
+                KeyboardHookService.Instance.OnKeyReleased += OnKeyRelease;
                 ChampionInfoLoaded?.Invoke(ChampionInfo);
             });
         }
@@ -118,12 +142,168 @@ namespace LedDashboard.Modules.LeagueOfLegends
 
         private void OnMouseClick(object s, MouseEventArgs e)
         {
-            OnMouseClicked?.Invoke(s,e);
+            if (e.Button == MouseButtons.Right)
+            {
+                SelectedAbility = AbilityKey.None;
+            }
+            else if (e.Button == MouseButtons.Left) // cooldowns are accounted for here aswell in case between key press and click user died, or did zhonyas...
+            {
+                // CODE FOR Q
+                if (SelectedAbility == AbilityKey.Q)
+                {
+                    if (CanCastAbility(AbilityKey.Q))
+                        CastAbility(AbilityKey.Q);
+                }
+
+                // CODE FOR W
+                if (SelectedAbility == AbilityKey.W)
+                {
+                    if (CanCastAbility(AbilityKey.W))
+                        CastAbility(AbilityKey.W);
+                }
+
+                // CODE FOR E
+                if (SelectedAbility == AbilityKey.E)
+                {
+                    if (CanCastAbility(AbilityKey.E))
+                        CastAbility(AbilityKey.E);
+                }
+
+                // CODE FOR R
+                if (SelectedAbility == AbilityKey.R)
+                {
+                    if (CanCastAbility(AbilityKey.R))
+                        CastAbility(AbilityKey.R);
+                }
+            }
+            //OnMouseClicked?.Invoke(s,e);
+        }
+
+        private void OnKeyRelease(object s, KeyEventArgs e)
+        {
+            ProcessKeyPress(s, e.KeyCode.ToString().ToLower()[0], true);
         }
 
         private void OnKeyPress(object s, KeyPressEventArgs e)
         {
-            OnKeyPressed?.Invoke(s,e);
+            ProcessKeyPress(s, e.KeyChar);
+        }
+
+        private void ProcessKeyPress(object s, char keyChar, bool keyUp = false)
+        {
+            if (keyChar == lastPressedKey && !keyUp) return; // prevent duplicate calls. Without this, this gets called every frame a key is pressed.
+            lastPressedKey = keyUp ? '\0' : keyChar; 
+            // TODO: quick cast with indicator bug - repro: hold w, then hold q, then right click, then release w, then release q. The ability is cast, even when it shouldn't.
+
+            if (keyChar == 'q')
+            {
+                DoCastLogicForAbility(AbilityKey.Q, keyUp);
+            }
+            if (keyChar == 'w')
+            {
+                DoCastLogicForAbility(AbilityKey.W, keyUp);
+            }
+            if (keyChar == 'e')
+            {
+                DoCastLogicForAbility(AbilityKey.E, keyUp);
+            }
+            if (keyChar == 'r')
+            {
+                DoCastLogicForAbility(AbilityKey.R, keyUp);
+            }
+            /*if (e.KeyChar == 'f') // TODO: Refactor this into LeagueOfLegendsModule, or a new SummonerSpells module. Also take cooldown into consideration.
+            {
+                animator.ColorBurst(HSVColor.FromRGB(255, 237, 41), 0.1f);
+            }*/
+            //OnKeyPressed?.Invoke(s,e);
+        }
+
+        private void DoCastLogicForAbility(AbilityKey key, bool keyUp)
+        {
+            Console.WriteLine("doing cast logic");
+            if (keyUp && SelectedAbility != key) return; // keyUp event shouldn't trigger anything if the ability is not selected.
+
+            AbilityCastMode castMode = AbilityCastModes[key];
+
+            if (castMode.HasRecast && AbilitiesOnRecast[key])
+            {
+                if (CanCastAbility(key)) // We must check if CanCastAbility is true. Players can't recast abilities if they're dead or in zhonyas.
+                {
+                    RecastAbility(key);
+                }
+                return;
+            }
+
+            if (castMode.IsInstant) // ability is cast with just pressing down the key
+            {
+                if (CanCastAbility(key))
+                {
+                    CastAbility(key);
+                }
+                return;
+            }
+
+            if (castMode.IsNormal) // ability has normal cast
+            {
+                if (PreferredCastMode == AbilityCastPreference.Normal)
+                {
+                    if (CanCastAbility(key)) // normal press & click cast, typical
+                    {
+                        SelectedAbility = key;
+                    }
+                    return;
+
+                }
+
+                if (PreferredCastMode == AbilityCastPreference.Quick)
+                {
+                    if (CanCastAbility(key))
+                    {
+                        CastAbility(key);
+                    }
+                    return;
+                }
+
+                if (PreferredCastMode == AbilityCastPreference.QuickWithIndicator)
+                {
+                    if (CanCastAbility(key))
+                    {
+                        if (keyUp && SelectedAbility == key) // Key released, so CAST IT if it's selected
+                        {
+                            if (CanCastAbility(key))
+                            {
+                                CastAbility(key);
+                            }
+                        }
+                        else // Key down, so select it
+                        {
+                            if (CanCastAbility(key))
+                            {
+                                SelectedAbility = key;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        private void CastAbility(AbilityKey key)
+        {
+            AbilityCast?.Invoke(this, key);
+            if (AbilityCastModes[key].HasRecast)
+            {
+                StartRecastTimer(key);
+            } else
+            {
+                StartCooldownTimer(key);
+            }
+            SelectedAbility = AbilityKey.None;
+        }
+        private void RecastAbility(AbilityKey key)
+        {
+            AbilityRecast?.Invoke(this, key);
+            AbilitiesOnRecast[key] = false;
+            StartCooldownTimer(key);
         }
 
         /// <summary>
@@ -184,10 +364,25 @@ namespace LedDashboard.Modules.LeagueOfLegends
             });
         }
 
+        private void StartRecastTimer(AbilityKey ability)
+        {
+            Task.Run(async () =>
+            {
+                AbilitiesOnRecast[ability] = true;
+                await Task.Delay(AbilityCastModes[ability].RecastTime);
+                if (AbilitiesOnRecast[ability]) // if user hasn't recast yet
+                {
+                    AbilitiesOnRecast[ability] = false;
+                    StartCooldownTimer(ability);
+                }
+            });
+        }
+
         public void Dispose()
         {
             KeyboardHookService.Instance.OnMouseClicked -= OnMouseClick;
             KeyboardHookService.Instance.OnKeyPressed -= OnKeyPress;
+            KeyboardHookService.Instance.OnKeyReleased -= OnKeyRelease;
         }
     }
 }
