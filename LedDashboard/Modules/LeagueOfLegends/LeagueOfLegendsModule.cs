@@ -286,6 +286,7 @@ namespace LedDashboard.Modules.LeagueOfLegends
                     this.leds[i].Color(DeadColor);
                 }
                 wasDeadLastFrame = true;
+                NewFrameReady?.Invoke(this, this.leds, LightingMode.Keyboard);
             } else
             {
                 if (wasDeadLastFrame)
@@ -299,7 +300,7 @@ namespace LedDashboard.Modules.LeagueOfLegends
                 if (lightingMode == LightingMode.Keyboard)
                 {
                     // row 1
-                    int ledsToTurnOn = (int)Utils.Scale(healthPercentage, 0, 1, 0, 13);
+                    int ledsToTurnOn = Math.Max((int)Utils.Scale(healthPercentage, 0, 1, 0, 13),1); // at least one led active when player is alive
                     for (int i = 0; i < 13; i++)
                     {
                         if (i < ledsToTurnOn)
@@ -318,7 +319,7 @@ namespace LedDashboard.Modules.LeagueOfLegends
 
                     }
                     // row2
-                    ledsToTurnOn = (int)Utils.Scale(healthPercentage, 0, 1, 0, 14);
+                    ledsToTurnOn = Math.Max((int)Utils.Scale(healthPercentage, 0, 1, 0, 14),1);
                     for (int i = 16; i < 30; i++)
                     {
                         if (i-16 < ledsToTurnOn)
@@ -338,7 +339,7 @@ namespace LedDashboard.Modules.LeagueOfLegends
                     NewFrameReady?.Invoke(this, this.leds, LightingMode.Keyboard);
                 } else
                 {
-                    int ledsToTurnOn = (int)(healthPercentage * leds.Length);
+                    int ledsToTurnOn = Math.Max((int)(healthPercentage * leds.Length),1);
                     for (int i = 0; i < leds.Length; i++)
                     {
                         if (i < ledsToTurnOn)
