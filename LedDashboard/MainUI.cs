@@ -20,9 +20,10 @@ namespace LedDashboard
         PictureBox box;
         Graphics canvas;
         LedManager ledManager;
-        FormsPlot plt;
+        //FormsPlot plt;
         Button chromabtn;
         Button ledstripbtn;
+        ComboBox lolModeSelector;
 
         List<KeyboardKey> keyboardLayout;
         LightingMode currentLightingMode = LightingMode.Keyboard;
@@ -53,17 +54,46 @@ namespace LedDashboard
             ledstripbtn.Location = new Point(0, 350);
             ledstripbtn.Click += UseLEDStripClicked;
 
+            Label lolModeLabel = new Label();
+            lolModeLabel.Text = "League of Legends Ability Cast mode";
+            lolModeLabel.Location = new Point(300, 280);
+            lolModeLabel.Size = new Size(200, 20);
+            lolModeSelector = new ComboBox();
+            lolModeSelector.Location = new Point(300, 300);
+            lolModeSelector.Items.Add("Normal Cast");
+            lolModeSelector.Items.Add("Quick Cast");
+            lolModeSelector.Items.Add("Quick Cast with Indicator");
+            lolModeSelector.SelectedIndex = 0;
+            lolModeSelector.SelectedIndexChanged += LolModeSelectionChanged;
+
             /*plt = new FormsPlot();
             plt.Location = new Point(0, 100);
             plt.Size = new Size(800, 200);*/
 
-            this.Controls.AddRange(new Control[] { box, /*plt,*/ chromabtn, ledstripbtn });
+
+
+            this.Controls.AddRange(new Control[] { box, chromabtn, ledstripbtn, lolModeLabel, lolModeSelector });
 
             Gradient.GeneratePalettes();
 
             ledManager = new LedManager();
             ledManager.DisplayUpdated += UpdateUI;
+            // TODO: Add selector for League of Legends cast modes (Normal, Quick Cast, Quick Cast with Indicator)
+            ledManager.SetModuleOption("lol", "castMode", "quickindicator");
 
+        }
+
+        private void LolModeSelectionChanged(object sender, EventArgs e)
+        {
+            if(lolModeSelector.SelectedIndex == 0)
+            {
+                ledManager.SetModuleOption("lol", "castMode", "normal");
+            } else if (lolModeSelector.SelectedIndex == 1) {
+                ledManager.SetModuleOption("lol", "castMode", "quick");
+            } else if (lolModeSelector.SelectedIndex == 2)
+            {
+                ledManager.SetModuleOption("lol", "castMode", "quickindicator");
+            }
         }
 
         bool updatingUI = false;

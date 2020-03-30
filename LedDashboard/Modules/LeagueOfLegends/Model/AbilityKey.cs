@@ -8,6 +8,6 @@ namespace LedDashboard.Modules.LeagueOfLegends.Model
 {
     public enum AbilityKey
     {
-        Q,W,E,R,Passive,None
+        None,Q,W,E,R,Passive
     }
 }

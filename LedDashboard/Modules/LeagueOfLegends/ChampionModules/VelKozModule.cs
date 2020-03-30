@@ -1,7 +1,9 @@
 ﻿using LedDashboard.Modules.BasicAnimation;
 using LedDashboard.Modules.Common;
+using LedDashboard.Modules.LeagueOfLegends.ChampionModules.Common;
 using LedDashboard.Modules.LeagueOfLegends.Model;
 using SharpDX.RawInput;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
@@ -13,26 +15,49 @@ namespace LedDashboard.Modules.LeagueOfLegends.ChampionModules
         // Variables
 
         AnimationModule animator; // Animator module that will be useful to display animations
-        AbilityKey SelectedAbility = AbilityKey.None; // Currently selected ability (for example, if you pressed Q but you haven't yet clicked LMB to cast the ability, PressedKey = 'q' 
         
         // Champion-specific Variables
 
         bool qCastInProgress = false;
         bool rCastInProgress = false; // this is used to make the animation for Vel'Koz's R to take preference over other animations
 
+
         /// <summary>
         /// Creates a new champion instance.
         /// </summary>
         /// <param name="ledCount">Number of LEDs in the strip</param>
         /// <param name="playerInfo">Player information data</param>
-        public static VelKozModule Create(int ledCount, ActivePlayer playerInfo, LightingMode preferredMode)
+        /// <param name="preferredLightMode">Preferred light mode</param>
+        /// <param name="preferredCastMode">Preferred ability cast mode (Normal, Quick Cast, Quick Cast with Indicator)</param>
+        public static VelKozModule Create(int ledCount, ActivePlayer playerInfo, LightingMode preferredLightMode, AbilityCastPreference preferredCastMode = AbilityCastPreference.Normal)
         {
-            return new VelKozModule(ledCount, playerInfo, "Velkoz", preferredMode);
+            return new VelKozModule(ledCount, playerInfo, "Velkoz", preferredLightMode, preferredCastMode);
         }
 
-        private VelKozModule(int ledCount, ActivePlayer playerInfo, string championName, LightingMode preferredMode) : base(championName, playerInfo, preferredMode)
+
+        private VelKozModule(int ledCount, ActivePlayer playerInfo, string championName, LightingMode preferredLightMode, AbilityCastPreference preferredCastMode) 
+                            : base(championName, playerInfo, preferredLightMode)
         {
             // Initialization for the champion module occurs here.
+
+            // Set preferred cast mode. It's a player choice (Quick cast, Quick cast with indicator, or Normal cast)
+            PreferredCastMode = preferredCastMode;
+
+            // Set cast modes for abilities.
+            // For Vel'Koz, for example:
+            // Q -> Normal ability, but it can be recast within 1.15s
+            // W -> Normal ability
+            // E -> Normal ability
+            // R -> Instant ability, it is cast the moment the key is pressed, but it can be recast within 2.3s
+            Dictionary<AbilityKey, AbilityCastMode> abilityCastModes = new Dictionary<AbilityKey, AbilityCastMode>()
+            {
+                [AbilityKey.Q] = AbilityCastMode.Normal(1150), 
+                [AbilityKey.W] = AbilityCastMode.Normal(),
+                [AbilityKey.E] = AbilityCastMode.Normal(),
+                [AbilityKey.R] = AbilityCastMode.Instant(2300),
+            };
+            AbilityCastModes = abilityCastModes;
+
             // Preload all the animations you'll want to use. MAKE SURE that each animation file
             // has its Build Action set to "Content" and "Copy to Output Directory" is set to "Always".
 
@@ -45,147 +70,121 @@ namespace LedDashboard.Modules.LeagueOfLegends.ChampionModules
             ChampionInfoLoaded += OnChampionInfoLoaded;
         }
 
+        /// <summary>
+        /// Called when the champion info has been retrieved.
+        /// </summary>
         private void OnChampionInfoLoaded(ChampionAttributes champInfo)
         {
             animator.NewFrameReady += (_, ls, mode) => DispatchNewFrame(ls,mode);
-            OnMouseClicked += OnMouseClick;
-            OnKeyPressed += OnKeyPress;
+            AbilityCast += OnAbilityCast;
+            AbilityRecast += OnAbilityRecast;
         }
-
+        
         /// <summary>
-        /// Called when the mouse is clicked.
+        /// Called when an ability is cast.
         /// </summary>
-        private void OnMouseClick(object s, MouseEventArgs m) 
+        private void OnAbilityCast(object s, AbilityKey key)
         {
-            // TODO: Quick cast support
-
-            if (m.Button == MouseButtons.Right)
+            if (key == AbilityKey.Q)
             {
-                SelectedAbility = AbilityKey.None;
-            } else if (m.Button == MouseButtons.Left)
+                OnCastQ();
+            }
+            if (key == AbilityKey.W)
             {
-                // CODE FOR Q
-                if (SelectedAbility == AbilityKey.Q && !qCastInProgress)
-                {
-                    // Here you should write code to trigger the appropiate animations to play when the user casts Q.
-                    // The code will slightly change depending on the champion, since not all champion abilities are cast in the same "Q + Left Click" fashion,
-                    // plus you might want to implement custom animation logic for the different champion abilities.
-
-                    // Trigger the start animation.
-                    Task.Run(async () =>
-                    {
-                        await Task.Delay(100);
-                        if (!rCastInProgress) animator.RunAnimationOnce(@"Animations/Vel'Koz/q_start.txt", true);
-                    });
-
-                    // The Q cast is in progress.
-                    qCastInProgress = true;
-
-                    // After 1.15s, if user didn't press Q again already, the Q split animation plays.
-                    Task.Run(async () =>
-                    {
-                        await Task.Delay(1150);
-                        if (CanCastAbility(AbilityKey.Q) && !rCastInProgress && qCastInProgress)
-                        {
-                            animator.RunAnimationOnce(@"Animations/Vel'Koz/q_recast.txt");
-                            // Since the ability was cast, start the cooldown timer.
-                            StartCooldownTimer(AbilityKey.Q); 
-                        }
-                        qCastInProgress = false;
-                    });
-
-                    // Q was cast, so now there is no ability selected.
-                    // Note that this doesn't get triggered after 1.15s (it doesn't wait for the above task to finish).
-                    SelectedAbility = AbilityKey.None;
-                }
-
-                // CODE FOR W
-                if (SelectedAbility == AbilityKey.W)
-                {
-                    Task.Run(async () =>
-                    {
-                        animator.RunAnimationOnce(@"Animations/Vel'Koz/w_cast.txt", true);
-                        await Task.Delay(1800);
-                        if (!rCastInProgress) animator.RunAnimationOnce(@"Animations/Vel'Koz/w_close.txt", false, 0.15f);
-                    });
-                    StartCooldownTimer(AbilityKey.W);
-                    SelectedAbility = AbilityKey.None;
-                }
-
-                // CODE FOR E
-                if (SelectedAbility == AbilityKey.E)
-                {
-                    Task.Run(async () =>
-                    {
-                        await Task.Delay(1000);
-                        if (!rCastInProgress) _ = animator.ColorBurst(HSVColor.FromRGB(229, 115, 255), 0.15f);
-                    });
-                    StartCooldownTimer(AbilityKey.E);
-                    SelectedAbility = AbilityKey.None;
-                }
-
-                // if (SelectedAbility == AbilityKey.R) { } --- Not needed for vel'koz because vel'koz ult is instant cast and doesn't need a mouse click.
+                OnCastW();
+            }
+            if (key == AbilityKey.E)
+            {
+                OnCastE();
+            }
+            if (key == AbilityKey.R)
+            {
+                OnCastR();
             }
         }
 
-        /// <summary>
-        /// Called when a key is pressed;
-        /// </summary>
-        private void OnKeyPress(object s, KeyPressEventArgs e)
+        private void OnCastQ()
         {
-            if (e.KeyChar == 'q')
+            // Here you should write code to trigger the appropiate animations to play when the user casts Q.
+            // The code will slightly change between each champion, because you might want to implement custom animation logic.
+
+            // Trigger the start animation.
+            Task.Run(async () =>
+            {
+                await Task.Delay(100);
+                if (!rCastInProgress) animator.RunAnimationOnce(@"Animations/Vel'Koz/q_start.txt", true);
+            });
+
+            // The Q cast is in progress.
+            qCastInProgress = true;
+
+            // After 1.15s, if user didn't press Q again already, the Q split animation plays.
+            Task.Run(async () =>
+            {
+                await Task.Delay(1150);
+                if (!rCastInProgress && qCastInProgress)
+                {
+                    animator.RunAnimationOnce(@"Animations/Vel'Koz/q_recast.txt");
+                }
+                qCastInProgress = false;
+            });
+        }
+
+        private void OnCastW()
+        {
+            Task.Run(async () =>
+            {
+                animator.RunAnimationOnce(@"Animations/Vel'Koz/w_cast.txt", true);
+                await Task.Delay(1800);
+                if (!rCastInProgress) animator.RunAnimationOnce(@"Animations/Vel'Koz/w_close.txt", false, 0.15f);
+            });
+        }
+
+        private void OnCastE()
+        {
+            Task.Run(async () =>
+            {
+                await Task.Delay(1000);
+                if (!rCastInProgress) _ = animator.ColorBurst(HSVColor.FromRGB(229, 115, 255), 0.15f);
+            });
+        }
+
+        private void OnCastR()
+        {
+            animator.StopCurrentAnimation();
+            animator.RunAnimationInLoop(@"Animations/Vel'Koz/r_loop.txt", 2300, 0.15f);
+            rCastInProgress = true;
+            Task.Run(async () =>
+            {
+                await Task.Delay(2300);
+                if (rCastInProgress)
+                {
+                    rCastInProgress = false;
+                }
+            });
+        }
+
+
+        /// <summary>
+        /// Called when an ability is casted again (few champions have abilities that can be recast, only those with special abilities such as Vel'Koz or Zoes Q)
+        /// </summary>
+        private void OnAbilityRecast(object s, AbilityKey key)
+        {
+            // Add any abilities that need special logic when they are recasted.
+
+            if (key == AbilityKey.Q)
             {
                 if (qCastInProgress)
                 {
                     qCastInProgress = false;
-                    if(!rCastInProgress) animator.RunAnimationOnce(@"Animations/Vel'Koz/q_recast.txt");
-                    StartCooldownTimer(AbilityKey.Q);
+                    if (!rCastInProgress) animator.RunAnimationOnce(@"Animations/Vel'Koz/q_recast.txt");
                 }
-                else if (CanCastAbility(AbilityKey.Q))
-                {
-                    SelectedAbility = AbilityKey.Q;
-                }
-                   
             }
-            if (e.KeyChar == 'w')
+
+            if (key == AbilityKey.R)
             {
-                if (CanCastAbility(AbilityKey.W))
-                    SelectedAbility = AbilityKey.W;
-            }
-            if (e.KeyChar == 'e')
-            {
-                if (CanCastAbility(AbilityKey.E))
-                    SelectedAbility = AbilityKey.E;
-            }
-            if (e.KeyChar == 'r')
-            {
-                if (rCastInProgress)
-                {
-                    animator.StopCurrentAnimation();
-                    rCastInProgress = false;
-                    StartCooldownTimer(AbilityKey.R);
-                } else
-                {
-                    if (CanCastAbility(AbilityKey.R))
-                    {
-                        animator.StopCurrentAnimation();
-                        animator.RunAnimationInLoop(@"Animations/Vel'Koz/r_loop.txt", 2300, 0.15f);
-                        rCastInProgress = true;
-                        Task.Run(async () =>
-                        {
-                            await Task.Delay(2300);
-                            if(rCastInProgress)
-                            {
-                                StartCooldownTimer(AbilityKey.R);
-                                rCastInProgress = false;
-                            }
-                        });
-                    }
-                }     
-            }
-            if (e.KeyChar == 'f') // TODO: Refactor this into LeagueOfLegendsModule, or a new SummonerSpells module. Also take cooldown into consideration.
-            {
-                animator.ColorBurst(HSVColor.FromRGB(255, 237, 41), 0.1f);
+                animator.StopCurrentAnimation();
+                rCastInProgress = false;
             }
         }
     }
