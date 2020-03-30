@@ -94,7 +94,7 @@ namespace LedDashboard
                 throw new ArgumentException("Invalid lighting mode");
             }
             
-            keyboardFrame.Update();            
+            keyboardFrame.Update();
         }
 
         bool enabled = true;

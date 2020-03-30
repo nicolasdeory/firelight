@@ -14,12 +14,12 @@ namespace LedDashboard
         private Led[] leds;
         private int ledCount;
 
-        public delegate void UpdateDisplayHandler(Led[] leds);
+        public delegate void UpdateDisplayHandler(Led[] leds, LightingMode mode);
 
         /// <summary>
         /// Raised when the LED display is updated.
         /// </summary>
-        public event UpdateDisplayHandler UpdateDisplay;
+        public event UpdateDisplayHandler DisplayUpdated;
 
         bool reverseOrder;
         LightController lightController;
@@ -121,7 +121,7 @@ namespace LedDashboard
         public void UpdateLEDDisplay(object s, Led[] ls, LightingMode mode)
         {
             this.leds = ls;
-            UpdateDisplay?.Invoke(this.leds);
+            DisplayUpdated?.Invoke(this.leds, mode);
             SendData(mode);
         }
 

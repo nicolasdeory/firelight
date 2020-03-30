@@ -64,11 +64,15 @@
   <ItemGroup>
     <None Include="App.config" />
     <None Include="packages.config" />
+    <Content Include="Resources\keyboardLayout.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AudioEngine.cs" />
     <Compile Include="Gradient.cs" />
     <Compile Include="HSVColor.cs" />
+    <Compile Include="KeyboardKey.cs" />
     <Compile Include="Led.cs" />
     <Compile Include="LedManager.cs" />
     <Compile Include="LEDModule.cs" />
