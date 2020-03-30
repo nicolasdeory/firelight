@@ -13,7 +13,7 @@ namespace LedDashboard
     public interface LEDModule : IDisposable
     { 
 
-        public delegate void FrameReadyHandler(object s, Led[] ls);
+        public delegate void FrameReadyHandler(object s, Led[] ls, LightingMode mode);
         /// <summary>
         /// Raised when a new frame is ready to be processed and sent to the LED strip.
         /// </summary>

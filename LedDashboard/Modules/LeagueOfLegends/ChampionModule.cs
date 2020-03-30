@@ -39,7 +39,7 @@ namespace LedDashboard.Modules.LeagueOfLegends
         public string Name;
         protected ChampionAttributes ChampionInfo;
         protected ActivePlayer PlayerInfo;
-
+        protected LightingMode LightingMode; // Preferred lighting mode. If set to keyboard, it should try to provide animations that look cooler on keyboards.
         /// <summary>
         /// Dictionary that keeps track of which abilities are currently on cooldown. 
         /// </summary>
@@ -52,10 +52,11 @@ namespace LedDashboard.Modules.LeagueOfLegends
             [AbilityKey.Passive] = false
         };
 
-        protected ChampionModule(string champName, ActivePlayer playerInfo)
+        protected ChampionModule(string champName, ActivePlayer playerInfo, LightingMode preferredLightingMode)
         {
             Name = champName;
             PlayerInfo = playerInfo;
+            LightingMode = preferredLightingMode;
             LoadChampionInformation(champName);
         }
 
@@ -104,9 +105,9 @@ namespace LedDashboard.Modules.LeagueOfLegends
         /// <summary>
         /// Dispatches a frame with the given LED data, raising the NewFrameReady event.
         /// </summary>
-        protected void DispatchNewFrame(Led[] ls)
+        protected void DispatchNewFrame(Led[] ls, LightingMode mode)
         {
-            NewFrameReady?.Invoke(this, ls);
+            NewFrameReady?.Invoke(this, ls, mode);
         }
 
         /// <summary>

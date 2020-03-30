@@ -50,7 +50,7 @@ namespace LedDashboard.Modules.BlinkWhite
                     }
                     on = true;
                 }
-                NewFrameReady.Invoke(this, this.leds);
+                NewFrameReady.Invoke(this, this.leds, LightingMode.Line);
                 await Task.Delay(intervalMS);
             }
         }

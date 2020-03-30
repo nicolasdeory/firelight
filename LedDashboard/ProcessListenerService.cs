@@ -54,6 +54,11 @@ namespace LedDashboard
             });
         }
 
+        public static void Restart()
+        {
+            currentOpenedProcess = "";
+        }
+
         public static void Register(string name)
         {
             listenedProcesses.Add(name);

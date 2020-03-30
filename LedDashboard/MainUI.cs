@@ -53,7 +53,7 @@ namespace LedDashboard
 
             Gradient.GeneratePalettes();
 
-            ledManager = new LedManager(170, true);
+            ledManager = new LedManager();
             ledManager.UpdateDisplay += UpdateUI;
 
         }
@@ -89,7 +89,7 @@ namespace LedDashboard
 
         public void UseLEDStripClicked(object s, EventArgs e)
         {
-            ledManager.SetController(LightControllerType.LED_Strip);
+            ledManager.SetController(LightControllerType.LED_Strip, 170, true); // This is for my LED strip atm (170 leds, in reverse order)
             chromabtn.Enabled = true;
             ledstripbtn.Enabled = false;
         }

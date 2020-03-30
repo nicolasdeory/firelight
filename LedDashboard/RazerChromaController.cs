@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using static RazerChroma.Net.Keyboard.Definitions;
 
 namespace LedDashboard
 {
@@ -79,24 +80,17 @@ namespace LedDashboard
                 keyboardFrame.SetKeys(points, Color.FromArgb(colorArray[0], colorArray[1], colorArray[2]));
             } else if (mode == LightingMode.Keyboard)
             {
-                for (int i = 0; i < 6; i++)
+                for(int i = 0; i < 88;i++)
                 {
-                    for (int j = 0; j < 21; j++)
-                    {
-                        int baseIndex = i * 21 + j;
-                        Color c = Color.FromArgb(colorArray[baseIndex * 3], colorArray[baseIndex * 3 + 1], colorArray[baseIndex * 3 + 2]);
-                        points.Clear();
-                        points.Add(new Point(j, i));
-                        keyboardFrame.SetKeys(points, c);
-                    }
+                    Color c = Color.FromArgb(colorArray[i * 3], colorArray[i * 3 + 1], colorArray[i * 3 + 2]);
+                    keyboardFrame.SetKey(indexKeyMap[i], c);
                 }
             } else
             {
                 throw new ArgumentException("Invalid lighting mode");
             }
             
-            keyboardFrame.Update();
-            
+            keyboardFrame.Update();            
         }
 
         bool enabled = true;
@@ -126,5 +120,54 @@ namespace LedDashboard
         {
             return enabled;
         }
+
+        static RzKey[] indexKeyMap = new RzKey[] // TODO work with numpads!!
+        {
+            RzKey.Esc,
+            RzKey.F1,RzKey.F2,RzKey.F3,RzKey.F4,RzKey.F5,RzKey.F6,RzKey.F7,RzKey.F8,RzKey.F9,RzKey.F10,RzKey.F11,RzKey.F12,
+            RzKey.Printscreen,
+            RzKey.Scroll,
+            RzKey.Pause,
+            RzKey.Oem_1, // º spain
+            RzKey.Num1,RzKey.Num2,RzKey.Num3,RzKey.Num4,RzKey.Num5,RzKey.Num6,RzKey.Num7,RzKey.Num8,RzKey.Num9,RzKey.Num0,
+            RzKey.Oem_2,
+            RzKey.Oem_3,
+            RzKey.Backspace,
+            RzKey.Insert,
+            RzKey.Home,
+            RzKey.Pageup,
+            RzKey.Tab,
+            RzKey.Q,RzKey.W,RzKey.E,RzKey.R,RzKey.T,RzKey.Y,RzKey.U,RzKey.I,RzKey.O,RzKey.P,
+            RzKey.Oem_4,
+            RzKey.Oem_5,
+            RzKey.Enter,
+            RzKey.Delete,
+            RzKey.End,
+            RzKey.Pagedown,
+            RzKey.Capslock,
+            RzKey.A,RzKey.S,RzKey.D,RzKey.F,RzKey.G,RzKey.H,RzKey.J,RzKey.K,RzKey.L,
+            RzKey.Oem_7,
+            RzKey.Oem_8,
+            RzKey.Oem_6,
+            RzKey.Lshift,
+            RzKey.Eur_2, // << >> in spanish layout?
+            RzKey.Z,RzKey.X,RzKey.C,RzKey.V,RzKey.B,RzKey.N,RzKey.M,
+            RzKey.Oem_9,
+            RzKey.Oem_10,
+            RzKey.Oem_11,
+            RzKey.Rshift,
+            RzKey.Up,
+            RzKey.Lctrl,
+            RzKey.Lwin,
+            RzKey.Lalt,
+            RzKey.Space,
+            RzKey.Ralt,
+            RzKey.Fn,
+            RzKey.Rmenu,
+            RzKey.Rctrl,
+            RzKey.Left,
+            RzKey.Down,
+            RzKey.Right
+        };
     }
 }

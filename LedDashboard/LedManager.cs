@@ -47,39 +47,48 @@ namespace LedDashboard
 
         bool enabled = true;
 
-        /// <param name="ledCount">Number of lights in the LED strip</param>
-        /// <param name="reverseOrder">Set to true if you want the lights to be reverse in order (i.e. Color for LED 0 will be applied to the last LED in the strip)</param>
-        public LedManager(int ledCount, bool reverseOrder)
+        LightingMode preferredMode;
+
+        
+        /// <summary>
+        /// Starts the LED Manager in keyboard mode by default. Use <seealso cref="SetController"/> to further customize settings, especially for LED strips
+        /// </summary>
+        public LedManager() // by default starts in keyboard mode
         {
-            this.ledCount = ledCount;
+            
             lightController = RazerChromaController.Create();
 
-            this.leds = new Led[ledCount];
-            for (int i = 0; i < this.leds.Length; i++)
-            {
-                this.leds[i] = new Led();
-            }
-            this.reverseOrder = reverseOrder;
+            InitLeds(LightingMode.Keyboard);
 
-            /*LEDModule lolModule = LeagueOfLegendsModule.Create(ledCount);
-            lolModule.NewFrameReady += UpdateLEDDisplay;*/
-            /*LEDModule blinkModule = BlinkWhiteModule.Create(leds.Length);
-            blinkModule.NewFrameReady += UpdateLEDDisplay;*/
             KeyboardHookService.Init();
 
             ProcessListenerService.ProcessInFocusChanged += OnProcessChanged;
             ProcessListenerService.Start();
             ProcessListenerService.Register("League of Legends"); // Listen when league of legends is opened
 
-            UpdateLEDDisplay(this, this.leds);
+            UpdateLEDDisplay(this, this.leds, preferredMode);
 
+        }
+
+        /// <param name="ledCount">Number of lights in the LED strip</param>
+        /// <param name="reverseOrder">Set to true if you want the lights to be reverse in order (i.e. Color for LED 0 will be applied to the last LED in the strip)</param>
+        private void InitLeds(LightingMode preferredMode, int ledCount = 0, bool reverseOrder = false)
+        {
+            this.preferredMode = preferredMode;
+            this.ledCount = preferredMode == LightingMode.Keyboard ? 88 : ledCount;
+            this.leds = new Led[this.ledCount];
+            for (int i = 0; i < this.leds.Length; i++)
+            {
+                this.leds[i] = new Led();
+            }
+            this.reverseOrder = reverseOrder;
         }
 
         private void OnProcessChanged(string name)
         {
             if (name == "League of Legends" && !(CurrentLEDModule is LeagueOfLegendsModule)) // TODO: Account for client disconnections
             {
-                LEDModule lolModule = LeagueOfLegendsModule.Create(LightingMode.Line, ledCount);
+                LEDModule lolModule = LeagueOfLegendsModule.Create(preferredMode, ledCount);
                 lolModule.NewFrameReady += UpdateLEDDisplay;
                 CurrentLEDModule = lolModule;
             } else if (name == "")
@@ -109,11 +118,11 @@ namespace LedDashboard
         /// </summary>
         /// <param name="s">Module that sent the update command</param>
         /// <param name="ls">Array containing values for each LED in the strip</param>
-        public void UpdateLEDDisplay(object s, Led[] ls)
+        public void UpdateLEDDisplay(object s, Led[] ls, LightingMode mode)
         {
             this.leds = ls;
             UpdateDisplay?.Invoke(this.leds);
-            SendData();
+            SendData(mode);
         }
 
         /// <summary>
@@ -152,27 +161,32 @@ namespace LedDashboard
         /// <summary>
         /// Sets the light controller to be used
         /// </summary>
-        public void SetController(LightControllerType type)
+        public void SetController(LightControllerType type, int ledCount = 0, bool reverseOrder = false)
         {
             ((IDisposable)lightController).Dispose();
-            bool wasEnabled = lightController.IsEnabled();
+            //bool wasEnabled = lightController.IsEnabled();
             if (type == LightControllerType.LED_Strip)
             {
                 lightController = SACNController.Create();
+                this.preferredMode = LightingMode.Line;
             } else if (type == LightControllerType.RazerChroma)
             {
                 lightController = RazerChromaController.Create();
+                this.preferredMode = LightingMode.Keyboard;
             }
-            lightController.SetEnabled(wasEnabled);
+            CurrentLEDModule = null; // restart the whole service (force module reload)
+            InitLeds(this.preferredMode,ledCount, reverseOrder);
+            ProcessListenerService.Restart();
+           // lightController.SetEnabled(wasEnabled);
         }
 
         /// <summary>
         /// Sends LED data to a wireless LED strip using the E1.31 sACN protocol.
         /// </summary>
-        public async void SendData()
+        public async void SendData(LightingMode mode)
         {
             //await SACNController.Send(this.ToByteArray(reverseOrder));
-            lightController.SendData(this.leds.Length, this.ToByteArray(), LightingMode.Line);
+            lightController.SendData(this.leds.Length, this.ToByteArray(this.reverseOrder), mode);
         }
 
     }

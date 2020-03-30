@@ -49,15 +49,25 @@ namespace LedDashboard.Modules.LeagueOfLegends
 
         public event LEDModule.FrameReadyHandler NewFrameReady;
 
+        /// <summary>
+        /// The preferred lighting mode (when possible, use this one) For example, if keyboard is preferred, 
+        /// use animations optimized for keyboards rather than for LED strips.
+        /// </summary>
         LightingMode lightingMode;
 
         /// <summary>
         /// Creates a new <see cref="LeagueOfLegendsModule"/> instance.
         /// </summary>
         /// <param name="ledCount">Number of LEDs in the strip</param>
-        public static LeagueOfLegendsModule Create(LightingMode mode, int ledCount = 0)
+        public static LeagueOfLegendsModule Create(LightingMode preferredMode, int ledCount = 0)
         {
-            return new LeagueOfLegendsModule(ledCount, mode);
+            if(preferredMode == LightingMode.Keyboard)
+            {
+                return new LeagueOfLegendsModule(88, preferredMode);
+            } else
+            {
+                return new LeagueOfLegendsModule(ledCount, preferredMode);
+            }
         }
 
         /// <summary>
@@ -69,8 +79,6 @@ namespace LedDashboard.Modules.LeagueOfLegends
         {
 
             // League of Legends integration Initialization
-            /*Process[] pname = Process.GetProcessesByName("League of Legends");
-            if (pname.Length == 0) throw new InvalidOperationException("Game client is not open.");*/
 
             // LED Initialization
             lightingMode = mode;
@@ -140,7 +148,7 @@ namespace LedDashboard.Modules.LeagueOfLegends
             // TODO: Make this easily extendable when there are many champion modules
             if (playerChampion.RawChampionName.ToLower().Contains("velkoz"))
             {
-                championModule = VelKozModule.Create(this.leds.Length, activePlayer);
+                championModule = VelKozModule.Create(this.leds.Length, activePlayer, this.lightingMode);
                 championModule.NewFrameReady += OnNewFrameReceived;
                 championModule.TriedToCastOutOfMana += OnAbilityCastNoMana;
             }
@@ -217,10 +225,10 @@ namespace LedDashboard.Modules.LeagueOfLegends
         /// </summary>
         /// <param name="s">Module that sent the message</param>
         /// <param name="data">LED data</param>
-        private void OnNewFrameReceived(object s, Led[] data)
+        private void OnNewFrameReceived(object s, Led[] data, LightingMode mode)
         {
             if (s != CurrentLEDSource) return; // If it's from a different source that what we're listening too, ignore it
-            NewFrameReady?.Invoke(this, data);
+            NewFrameReady?.Invoke(this, data, mode);
             msSinceLastExternalFrameReceived = 0;
         }
 
@@ -265,6 +273,7 @@ namespace LedDashboard.Modules.LeagueOfLegends
             }
         }
 
+        bool wasDeadLastFrame = false;
         /// <summary>
         /// Updates the health bar.
         /// </summary>
@@ -276,32 +285,82 @@ namespace LedDashboard.Modules.LeagueOfLegends
                 {
                     this.leds[i].Color(DeadColor);
                 }
+                wasDeadLastFrame = true;
             } else
             {
+                if (wasDeadLastFrame)
+                {
+                    this.leds.SetAllToBlack();
+                    wasDeadLastFrame = false;
+                }
                 float maxHealth = activePlayer.Stats.MaxHealth;
                 float currentHealth = activePlayer.Stats.CurrentHealth;
                 float healthPercentage = currentHealth / maxHealth;
-                int ledsToTurnOn = (int)(healthPercentage * leds.Length);
-                for (int i = 0; i < leds.Length; i++)
+                if (lightingMode == LightingMode.Keyboard)
                 {
-                    if (i < ledsToTurnOn)
-                        this.leds[i].MixNewColor(HealthColor, true,0.2f);
-                    else
+                    // row 1
+                    int ledsToTurnOn = (int)Utils.Scale(healthPercentage, 0, 1, 0, 13);
+                    for (int i = 0; i < 13; i++)
                     {
-                        if (this.leds[i].color.AlmostEqual(HealthColor))
-                        {
-                            this.leds[i].Color(HurtColor);
-                        }
+                        if (i < ledsToTurnOn)
+                            this.leds[i].MixNewColor(HealthColor, true, 0.2f);
                         else
                         {
-                            this.leds[i].FadeToBlackBy(0.05f);
+                            if (this.leds[i].color.AlmostEqual(HealthColor))
+                            {
+                                this.leds[i].Color(HurtColor);
+                            }
+                            else
+                            {
+                                this.leds[i].FadeToBlackBy(0.05f);
+                            }
+                        }
+
+                    }
+                    // row2
+                    ledsToTurnOn = (int)Utils.Scale(healthPercentage, 0, 1, 0, 14);
+                    for (int i = 16; i < 30; i++)
+                    {
+                        if (i-16 < ledsToTurnOn)
+                            this.leds[i].MixNewColor(HealthColor, true, 0.2f);
+                        else
+                        {
+                            if (this.leds[i].color.AlmostEqual(HealthColor))
+                            {
+                                this.leds[i].Color(HurtColor);
+                            }
+                            else
+                            {
+                                this.leds[i].FadeToBlackBy(0.05f);
+                            }
                         }
                     }
+                    NewFrameReady?.Invoke(this, this.leds, LightingMode.Keyboard);
+                } else
+                {
+                    int ledsToTurnOn = (int)(healthPercentage * leds.Length);
+                    for (int i = 0; i < leds.Length; i++)
+                    {
+                        if (i < ledsToTurnOn)
+                            this.leds[i].MixNewColor(HealthColor, true, 0.2f);
+                        else
+                        {
+                            if (this.leds[i].color.AlmostEqual(HealthColor))
+                            {
+                                this.leds[i].Color(HurtColor);
+                            }
+                            else
+                            {
+                                this.leds[i].FadeToBlackBy(0.05f);
+                            }
+                        }
 
+                    }
+                    NewFrameReady?.Invoke(this, this.leds, LightingMode.Line);
                 }
+                
             }
             
-            NewFrameReady?.Invoke(this,this.leds);
         }
 
         /// <summary>
