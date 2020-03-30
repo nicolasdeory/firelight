@@ -297,7 +297,7 @@ namespace LedDashboard.Modules.LeagueOfLegends
                     this.leds[i].Color(DeadColor);
                 }
                 wasDeadLastFrame = true;
-                NewFrameReady?.Invoke(this, this.leds, LightingMode.Keyboard);
+                NewFrameReady?.Invoke(this, this.leds, LightingMode.Line);
             } else
             {
                 if (wasDeadLastFrame)

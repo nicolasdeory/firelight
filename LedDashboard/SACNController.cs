@@ -37,7 +37,7 @@ namespace LedDashboard
             }
             if (mode == LightingMode.Keyboard)
             {
-                throw new NotImplementedException();
+                throw new NotImplementedException(); // TODO: Implement led strip support for keyboard animations
             }
             else
             {
