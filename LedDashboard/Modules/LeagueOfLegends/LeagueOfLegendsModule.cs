@@ -162,6 +162,11 @@ namespace LedDashboard.Modules.LeagueOfLegends
                 championModule = VelKozModule.Create(this.leds.Length, this.activePlayer, this.lightingMode, this.preferredCastMode);
                 championModule.NewFrameReady += OnNewFrameReceived;
                 championModule.TriedToCastOutOfMana += OnAbilityCastNoMana;
+            } else if (playerChampion.RawChampionName.ToLower().Contains("ahri"))
+            {
+                championModule = AhriModule.Create(this.leds.Length, this.activePlayer, this.lightingMode, this.preferredCastMode);
+                championModule.NewFrameReady += OnNewFrameReceived;
+                championModule.TriedToCastOutOfMana += OnAbilityCastNoMana;
             }
             CurrentLEDSource = championModule;
 
@@ -288,7 +293,7 @@ namespace LedDashboard.Modules.LeagueOfLegends
         /// <summary>
         /// Updates the health bar.
         /// </summary>
-        private void UpdateHealthBar()
+        private void UpdateHealthBar() // TODO: If trinket is not on cooldown, turn on right side of keyboard to notify
         {
             if (playerChampion.IsDead)
             {

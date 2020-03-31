@@ -16,23 +16,27 @@ namespace LedDashboard.Modules.LeagueOfLegends.ChampionModules.Common
         public bool HasRecast { get; private set; }
         public int RecastTime { get; private set; }
 
-        public static AbilityCastMode Normal(int recastTime = -1)
+        public int MaxRecasts { get; private set; }
+
+        public static AbilityCastMode Normal(int recastTime = -1, int maxCasts = 1)
         {
             return new AbilityCastMode()
             {
                 IsNormal = true,
                 HasRecast = recastTime > 0,
-                RecastTime = recastTime
+                RecastTime = recastTime,
+                MaxRecasts = maxCasts
             };
         }
 
-        public static AbilityCastMode Instant(int recastTime = -1)
+        public static AbilityCastMode Instant(int recastTime = -1, int maxRecasts = 1)
         {
             return new AbilityCastMode()
             {
                 IsInstant = true,
                 HasRecast = recastTime > 0,
-                RecastTime = recastTime
+                RecastTime = recastTime,
+                MaxRecasts = maxRecasts
             };
         }
     }

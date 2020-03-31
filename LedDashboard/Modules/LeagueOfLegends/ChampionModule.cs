@@ -68,13 +68,13 @@ namespace LedDashboard.Modules.LeagueOfLegends
         /// <summary>
         /// Dictionary that keeps track of which abilities can currently be RE-CAST (eg. Zoe or Vel'Kozs Q)
         /// </summary>
-        protected Dictionary<AbilityKey, bool> AbilitiesOnRecast = new Dictionary<AbilityKey, bool>()
+        protected Dictionary<AbilityKey, int> AbilitiesOnRecast = new Dictionary<AbilityKey, int>()
         {
-            [AbilityKey.Q] = false,
-            [AbilityKey.W] = false,
-            [AbilityKey.E] = false,
-            [AbilityKey.R] = false,
-            [AbilityKey.Passive] = false
+            [AbilityKey.Q] = 0,
+            [AbilityKey.W] = 0,
+            [AbilityKey.E] = 0,
+            [AbilityKey.R] = 0,
+            [AbilityKey.Passive] = 0
         };
 
         // TODO: Handle champions with cooldown resets?
@@ -220,12 +220,11 @@ namespace LedDashboard.Modules.LeagueOfLegends
 
         private void DoCastLogicForAbility(AbilityKey key, bool keyUp)
         {
-            Console.WriteLine("doing cast logic");
             if (keyUp && SelectedAbility != key) return; // keyUp event shouldn't trigger anything if the ability is not selected.
 
             AbilityCastMode castMode = AbilityCastModes[key];
 
-            if (castMode.HasRecast && AbilitiesOnRecast[key])
+            if (castMode.HasRecast && AbilitiesOnRecast[key] > 0)
             {
                 if (CanCastAbility(key)) // We must check if CanCastAbility is true. Players can't recast abilities if they're dead or in zhonyas.
                 {
@@ -302,8 +301,8 @@ namespace LedDashboard.Modules.LeagueOfLegends
         private void RecastAbility(AbilityKey key)
         {
             AbilityRecast?.Invoke(this, key);
-            AbilitiesOnRecast[key] = false;
-            StartCooldownTimer(key);
+            AbilitiesOnRecast[key]--;
+            if (AbilitiesOnRecast[key] == 0) StartCooldownTimer(key);
         }
 
         /// <summary>
@@ -368,11 +367,11 @@ namespace LedDashboard.Modules.LeagueOfLegends
         {
             Task.Run(async () =>
             {
-                AbilitiesOnRecast[ability] = true;
+                AbilitiesOnRecast[ability] = AbilityCastModes[ability].MaxRecasts;
                 await Task.Delay(AbilityCastModes[ability].RecastTime);
-                if (AbilitiesOnRecast[ability]) // if user hasn't recast yet
+                if (AbilitiesOnRecast[ability] > 0) // if user hasn't recast yet
                 {
-                    AbilitiesOnRecast[ability] = false;
+                    AbilitiesOnRecast[ability] = 0;
                     StartCooldownTimer(ability);
                 }
             });

@@ -13,7 +13,7 @@ namespace LedDashboard.Modules.BasicAnimation
     {
         public event LEDModule.FrameReadyHandler NewFrameReady;
 
-        Dictionary<string,Animation> LoadedAnimations = new Dictionary<string, Animation>();
+        Dictionary<string, Animation> LoadedAnimations = new Dictionary<string, Animation>();
         Led[] leds;
 
         CancellationTokenSource currentlyRunningAnim = new CancellationTokenSource();
@@ -66,8 +66,9 @@ namespace LedDashboard.Modules.BasicAnimation
                 {
                     if (fadeOutAfterRate > 0)
                     {
-                        await FadeOutToBlack(fadeOutAfterRate, currentlyRunningAnim.Token);
-                    } else
+                        await FadeOutToBlack(fadeOutAfterRate, currentlyRunningAnim.Token, anim.AnimationMode);
+                    }
+                    else
                     {
                         this.leds.SetAllToBlack();
                         NewFrameReady.Invoke(this, this.leds, LightingMode.Line);
@@ -94,7 +95,7 @@ namespace LedDashboard.Modules.BasicAnimation
 
                 if (fadeOutAfterRate > 0)
                 {
-                    await FadeOutToBlack(fadeOutAfterRate, currentlyRunningAnim.Token);
+                    await FadeOutToBlack(fadeOutAfterRate, currentlyRunningAnim.Token, anim.AnimationMode);
                 }
                 else
                 {
@@ -106,7 +107,7 @@ namespace LedDashboard.Modules.BasicAnimation
 
 
         }
-        
+
         /// <summary>
         /// Cancels the currently running animation and sets the LEDs to black.
         /// </summary>
@@ -123,7 +124,7 @@ namespace LedDashboard.Modules.BasicAnimation
                     await Task.Delay(50);
                     NewFrameReady.Invoke(this, this.leds, LightingMode.Line);
                 });
-                
+
                 //isAnimationRunning = false;
             }
         }
@@ -158,19 +159,21 @@ namespace LedDashboard.Modules.BasicAnimation
                 {
                     if (destinationColor.Equals(HSVColor.Black))
                     {
-                        await FadeOutToBlack(fadeoutRate, currentlyRunningAnim.Token);
-                    } else
+                        await FadeOutToBlack(fadeoutRate, currentlyRunningAnim.Token, LightingMode.Line);
+                    }
+                    else
                     {
                         await FadeOutToColor(fadeoutRate, destinationColor, currentlyRunningAnim.Token);
                     }
-                    
+
                 }
                 else
                 {
                     if (!destinationColor.Equals(HSVColor.Black))
                     {
                         this.leds.SetAllToColor(destinationColor);
-                    } else
+                    }
+                    else
                     {
                         this.leds.SetAllToBlack();
                     }
@@ -194,33 +197,47 @@ namespace LedDashboard.Modules.BasicAnimation
         private async Task PlayOnce(Animation anim, CancellationToken cancelToken)
         {
 
-                int i = 0;
-                while (true)
+            int i = 0;
+            this.leds = anim.AnimationMode == LightingMode.Keyboard ? new Led[88] : new Led[anim.FrameLength];
+            if (anim.AnimationMode == LightingMode.Keyboard)
+            {
+                for(int j = 0; j < 88; j++)
                 {
-                    for (int j = 0; j < leds.Length; j++)
-                    {
-                        if (leds.Length == anim.FrameLength)
-                        {
-                            leds[j].Color(anim[i][j]);
-                        }
-                        else
-                        {
-                            // Scaling animation to fit led count
-                            leds[j].Color(HSVColor.Black);
-                            int index = (int)Utils.Scale(j, 0, leds.Length, 0, anim.FrameLength);
-                            leds.AddColorToLedsAround(j, anim[i][index], 5);
-
-                        }
-                    }
-                    i++;
-                    if (cancelToken.IsCancellationRequested) throw new TaskCanceledException();
-                    NewFrameReady.Invoke(this, this.leds, LightingMode.Line);
-                    await Task.Delay(30);
-                    if (i == anim.FrameCount) break;
+                    this.leds[j] = new Led();
                 }
-                //currentlyRunningAnim = null;
-
+            } else
+            {
+                for (int j = 0; j < anim.FrameLength; j++)
+                {
+                    this.leds[j] = new Led();
+                }
+            }
             
+            while (true)
+            {
+                for (int j = 0; j < this.leds.Length; j++)
+                {
+                    if (this.leds.Length == anim.FrameLength)
+                    {
+                        this.leds[j].Color(anim[i][j]);
+                    }
+                    else
+                    {
+                        // Scaling animation to fit led count
+                        this.leds[j].Color(HSVColor.Black);
+                        int index = (int)Utils.Scale(j, 0, this.leds.Length, 0, anim.FrameLength);
+                        this.leds.AddColorToLedsAround(j, anim[i][index], 5);
+
+                    }
+                }
+                i++;
+                if (cancelToken.IsCancellationRequested) throw new TaskCanceledException();
+                NewFrameReady.Invoke(this, this.leds, anim.AnimationMode);
+                await Task.Delay(30);
+                if (i == anim.FrameCount) break;
+            }
+            //currentlyRunningAnim = null;
+
         }
 
         /// <summary>
@@ -229,45 +246,66 @@ namespace LedDashboard.Modules.BasicAnimation
         private async Task PlayLoop(Animation anim, CancellationToken cancelToken, int durationMs = 1000)
         {
 
-                int i = 0;
-                int msCounter = 0;
-                while (true)
+            int i = 0;
+            int msCounter = 0;
+            this.leds = anim.AnimationMode == LightingMode.Keyboard ? new Led[88] : new Led[anim.FrameLength];
+            if (anim.AnimationMode == LightingMode.Keyboard)
+            {
+                for (int j = 0; j < 88; j++)
                 {
-                    for (int j = 0; j < leds.Length; j++)
-                    {
-                        if (leds.Length == anim.FrameLength)
-                        {
-                            leds[j].Color(anim[i][j]);
-                        }
-                        else
-                        {
-                            // Scaling animation to fit led count
-                            leds[j].Color(HSVColor.Black);
-                            int index = (int)Utils.Scale(j, 0, leds.Length, 0, anim.FrameLength);
-                            leds.AddColorToLedsAround(j, anim[i][index], 5);
-
-                        }
-                    }
-                    i = (i + 1) % anim.FrameCount;
-                    if (cancelToken.IsCancellationRequested) throw new TaskCanceledException();
-                    NewFrameReady.Invoke(this, this.leds, LightingMode.Line);
-                    await Task.Delay(30);
-                    msCounter += 30;
-                    if (msCounter >= durationMs) break;
+                    this.leds[j] = new Led();
                 }
-                //currentlyRunningAnim = null;            
+            }
+            else
+            {
+                for (int j = 0; j < anim.FrameLength; j++)
+                {
+                    this.leds[j] = new Led();
+                }
+            }
+            while (true)
+            {
+                for (int j = 0; j < this.leds.Length; j++)
+                {
+                    if (this.leds.Length == anim.FrameLength)
+                    {
+                        this.leds[j].Color(anim[i][j]);
+                    }
+                    else
+                    {
+                        // Scaling animation to fit led count
+                        this.leds[j].Color(HSVColor.Black);
+                        int index = (int)Utils.Scale(j, 0, this.leds.Length, 0, anim.FrameLength);
+                        this.leds.AddColorToLedsAround(j, anim[i][index], 5);
+
+                    }
+                }
+                i = (i + 1) % anim.FrameCount;
+                if (cancelToken.IsCancellationRequested) throw new TaskCanceledException();
+                NewFrameReady.Invoke(this, this.leds, anim.AnimationMode);
+                await Task.Delay(30);
+                msCounter += 30;
+                if (msCounter >= durationMs) break;
+            }
+            //currentlyRunningAnim = null;            
         }
 
 
-        private async Task FadeOutToBlack(float rate, CancellationToken cancelToken)
+        private async Task FadeOutToBlack(float rate, CancellationToken cancelToken, LightingMode mode)
         {
             int msCounter = 0;
             int fadeoutTime = (int)(GetFadeToBlackTime(rate) * 1000);
-            while(msCounter < fadeoutTime) // TODO: calculate animation duration (rn its 1s) 
+            while (msCounter < fadeoutTime)
             {
                 this.leds.FadeToBlackAllLeds(rate);
-                if (cancelToken.IsCancellationRequested) throw new TaskCanceledException();
-                NewFrameReady.Invoke(this, this.leds, LightingMode.Line);
+                if (cancelToken.IsCancellationRequested)
+                {
+                    this.leds.SetAllToBlack();
+                    NewFrameReady.Invoke(this, this.leds, mode);
+                    throw new TaskCanceledException();
+                }
+                
+                NewFrameReady.Invoke(this, this.leds, mode);
                 await Task.Delay(30);
                 msCounter += 30;
             }
@@ -275,13 +313,13 @@ namespace LedDashboard.Modules.BasicAnimation
 
         }
 
-        private async Task FadeOutToColor(float rate, HSVColor color, CancellationToken cancelToken) 
+        private async Task FadeOutToColor(float rate, HSVColor color, CancellationToken cancelToken)
         {
             int msCounter = 0;
             int fadeoutTime = (int)(GetFadeToBlackTime(rate) * 1000);
             while (msCounter < fadeoutTime) // TODO: calculate animation duration (rn its 1s) 
             {
-                this.leds.FadeToColorAllLeds(color,rate);
+                this.leds.FadeToColorAllLeds(color, rate);
                 if (cancelToken.IsCancellationRequested) throw new TaskCanceledException();
                 NewFrameReady.Invoke(this, this.leds, LightingMode.Line);
                 await Task.Delay(30);
@@ -296,7 +334,7 @@ namespace LedDashboard.Modules.BasicAnimation
             int msCounter = 0;
             while ((duration >= 0 && msCounter < duration) || duration < 0)
             {
-                float sin = (float)Math.Sin((msCounter/1000f) * rate);
+                float sin = (float)Math.Sin((msCounter / 1000f) * rate);
                 this.leds.SetAllToColor(HSVColor.Lerp(col1, col2, sin));
                 if (cancelToken.IsCancellationRequested) throw new TaskCanceledException();
                 NewFrameReady.Invoke(this, this.leds, LightingMode.Line);
@@ -312,7 +350,7 @@ namespace LedDashboard.Modules.BasicAnimation
         /// <param name="ms">MS per frame</param>
         private float GetFadeToBlackTime(float rate, int ms = 30)
         {
-            return (4 / rate) * ((float)ms/1000); // 4 is a constant which is approximately ln(0.01). A formula to determine the approximate fadeout time.
+            return (4 / rate) * ((float)ms / 1000); // 4 is a constant which is approximately ln(0.01). A formula to determine the approximate fadeout time.
 
         }
 

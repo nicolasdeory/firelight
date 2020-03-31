@@ -64,6 +64,24 @@
   <ItemGroup>
     <None Include="App.config" />
     <None Include="packages.config" />
+    <Content Include="Animations\Ahri\e_cast.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Animations\Ahri\q_end.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Animations\Ahri\q_start.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Animations\Ahri\r_right.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Animations\Ahri\r_left.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Animations\Ahri\w_cast.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="Resources\keyboardLayout.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
@@ -89,6 +107,7 @@
     <Compile Include="Modules\Common\KeyboardHookService.cs" />
     <Compile Include="Modules\FourierAudioLED\FFTUtil.cs" />
     <Compile Include="Modules\FourierAudioLED\FourierAudioLED.cs" />
+    <Compile Include="Modules\LeagueOfLegends\ChampionModules\AhriModule.cs" />
     <Compile Include="Modules\LeagueOfLegends\ChampionModules\Common\AbilityModes.cs" />
     <Compile Include="Modules\LeagueOfLegends\ChampionModules\VelKozModule.cs" />
     <Compile Include="Modules\LeagueOfLegends\ChampionModule.cs" />

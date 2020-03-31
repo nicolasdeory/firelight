@@ -78,8 +78,6 @@ namespace LedDashboard
 
             ledManager = new LedManager();
             ledManager.DisplayUpdated += UpdateUI;
-            // TODO: Add selector for League of Legends cast modes (Normal, Quick Cast, Quick Cast with Indicator)
-            ledManager.SetModuleOption("lol", "castMode", "quickindicator");
 
         }
 
