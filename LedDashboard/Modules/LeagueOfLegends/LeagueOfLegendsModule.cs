@@ -352,6 +352,24 @@ namespace LedDashboard.Modules.LeagueOfLegends
                             }
                         }
                     }
+                    // row3
+                    ledsToTurnOn = Math.Max((int)Utils.Scale(healthPercentage, 0, 1, 0, 14), 1);
+                    for (int i = 33; i < 46; i++)
+                    {
+                        if (i - 33 < ledsToTurnOn)
+                            this.leds[i].MixNewColor(HealthColor, true, 0.2f);
+                        else
+                        {
+                            if (this.leds[i].color.AlmostEqual(HealthColor))
+                            {
+                                this.leds[i].Color(HurtColor);
+                            }
+                            else
+                            {
+                                this.leds[i].FadeToBlackBy(0.05f);
+                            }
+                        }
+                    }
                     NewFrameReady?.Invoke(this, this.leds, LightingMode.Keyboard);
                 } else
                 {
