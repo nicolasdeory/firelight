@@ -20,10 +20,7 @@ namespace LedDashboard
 
         public static double Scale(double value, double leftMin, double leftMax, double rightMin, double rightMax)
         {
-            double leftSpan = leftMax - leftMin;
-            double rightSpan = rightMax - rightMin;
-            double valueScaled = Clamp((value - leftMin) / leftSpan, rightMin, rightMax);
-            return rightMin + (valueScaled * rightSpan);
+            return (value - leftMin) / (leftMax - leftMin) * (rightMax - rightMin) + rightMin;
         }
 
         public static double Clamp(double val, double min, double max)

@@ -127,6 +127,7 @@ namespace LedDashboard.Modules.LeagueOfLegends.ChampionModules
         {
             Task.Run(async () =>
             {
+                await Task.Delay(100);
                 animator.RunAnimationOnce(@"Animations/Ahri/e_cast.txt");
             });
         }

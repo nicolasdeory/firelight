@@ -7,6 +7,8 @@ using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Drawing;
+using System.Linq;
 using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
@@ -315,60 +317,41 @@ namespace LedDashboard.Modules.LeagueOfLegends
                 float healthPercentage = currentHealth / maxHealth;
                 if (lightingMode == LightingMode.Keyboard)
                 {
-                    // row 1
-                    int ledsToTurnOn = Math.Max((int)Utils.Scale(healthPercentage, 0, 1, 0, 13),1); // at least one led active when player is alive
-                    for (int i = 0; i < 13; i++)
+                    int greenHPLeds = Math.Max((int)Utils.Scale(healthPercentage, 0, 1, 0, 16),1); // at least one led active when player is alive
+                    for (int i = 0; i < 16; i++)
                     {
-                        if (i < ledsToTurnOn)
-                            this.leds[i].MixNewColor(HealthColor, true, 0.2f);
+                        List<int> ledsToTurnOn;
+                        ledsToTurnOn = new List<int>() // light the whole column
+                        {
+                            KeyUtils.PointToKey(new Point(i, 0)),
+                            KeyUtils.PointToKey(new Point(i, 1)),
+                            KeyUtils.PointToKey(new Point(i, 2)),
+                            KeyUtils.PointToKey(new Point(i, 3)),
+                            KeyUtils.PointToKey(new Point(i, 4)),
+                            KeyUtils.PointToKey(new Point(i, 5))
+                        };
+                        if (i < greenHPLeds)
+                        {
+                            foreach(int idx in ledsToTurnOn.Where(x=> x != -1))
+                            {
+                                this.leds[idx].MixNewColor(HealthColor, true, 0.2f);
+                            }
+                        }
                         else
                         {
-                            if (this.leds[i].color.AlmostEqual(HealthColor))
+                            foreach (int idx in ledsToTurnOn.Where(x => x != -1))
                             {
-                                this.leds[i].Color(HurtColor);
-                            }
-                            else
-                            {
-                                this.leds[i].FadeToBlackBy(0.05f);
+                                if (this.leds[idx].color.AlmostEqual(HealthColor))
+                                {
+                                    this.leds[idx].Color(HurtColor);
+                                } else
+                                {
+                                    this.leds[idx].FadeToBlackBy(0.08f);
+                                }
+                                
                             }
                         }
 
-                    }
-                    // row2
-                    ledsToTurnOn = Math.Max((int)Utils.Scale(healthPercentage, 0, 1, 0, 14),1);
-                    for (int i = 16; i < 30; i++)
-                    {
-                        if (i-16 < ledsToTurnOn)
-                            this.leds[i].MixNewColor(HealthColor, true, 0.2f);
-                        else
-                        {
-                            if (this.leds[i].color.AlmostEqual(HealthColor))
-                            {
-                                this.leds[i].Color(HurtColor);
-                            }
-                            else
-                            {
-                                this.leds[i].FadeToBlackBy(0.05f);
-                            }
-                        }
-                    }
-                    // row3
-                    ledsToTurnOn = Math.Max((int)Utils.Scale(healthPercentage, 0, 1, 0, 14), 1);
-                    for (int i = 33; i < 46; i++)
-                    {
-                        if (i - 33 < ledsToTurnOn)
-                            this.leds[i].MixNewColor(HealthColor, true, 0.2f);
-                        else
-                        {
-                            if (this.leds[i].color.AlmostEqual(HealthColor))
-                            {
-                                this.leds[i].Color(HurtColor);
-                            }
-                            else
-                            {
-                                this.leds[i].FadeToBlackBy(0.05f);
-                            }
-                        }
                     }
                     NewFrameReady?.Invoke(this, this.leds, LightingMode.Keyboard);
                 } else

@@ -91,6 +91,7 @@
     <Compile Include="Gradient.cs" />
     <Compile Include="HSVColor.cs" />
     <Compile Include="KeyboardKey.cs" />
+    <Compile Include="KeyUtils.cs" />
     <Compile Include="Led.cs" />
     <Compile Include="LedManager.cs" />
     <Compile Include="LEDModule.cs" />
