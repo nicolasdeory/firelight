@@ -47,8 +47,9 @@ namespace LedDashboard.Modules.LeagueOfLegends
         ulong msAnimationTimerThreshold = 1500; // how long to wait for animation data until health bar kicks back in.
         double currentGameTimestamp = 0;
 
-        //CancellationTokenSource loadingAnimToken = new CancellationTokenSource();
         CancellationTokenSource masterCancelToken = new CancellationTokenSource();
+
+        string customKillAnimation = null; // can be changed by champion module
 
         // Events
 
@@ -239,6 +240,20 @@ namespace LedDashboard.Modules.LeagueOfLegends
         }
 
         /// <summary>
+        /// Sets a custom champion kill animation. If the player kills a champion within <paramref name="duration"/> ms,
+        /// this animation will play instead of the default one. Useful for garen ult or chogath, for example.
+        /// </summary>
+        /// <param name="animPath">The animation path</param>
+        public void SetCustomKillAnim(string animPath, int duration) {
+            customKillAnimation = animPath;
+            Task.Run(async () =>
+            {
+                await Task.Delay(duration);
+                customKillAnimation = null;
+            });
+        }
+
+        /// <summary>
         /// Called by a <see cref="LEDModule"/> when a new frame is available to be processed.
         /// </summary>
         /// <param name="s">Module that sent the message</param>
@@ -284,10 +299,20 @@ namespace LedDashboard.Modules.LeagueOfLegends
             if(ev.KillerName == activePlayer.SummonerName)
             {
                 CurrentLEDSource = animationModule;
-                animationModule.ColorBurst(KillColor, 0.01f, HealthColor).ContinueWith((t) =>
+                if (customKillAnimation != null)
                 {
-                    CurrentLEDSource = championModule;
-                });
+                    animationModule.RunAnimationOnce(customKillAnimation, false, 0.1f).ContinueWith((t) =>
+                      {
+                          CurrentLEDSource = championModule;
+                          customKillAnimation = null;
+                      });
+                } else
+                {
+                    animationModule.ColorBurst(KillColor, 0.01f, HealthColor).ContinueWith((t) =>
+                    {
+                        CurrentLEDSource = championModule;
+                    });
+                }   
             }
         }
 

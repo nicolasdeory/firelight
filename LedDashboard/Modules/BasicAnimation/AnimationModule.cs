@@ -53,14 +53,14 @@ namespace LedDashboard.Modules.BasicAnimation
         /// </summary>
         /// <param name="animPath">The animation path</param>
         /// <param name="keepTail">If set true, when the animation ends LEDs won't be set to black</param>
-        public void RunAnimationOnce(string animPath, bool keepTail = false, float fadeOutAfterRate = 0)
+        public Task RunAnimationOnce(string animPath, bool keepTail = false, float fadeOutAfterRate = 0)
         {
             Animation anim = LoadAnimation(animPath);
 
             if (currentlyRunningAnim != null) currentlyRunningAnim.Cancel();
             currentlyRunningAnim = new CancellationTokenSource();
             //isAnimationRunning = true;
-            Task.Run(() => PlayOnce(anim, currentlyRunningAnim.Token)).ContinueWith(async (t) =>
+            return Task.Run(() => PlayOnce(anim, currentlyRunningAnim.Token)).ContinueWith(async (t) =>
             {
                 if (!keepTail)
                 {
