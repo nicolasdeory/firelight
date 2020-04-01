@@ -64,7 +64,7 @@ namespace LedDashboard.Modules.LeagueOfLegends.ChampionModules
             animator.PreloadAnimation(ANIMATION_PATH + "Vel'Koz/q_recast.txt");
             animator.PreloadAnimation(ANIMATION_PATH + "Vel'Koz/w_cast.txt");
             animator.PreloadAnimation(ANIMATION_PATH + "Vel'Koz/w_close.txt");
-            animator.PreloadAnimation(ANIMATION_PATH + "Vel'Koz/r_cast.txt");
+            animator.PreloadAnimation(ANIMATION_PATH + "Vel'Koz/r_loop.txt");
 
 
             ChampionInfoLoaded += OnChampionInfoLoaded;
@@ -152,7 +152,7 @@ namespace LedDashboard.Modules.LeagueOfLegends.ChampionModules
         private void OnCastR()
         {
             animator.StopCurrentAnimation();
-            animator.RunAnimationInLoop(ANIMATION_PATH + "Vel'Koz/r_cast.txt", 2300, 0.15f);
+            animator.RunAnimationInLoop(ANIMATION_PATH + "Vel'Koz/r_loop.txt", 2300, 0.15f);
             rCastInProgress = true;
             Task.Run(async () =>
             {

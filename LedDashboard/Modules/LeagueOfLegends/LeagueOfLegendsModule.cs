@@ -235,13 +235,26 @@ namespace LedDashboard.Modules.LeagueOfLegends
                     if (!(ItemModules[item.Slot] is OracleLensModule))
                     {
                         ItemModules[item.Slot]?.Dispose();
-                        ItemModules[item.Slot] = OracleLensModule.Create(this.leds.Length, this.gameState, item.Slot,this.lightingMode, this.preferredCastMode);
+                        ItemModules[item.Slot] = OracleLensModule.Create(this.leds.Length, this.gameState, item.Slot, this.lightingMode, this.preferredCastMode);
                         ItemModules[item.Slot].NewFrameReady += OnNewFrameReceived;
                         ItemModules[item.Slot].ItemCast += OnItemActivated;
                     }
                     ItemModules[item.Slot].UpdateGameState(gameState);
                     gameState.PlayerItemCooldowns[item.Slot] = ItemModules[item.Slot].OnCooldown;
-                } else
+                }
+                else if (item.ItemID == 3340)
+                {
+                    if (!(ItemModules[item.Slot] is WardingTotemModule))
+                    {
+                        ItemModules[item.Slot]?.Dispose();
+                        ItemModules[item.Slot] = WardingTotemModule.Create(this.leds.Length, this.gameState, item.Slot, this.lightingMode, this.preferredCastMode);
+                        ItemModules[item.Slot].NewFrameReady += OnNewFrameReceived;
+                        ItemModules[item.Slot].ItemCast += OnItemActivated;
+                    }
+                    ItemModules[item.Slot].UpdateGameState(gameState);
+                    gameState.PlayerItemCooldowns[item.Slot] = ItemModules[item.Slot].OnCooldown;
+                }
+                else
                 {
                     ItemModules[item.Slot]?.Dispose();
                     ItemModules[item.Slot] = null;

@@ -118,6 +118,7 @@
     <Compile Include="Modules\LeagueOfLegends\HUDModules\HealthBar.cs" />
     <Compile Include="Modules\LeagueOfLegends\HUDModules\HUDModule.cs" />
     <Compile Include="Modules\LeagueOfLegends\ItemModule.cs" />
+    <Compile Include="Modules\LeagueOfLegends\ItemModules\WardingTotemModule.cs" />
     <Compile Include="Modules\LeagueOfLegends\ItemModules\OracleLensModule.cs" />
     <Compile Include="Modules\LeagueOfLegends\ItemUtils.cs" />
     <Compile Include="Modules\LeagueOfLegends\LeagueOfLegendsModule.cs" />

@@ -16,8 +16,8 @@ namespace LedDashboard.Modules.LeagueOfLegends
 
         protected AnimationModule animator; // Animator module that will be useful to display animations
 
-        public bool OnCooldown => _onCooldown;
-        private bool _onCooldown = false;
+        public bool OnCooldown => _OnCooldown;
+        private bool _OnCooldown = false;
 
         private bool itemIsSelected = false;
 
@@ -197,7 +197,7 @@ namespace LedDashboard.Modules.LeagueOfLegends
         protected bool CanActivateItem()
         {
             if (GameState.ActivePlayer.IsDead || !ItemCastMode.Castable) return false;
-            if (_onCooldown) return false;
+            if (_OnCooldown) return false;
             return true;
         }
 
@@ -208,9 +208,9 @@ namespace LedDashboard.Modules.LeagueOfLegends
         {
             Task.Run(async () =>
             {
-                _onCooldown = true;
+                _OnCooldown = true;
                 await Task.Delay(CooldownDuration - 350); // a bit less cooldown than the real one (if the user spams)
-                _onCooldown = false;
+                _OnCooldown = false;
             });
         }
 
