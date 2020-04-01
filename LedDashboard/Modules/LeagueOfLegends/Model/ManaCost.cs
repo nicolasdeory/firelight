@@ -60,6 +60,7 @@ namespace LedDashboard.Modules.LeagueOfLegends.Model
                         level4 = level;
                         break;
                     default:
+                        Console.Error.WriteLine("Invalid level set: " + level);
                         throw new ArgumentException("Invalid level set");
                 }
             }

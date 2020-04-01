@@ -9,15 +9,17 @@ using System.Windows.Forms;
 
 namespace LedDashboard.Modules.LeagueOfLegends.ChampionModules
 {
-    class VelKozModule : ChampionModule
+    class AhriModule : ChampionModule
     {
-        
+
         // Variables
-        
+
+        AnimationModule animator; // Animator module that will be useful to display animations
+
         // Champion-specific Variables
 
         bool qCastInProgress = false;
-        bool rCastInProgress = false; // this is used to make the animation for Vel'Koz's R to take preference over other animations
+        int rCastInProgress = 0; // this is used to make the animation for Vel'Koz's R to take preference over other animations
 
 
         /// <summary>
@@ -27,13 +29,13 @@ namespace LedDashboard.Modules.LeagueOfLegends.ChampionModules
         /// <param name="gameState">Game state data</param>
         /// <param name="preferredLightMode">Preferred light mode</param>
         /// <param name="preferredCastMode">Preferred ability cast mode (Normal, Quick Cast, Quick Cast with Indicator)</param>
-        public static VelKozModule Create(int ledCount, GameState gameState, LightingMode preferredLightMode, AbilityCastPreference preferredCastMode = AbilityCastPreference.Normal)
+        public static AhriModule Create(int ledCount, GameState gameState, LightingMode preferredLightMode, AbilityCastPreference preferredCastMode = AbilityCastPreference.Normal)
         {
-            return new VelKozModule(ledCount, gameState, "Velkoz", preferredLightMode, preferredCastMode);
+            return new AhriModule(ledCount, gameState, "Ahri", preferredLightMode, preferredCastMode);
         }
 
 
-        private VelKozModule(int ledCount, GameState gameState, string championName, LightingMode preferredLightMode, AbilityCastPreference preferredCastMode) 
+        private AhriModule(int ledCount, GameState gameState, string championName, LightingMode preferredLightMode, AbilityCastPreference preferredCastMode)
                             : base(championName, gameState, preferredLightMode)
         {
             // Initialization for the champion module occurs here.
@@ -49,10 +51,10 @@ namespace LedDashboard.Modules.LeagueOfLegends.ChampionModules
             // R -> Instant ability, it is cast the moment the key is pressed, but it can be recast within 2.3s
             Dictionary<AbilityKey, AbilityCastMode> abilityCastModes = new Dictionary<AbilityKey, AbilityCastMode>()
             {
-                [AbilityKey.Q] = AbilityCastMode.Normal(1150), 
-                [AbilityKey.W] = AbilityCastMode.Normal(),
+                [AbilityKey.Q] = AbilityCastMode.Normal(),
+                [AbilityKey.W] = AbilityCastMode.Instant(),
                 [AbilityKey.E] = AbilityCastMode.Normal(),
-                [AbilityKey.R] = AbilityCastMode.Instant(2300),
+                [AbilityKey.R] = AbilityCastMode.Instant(10000,2),
             };
             AbilityCastModes = abilityCastModes;
 
@@ -60,12 +62,12 @@ namespace LedDashboard.Modules.LeagueOfLegends.ChampionModules
             // has its Build Action set to "Content" and "Copy to Output Directory" is set to "Always".
 
             animator = AnimationModule.Create(ledCount);
-            animator.PreloadAnimation(ANIMATION_PATH + "Vel'Koz/q_start.txt");
-            animator.PreloadAnimation(ANIMATION_PATH + "Vel'Koz/q_recast.txt");
-            animator.PreloadAnimation(ANIMATION_PATH + "Vel'Koz/w_cast.txt");
-            animator.PreloadAnimation(ANIMATION_PATH + "Vel'Koz/w_close.txt");
-            animator.PreloadAnimation(ANIMATION_PATH + "Vel'Koz/r_loop.txt");
-
+            animator.PreloadAnimation(ANIMATION_PATH + "Ahri/q_start.txt");
+            animator.PreloadAnimation(ANIMATION_PATH + "Ahri/q_end.txt");
+            animator.PreloadAnimation(ANIMATION_PATH + "Ahri/w_cast.txt");
+            animator.PreloadAnimation(ANIMATION_PATH + "Ahri/e_cast.txt");
+            animator.PreloadAnimation(ANIMATION_PATH + "Ahri/r_right.txt");
+            animator.PreloadAnimation(ANIMATION_PATH + "Ahri/r_left.txt");
 
             ChampionInfoLoaded += OnChampionInfoLoaded;
         }
@@ -75,11 +77,11 @@ namespace LedDashboard.Modules.LeagueOfLegends.ChampionModules
         /// </summary>
         private void OnChampionInfoLoaded(ChampionAttributes champInfo)
         {
-            animator.NewFrameReady += (_, ls, mode) => DispatchNewFrame(ls,mode);
+            animator.NewFrameReady += (_, ls, mode) => DispatchNewFrame(ls, mode);
             AbilityCast += OnAbilityCast;
             AbilityRecast += OnAbilityRecast;
         }
-        
+
         /// <summary>
         /// Called when an ability is cast.
         /// </summary>
@@ -105,28 +107,11 @@ namespace LedDashboard.Modules.LeagueOfLegends.ChampionModules
 
         private void OnCastQ()
         {
-            // Here you should write code to trigger the appropiate animations to play when the user casts Q.
-            // The code will slightly change between each champion, because you might want to implement custom animation logic.
-
-            // Trigger the start animation.
             Task.Run(async () =>
             {
-                await Task.Delay(100);
-                if (!rCastInProgress) animator.RunAnimationOnce(ANIMATION_PATH + "Vel'Koz/q_start.txt", true);
-            });
-
-            // The Q cast is in progress.
-            qCastInProgress = true;
-
-            // After 1.15s, if user didn't press Q again already, the Q split animation plays.
-            Task.Run(async () => // TODO: Q runs a bit slow.
-            {
-                await Task.Delay(1150);
-                if (!rCastInProgress && qCastInProgress)
-                {
-                    animator.RunAnimationOnce(ANIMATION_PATH + "Vel'Koz/q_recast.txt");
-                }
-                qCastInProgress = false;
+                animator.RunAnimationOnce(ANIMATION_PATH + "Ahri/q_start.txt", true);
+                await Task.Delay(1000);
+                animator.RunAnimationOnce(ANIMATION_PATH + "Ahri/q_end.txt", true);
             });
         }
 
@@ -134,9 +119,7 @@ namespace LedDashboard.Modules.LeagueOfLegends.ChampionModules
         {
             Task.Run(async () =>
             {
-                animator.RunAnimationOnce(ANIMATION_PATH + "Vel'Koz/w_cast.txt", true);
-                await Task.Delay(1800);
-                if (!rCastInProgress) animator.RunAnimationOnce(ANIMATION_PATH + "Vel'Koz/w_close.txt", false, 0.15f);
+                animator.RunAnimationOnce(ANIMATION_PATH + "Ahri/w_cast.txt", false, 0.08f);
             });
         }
 
@@ -144,24 +127,27 @@ namespace LedDashboard.Modules.LeagueOfLegends.ChampionModules
         {
             Task.Run(async () =>
             {
-                await Task.Delay(1000);
-                if (!rCastInProgress) _ = animator.ColorBurst(HSVColor.FromRGB(229, 115, 255), 0.15f);
+                await Task.Delay(100);
+                animator.RunAnimationOnce(ANIMATION_PATH + "Ahri/e_cast.txt");
             });
         }
 
         private void OnCastR()
         {
-            animator.StopCurrentAnimation();
-            animator.RunAnimationInLoop(ANIMATION_PATH + "Vel'Koz/r_loop.txt", 2300, 0.15f);
-            rCastInProgress = true;
+
+            // Trigger the start animation.
+
+            animator.RunAnimationOnce(ANIMATION_PATH + "Ahri/r_right.txt");
+
+            // The R cast is in progress.
+            rCastInProgress = 1;
+
             Task.Run(async () =>
             {
-                await Task.Delay(2300);
-                if (rCastInProgress)
-                {
-                    rCastInProgress = false;
-                }
+                await Task.Delay(7000); // if after 7s no recast, effect disappears
+                rCastInProgress = 0;
             });
+
         }
 
 
@@ -172,19 +158,18 @@ namespace LedDashboard.Modules.LeagueOfLegends.ChampionModules
         {
             // Add any abilities that need special logic when they are recasted.
 
-            if (key == AbilityKey.Q)
-            {
-                if (qCastInProgress)
-                {
-                    qCastInProgress = false;
-                    if (!rCastInProgress) animator.RunAnimationOnce(ANIMATION_PATH + "Vel'Koz/q_recast.txt");
-                }
-            }
-
             if (key == AbilityKey.R)
             {
-                animator.StopCurrentAnimation();
-                rCastInProgress = false;
+                if (rCastInProgress == 1)
+                {
+                    animator.RunAnimationOnce(ANIMATION_PATH + "Ahri/r_left.txt");
+                    rCastInProgress++;
+                } else if (rCastInProgress == 2)
+                {
+                    animator.RunAnimationOnce(ANIMATION_PATH + "Ahri/r_right.txt");
+                    rCastInProgress = 0; // done, all 3 casts have been used.
+                }
+                
             }
         }
     }

@@ -56,7 +56,7 @@ namespace LedDashboard
                 for (int i = 0; i < ledCount; i++)
                 {
                     Color c = Color.FromArgb(colorArray[i * 3], colorArray[i * 3 + 1], colorArray[i * 3 + 2]);
-                    int x = (int)Utils.Scale(i, 0, ledCount, 0, 22);
+                    int x = (int)Utils.Scale(i, 0, ledCount, 0, 22);// TODO: Handle keyboards without numpads
                     points.Clear();
                     points.Add(new Point(x, 0));
                     points.Add(new Point(x, 1));
@@ -64,7 +64,14 @@ namespace LedDashboard
                     points.Add(new Point(x, 3));
                     points.Add(new Point(x, 4));
                     points.Add(new Point(x, 5));
-                    keyboardFrame.SetKeys(points, c);
+                    try
+                    {
+                        keyboardFrame.SetKeys(points, c);
+                    } catch (Exception)
+                    {
+                        Console.WriteLine("Error sending data to Chroma keyboard. Perhaps it doesn't have a keypad");
+                    }
+                    
                 }
             } else if (mode == LightingMode.Point)
             {
@@ -74,10 +81,16 @@ namespace LedDashboard
                     for (int j = 0; j < 6; j++)
                     {
                         points.Add(new Point(i, j));
-                        
                     }
                 }
-                keyboardFrame.SetKeys(points, Color.FromArgb(colorArray[0], colorArray[1], colorArray[2]));
+                try
+                {
+                    keyboardFrame.SetKeys(points, Color.FromArgb(colorArray[0], colorArray[1], colorArray[2]));
+                } catch (Exception) // TODO: Handle keyboards without numpads
+                {
+                    Console.WriteLine("Error sending data to Chroma keyboard. Perhaps it doesn't have a keypad");
+                }
+                
             } else if (mode == LightingMode.Keyboard)
             {
                 foreach(RzKey key in numPadKeys)
@@ -91,6 +104,7 @@ namespace LedDashboard
                 }
             } else
             {
+                Console.Error.WriteLine("RazerChroma: Invalid lighting mode");
                 throw new ArgumentException("Invalid lighting mode");
             }
             

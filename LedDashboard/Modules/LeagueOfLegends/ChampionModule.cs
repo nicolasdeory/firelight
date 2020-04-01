@@ -1,4 +1,5 @@
-﻿using LedDashboard.Modules.LeagueOfLegends.ChampionModules.Common;
+﻿using LedDashboard.Modules.BasicAnimation;
+using LedDashboard.Modules.LeagueOfLegends.ChampionModules.Common;
 using LedDashboard.Modules.LeagueOfLegends.Model;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -13,18 +14,19 @@ using System.Windows.Forms;
 
 namespace LedDashboard.Modules.LeagueOfLegends
 {
-    public abstract class ChampionModule : LEDModule
+    abstract class ChampionModule : LEDModule
     {
         const string VERSION_ENDPOINT = "https://ddragon.leagueoflegends.com/api/versions.json";
         const string CHAMPION_INFO_ENDPOINT = "http://ddragon.leagueoflegends.com/cdn/{0}/data/en_US/champion/{1}.json";
+        protected const string ANIMATION_PATH = @"Animations/LeagueOfLegends/Champions/";
 
         public event LEDModule.FrameReadyHandler NewFrameReady;
 
-        protected delegate void PlayerInfoUpdatedHandle(ActivePlayer updatedPlayer);
+        protected delegate void GameStateUpdatedHandler(GameState newState);
         /// <summary>
         /// Raised when the player info was updated.
         /// </summary>
-        protected event PlayerInfoUpdatedHandle PlayerInfoUpdated;
+        protected event GameStateUpdatedHandler GameStateUpdated;
 
         protected delegate void ChampionInfoLoadedHandler(ChampionAttributes attributes);
         /// <summary>
@@ -38,13 +40,15 @@ namespace LedDashboard.Modules.LeagueOfLegends
         /// </summary>
         public event OutOfManaHandler TriedToCastOutOfMana;
 
-        public event EventHandler<AbilityKey> AbilityCast;
-        public event EventHandler<AbilityKey> AbilityRecast;
+        protected event EventHandler<AbilityKey> AbilityCast;
+        protected event EventHandler<AbilityKey> AbilityRecast;
 
         public string Name;
 
+        protected AnimationModule animator; // Animator module that will be useful to display animations
+
         protected ChampionAttributes ChampionInfo;
-        protected ActivePlayer PlayerInfo;
+        protected GameState GameState;
         protected LightingMode LightingMode; // Preferred lighting mode. If set to keyboard, it should try to provide animations that look cooler on keyboards.
 
         protected AbilityCastPreference PreferredCastMode; // User defined setting, preferred cast mode.
@@ -53,10 +57,12 @@ namespace LedDashboard.Modules.LeagueOfLegends
         private AbilityKey SelectedAbility = AbilityKey.None; // Currently selected ability (for example, if you pressed Q but you haven't yet clicked LMB to cast the ability)
         private char lastPressedKey = '\0';
 
+        public Dictionary<AbilityKey, bool> AbilitiesOnCooldown => _AbilitiesOnCooldown;
+
         /// <summary>
         /// Dictionary that keeps track of which abilities are currently on cooldown. 
         /// </summary>
-        protected Dictionary<AbilityKey, bool> AbilitiesOnCooldowns = new Dictionary<AbilityKey, bool>()
+        protected Dictionary<AbilityKey, bool> _AbilitiesOnCooldown = new Dictionary<AbilityKey, bool>()
         {
             [AbilityKey.Q] = false,
             [AbilityKey.W] = false,
@@ -68,21 +74,21 @@ namespace LedDashboard.Modules.LeagueOfLegends
         /// <summary>
         /// Dictionary that keeps track of which abilities can currently be RE-CAST (eg. Zoe or Vel'Kozs Q)
         /// </summary>
-        protected Dictionary<AbilityKey, bool> AbilitiesOnRecast = new Dictionary<AbilityKey, bool>()
+        protected Dictionary<AbilityKey, int> AbilitiesOnRecast = new Dictionary<AbilityKey, int>()
         {
-            [AbilityKey.Q] = false,
-            [AbilityKey.W] = false,
-            [AbilityKey.E] = false,
-            [AbilityKey.R] = false,
-            [AbilityKey.Passive] = false
+            [AbilityKey.Q] = 0,
+            [AbilityKey.W] = 0,
+            [AbilityKey.E] = 0,
+            [AbilityKey.R] = 0,
+            [AbilityKey.Passive] = 0
         };
 
         // TODO: Handle champions with cooldown resets?
 
-        protected ChampionModule(string champName, ActivePlayer playerInfo, LightingMode preferredLightingMode)
+        protected ChampionModule(string champName, GameState gameState, LightingMode preferredLightingMode) // TODO: Pass gamestate instead of active player
         {
             Name = champName;
-            PlayerInfo = playerInfo;
+            GameState = gameState;
             LightingMode = preferredLightingMode;
             LoadChampionInformation(champName);
         }
@@ -220,12 +226,11 @@ namespace LedDashboard.Modules.LeagueOfLegends
 
         private void DoCastLogicForAbility(AbilityKey key, bool keyUp)
         {
-            Console.WriteLine("doing cast logic");
             if (keyUp && SelectedAbility != key) return; // keyUp event shouldn't trigger anything if the ability is not selected.
 
             AbilityCastMode castMode = AbilityCastModes[key];
 
-            if (castMode.HasRecast && AbilitiesOnRecast[key])
+            if (castMode.HasRecast && AbilitiesOnRecast[key] > 0)
             {
                 if (CanCastAbility(key)) // We must check if CanCastAbility is true. Players can't recast abilities if they're dead or in zhonyas.
                 {
@@ -302,17 +307,17 @@ namespace LedDashboard.Modules.LeagueOfLegends
         private void RecastAbility(AbilityKey key)
         {
             AbilityRecast?.Invoke(this, key);
-            AbilitiesOnRecast[key] = false;
-            StartCooldownTimer(key);
+            AbilitiesOnRecast[key]--;
+            if (AbilitiesOnRecast[key] == 0) StartCooldownTimer(key);
         }
 
         /// <summary>
         /// Updates player info and raises the appropiate events.
         /// </summary>
-        public void UpdatePlayerInfo(ActivePlayer updatedPlayerInfo)
+        public void UpdateGameState(GameState newState)
         {
-            PlayerInfo = updatedPlayerInfo;
-            PlayerInfoUpdated?.Invoke(updatedPlayerInfo);
+            GameState = newState;
+            GameStateUpdated?.Invoke(newState);
         }
 
         /// <summary>
@@ -320,16 +325,23 @@ namespace LedDashboard.Modules.LeagueOfLegends
         /// </summary>
         protected int GetCooldownForAbility(AbilityKey ability)
         {
+            AbilityLoadout abilities = GameState.ActivePlayer.AbilityLoadout;
+            ChampionCosts costs = ChampionInfo.Costs;
+            float cdr = GameState.ActivePlayer.Stats.CooldownReduction;
             return ability switch
             {
-                AbilityKey.Q => (int)(ChampionInfo.Costs.Q_Cooldown[PlayerInfo.AbilityLoadout.Q_Level-1]
-                                   + ChampionInfo.Costs.Q_Cooldown[PlayerInfo.AbilityLoadout.Q_Level - 1] * PlayerInfo.Stats.CooldownReduction),
-                AbilityKey.W => (int)(ChampionInfo.Costs.W_Cooldown[PlayerInfo.AbilityLoadout.W_Level - 1]
-                                    + ChampionInfo.Costs.W_Cooldown[PlayerInfo.AbilityLoadout.W_Level - 1] * PlayerInfo.Stats.CooldownReduction),
-                AbilityKey.E => (int)(ChampionInfo.Costs.E_Cooldown[PlayerInfo.AbilityLoadout.E_Level - 1]
-                                    + ChampionInfo.Costs.E_Cooldown[PlayerInfo.AbilityLoadout.E_Level - 1] * PlayerInfo.Stats.CooldownReduction),
-                AbilityKey.R => (int)(ChampionInfo.Costs.R_Cooldown[PlayerInfo.AbilityLoadout.R_Level - 1]
-                                    + ChampionInfo.Costs.R_Cooldown[PlayerInfo.AbilityLoadout.R_Level - 1] * PlayerInfo.Stats.CooldownReduction),
+                AbilityKey.Q => (int)(costs.Q_Cooldown[abilities.Q_Level-1]
+                                   + costs.Q_Cooldown[abilities.Q_Level - 1] * cdr),
+
+                AbilityKey.W => (int)(costs.W_Cooldown[abilities.W_Level - 1]
+                                    + costs.W_Cooldown[abilities.W_Level - 1] * cdr),
+
+                AbilityKey.E => (int)(costs.E_Cooldown[abilities.E_Level - 1]
+                                    + costs.E_Cooldown[abilities.E_Level - 1] * cdr),
+
+                AbilityKey.R => (int)(costs.R_Cooldown[abilities.R_Level - 1]
+                                    + costs.R_Cooldown[abilities.R_Level - 1] * cdr),
+
                 _ => 0,
             };
         }
@@ -339,10 +351,11 @@ namespace LedDashboard.Modules.LeagueOfLegends
         /// </summary>
         protected bool CanCastAbility(AbilityKey spellKey)
         {
-            if (PlayerInfo.IsDead) return false;
-            if (PlayerInfo.AbilityLoadout.GetAbilityLevel(spellKey) == 0) return false;
-            if (AbilitiesOnCooldowns[spellKey]) return false;
-            if (PlayerInfo.Stats.ResourceValue < ChampionInfo.Costs.GetManaCost(spellKey, PlayerInfo.AbilityLoadout.GetAbilityLevel(spellKey)))
+            if (GameState.ActivePlayer.IsDead || !AbilityCastModes[spellKey].Castable) return false;
+            if (GameState.ActivePlayer.AbilityLoadout.GetAbilityLevel(spellKey) == 0) return false;
+            if (_AbilitiesOnCooldown[spellKey]) return false;
+            int manaCost = ChampionInfo.Costs.GetManaCost(spellKey, GameState.ActivePlayer.AbilityLoadout.GetAbilityLevel(spellKey));
+            if (GameState.ActivePlayer.Stats.ResourceValue < manaCost)
             {
                 // raise not enough mana event
                 TriedToCastOutOfMana?.Invoke();
@@ -358,9 +371,9 @@ namespace LedDashboard.Modules.LeagueOfLegends
         {
             Task.Run(async () =>
             {
-                AbilitiesOnCooldowns[ability] = true;
+                _AbilitiesOnCooldown[ability] = true;
                 await Task.Delay(GetCooldownForAbility(ability) - 350); // a bit less cooldown than the real one (if the user spams)
-                AbilitiesOnCooldowns[ability] = false;
+                _AbilitiesOnCooldown[ability] = false;
             });
         }
 
@@ -368,11 +381,11 @@ namespace LedDashboard.Modules.LeagueOfLegends
         {
             Task.Run(async () =>
             {
-                AbilitiesOnRecast[ability] = true;
+                AbilitiesOnRecast[ability] = AbilityCastModes[ability].MaxRecasts;
                 await Task.Delay(AbilityCastModes[ability].RecastTime);
-                if (AbilitiesOnRecast[ability]) // if user hasn't recast yet
+                if (AbilitiesOnRecast[ability] > 0) // if user hasn't recast yet
                 {
-                    AbilitiesOnRecast[ability] = false;
+                    AbilitiesOnRecast[ability] = 0;
                     StartCooldownTimer(ability);
                 }
             });
@@ -380,9 +393,15 @@ namespace LedDashboard.Modules.LeagueOfLegends
 
         public void Dispose()
         {
+            animator.Dispose();
             KeyboardHookService.Instance.OnMouseClicked -= OnMouseClick;
             KeyboardHookService.Instance.OnKeyPressed -= OnKeyPress;
             KeyboardHookService.Instance.OnKeyReleased -= OnKeyRelease;
+        }
+
+        public void StopAnimations()
+        {
+            animator.StopCurrentAnimation();
         }
     }
 }

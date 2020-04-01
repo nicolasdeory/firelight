@@ -93,5 +93,49 @@ namespace LedDashboard
         {
             leds.SetAllToColor(HSVColor.Black);
         }
+
+        public static Led[] LedsFromBytes(int ledCount, byte[] data)
+        {
+            Led[] leds = new Led[ledCount];
+            for(int i = 0; i < ledCount; i++)
+            {
+                leds[i] = new Led();
+                leds[i].Color(HSVColor.FromRGB(data[i * 3], data[i * 3 + 1], data[i * 3 + 2]));
+            }
+            return leds;
+        }
+
+        /// <summary>
+        /// Returns the LED array as a byte array contaning Red, Green and Blue value bytes for each LED in the strip.
+        /// </summary>
+        /// <param name="reverseOrder"></param>
+        /// <returns>A byte array of length ledCount * 3</returns>
+        public static byte[] ToByteArray(this Led[] leds,bool reverseOrder = false)
+        {
+            byte[] data = new byte[leds.Length * 3];
+            if (reverseOrder)
+            {
+                for (int i = leds.Length * 3 - 1; i >= 0; i -= 3)
+                {
+                    int index = (leds.Length * 3 - 1) - i;
+                    byte[] col = leds[index / 3].color.ToRGB();
+                    data[i] = col[2];
+                    data[i - 1] = col[1];
+                    data[i - 2] = col[0];
+                }
+            }
+            else
+            {
+                for (int i = 0; i < leds.Length * 3; i += 3)
+                {
+                    byte[] col = leds[i / 3].color.ToRGB();
+                    data[i] = col[0];
+                    data[i + 1] = col[1];
+                    data[i + 2] = col[2];
+                }
+            }
+
+            return data;
+        }
     }
 }

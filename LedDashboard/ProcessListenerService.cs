@@ -28,7 +28,7 @@ namespace LedDashboard
                     atLeastARegisteredProcessIsRunning = false;
                     foreach (var process in listenedProcesses)
                     {
-                        Process[] pname = Process.GetProcessesByName(process);
+                        Process[] pname = Process.GetProcessesByName(process); // TODO: Sometimes not firing on first boot?
                         if (pname.Length == 0) continue;
                         if (process != currentOpenedProcess)
                         {

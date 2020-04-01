@@ -78,8 +78,6 @@ namespace LedDashboard
 
             ledManager = new LedManager();
             ledManager.DisplayUpdated += UpdateUI;
-            // TODO: Add selector for League of Legends cast modes (Normal, Quick Cast, Quick Cast with Indicator)
-            ledManager.SetModuleOption("lol", "castMode", "quickindicator");
 
         }
 
@@ -192,8 +190,9 @@ namespace LedDashboard
             {
                 json = File.ReadAllText(@"Resources/keyboardLayout.json");
             }
-            catch (IOException)
+            catch (IOException e)
             {
+                Console.Error.WriteLine(e.StackTrace);
                 throw new ArgumentException("File does not exist.");
             }
 

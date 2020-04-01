@@ -64,6 +64,27 @@
   <ItemGroup>
     <None Include="App.config" />
     <None Include="packages.config" />
+    <Content Include="Animations\LeagueOfLegends\Champions\Ahri\e_cast.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Animations\LeagueOfLegends\Champions\Ahri\q_end.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Animations\LeagueOfLegends\Champions\Ahri\q_start.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Animations\LeagueOfLegends\Champions\Ahri\r_right.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Animations\LeagueOfLegends\Champions\Ahri\r_left.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Animations\LeagueOfLegends\Champions\Ahri\w_cast.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Animations\LeagueOfLegends\Items\OracleLens\activation.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="Resources\keyboardLayout.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
@@ -73,6 +94,7 @@
     <Compile Include="Gradient.cs" />
     <Compile Include="HSVColor.cs" />
     <Compile Include="KeyboardKey.cs" />
+    <Compile Include="KeyUtils.cs" />
     <Compile Include="Led.cs" />
     <Compile Include="LedManager.cs" />
     <Compile Include="LEDModule.cs" />
@@ -89,12 +111,21 @@
     <Compile Include="Modules\Common\KeyboardHookService.cs" />
     <Compile Include="Modules\FourierAudioLED\FFTUtil.cs" />
     <Compile Include="Modules\FourierAudioLED\FourierAudioLED.cs" />
+    <Compile Include="Modules\LeagueOfLegends\ChampionModules\AhriModule.cs" />
     <Compile Include="Modules\LeagueOfLegends\ChampionModules\Common\AbilityModes.cs" />
     <Compile Include="Modules\LeagueOfLegends\ChampionModules\VelKozModule.cs" />
     <Compile Include="Modules\LeagueOfLegends\ChampionModule.cs" />
+    <Compile Include="Modules\LeagueOfLegends\HUDModules\HealthBar.cs" />
+    <Compile Include="Modules\LeagueOfLegends\HUDModules\HUDModule.cs" />
+    <Compile Include="Modules\LeagueOfLegends\ItemModule.cs" />
+    <Compile Include="Modules\LeagueOfLegends\ItemModules\WardingTotemModule.cs" />
+    <Compile Include="Modules\LeagueOfLegends\ItemModules\OracleLensModule.cs" />
+    <Compile Include="Modules\LeagueOfLegends\ItemUtils.cs" />
     <Compile Include="Modules\LeagueOfLegends\LeagueOfLegendsModule.cs" />
     <Compile Include="Modules\LeagueOfLegends\Model\AbilityKey.cs" />
     <Compile Include="Modules\LeagueOfLegends\Model\ChampionCosts.cs" />
+    <Compile Include="Modules\LeagueOfLegends\Model\GameState.cs" />
+    <Compile Include="Modules\LeagueOfLegends\Model\ItemAttributes.cs" />
     <Compile Include="Modules\LeagueOfLegends\Model\ManaCost.cs" />
     <Compile Include="Modules\LeagueOfLegends\Model\AbilityCooldown.cs" />
     <Compile Include="Modules\LeagueOfLegends\Model\AbilityLoadout.cs" />
@@ -308,19 +339,19 @@
     <Content Include="Animations\Basic\basic1.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="Animations\Vel%27Koz\q_recast.txt">
+    <Content Include="Animations\LeagueOfLegends\Champions\Vel%27Koz\q_recast.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="Animations\Vel%27Koz\q_start.txt">
+    <Content Include="Animations\LeagueOfLegends\Champions\Vel%27Koz\q_start.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="Animations\Vel%27Koz\r_loop.txt">
+    <Content Include="Animations\LeagueOfLegends\Champions\Vel%27Koz\r_loop.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="Animations\Vel%27Koz\w_cast.txt">
+    <Content Include="Animations\LeagueOfLegends\Champions\Vel%27Koz\w_cast.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="Animations\Vel%27Koz\w_close.txt">
+    <Content Include="Animations\LeagueOfLegends\Champions\Vel%27Koz\w_close.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="ChromaAppInfo.xml" />
