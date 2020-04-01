@@ -198,10 +198,5 @@ namespace LedDashboard
 
             return Newtonsoft.Json.JsonConvert.DeserializeObject<List<KeyboardKey>>(json);
         }
-
-       /* private KeyboardKey RoundToNearestKey(int x, int j)
-        {
-            return keyboardLayout.OrderBy(x => x, new KeyComparer(x,j)).ToList()[0];
-        }*/
     }
 }

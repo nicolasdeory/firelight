@@ -81,7 +81,7 @@ namespace LedDashboard.Modules.LeagueOfLegends.ItemModules
             if (wardCharges > 0)
             {
                 wardCharges--;
-                animator.ColorBurst(HSVColor.FromRGB(new byte[] { 235, 220, 14 })); // TODO: Prettier animation?
+                //animator.ColorBurst(HSVColor.FromRGB(new byte[] { 235, 220, 14 })); // TODO: Prettier animation?
 
                 if (wardCharges > 0)
                 {
