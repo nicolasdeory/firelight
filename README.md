@@ -6,11 +6,11 @@ A modular League of Legends integration for Razer Chroma and RGB LED devices.
 
 ## Features
 - Health Bar
+- Custom spellcast animations for several champions
 - Trinket notifications - lights up when you have a ward available
 - Gold notification - lights up when you should back to buy
-- Death Lights
 - Keeps track of cooldowns and mana
-- Custom spellcast animations for several champions
+- Death Lights
 - Compatible with E1.31 devices
 - Razer Chroma support
 
