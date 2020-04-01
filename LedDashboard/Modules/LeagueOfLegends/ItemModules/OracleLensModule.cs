@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 
 namespace LedDashboard.Modules.LeagueOfLegends.ItemModules
 {
+    [Item(3364)]
     class OracleLensModule : ItemModule
     {
 

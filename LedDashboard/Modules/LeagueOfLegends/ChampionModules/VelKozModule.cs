@@ -9,6 +9,8 @@ using System.Windows.Forms;
 
 namespace LedDashboard.Modules.LeagueOfLegends.ChampionModules
 {
+
+    [Champion("Velkoz")]
     class VelKozModule : ChampionModule
     {
         

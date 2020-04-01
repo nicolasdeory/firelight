@@ -9,16 +9,14 @@ using System.Windows.Forms;
 
 namespace LedDashboard.Modules.LeagueOfLegends.ChampionModules
 {
+    [Champion("Ahri")]
     class AhriModule : ChampionModule
     {
 
         // Variables
 
-        AnimationModule animator; // Animator module that will be useful to display animations
-
         // Champion-specific Variables
 
-        bool qCastInProgress = false;
         int rCastInProgress = 0; // this is used to make the animation for Vel'Koz's R to take preference over other animations
 
 

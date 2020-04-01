@@ -111,12 +111,13 @@
     <Compile Include="Modules\Common\KeyboardHookService.cs" />
     <Compile Include="Modules\FourierAudioLED\FFTUtil.cs" />
     <Compile Include="Modules\FourierAudioLED\FourierAudioLED.cs" />
+    <Compile Include="Modules\LeagueOfLegends\ChampionAttribute.cs" />
     <Compile Include="Modules\LeagueOfLegends\ChampionModules\AhriModule.cs" />
     <Compile Include="Modules\LeagueOfLegends\ChampionModules\Common\AbilityModes.cs" />
     <Compile Include="Modules\LeagueOfLegends\ChampionModules\VelKozModule.cs" />
     <Compile Include="Modules\LeagueOfLegends\ChampionModule.cs" />
-    <Compile Include="Modules\LeagueOfLegends\HUDModules\HealthBar.cs" />
     <Compile Include="Modules\LeagueOfLegends\HUDModules\HUDModule.cs" />
+    <Compile Include="Modules\LeagueOfLegends\ItemAttribute.cs" />
     <Compile Include="Modules\LeagueOfLegends\ItemModule.cs" />
     <Compile Include="Modules\LeagueOfLegends\ItemModules\WardingTotemModule.cs" />
     <Compile Include="Modules\LeagueOfLegends\ItemModules\OracleLensModule.cs" />
@@ -356,9 +357,7 @@
     </Content>
     <Content Include="ChromaAppInfo.xml" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Modules\KeyboardListener\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="..\packages\Accord.3.8.2-alpha\build\Accord.targets" Condition="Exists('..\packages\Accord.3.8.2-alpha\build\Accord.targets')" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
