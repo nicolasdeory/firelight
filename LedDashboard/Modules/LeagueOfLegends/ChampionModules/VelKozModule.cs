@@ -119,7 +119,7 @@ namespace LedDashboard.Modules.LeagueOfLegends.ChampionModules
             qCastInProgress = true;
 
             // After 1.15s, if user didn't press Q again already, the Q split animation plays.
-            Task.Run(async () =>
+            Task.Run(async () => // TODO: Q runs a bit slow.
             {
                 await Task.Delay(1150);
                 if (!rCastInProgress && qCastInProgress)

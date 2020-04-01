@@ -101,11 +101,13 @@ namespace LedDashboard.Modules.LeagueOfLegends.HUDModules
             
         }
 
+        private static List<int> alreadyTouchedLeds = new List<int>(); // fixes a weird flickering bug
         private static void HealthBar(Led[] leds, LightingMode lightMode, GameState gameState)
         {
             float maxHealth = gameState.ActivePlayer.Stats.MaxHealth;
             float currentHealth = gameState.ActivePlayer.Stats.CurrentHealth;
             float healthPercentage = currentHealth / maxHealth;
+            alreadyTouchedLeds.Clear();
             if (lightMode == LightingMode.Keyboard)
             {
                 int greenHPLeds = Math.Max((int)Utils.Scale(healthPercentage, 0, 1, 0, 16), 1); // at least one led active when player is alive
@@ -125,6 +127,7 @@ namespace LedDashboard.Modules.LeagueOfLegends.HUDModules
                     {
                         foreach (int idx in ledsToTurnOn.Where(x => x != -1))
                         {
+                            if (alreadyTouchedLeds.Contains(idx)) continue;
                             leds[idx].MixNewColor(HealthColor, true, 0.2f);
                         }
                     }
@@ -132,6 +135,7 @@ namespace LedDashboard.Modules.LeagueOfLegends.HUDModules
                     {
                         foreach (int idx in ledsToTurnOn.Where(x => x != -1))
                         {
+                            if (alreadyTouchedLeds.Contains(idx)) continue;
                             if (leds[idx].color.AlmostEqual(HealthColor))
                             {
                                 leds[idx].Color(HurtColor);
@@ -143,6 +147,7 @@ namespace LedDashboard.Modules.LeagueOfLegends.HUDModules
 
                         }
                     }
+                    alreadyTouchedLeds.AddRange(ledsToTurnOn);
 
                 }
             }
