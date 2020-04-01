@@ -53,10 +53,12 @@ namespace LedDashboard.Modules.LeagueOfLegends
         private AbilityKey SelectedAbility = AbilityKey.None; // Currently selected ability (for example, if you pressed Q but you haven't yet clicked LMB to cast the ability)
         private char lastPressedKey = '\0';
 
+        public Dictionary<AbilityKey, bool> AbilitiesOnCooldown => _AbilitiesOnCooldown;
+
         /// <summary>
         /// Dictionary that keeps track of which abilities are currently on cooldown. 
         /// </summary>
-        protected Dictionary<AbilityKey, bool> AbilitiesOnCooldowns = new Dictionary<AbilityKey, bool>()
+        protected Dictionary<AbilityKey, bool> _AbilitiesOnCooldown = new Dictionary<AbilityKey, bool>()
         {
             [AbilityKey.Q] = false,
             [AbilityKey.W] = false,
@@ -340,7 +342,7 @@ namespace LedDashboard.Modules.LeagueOfLegends
         {
             if (PlayerInfo.IsDead) return false;
             if (PlayerInfo.AbilityLoadout.GetAbilityLevel(spellKey) == 0) return false;
-            if (AbilitiesOnCooldowns[spellKey]) return false;
+            if (_AbilitiesOnCooldown[spellKey]) return false;
             if (PlayerInfo.Stats.ResourceValue < ChampionInfo.Costs.GetManaCost(spellKey, PlayerInfo.AbilityLoadout.GetAbilityLevel(spellKey)))
             {
                 // raise not enough mana event
@@ -357,9 +359,9 @@ namespace LedDashboard.Modules.LeagueOfLegends
         {
             Task.Run(async () =>
             {
-                AbilitiesOnCooldowns[ability] = true;
+                _AbilitiesOnCooldown[ability] = true;
                 await Task.Delay(GetCooldownForAbility(ability) - 350); // a bit less cooldown than the real one (if the user spams)
-                AbilitiesOnCooldowns[ability] = false;
+                _AbilitiesOnCooldown[ability] = false;
             });
         }
 

@@ -1,6 +1,7 @@
 ﻿using LedDashboard.Modules.BasicAnimation;
 using LedDashboard.Modules.LeagueOfLegends.ChampionModules;
 using LedDashboard.Modules.LeagueOfLegends.ChampionModules.Common;
+using LedDashboard.Modules.LeagueOfLegends.HUDModules;
 using LedDashboard.Modules.LeagueOfLegends.Model;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -22,8 +23,6 @@ namespace LedDashboard.Modules.LeagueOfLegends
 
         HSVColor LoadingColor = new HSVColor(0.09f, 0.8f, 1f);
 
-        HSVColor HealthColor = new HSVColor(0.29f, 0.79f, 1f);
-        HSVColor HurtColor = new HSVColor(0.09f, 0.8f, 1f);
         HSVColor DeadColor = new HSVColor(0f, 0.8f, 0.77f);
         HSVColor NoManaColor = new HSVColor(0.52f, 0.66f, 1f);
 
@@ -35,10 +34,7 @@ namespace LedDashboard.Modules.LeagueOfLegends
 
         AbilityCastPreference preferredCastMode;
 
-        ActivePlayer activePlayer;
-        List<Champion> champions;
-        Champion playerChampion;
-        List<Event> gameEvents;
+        GameState gameState = new GameState();
 
         ChampionModule championModule;
         AnimationModule animationModule;
@@ -65,7 +61,7 @@ namespace LedDashboard.Modules.LeagueOfLegends
         /// Creates a new <see cref="LeagueOfLegendsModule"/> instance.
         /// </summary>
         /// <param name="ledCount">Number of LEDs in the strip</param>
-        public static LeagueOfLegendsModule Create(LightingMode preferLightMode, int ledCount, Dictionary<string,string> options)
+        public static LeagueOfLegendsModule Create(LightingMode preferLightMode, int ledCount, Dictionary<string, string> options)
         {
             AbilityCastPreference castMode = AbilityCastPreference.Normal;
             if (options.ContainsKey("castMode"))
@@ -73,10 +69,11 @@ namespace LedDashboard.Modules.LeagueOfLegends
                 if (options["castMode"] == "quick") castMode = AbilityCastPreference.Quick;
                 else if (options["castMode"] == "quickindicator") castMode = AbilityCastPreference.QuickWithIndicator;
             }
-            if(preferLightMode == LightingMode.Keyboard)
+            if (preferLightMode == LightingMode.Keyboard)
             {
                 return new LeagueOfLegendsModule(88, preferLightMode, castMode);
-            } else
+            }
+            else
             {
                 return new LeagueOfLegendsModule(ledCount, preferLightMode, castMode);
             }
@@ -129,7 +126,8 @@ namespace LedDashboard.Modules.LeagueOfLegends
                         if (await WebRequestUtil.IsLive("https://127.0.0.1:2999/liveclientdata/allgamedata"))
                         {
                             break;
-                        } else
+                        }
+                        else
                         {
                             await Task.Delay(1000);
                             continue;
@@ -160,14 +158,15 @@ namespace LedDashboard.Modules.LeagueOfLegends
             // If there is no suitable module for the selected champion, just the health bar will be displayed.
 
             // TODO: Make this easily extendable when there are many champion modules
-            if (playerChampion.RawChampionName.ToLower().Contains("velkoz"))
+            if (gameState.PlayerChampion.RawChampionName.ToLower().Contains("velkoz"))
             {
-                championModule = VelKozModule.Create(this.leds.Length, this.activePlayer, this.lightingMode, this.preferredCastMode);
+                championModule = VelKozModule.Create(this.leds.Length, this.gameState.ActivePlayer, this.lightingMode, this.preferredCastMode);
                 championModule.NewFrameReady += OnNewFrameReceived;
                 championModule.TriedToCastOutOfMana += OnAbilityCastNoMana;
-            } else if (playerChampion.RawChampionName.ToLower().Contains("ahri"))
+            }
+            else if (gameState.PlayerChampion.RawChampionName.ToLower().Contains("ahri"))
             {
-                championModule = AhriModule.Create(this.leds.Length, this.activePlayer, this.lightingMode, this.preferredCastMode);
+                championModule = AhriModule.Create(this.leds.Length, this.gameState.ActivePlayer, this.lightingMode, this.preferredCastMode);
                 championModule.NewFrameReady += OnNewFrameReceived;
                 championModule.TriedToCastOutOfMana += OnAbilityCastNoMana;
             }
@@ -194,7 +193,7 @@ namespace LedDashboard.Modules.LeagueOfLegends
         /// </summary>
         private async Task QueryPlayerInfo(bool firstTime = false)
         {
-            
+
             string json;
             try
             {
@@ -203,23 +202,25 @@ namespace LedDashboard.Modules.LeagueOfLegends
             catch (WebException e)
             {
                 // TODO: Account for League client disconnects, game ended, etc. without crashing the whole program
-                throw new InvalidOperationException("Couldn't connect with the game client", e); 
+                throw new InvalidOperationException("Couldn't connect with the game client", e);
             }
 
             var gameData = JsonConvert.DeserializeObject<dynamic>(json);
-            gameEvents = (gameData.events.Events as JArray).ToObject<List<Event>>();
+            gameState.GameEvents = (gameData.events.Events as JArray).ToObject<List<Event>>();
             // Get active player info
-            activePlayer = ActivePlayer.FromData(gameData.activePlayer);
+            gameState.ActivePlayer = ActivePlayer.FromData(gameData.activePlayer);
             // Get player champion info (IsDead, Items, etc)
-            champions = (gameData.allPlayers as JArray).ToObject<List<Champion>>();
-            playerChampion = champions.Find(x => x.SummonerName == activePlayer.SummonerName);
+            gameState.Champions = (gameData.allPlayers as JArray).ToObject<List<Champion>>();
+            gameState.PlayerChampion = gameState.Champions.Find(x => x.SummonerName == gameState.ActivePlayer.SummonerName);
             // Update active player based on player champion data
-            activePlayer.IsDead = playerChampion.IsDead;
+            gameState.ActivePlayer.IsDead = gameState.PlayerChampion.IsDead;
             // Update champion LED module information
-            if (championModule != null) championModule.UpdatePlayerInfo(activePlayer);
+            if (championModule != null) championModule.UpdatePlayerInfo(gameState.ActivePlayer);
+            // Update player ability cooldowns
+            gameState.PlayerAbilityCooldowns = championModule?.AbilitiesOnCooldown;
             // Process game events
             ProcessGameEvents(firstTime);
-            
+
         }
 
         /// <summary>
@@ -227,12 +228,16 @@ namespace LedDashboard.Modules.LeagueOfLegends
         /// </summary>
         private async Task FrameTimer()
         {
-            while(true)
+            while (true)
             {
                 if (masterCancelToken.IsCancellationRequested) return;
                 if (msSinceLastExternalFrameReceived >= msAnimationTimerThreshold)
                 {
-                    UpdateHealthBar();
+                    if (!CheckIfDead())
+                    {
+                        HUDModule.DoFrame(this.leds, this.lightingMode, this.gameState);
+                    }
+
                 }
                 await Task.Delay(30);
                 msSinceLastExternalFrameReceived += 30;
@@ -244,7 +249,8 @@ namespace LedDashboard.Modules.LeagueOfLegends
         /// this animation will play instead of the default one. Useful for garen ult or chogath, for example.
         /// </summary>
         /// <param name="animPath">The animation path</param>
-        public void SetCustomKillAnim(string animPath, int duration) {
+        public void SetCustomKillAnim(string animPath, int duration)
+        {
             customKillAnimation = animPath;
             Task.Run(async () =>
             {
@@ -272,14 +278,14 @@ namespace LedDashboard.Modules.LeagueOfLegends
         {
             if (firstTime)
             {
-                if (gameEvents.Count > 0)
-                    currentGameTimestamp = gameEvents[gameEvents.Count - 1].EventTime;
+                if (gameState.GameEvents.Count > 0)
+                    currentGameTimestamp = gameState.GameEvents[gameState.GameEvents.Count - 1].EventTime;
                 else
                     currentGameTimestamp = 0;
 
                 return;
             }
-            foreach(Event ev in gameEvents)
+            foreach (Event ev in gameState.GameEvents)
             {
                 if (ev.EventTime <= currentGameTimestamp) continue;
                 currentGameTimestamp = ev.EventTime;
@@ -294,9 +300,37 @@ namespace LedDashboard.Modules.LeagueOfLegends
             }
         }
 
+        /// <summary>
+        /// If the player is dead, color red, and returns false so any other HUD Modules don't output data (dead = only red lights)
+        /// </summary>
+        /// <returns></returns>
+        private bool CheckIfDead()
+        {
+            if (gameState.PlayerChampion.IsDead)
+            {
+                for (int i = 0; i < leds.Length; i++)
+                {
+                    leds[i].Color(DeadColor);
+                }
+                wasDeadLastFrame = true;
+                NewFrameReady?.Invoke(this, this.leds, LightingMode.Line);
+                return true;
+            }
+            else
+            {
+
+                if (wasDeadLastFrame)
+                {
+                    leds.SetAllToBlack();
+                    wasDeadLastFrame = false;
+                }
+                return false;
+            }
+        }
+
         private void OnChampionKill(Event ev)
         {
-            if(ev.KillerName == activePlayer.SummonerName)
+            if (ev.KillerName == gameState.ActivePlayer.SummonerName)
             {
                 CurrentLEDSource = animationModule;
                 if (customKillAnimation != null)
@@ -306,13 +340,14 @@ namespace LedDashboard.Modules.LeagueOfLegends
                           CurrentLEDSource = championModule;
                           customKillAnimation = null;
                       });
-                } else
+                }
+                else
                 {
-                    animationModule.ColorBurst(KillColor, 0.01f, HealthColor).ContinueWith((t) =>
+                    animationModule.ColorBurst(KillColor, 0.01f).ContinueWith((t) =>
                     {
                         CurrentLEDSource = championModule;
                     });
-                }   
+                }
             }
         }
 
@@ -322,88 +357,8 @@ namespace LedDashboard.Modules.LeagueOfLegends
         /// </summary>
         private void UpdateHealthBar() // TODO: If trinket is not on cooldown, turn on right side of keyboard to notify
         {
-            if (playerChampion.IsDead)
-            {
-                for (int i = 0; i < leds.Length; i++)
-                {
-                    this.leds[i].Color(DeadColor);
-                }
-                wasDeadLastFrame = true;
-                NewFrameReady?.Invoke(this, this.leds, LightingMode.Line);
-            } else
-            {
-                if (wasDeadLastFrame)
-                {
-                    this.leds.SetAllToBlack();
-                    wasDeadLastFrame = false;
-                }
-                float maxHealth = activePlayer.Stats.MaxHealth;
-                float currentHealth = activePlayer.Stats.CurrentHealth;
-                float healthPercentage = currentHealth / maxHealth;
-                if (lightingMode == LightingMode.Keyboard)
-                {
-                    int greenHPLeds = Math.Max((int)Utils.Scale(healthPercentage, 0, 1, 0, 16),1); // at least one led active when player is alive
-                    for (int i = 0; i < 16; i++)
-                    {
-                        List<int> ledsToTurnOn;
-                        ledsToTurnOn = new List<int>() // light the whole column
-                        {
-                            KeyUtils.PointToKey(new Point(i, 0)),
-                            KeyUtils.PointToKey(new Point(i, 1)),
-                            KeyUtils.PointToKey(new Point(i, 2)),
-                            KeyUtils.PointToKey(new Point(i, 3)),
-                            KeyUtils.PointToKey(new Point(i, 4)),
-                            KeyUtils.PointToKey(new Point(i, 5))
-                        };
-                        if (i < greenHPLeds)
-                        {
-                            foreach(int idx in ledsToTurnOn.Where(x=> x != -1))
-                            {
-                                this.leds[idx].MixNewColor(HealthColor, true, 0.2f);
-                            }
-                        }
-                        else
-                        {
-                            foreach (int idx in ledsToTurnOn.Where(x => x != -1))
-                            {
-                                if (this.leds[idx].color.AlmostEqual(HealthColor))
-                                {
-                                    this.leds[idx].Color(HurtColor);
-                                } else
-                                {
-                                    this.leds[idx].FadeToBlackBy(0.08f);
-                                }
-                                
-                            }
-                        }
 
-                    }
-                    NewFrameReady?.Invoke(this, this.leds, LightingMode.Keyboard);
-                } else
-                {
-                    int ledsToTurnOn = Math.Max((int)(healthPercentage * leds.Length),1);
-                    for (int i = 0; i < leds.Length; i++)
-                    {
-                        if (i < ledsToTurnOn)
-                            this.leds[i].MixNewColor(HealthColor, true, 0.2f);
-                        else
-                        {
-                            if (this.leds[i].color.AlmostEqual(HealthColor))
-                            {
-                                this.leds[i].Color(HurtColor);
-                            }
-                            else
-                            {
-                                this.leds[i].FadeToBlackBy(0.05f);
-                            }
-                        }
 
-                    }
-                    NewFrameReady?.Invoke(this, this.leds, LightingMode.Line);
-                }
-                
-            }
-            
         }
 
         /// <summary>
