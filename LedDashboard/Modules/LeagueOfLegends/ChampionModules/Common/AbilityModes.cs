@@ -11,7 +11,7 @@ namespace LedDashboard.Modules.LeagueOfLegends.ChampionModules.Common
     /// </summary>
     public class AbilityCastMode
     {
-        public bool Castable { get; private set; }
+        public bool Castable { get; private set; } = true;
         public bool IsNormal { get; private set; }
         public bool IsInstant { get; private set; }
         public bool HasRecast { get; private set; }

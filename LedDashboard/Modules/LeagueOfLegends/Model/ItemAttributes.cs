@@ -22,7 +22,7 @@ namespace LedDashboard.Modules.LeagueOfLegends.Model
                 Name = data.name,
                 GoldBaseCost =  data.gold.@base,
                 GoldTotalCost = data.gold.total,
-                EffectAmounts = (data.effect as JObject).Properties().Select(x => (float)(x.Value)).ToList()
+                EffectAmounts = (data.effect as JObject)?.Properties().Select(x => (float)(x.Value)).ToList()
             };
         }
     }

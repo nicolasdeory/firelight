@@ -17,9 +17,10 @@ namespace LedDashboard.Modules.Common
             try
             {
                 text = File.ReadAllText(path);
-            } catch (IOException)
+            } catch (Exception e)
             {
-                throw new ArgumentException("File does not exist.");
+                Console.Error.WriteLine(e.StackTrace);
+                throw new ArgumentException("File does not exist.",e);
             }
             
             string[] lines = text.Split('\n');

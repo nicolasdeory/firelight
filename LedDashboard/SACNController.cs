@@ -61,6 +61,7 @@ namespace LedDashboard
             }
             else
             {
+                Console.Error.WriteLine("SACN: Invalid lighting mode");
                 throw new ArgumentException("Invalid lighting mode");
             }
         }

@@ -12,7 +12,7 @@ namespace LedDashboard.Modules.LeagueOfLegends.HUDModules
     /// The league of legends HUD lights are handled here. This is responsible for rendering
     /// the HUD elements, such as the health bar or ward view.
     /// </summary>
-    public class HUDModule
+    class HUDModule
     {
         const int GoldNotificationThreshold = 1300; // When player has more than this gold, keyboard lights up yellow
 
@@ -24,9 +24,6 @@ namespace LedDashboard.Modules.LeagueOfLegends.HUDModules
         static HSVColor BlueTrinketColor = new HSVColor(0.58f, 0.8f, 1f);
 
         static HSVColor GoldColor = new HSVColor(0.11f, 0.8f, 1f);
-
-        static ItemModule _trinketModule;
-        public static ItemModule TrinketModule { get; set; }
 
         static readonly List<int> trinketKeys = new List<int>()
         {
@@ -73,8 +70,8 @@ namespace LedDashboard.Modules.LeagueOfLegends.HUDModules
         {
             if (lightMode != LightingMode.Keyboard) return; // TODO: Implement some sort of notification for LED strip perhaps
 
-            Item trinket = gameState.PlayerChampion.Items.First(x => x.Slot == 4);
-            if (gameState.PlayerItemCooldowns[4]) // if trinket is on cooldown, set black
+            Item trinket = gameState.PlayerChampion.Items.FirstOrDefault(x => x.Slot == 6);
+            if (trinket == null || gameState.PlayerItemCooldowns[6]) // if trinket is on cooldown, set black
             {
                 foreach(int k in trinketKeys)
                 {
@@ -83,18 +80,19 @@ namespace LedDashboard.Modules.LeagueOfLegends.HUDModules
             } else
             {
                 HSVColor col = HSVColor.Black;
-                if (trinket.ItemID == 222)
+                if (trinket.ItemID == 3340)
                 {
                     col = YellowTrinketColor;
                 }
-                else if (trinket.ItemID == 223)
+                else if (trinket.ItemID == 3364)
                 {
                     col = RedTrinketColor;
                 }
-                else if (trinket.ItemID == 224)
+                else if (trinket.ItemID == 3363)
                 {
                     col = BlueTrinketColor;
                 }
+                // TODO: HANDLE HERALD EYE
                 foreach (int k in trinketKeys)
                 {
                     leds[k].Color(col);

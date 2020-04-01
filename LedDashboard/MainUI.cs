@@ -190,8 +190,9 @@ namespace LedDashboard
             {
                 json = File.ReadAllText(@"Resources/keyboardLayout.json");
             }
-            catch (IOException)
+            catch (IOException e)
             {
+                Console.Error.WriteLine(e.StackTrace);
                 throw new ArgumentException("File does not exist.");
             }
 

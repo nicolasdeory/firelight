@@ -13,7 +13,7 @@ namespace LedDashboard.Modules.LeagueOfLegends
     public static class ItemUtils
     {
         const string VERSION_ENDPOINT = "https://ddragon.leagueoflegends.com/api/versions.json";
-        const string CHAMPION_INFO_ENDPOINT = "http://ddragon.leagueoflegends.com/cdn/{0}/data/en_US/item.json";
+        const string ITEM_INFO_ENDPOINT = "http://ddragon.leagueoflegends.com/cdn/{0}/data/en_US/item.json";
 
         static Dictionary<int, ItemAttributes> itemAttributeDict;
 
@@ -21,7 +21,7 @@ namespace LedDashboard.Modules.LeagueOfLegends
         {
             if (!itemAttributeDict.ContainsKey(itemID))
             {
-                throw new ArgumentException("Invalid item ID");
+                return null; // Either an invalid itemID is given, or dictionary hasn't loaded yet (race condition).
             }
             return itemAttributeDict[itemID];
         }
@@ -49,7 +49,7 @@ namespace LedDashboard.Modules.LeagueOfLegends
             string itemsJSON;
             try
             {
-                itemsJSON = await WebRequestUtil.GetResponse(String.Format(CHAMPION_INFO_ENDPOINT, latestVersion));
+                itemsJSON = await WebRequestUtil.GetResponse(String.Format(ITEM_INFO_ENDPOINT, latestVersion));
 
             }
             catch (WebException e)

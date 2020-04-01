@@ -153,7 +153,7 @@ namespace LedDashboard.Modules.LeagueOfLegends
 
         }
 
-        private async Task OnGameInitialized() // TODO: Handle items and summoner spells
+        private async Task OnGameInitialized() // TODO: Handle summoner spells
         {
             animationModule.StopCurrentAnimation(); // stops the current anim
 
@@ -225,6 +225,7 @@ namespace LedDashboard.Modules.LeagueOfLegends
             // Update player ability cooldowns
             gameState.PlayerAbilityCooldowns = championModule?.AbilitiesOnCooldown;
             // Get player items
+            gameState.PlayerItemCooldowns = new bool[7];
             foreach (Item item in gameState.PlayerChampion.Items)
             {
                 ItemAttributes attrs = ItemUtils.GetItemAttributes(item.ItemID);
@@ -237,11 +238,13 @@ namespace LedDashboard.Modules.LeagueOfLegends
                         ItemModules[item.Slot] = OracleLensModule.Create(this.leds.Length, this.gameState, item.Slot,this.lightingMode, this.preferredCastMode);
                         ItemModules[item.Slot].NewFrameReady += OnNewFrameReceived;
                         ItemModules[item.Slot].ItemCast += OnItemActivated;
-                        if (item.Slot == 4) // trinket
-                        {
-                            HUDModule.TrinketModule = ItemModules[item.Slot];
-                        }
                     }
+                    ItemModules[item.Slot].UpdateGameState(gameState);
+                    gameState.PlayerItemCooldowns[item.Slot] = ItemModules[item.Slot].OnCooldown;
+                } else
+                {
+                    ItemModules[item.Slot]?.Dispose();
+                    ItemModules[item.Slot] = null;
                 }
             }
 
@@ -263,6 +266,7 @@ namespace LedDashboard.Modules.LeagueOfLegends
                     if (!CheckIfDead())
                     {
                         HUDModule.DoFrame(this.leds, this.lightingMode, this.gameState);
+                        NewFrameReady?.Invoke(this, this.leds, this.lightingMode);
                     }
 
                 }
@@ -293,7 +297,7 @@ namespace LedDashboard.Modules.LeagueOfLegends
         /// <param name="data">LED data</param>
         private void OnNewFrameReceived(object s, Led[] data, LightingMode mode)
         {
-            if (s is ChampionModule && CurrentLEDSource is ItemModule) // Champion modules take priority over item casts... for the moment
+            if ((s is ChampionModule && CurrentLEDSource is ItemModule && !((ItemModule)CurrentLEDSource).IsPriorityItem)) // Champion modules take priority over item casts... for the moment
             {
                 CurrentLEDSource = (LEDModule)s;
             }

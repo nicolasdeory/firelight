@@ -9,12 +9,13 @@ using System.Threading.Tasks;
 
 namespace LedDashboard.Modules.LeagueOfLegends.ItemModules
 {
-    public class OracleLensModule : ItemModule
+    class OracleLensModule : ItemModule
     {
 
         // Variables
 
-        AnimationModule animator; // Animator module that will be useful to display animations
+
+        // Cooldown
 
         /// <summary>
         /// Creates a new champion instance.
@@ -37,22 +38,36 @@ namespace LedDashboard.Modules.LeagueOfLegends.ItemModules
             // Set preferred cast mode. It's a player choice (Quick cast, Quick cast with indicator, or Normal cast)
             PreferredCastMode = preferredCastMode;
 
+            ItemCast += OnItemActivated;
+            GameStateUpdated += OnGameStateUpdated;
             // Set item cast mode.
             // For Oracle Lens, for example:
             // It's Instant Cast (press it, and the trinket activates)
-            // For a ward, 
+            // For a ward, it's normal cast (press & click)
             ItemCastMode = AbilityCastMode.Instant();
 
             // Preload all the animations you'll want to use. MAKE SURE that each animation file
             // has its Build Action set to "Content" and "Copy to Output Directory" is set to "Always".
 
             animator = AnimationModule.Create(ledCount);
-            /*animator.PreloadAnimation(@"Animations/Vel'Koz/q_start.txt");
-            animator.PreloadAnimation(@"Animations/Vel'Koz/q_recast.txt");
-            animator.PreloadAnimation(@"Animations/Vel'Koz/w_cast.txt");
-            animator.PreloadAnimation(@"Animations/Vel'Koz/w_close.txt");
-            animator.PreloadAnimation(@"Animations/Vel'Koz/r_cast.txt");*/
+            animator.NewFrameReady += (_, ls, mode) => DispatchNewFrame(ls, mode);
 
+            animator.PreloadAnimation(ITEM_ANIMATION_PATH + "OracleLens/activation.txt");
+
+        }
+
+        private void OnItemActivated(object s, EventArgs e)
+        {
+            // Play relevant animations here
+            animator.RunAnimationInLoop(ITEM_ANIMATION_PATH + "OracleLens/activation.txt", 8500);
+        }
+
+        private void OnGameStateUpdated(GameState state) // TODO: Handle when player buys a different trinket and cooldown gets transferred over
+        {
+            // Normally you wouldn't need to do this, but since some trinket cooldowns depend on
+            // average champion level, we need to contemplate this.
+            double averageLevel = state.Champions.Select(x => x.Level).Average();
+            CooldownDuration = (int)((91.765 - 1.765 * averageLevel) * 1000);
         }
     }
 }

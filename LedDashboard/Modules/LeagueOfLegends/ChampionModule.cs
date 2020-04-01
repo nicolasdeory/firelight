@@ -1,4 +1,5 @@
-﻿using LedDashboard.Modules.LeagueOfLegends.ChampionModules.Common;
+﻿using LedDashboard.Modules.BasicAnimation;
+using LedDashboard.Modules.LeagueOfLegends.ChampionModules.Common;
 using LedDashboard.Modules.LeagueOfLegends.Model;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -13,7 +14,7 @@ using System.Windows.Forms;
 
 namespace LedDashboard.Modules.LeagueOfLegends
 {
-    public abstract class ChampionModule : LEDModule
+    abstract class ChampionModule : LEDModule
     {
         const string VERSION_ENDPOINT = "https://ddragon.leagueoflegends.com/api/versions.json";
         const string CHAMPION_INFO_ENDPOINT = "http://ddragon.leagueoflegends.com/cdn/{0}/data/en_US/champion/{1}.json";
@@ -43,6 +44,8 @@ namespace LedDashboard.Modules.LeagueOfLegends
         protected event EventHandler<AbilityKey> AbilityRecast;
 
         public string Name;
+
+        protected AnimationModule animator; // Animator module that will be useful to display animations
 
         protected ChampionAttributes ChampionInfo;
         protected GameState GameState;
@@ -390,9 +393,15 @@ namespace LedDashboard.Modules.LeagueOfLegends
 
         public void Dispose()
         {
+            animator.Dispose();
             KeyboardHookService.Instance.OnMouseClicked -= OnMouseClick;
             KeyboardHookService.Instance.OnKeyPressed -= OnKeyPress;
             KeyboardHookService.Instance.OnKeyReleased -= OnKeyRelease;
+        }
+
+        public void StopAnimations()
+        {
+            animator.StopCurrentAnimation();
         }
     }
 }

@@ -64,22 +64,25 @@
   <ItemGroup>
     <None Include="App.config" />
     <None Include="packages.config" />
-    <Content Include="Animations\Ahri\e_cast.txt">
+    <Content Include="Animations\LeagueOfLegends\Champions\Ahri\e_cast.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="Animations\Ahri\q_end.txt">
+    <Content Include="Animations\LeagueOfLegends\Champions\Ahri\q_end.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="Animations\Ahri\q_start.txt">
+    <Content Include="Animations\LeagueOfLegends\Champions\Ahri\q_start.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="Animations\Ahri\r_right.txt">
+    <Content Include="Animations\LeagueOfLegends\Champions\Ahri\r_right.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="Animations\Ahri\r_left.txt">
+    <Content Include="Animations\LeagueOfLegends\Champions\Ahri\r_left.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="Animations\Ahri\w_cast.txt">
+    <Content Include="Animations\LeagueOfLegends\Champions\Ahri\w_cast.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Animations\LeagueOfLegends\Items\OracleLens\activation.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="Resources\keyboardLayout.json">
@@ -353,7 +356,6 @@
     <Content Include="ChromaAppInfo.xml" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Animations\LeagueOfLegends\Items\" />
     <Folder Include="Modules\KeyboardListener\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

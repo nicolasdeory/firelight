@@ -1,4 +1,5 @@
-﻿using LedDashboard.Modules.LeagueOfLegends.ChampionModules.Common;
+﻿using LedDashboard.Modules.BasicAnimation;
+using LedDashboard.Modules.LeagueOfLegends.ChampionModules.Common;
 using LedDashboard.Modules.LeagueOfLegends.Model;
 using System;
 using System.Collections.Generic;
@@ -9,9 +10,11 @@ using System.Windows.Forms;
 
 namespace LedDashboard.Modules.LeagueOfLegends
 {
-    public class ItemModule : LEDModule // TODO: Very similar to ChampionModule, refactor some of that stuff inside a common class.
+    class ItemModule : LEDModule // TODO: Very similar to ChampionModule, refactor some of that stuff inside a common class.
     {
-        protected const string ANIMATION_PATH = @"Animations/LeagueOfLegends/Items/";
+        protected const string ITEM_ANIMATION_PATH = @"Animations/LeagueOfLegends/Items/";
+
+        protected AnimationModule animator; // Animator module that will be useful to display animations
 
         public bool OnCooldown => _onCooldown;
         private bool _onCooldown = false;
@@ -20,16 +23,18 @@ namespace LedDashboard.Modules.LeagueOfLegends
 
         /// <summary>
         /// To be set by inherited class. It can change over time for some items such as ward trinkets.
+        /// Most of the time, though, it's a constant value
         /// Expressed in milliseconds.
         /// </summary>
-        protected int CooldownDuration = 0; 
+        protected int CooldownDuration = 0;
         protected GameState GameState;
 
         /// <summary>
         /// Set to true if the animation for casting this item has more priority than others.
         /// (e.g. Eye of the Herald animation has more priority than other spells)
         /// </summary>
-        protected bool IsPriorityItem;
+        protected bool _IsPriorityItem; // TODO: Fully implement
+        public bool IsPriorityItem => _IsPriorityItem;
 
         ItemAttributes ItemAttributes;
 
@@ -41,7 +46,7 @@ namespace LedDashboard.Modules.LeagueOfLegends
         /// <summary>
         /// Raised when the player info was updated.
         /// </summary>
-        protected event GameStateUpdatedHandler PlayerInfoUpdated;
+        protected event GameStateUpdatedHandler GameStateUpdated;
 
         public event EventHandler ItemCast;
 
@@ -49,6 +54,8 @@ namespace LedDashboard.Modules.LeagueOfLegends
         protected AbilityCastMode ItemCastMode;
 
         private int itemSlot;
+
+        private char activationKey;
 
         private char lastPressedKey = '\0';
 
@@ -58,6 +65,7 @@ namespace LedDashboard.Modules.LeagueOfLegends
             ItemAttributes = ItemUtils.GetItemAttributes(itemID);
             GameState = state;
             this.itemSlot = itemSlot;
+            this.activationKey = GetKeyForItemSlot(itemSlot); // TODO: Handle key rebinds...
 
             KeyboardHookService.Instance.OnMouseClicked += OnMouseClick; // TODO. Abstract this to league of legends module, so it pairs with summoner spells and items.
             KeyboardHookService.Instance.OnKeyPressed += OnKeyPress;
@@ -103,8 +111,7 @@ namespace LedDashboard.Modules.LeagueOfLegends
         {
             if (keyChar == lastPressedKey && !keyUp) return; // prevent duplicate calls. Without this, this gets called every frame a key is pressed.
             lastPressedKey = keyUp ? '\0' : keyChar;
-            int slotNumberChar = (itemSlot + 1).ToString()[0]; // TODO: Handle key rebinds...
-            if (keyChar == slotNumberChar)
+            if (keyChar == activationKey)
             {
                 DoCastLogic(keyUp);
             }
@@ -181,7 +188,7 @@ namespace LedDashboard.Modules.LeagueOfLegends
         public void UpdateGameState(GameState updatedGameState)
         {
             GameState = updatedGameState;
-            PlayerInfoUpdated?.Invoke(updatedGameState);
+            GameStateUpdated?.Invoke(updatedGameState);
         }
 
         /// <summary>
@@ -191,12 +198,6 @@ namespace LedDashboard.Modules.LeagueOfLegends
         {
             if (GameState.ActivePlayer.IsDead || !ItemCastMode.Castable) return false;
             if (_onCooldown) return false;
-           /* if (PlayerInfo.Stats.ResourceValue < ChampionInfo.Costs.GetManaCost(spellKey, PlayerInfo.AbilityLoadout.GetAbilityLevel(spellKey)))
-            {
-                // raise not enough mana event
-                TriedToCastOutOfMana?.Invoke();
-                return false;
-            }*/
             return true;
         }
 
@@ -215,9 +216,29 @@ namespace LedDashboard.Modules.LeagueOfLegends
 
         public void Dispose()
         {
+            animator.Dispose();
             KeyboardHookService.Instance.OnMouseClicked -= OnMouseClick;
             KeyboardHookService.Instance.OnKeyPressed -= OnKeyPress;
             KeyboardHookService.Instance.OnKeyReleased -= OnKeyRelease;
+        }
+
+        public void StopAnimations()
+        {
+            animator.StopCurrentAnimation();
+        }
+
+        private static char GetKeyForItemSlot(int slot)
+        {
+            return slot switch
+            {
+                0 => '1',
+                1 => '2',
+                2 => '3',
+                3 => '5',
+                4 => '6',
+                5 => '7',
+                6 => '4'
+            };
         }
     }
 }

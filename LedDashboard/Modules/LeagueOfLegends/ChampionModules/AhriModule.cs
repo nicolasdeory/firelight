@@ -62,12 +62,12 @@ namespace LedDashboard.Modules.LeagueOfLegends.ChampionModules
             // has its Build Action set to "Content" and "Copy to Output Directory" is set to "Always".
 
             animator = AnimationModule.Create(ledCount);
-            animator.PreloadAnimation(ANIMATION_PATH + @"Ahri/q_start.txt");
-            animator.PreloadAnimation(ANIMATION_PATH + @"Ahri/q_end.txt");
-            animator.PreloadAnimation(ANIMATION_PATH + @"Ahri/w_cast.txt");
-            animator.PreloadAnimation(ANIMATION_PATH + @"Ahri/e_cast.txt");
-            animator.PreloadAnimation(ANIMATION_PATH + @"Ahri/r_right.txt");
-            animator.PreloadAnimation(ANIMATION_PATH + @"Ahri/r_left.txt");
+            animator.PreloadAnimation(ANIMATION_PATH + "Ahri/q_start.txt");
+            animator.PreloadAnimation(ANIMATION_PATH + "Ahri/q_end.txt");
+            animator.PreloadAnimation(ANIMATION_PATH + "Ahri/w_cast.txt");
+            animator.PreloadAnimation(ANIMATION_PATH + "Ahri/e_cast.txt");
+            animator.PreloadAnimation(ANIMATION_PATH + "Ahri/r_right.txt");
+            animator.PreloadAnimation(ANIMATION_PATH + "Ahri/r_left.txt");
 
             ChampionInfoLoaded += OnChampionInfoLoaded;
         }
@@ -109,9 +109,9 @@ namespace LedDashboard.Modules.LeagueOfLegends.ChampionModules
         {
             Task.Run(async () =>
             {
-                animator.RunAnimationOnce(@"Animations/Ahri/q_start.txt", true);
+                animator.RunAnimationOnce(ANIMATION_PATH + "Ahri/q_start.txt", true);
                 await Task.Delay(1000);
-                animator.RunAnimationOnce(@"Animations/Ahri/q_end.txt", true);
+                animator.RunAnimationOnce(ANIMATION_PATH + "Ahri/q_end.txt", true);
             });
         }
 
@@ -119,7 +119,7 @@ namespace LedDashboard.Modules.LeagueOfLegends.ChampionModules
         {
             Task.Run(async () =>
             {
-                animator.RunAnimationOnce(@"Animations/Ahri/w_cast.txt", false, 0.08f);
+                animator.RunAnimationOnce(ANIMATION_PATH + "Ahri/w_cast.txt", false, 0.08f);
             });
         }
 
@@ -128,7 +128,7 @@ namespace LedDashboard.Modules.LeagueOfLegends.ChampionModules
             Task.Run(async () =>
             {
                 await Task.Delay(100);
-                animator.RunAnimationOnce(@"Animations/Ahri/e_cast.txt");
+                animator.RunAnimationOnce(ANIMATION_PATH + "Ahri/e_cast.txt");
             });
         }
 
@@ -137,7 +137,7 @@ namespace LedDashboard.Modules.LeagueOfLegends.ChampionModules
 
             // Trigger the start animation.
 
-            animator.RunAnimationOnce(@"Animations/Ahri/r_right.txt");
+            animator.RunAnimationOnce(ANIMATION_PATH + "Ahri/r_right.txt");
 
             // The R cast is in progress.
             rCastInProgress = 1;
@@ -162,11 +162,11 @@ namespace LedDashboard.Modules.LeagueOfLegends.ChampionModules
             {
                 if (rCastInProgress == 1)
                 {
-                    animator.RunAnimationOnce(@"Animations/Ahri/r_left.txt");
+                    animator.RunAnimationOnce(ANIMATION_PATH + "Ahri/r_left.txt");
                     rCastInProgress++;
                 } else if (rCastInProgress == 2)
                 {
-                    animator.RunAnimationOnce(@"Animations/Ahri/r_right.txt");
+                    animator.RunAnimationOnce(ANIMATION_PATH + "Ahri/r_right.txt");
                     rCastInProgress = 0; // done, all 3 casts have been used.
                 }
                 
