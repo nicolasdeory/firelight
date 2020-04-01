@@ -25,6 +25,9 @@ namespace LedDashboard.Modules.LeagueOfLegends.HUDModules
 
         static HSVColor GoldColor = new HSVColor(0.11f, 0.8f, 1f);
 
+        static ItemModule _trinketModule;
+        public static ItemModule TrinketModule { get; set; }
+
         static readonly List<int> trinketKeys = new List<int>()
         {
             KeyUtils.PointToKey(new Point(16,0)),

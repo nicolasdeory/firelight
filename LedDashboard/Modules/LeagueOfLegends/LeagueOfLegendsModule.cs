@@ -2,6 +2,7 @@
 using LedDashboard.Modules.LeagueOfLegends.ChampionModules;
 using LedDashboard.Modules.LeagueOfLegends.ChampionModules.Common;
 using LedDashboard.Modules.LeagueOfLegends.HUDModules;
+using LedDashboard.Modules.LeagueOfLegends.ItemModules;
 using LedDashboard.Modules.LeagueOfLegends.Model;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -38,6 +39,8 @@ namespace LedDashboard.Modules.LeagueOfLegends
 
         ChampionModule championModule;
         AnimationModule animationModule;
+
+        ItemModule[] ItemModules = new ItemModule[7];
 
         ulong msSinceLastExternalFrameReceived = 30000;
         ulong msAnimationTimerThreshold = 1500; // how long to wait for animation data until health bar kicks back in.
@@ -88,6 +91,9 @@ namespace LedDashboard.Modules.LeagueOfLegends
         {
 
             // League of Legends integration Initialization
+
+            // Init Item Attributes
+            ItemUtils.Init();
 
             this.preferredCastMode = castMode;
 
@@ -160,13 +166,13 @@ namespace LedDashboard.Modules.LeagueOfLegends
             // TODO: Make this easily extendable when there are many champion modules
             if (gameState.PlayerChampion.RawChampionName.ToLower().Contains("velkoz"))
             {
-                championModule = VelKozModule.Create(this.leds.Length, this.gameState.ActivePlayer, this.lightingMode, this.preferredCastMode);
+                championModule = VelKozModule.Create(this.leds.Length, this.gameState, this.lightingMode, this.preferredCastMode);
                 championModule.NewFrameReady += OnNewFrameReceived;
                 championModule.TriedToCastOutOfMana += OnAbilityCastNoMana;
             }
             else if (gameState.PlayerChampion.RawChampionName.ToLower().Contains("ahri"))
             {
-                championModule = AhriModule.Create(this.leds.Length, this.gameState.ActivePlayer, this.lightingMode, this.preferredCastMode);
+                championModule = AhriModule.Create(this.leds.Length, this.gameState, this.lightingMode, this.preferredCastMode);
                 championModule.NewFrameReady += OnNewFrameReceived;
                 championModule.TriedToCastOutOfMana += OnAbilityCastNoMana;
             }
@@ -215,9 +221,30 @@ namespace LedDashboard.Modules.LeagueOfLegends
             // Update active player based on player champion data
             gameState.ActivePlayer.IsDead = gameState.PlayerChampion.IsDead;
             // Update champion LED module information
-            if (championModule != null) championModule.UpdatePlayerInfo(gameState.ActivePlayer);
+            if (championModule != null) championModule.UpdateGameState(gameState);
             // Update player ability cooldowns
             gameState.PlayerAbilityCooldowns = championModule?.AbilitiesOnCooldown;
+            // Get player items
+            foreach (Item item in gameState.PlayerChampion.Items)
+            {
+                ItemAttributes attrs = ItemUtils.GetItemAttributes(item.ItemID);
+                // decide and create module accordingly. TODO: Class attributes like champion module
+                if (item.ItemID == 3364) // oracle lens
+                {
+                    if (!(ItemModules[item.Slot] is OracleLensModule))
+                    {
+                        ItemModules[item.Slot]?.Dispose();
+                        ItemModules[item.Slot] = OracleLensModule.Create(this.leds.Length, this.gameState, item.Slot,this.lightingMode, this.preferredCastMode);
+                        ItemModules[item.Slot].NewFrameReady += OnNewFrameReceived;
+                        ItemModules[item.Slot].ItemCast += OnItemActivated;
+                        if (item.Slot == 4) // trinket
+                        {
+                            HUDModule.TrinketModule = ItemModules[item.Slot];
+                        }
+                    }
+                }
+            }
+
             // Process game events
             ProcessGameEvents(firstTime);
 
@@ -266,6 +293,10 @@ namespace LedDashboard.Modules.LeagueOfLegends
         /// <param name="data">LED data</param>
         private void OnNewFrameReceived(object s, Led[] data, LightingMode mode)
         {
+            if (s is ChampionModule && CurrentLEDSource is ItemModule) // Champion modules take priority over item casts... for the moment
+            {
+                CurrentLEDSource = (LEDModule)s;
+            }
             if (s != CurrentLEDSource) return; // If it's from a different source that what we're listening too, ignore it
             NewFrameReady?.Invoke(this, data, mode);
             msSinceLastExternalFrameReceived = 0;
@@ -359,6 +390,11 @@ namespace LedDashboard.Modules.LeagueOfLegends
         {
 
 
+        }
+
+        private void OnItemActivated(object s, EventArgs e)
+        {
+            CurrentLEDSource = (LEDModule)s;
         }
 
         /// <summary>

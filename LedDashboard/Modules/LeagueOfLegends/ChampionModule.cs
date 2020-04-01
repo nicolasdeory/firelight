@@ -17,14 +17,15 @@ namespace LedDashboard.Modules.LeagueOfLegends
     {
         const string VERSION_ENDPOINT = "https://ddragon.leagueoflegends.com/api/versions.json";
         const string CHAMPION_INFO_ENDPOINT = "http://ddragon.leagueoflegends.com/cdn/{0}/data/en_US/champion/{1}.json";
+        protected const string ANIMATION_PATH = @"Animations/LeagueOfLegends/Champions/";
 
         public event LEDModule.FrameReadyHandler NewFrameReady;
 
-        protected delegate void PlayerInfoUpdatedHandle(ActivePlayer updatedPlayer);
+        protected delegate void GameStateUpdatedHandler(GameState newState);
         /// <summary>
         /// Raised when the player info was updated.
         /// </summary>
-        protected event PlayerInfoUpdatedHandle PlayerInfoUpdated;
+        protected event GameStateUpdatedHandler GameStateUpdated;
 
         protected delegate void ChampionInfoLoadedHandler(ChampionAttributes attributes);
         /// <summary>
@@ -38,13 +39,13 @@ namespace LedDashboard.Modules.LeagueOfLegends
         /// </summary>
         public event OutOfManaHandler TriedToCastOutOfMana;
 
-        public event EventHandler<AbilityKey> AbilityCast;
-        public event EventHandler<AbilityKey> AbilityRecast;
+        protected event EventHandler<AbilityKey> AbilityCast;
+        protected event EventHandler<AbilityKey> AbilityRecast;
 
         public string Name;
 
         protected ChampionAttributes ChampionInfo;
-        protected ActivePlayer PlayerInfo;
+        protected GameState GameState;
         protected LightingMode LightingMode; // Preferred lighting mode. If set to keyboard, it should try to provide animations that look cooler on keyboards.
 
         protected AbilityCastPreference PreferredCastMode; // User defined setting, preferred cast mode.
@@ -81,10 +82,10 @@ namespace LedDashboard.Modules.LeagueOfLegends
 
         // TODO: Handle champions with cooldown resets?
 
-        protected ChampionModule(string champName, ActivePlayer playerInfo, LightingMode preferredLightingMode)
+        protected ChampionModule(string champName, GameState gameState, LightingMode preferredLightingMode) // TODO: Pass gamestate instead of active player
         {
             Name = champName;
-            PlayerInfo = playerInfo;
+            GameState = gameState;
             LightingMode = preferredLightingMode;
             LoadChampionInformation(champName);
         }
@@ -310,10 +311,10 @@ namespace LedDashboard.Modules.LeagueOfLegends
         /// <summary>
         /// Updates player info and raises the appropiate events.
         /// </summary>
-        public void UpdatePlayerInfo(ActivePlayer updatedPlayerInfo)
+        public void UpdateGameState(GameState newState)
         {
-            PlayerInfo = updatedPlayerInfo;
-            PlayerInfoUpdated?.Invoke(updatedPlayerInfo);
+            GameState = newState;
+            GameStateUpdated?.Invoke(newState);
         }
 
         /// <summary>
@@ -321,16 +322,23 @@ namespace LedDashboard.Modules.LeagueOfLegends
         /// </summary>
         protected int GetCooldownForAbility(AbilityKey ability)
         {
+            AbilityLoadout abilities = GameState.ActivePlayer.AbilityLoadout;
+            ChampionCosts costs = ChampionInfo.Costs;
+            float cdr = GameState.ActivePlayer.Stats.CooldownReduction;
             return ability switch
             {
-                AbilityKey.Q => (int)(ChampionInfo.Costs.Q_Cooldown[PlayerInfo.AbilityLoadout.Q_Level-1]
-                                   + ChampionInfo.Costs.Q_Cooldown[PlayerInfo.AbilityLoadout.Q_Level - 1] * PlayerInfo.Stats.CooldownReduction),
-                AbilityKey.W => (int)(ChampionInfo.Costs.W_Cooldown[PlayerInfo.AbilityLoadout.W_Level - 1]
-                                    + ChampionInfo.Costs.W_Cooldown[PlayerInfo.AbilityLoadout.W_Level - 1] * PlayerInfo.Stats.CooldownReduction),
-                AbilityKey.E => (int)(ChampionInfo.Costs.E_Cooldown[PlayerInfo.AbilityLoadout.E_Level - 1]
-                                    + ChampionInfo.Costs.E_Cooldown[PlayerInfo.AbilityLoadout.E_Level - 1] * PlayerInfo.Stats.CooldownReduction),
-                AbilityKey.R => (int)(ChampionInfo.Costs.R_Cooldown[PlayerInfo.AbilityLoadout.R_Level - 1]
-                                    + ChampionInfo.Costs.R_Cooldown[PlayerInfo.AbilityLoadout.R_Level - 1] * PlayerInfo.Stats.CooldownReduction),
+                AbilityKey.Q => (int)(costs.Q_Cooldown[abilities.Q_Level-1]
+                                   + costs.Q_Cooldown[abilities.Q_Level - 1] * cdr),
+
+                AbilityKey.W => (int)(costs.W_Cooldown[abilities.W_Level - 1]
+                                    + costs.W_Cooldown[abilities.W_Level - 1] * cdr),
+
+                AbilityKey.E => (int)(costs.E_Cooldown[abilities.E_Level - 1]
+                                    + costs.E_Cooldown[abilities.E_Level - 1] * cdr),
+
+                AbilityKey.R => (int)(costs.R_Cooldown[abilities.R_Level - 1]
+                                    + costs.R_Cooldown[abilities.R_Level - 1] * cdr),
+
                 _ => 0,
             };
         }
@@ -340,10 +348,11 @@ namespace LedDashboard.Modules.LeagueOfLegends
         /// </summary>
         protected bool CanCastAbility(AbilityKey spellKey)
         {
-            if (PlayerInfo.IsDead) return false;
-            if (PlayerInfo.AbilityLoadout.GetAbilityLevel(spellKey) == 0) return false;
+            if (GameState.ActivePlayer.IsDead || !AbilityCastModes[spellKey].Castable) return false;
+            if (GameState.ActivePlayer.AbilityLoadout.GetAbilityLevel(spellKey) == 0) return false;
             if (_AbilitiesOnCooldown[spellKey]) return false;
-            if (PlayerInfo.Stats.ResourceValue < ChampionInfo.Costs.GetManaCost(spellKey, PlayerInfo.AbilityLoadout.GetAbilityLevel(spellKey)))
+            int manaCost = ChampionInfo.Costs.GetManaCost(spellKey, GameState.ActivePlayer.AbilityLoadout.GetAbilityLevel(spellKey));
+            if (GameState.ActivePlayer.Stats.ResourceValue < manaCost)
             {
                 // raise not enough mana event
                 TriedToCastOutOfMana?.Invoke();

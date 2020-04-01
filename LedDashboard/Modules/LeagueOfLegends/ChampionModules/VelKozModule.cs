@@ -26,17 +26,17 @@ namespace LedDashboard.Modules.LeagueOfLegends.ChampionModules
         /// Creates a new champion instance.
         /// </summary>
         /// <param name="ledCount">Number of LEDs in the strip</param>
-        /// <param name="playerInfo">Player information data</param>
+        /// <param name="gameState">Game state data</param>
         /// <param name="preferredLightMode">Preferred light mode</param>
         /// <param name="preferredCastMode">Preferred ability cast mode (Normal, Quick Cast, Quick Cast with Indicator)</param>
-        public static VelKozModule Create(int ledCount, ActivePlayer playerInfo, LightingMode preferredLightMode, AbilityCastPreference preferredCastMode = AbilityCastPreference.Normal)
+        public static VelKozModule Create(int ledCount, GameState gameState, LightingMode preferredLightMode, AbilityCastPreference preferredCastMode = AbilityCastPreference.Normal)
         {
-            return new VelKozModule(ledCount, playerInfo, "Velkoz", preferredLightMode, preferredCastMode);
+            return new VelKozModule(ledCount, gameState, "Velkoz", preferredLightMode, preferredCastMode);
         }
 
 
-        private VelKozModule(int ledCount, ActivePlayer playerInfo, string championName, LightingMode preferredLightMode, AbilityCastPreference preferredCastMode) 
-                            : base(championName, playerInfo, preferredLightMode)
+        private VelKozModule(int ledCount, GameState gameState, string championName, LightingMode preferredLightMode, AbilityCastPreference preferredCastMode) 
+                            : base(championName, gameState, preferredLightMode)
         {
             // Initialization for the champion module occurs here.
 
@@ -62,11 +62,11 @@ namespace LedDashboard.Modules.LeagueOfLegends.ChampionModules
             // has its Build Action set to "Content" and "Copy to Output Directory" is set to "Always".
 
             animator = AnimationModule.Create(ledCount);
-            animator.PreloadAnimation(@"Animations/Vel'Koz/q_start.txt");
-            animator.PreloadAnimation(@"Animations/Vel'Koz/q_recast.txt");
-            animator.PreloadAnimation(@"Animations/Vel'Koz/w_cast.txt");
-            animator.PreloadAnimation(@"Animations/Vel'Koz/w_close.txt");
-            animator.PreloadAnimation(@"Animations/Vel'Koz/r_cast.txt");
+            animator.PreloadAnimation(ANIMATION_PATH + @"Vel'Koz/q_start.txt");
+            animator.PreloadAnimation(ANIMATION_PATH + @"Vel'Koz/q_recast.txt");
+            animator.PreloadAnimation(ANIMATION_PATH + @"Vel'Koz/w_cast.txt");
+            animator.PreloadAnimation(ANIMATION_PATH + @"Vel'Koz/w_close.txt");
+            animator.PreloadAnimation(ANIMATION_PATH + @"Vel'Koz/r_cast.txt");
 
 
             ChampionInfoLoaded += OnChampionInfoLoaded;

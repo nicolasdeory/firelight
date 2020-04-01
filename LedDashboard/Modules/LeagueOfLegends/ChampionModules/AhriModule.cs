@@ -26,17 +26,17 @@ namespace LedDashboard.Modules.LeagueOfLegends.ChampionModules
         /// Creates a new champion instance.
         /// </summary>
         /// <param name="ledCount">Number of LEDs in the strip</param>
-        /// <param name="playerInfo">Player information data</param>
+        /// <param name="gameState">Game state data</param>
         /// <param name="preferredLightMode">Preferred light mode</param>
         /// <param name="preferredCastMode">Preferred ability cast mode (Normal, Quick Cast, Quick Cast with Indicator)</param>
-        public static AhriModule Create(int ledCount, ActivePlayer playerInfo, LightingMode preferredLightMode, AbilityCastPreference preferredCastMode = AbilityCastPreference.Normal)
+        public static AhriModule Create(int ledCount, GameState gameState, LightingMode preferredLightMode, AbilityCastPreference preferredCastMode = AbilityCastPreference.Normal)
         {
-            return new AhriModule(ledCount, playerInfo, "Ahri", preferredLightMode, preferredCastMode);
+            return new AhriModule(ledCount, gameState, "Ahri", preferredLightMode, preferredCastMode);
         }
 
 
-        private AhriModule(int ledCount, ActivePlayer playerInfo, string championName, LightingMode preferredLightMode, AbilityCastPreference preferredCastMode)
-                            : base(championName, playerInfo, preferredLightMode)
+        private AhriModule(int ledCount, GameState gameState, string championName, LightingMode preferredLightMode, AbilityCastPreference preferredCastMode)
+                            : base(championName, gameState, preferredLightMode)
         {
             // Initialization for the champion module occurs here.
 
@@ -62,12 +62,12 @@ namespace LedDashboard.Modules.LeagueOfLegends.ChampionModules
             // has its Build Action set to "Content" and "Copy to Output Directory" is set to "Always".
 
             animator = AnimationModule.Create(ledCount);
-            animator.PreloadAnimation(@"Animations/Ahri/q_start.txt");
-            animator.PreloadAnimation(@"Animations/Ahri/q_end.txt");
-            animator.PreloadAnimation(@"Animations/Ahri/w_cast.txt");
-            animator.PreloadAnimation(@"Animations/Ahri/e_cast.txt");
-            animator.PreloadAnimation(@"Animations/Ahri/r_right.txt");
-            animator.PreloadAnimation(@"Animations/Ahri/r_left.txt");
+            animator.PreloadAnimation(ANIMATION_PATH + @"Ahri/q_start.txt");
+            animator.PreloadAnimation(ANIMATION_PATH + @"Ahri/q_end.txt");
+            animator.PreloadAnimation(ANIMATION_PATH + @"Ahri/w_cast.txt");
+            animator.PreloadAnimation(ANIMATION_PATH + @"Ahri/e_cast.txt");
+            animator.PreloadAnimation(ANIMATION_PATH + @"Ahri/r_right.txt");
+            animator.PreloadAnimation(ANIMATION_PATH + @"Ahri/r_left.txt");
 
             ChampionInfoLoaded += OnChampionInfoLoaded;
         }
