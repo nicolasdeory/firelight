@@ -34,7 +34,7 @@ namespace LedDashboard.Modules.LeagueOfLegends.ChampionModules
 
 
         private AhriModule(int ledCount, GameState gameState, string championName, LightingMode preferredLightMode, AbilityCastPreference preferredCastMode)
-                            : base(championName, gameState, preferredLightMode)
+                            : base(ledCount, championName, gameState, preferredLightMode)
         {
             // Initialization for the champion module occurs here.
 
@@ -59,7 +59,6 @@ namespace LedDashboard.Modules.LeagueOfLegends.ChampionModules
             // Preload all the animations you'll want to use. MAKE SURE that each animation file
             // has its Build Action set to "Content" and "Copy to Output Directory" is set to "Always".
 
-            animator = AnimationModule.Create(ledCount);
             animator.PreloadAnimation(ANIMATION_PATH + "Ahri/q_start.txt");
             animator.PreloadAnimation(ANIMATION_PATH + "Ahri/q_end.txt");
             animator.PreloadAnimation(ANIMATION_PATH + "Ahri/w_cast.txt");

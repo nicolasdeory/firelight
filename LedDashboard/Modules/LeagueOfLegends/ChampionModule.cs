@@ -85,11 +85,13 @@ namespace LedDashboard.Modules.LeagueOfLegends
 
         // TODO: Handle champions with cooldown resets?
 
-        protected ChampionModule(string champName, GameState gameState, LightingMode preferredLightingMode) // TODO: Pass gamestate instead of active player
+        protected ChampionModule(int ledCount, string champName, GameState gameState, LightingMode preferredLightingMode) // TODO: Pass gamestate instead of active player
         {
             Name = champName;
             GameState = gameState;
             LightingMode = preferredLightingMode;
+            animator = AnimationModule.Create(ledCount);
+
             LoadChampionInformation(champName);
         }
 
@@ -393,7 +395,7 @@ namespace LedDashboard.Modules.LeagueOfLegends
 
         public void Dispose()
         {
-            animator.Dispose();
+            animator?.Dispose();
             KeyboardHookService.Instance.OnMouseClicked -= OnMouseClick;
             KeyboardHookService.Instance.OnKeyPressed -= OnKeyPress;
             KeyboardHookService.Instance.OnKeyReleased -= OnKeyRelease;
