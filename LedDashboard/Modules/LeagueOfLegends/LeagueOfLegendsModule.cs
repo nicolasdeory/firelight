@@ -17,6 +17,8 @@ using System.Threading;
 using System.Threading.Tasks;
 
 namespace LedDashboard.Modules.LeagueOfLegends
+
+    // TODO: Refactor this into a separate project
 {
     class LeagueOfLegendsModule : LEDModule
     {
@@ -99,6 +101,7 @@ namespace LedDashboard.Modules.LeagueOfLegends
 
             // Init Item Attributes
             ItemUtils.Init();
+            ItemCooldownController.Init();
 
             this.preferredCastMode = castMode;
 
@@ -165,6 +168,12 @@ namespace LedDashboard.Modules.LeagueOfLegends
             // Queries the game information
             await QueryPlayerInfo(true);
 
+            // Set trinket initial cooldowns
+            double avgChampLevel = ItemCooldownController.GetAverageChampionLevel(this.gameState);
+            // note: this assumes the program is run BEFORE the game starts, or else it won't be very accurate.
+            ItemCooldownController.SetCooldown(OracleLensModule.ITEM_ID, OracleLensModule.GetCooldownDuration(avgChampLevel)); 
+            ItemCooldownController.SetCooldown(FarsightAlterationModule.ITEM_ID, FarsightAlterationModule.GetCooldownDuration(avgChampLevel));
+
             // Load champion module. Different modules will be loaded depending on the champion.
             // If there is no suitable module for the selected champion, just the health bar will be displayed.
 
@@ -182,18 +191,6 @@ namespace LedDashboard.Modules.LeagueOfLegends
                 championModule.NewFrameReady += OnNewFrameReceived;
                 championModule.TriedToCastOutOfMana += OnAbilityCastNoMana;
             }
-            /*if (gameState.PlayerChampion.RawChampionName.ToLower().Contains("velkoz"))
-            {
-                championModule = VelKozModule.Create(this.leds.Length, this.gameState, this.lightingMode, this.preferredCastMode);
-                championModule.NewFrameReady += OnNewFrameReceived;
-                championModule.TriedToCastOutOfMana += OnAbilityCastNoMana;
-            }
-            else if (gameState.PlayerChampion.RawChampionName.ToLower().Contains("ahri"))
-            {
-                championModule = AhriModule.Create(this.leds.Length, this.gameState, this.lightingMode, this.preferredCastMode);
-                championModule.NewFrameReady += OnNewFrameReceived;
-                championModule.TriedToCastOutOfMana += OnAbilityCastNoMana;
-            }*/
             CurrentLEDSource = championModule;
 
             // Sets up a task to always check for updated player info
@@ -225,7 +222,7 @@ namespace LedDashboard.Modules.LeagueOfLegends
             }
             catch (WebException e)
             {
-                // TODO: Account for League client disconnects, game ended, etc. without crashing the whole program
+                Console.WriteLine("InvalidOperationException: Game client disconnected");
                 throw new InvalidOperationException("Couldn't connect with the game client", e);
             }
 
@@ -243,61 +240,47 @@ namespace LedDashboard.Modules.LeagueOfLegends
             // Update player ability cooldowns
             gameState.PlayerAbilityCooldowns = championModule?.AbilitiesOnCooldown;
             // Get player items
-            gameState.PlayerItemCooldowns = new bool[7];
+            //gameState.PlayerItemCooldowns = new bool[7];
             foreach (Item item in gameState.PlayerChampion.Items)
             {
-                ItemAttributes attrs = ItemUtils.GetItemAttributes(item.ItemID);
-                // decide and create item module accordingly.
-                Type itemType = ItemControllers.FirstOrDefault(
-                                x => item.ItemID == (x.GetCustomAttribute(typeof(ItemAttribute)) as ItemAttribute).ItemID);
-                if (itemType != null)
-                {
-                    if (ItemModules[item.Slot] == null || !(ItemModules[item.Slot].GetType().IsAssignableFrom(itemType)))
-                    {
-                        ItemModules[item.Slot]?.Dispose();
-                        ItemModules[item.Slot] = itemType.GetMethod("Create")
-                                            .Invoke(null, new object[] { this.leds.Length, this.gameState, item.Slot, this.lightingMode, this.preferredCastMode })
-                                            as ItemModule;
-                        ItemModules[item.Slot].ItemCast += OnItemActivated;
-                        ItemModules[item.Slot].NewFrameReady += OnNewFrameReceived;
-                    }
-                    ItemModules[item.Slot].UpdateGameState(gameState);
-                    gameState.PlayerItemCooldowns[item.Slot] = ItemModules[item.Slot].OnCooldown;
-
-                } else
-                {
-                    ItemModules[item.Slot]?.Dispose();
-                    ItemModules[item.Slot] = null;
-                }
-               /* if (item.ItemID == 3364) // oracle lens
-                {
-                    if (!(ItemModules[item.Slot] is OracleLensModule))
-                    {
-                        ItemModules[item.Slot]?.Dispose();
-                        ItemModules[item.Slot] = OracleLensModule.Create(this.leds.Length, this.gameState, item.Slot, this.lightingMode, this.preferredCastMode);
-                        ItemModules[item.Slot].NewFrameReady += OnNewFrameReceived;
-                        ItemModules[item.Slot].ItemCast += OnItemActivated;
-                    }
-                    ItemModules[item.Slot].UpdateGameState(gameState);
-                    gameState.PlayerItemCooldowns[item.Slot] = ItemModules[item.Slot].OnCooldown;
-                }
-                else if (item.ItemID == 3340)
-                {
-                    if (!(ItemModules[item.Slot] is WardingTotemModule))
-                    {
-                        ItemModules[item.Slot]?.Dispose();
-                        ItemModules[item.Slot] = WardingTotemModule.Create(this.leds.Length, this.gameState, item.Slot, this.lightingMode, this.preferredCastMode);
-                        ItemModules[item.Slot].NewFrameReady += OnNewFrameReceived;
-                        ItemModules[item.Slot].ItemCast += OnItemActivated;
-                    }
-                    ItemModules[item.Slot].UpdateGameState(gameState);
-                    gameState.PlayerItemCooldowns[item.Slot] = ItemModules[item.Slot].OnCooldown;
-                }*/
+                SetModuleForItem(item);
             }
 
             // Process game events
             ProcessGameEvents(firstTime);
 
+        }
+
+        private void SetModuleForItem(Item item)
+        {
+            ItemAttributes attrs = ItemUtils.GetItemAttributes(item.ItemID);
+            // decide and create item module accordingly.
+            Type itemType = ItemControllers.FirstOrDefault(
+                            x => item.ItemID == (x.GetCustomAttribute(typeof(ItemAttribute)) as ItemAttribute).ItemID);
+            if (itemType != null)
+            {
+                if (ItemModules[item.Slot] == null || !(ItemModules[item.Slot].GetType().IsAssignableFrom(itemType)))
+                {
+                    ItemModules[item.Slot]?.Dispose();
+                    ItemModules[item.Slot] = itemType.GetMethod("Create")
+                                        .Invoke(null, new object[] { this.leds.Length, this.gameState, item.Slot, this.lightingMode, this.preferredCastMode })
+                                        as ItemModule;
+                    ItemModules[item.Slot].ItemCast += OnItemActivated;
+                    ItemModules[item.Slot].NewFrameReady += OnNewFrameReceived;
+                    ItemCooldownController.AssignItemIdToSlot(item.Slot, item.ItemID);
+                    if (item.ItemID == WardingTotemModule.ITEM_ID)
+                    {
+                        WardingTotemModule.Current = ItemModules[item.Slot] as WardingTotemModule; // HACK to make it accessible to HUDModule
+                    }
+                    // TODO: Show an item buy animation here?
+                }
+                ItemModules[item.Slot].UpdateGameState(gameState);
+            }
+            else
+            {
+                ItemModules[item.Slot]?.Dispose();
+                ItemModules[item.Slot] = null;
+            }
         }
 
         /// <summary>
@@ -482,6 +465,7 @@ namespace LedDashboard.Modules.LeagueOfLegends
             masterCancelToken.Cancel();
             animationModule.StopCurrentAnimation();
             championModule?.Dispose();
+            ItemCooldownController.Dispose();
         }
     }
 }

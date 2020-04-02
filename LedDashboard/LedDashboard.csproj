@@ -82,6 +82,9 @@
     <Content Include="Animations\LeagueOfLegends\Champions\Ahri\w_cast.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Include="Animations\LeagueOfLegends\Items\FarsightAlteration\activation.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="Animations\LeagueOfLegends\Items\OracleLens\activation.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
@@ -118,7 +121,9 @@
     <Compile Include="Modules\LeagueOfLegends\ChampionModule.cs" />
     <Compile Include="Modules\LeagueOfLegends\HUDModules\HUDModule.cs" />
     <Compile Include="Modules\LeagueOfLegends\ItemAttribute.cs" />
+    <Compile Include="Modules\LeagueOfLegends\ItemCooldownController.cs" />
     <Compile Include="Modules\LeagueOfLegends\ItemModule.cs" />
+    <Compile Include="Modules\LeagueOfLegends\ItemModules\FarsightAlterationModule.cs" />
     <Compile Include="Modules\LeagueOfLegends\ItemModules\WardingTotemModule.cs" />
     <Compile Include="Modules\LeagueOfLegends\ItemModules\OracleLensModule.cs" />
     <Compile Include="Modules\LeagueOfLegends\ItemUtils.cs" />
