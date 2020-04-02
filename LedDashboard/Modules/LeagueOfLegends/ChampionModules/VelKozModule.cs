@@ -9,6 +9,8 @@ using System.Windows.Forms;
 
 namespace LedDashboard.Modules.LeagueOfLegends.ChampionModules
 {
+
+    [Champion("Velkoz")]
     class VelKozModule : ChampionModule
     {
         
@@ -34,7 +36,7 @@ namespace LedDashboard.Modules.LeagueOfLegends.ChampionModules
 
 
         private VelKozModule(int ledCount, GameState gameState, string championName, LightingMode preferredLightMode, AbilityCastPreference preferredCastMode) 
-                            : base(championName, gameState, preferredLightMode)
+                            : base(ledCount, championName, gameState, preferredLightMode)
         {
             // Initialization for the champion module occurs here.
 
@@ -58,8 +60,6 @@ namespace LedDashboard.Modules.LeagueOfLegends.ChampionModules
 
             // Preload all the animations you'll want to use. MAKE SURE that each animation file
             // has its Build Action set to "Content" and "Copy to Output Directory" is set to "Always".
-
-            animator = AnimationModule.Create(ledCount);
             animator.PreloadAnimation(ANIMATION_PATH + "Vel'Koz/q_start.txt");
             animator.PreloadAnimation(ANIMATION_PATH + "Vel'Koz/q_recast.txt");
             animator.PreloadAnimation(ANIMATION_PATH + "Vel'Koz/w_cast.txt");

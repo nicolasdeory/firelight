@@ -67,9 +67,11 @@ namespace LedDashboard.Modules.LeagueOfLegends
             this.itemSlot = itemSlot;
             this.activationKey = GetKeyForItemSlot(itemSlot); // TODO: Handle key rebinds...
 
+            // Should this be needed for all items modules? Only active ones
             KeyboardHookService.Instance.OnMouseClicked += OnMouseClick; // TODO. Abstract this to league of legends module, so it pairs with summoner spells and items.
             KeyboardHookService.Instance.OnKeyPressed += OnKeyPress;
             KeyboardHookService.Instance.OnKeyReleased += OnKeyRelease;
+
 
         }
 

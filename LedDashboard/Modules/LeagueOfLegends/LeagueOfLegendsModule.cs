@@ -12,6 +12,7 @@ using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
 using System.Net;
+using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -28,6 +29,9 @@ namespace LedDashboard.Modules.LeagueOfLegends
         HSVColor NoManaColor = new HSVColor(0.52f, 0.66f, 1f);
 
         HSVColor KillColor = new HSVColor(0.06f, 0.96f, 1f);
+
+        List<Type> ChampionControllers = GetChampionControllers();
+        List<Type> ItemControllers = GetItemControllers();
 
         // Variables
 
@@ -49,6 +53,7 @@ namespace LedDashboard.Modules.LeagueOfLegends
         CancellationTokenSource masterCancelToken = new CancellationTokenSource();
 
         string customKillAnimation = null; // can be changed by champion module
+        bool wasDeadLastFrame = false;
 
         // Events
 
@@ -163,8 +168,21 @@ namespace LedDashboard.Modules.LeagueOfLegends
             // Load champion module. Different modules will be loaded depending on the champion.
             // If there is no suitable module for the selected champion, just the health bar will be displayed.
 
-            // TODO: Make this easily extendable when there are many champion modules
-            if (gameState.PlayerChampion.RawChampionName.ToLower().Contains("velkoz"))
+            string champName = gameState.PlayerChampion.RawChampionName.ToLower();
+
+            Type champType = ChampionControllers.FirstOrDefault(
+                                x => champName.ToLower()
+                                .Contains((x.GetCustomAttribute(typeof(ChampionAttribute)) as ChampionAttribute)
+                                             .ChampionName.ToLower())); // find champion module
+            if (champType != null)
+            {
+                championModule = champType.GetMethod("Create")
+                                    .Invoke(null, new object[] { this.leds.Length, this.gameState, this.lightingMode, this.preferredCastMode }) 
+                                    as ChampionModule;
+                championModule.NewFrameReady += OnNewFrameReceived;
+                championModule.TriedToCastOutOfMana += OnAbilityCastNoMana;
+            }
+            /*if (gameState.PlayerChampion.RawChampionName.ToLower().Contains("velkoz"))
             {
                 championModule = VelKozModule.Create(this.leds.Length, this.gameState, this.lightingMode, this.preferredCastMode);
                 championModule.NewFrameReady += OnNewFrameReceived;
@@ -175,7 +193,7 @@ namespace LedDashboard.Modules.LeagueOfLegends
                 championModule = AhriModule.Create(this.leds.Length, this.gameState, this.lightingMode, this.preferredCastMode);
                 championModule.NewFrameReady += OnNewFrameReceived;
                 championModule.TriedToCastOutOfMana += OnAbilityCastNoMana;
-            }
+            }*/
             CurrentLEDSource = championModule;
 
             // Sets up a task to always check for updated player info
@@ -229,8 +247,29 @@ namespace LedDashboard.Modules.LeagueOfLegends
             foreach (Item item in gameState.PlayerChampion.Items)
             {
                 ItemAttributes attrs = ItemUtils.GetItemAttributes(item.ItemID);
-                // decide and create module accordingly. TODO: Class attributes like champion module
-                if (item.ItemID == 3364) // oracle lens
+                // decide and create item module accordingly.
+                Type itemType = ItemControllers.FirstOrDefault(
+                                x => item.ItemID == (x.GetCustomAttribute(typeof(ItemAttribute)) as ItemAttribute).ItemID);
+                if (itemType != null)
+                {
+                    if (ItemModules[item.Slot] == null || !(ItemModules[item.Slot].GetType().IsAssignableFrom(itemType)))
+                    {
+                        ItemModules[item.Slot]?.Dispose();
+                        ItemModules[item.Slot] = itemType.GetMethod("Create")
+                                            .Invoke(null, new object[] { this.leds.Length, this.gameState, item.Slot, this.lightingMode, this.preferredCastMode })
+                                            as ItemModule;
+                        ItemModules[item.Slot].ItemCast += OnItemActivated;
+                        ItemModules[item.Slot].NewFrameReady += OnNewFrameReceived;
+                    }
+                    ItemModules[item.Slot].UpdateGameState(gameState);
+                    gameState.PlayerItemCooldowns[item.Slot] = ItemModules[item.Slot].OnCooldown;
+
+                } else
+                {
+                    ItemModules[item.Slot]?.Dispose();
+                    ItemModules[item.Slot] = null;
+                }
+               /* if (item.ItemID == 3364) // oracle lens
                 {
                     if (!(ItemModules[item.Slot] is OracleLensModule))
                     {
@@ -253,12 +292,7 @@ namespace LedDashboard.Modules.LeagueOfLegends
                     }
                     ItemModules[item.Slot].UpdateGameState(gameState);
                     gameState.PlayerItemCooldowns[item.Slot] = ItemModules[item.Slot].OnCooldown;
-                }
-                else
-                {
-                    ItemModules[item.Slot]?.Dispose();
-                    ItemModules[item.Slot] = null;
-                }
+                }*/
             }
 
             // Process game events
@@ -399,14 +433,31 @@ namespace LedDashboard.Modules.LeagueOfLegends
             }
         }
 
-        bool wasDeadLastFrame = false;
-        /// <summary>
-        /// Updates the health bar.
-        /// </summary>
-        private void UpdateHealthBar() // TODO: If trinket is not on cooldown, turn on right side of keyboard to notify
+        
+        private static List<Type> GetChampionControllers()
         {
+            List<Type> ls = new List<Type>();
+            foreach (Type type in Assembly.GetExecutingAssembly().GetTypes())
+            {
+                if (type.GetCustomAttributes(typeof(ChampionAttribute), true).Length > 0)
+                {
+                    ls.Add(type);
+                }
+            }
+            return ls;
+        }
 
-
+        private static List<Type> GetItemControllers()
+        {
+            List<Type> ls = new List<Type>();
+            foreach (Type type in Assembly.GetExecutingAssembly().GetTypes())
+            {
+                if (type.GetCustomAttributes(typeof(ItemAttribute), true).Length > 0)
+                {
+                    ls.Add(type);
+                }
+            }
+            return ls;
         }
 
         private void OnItemActivated(object s, EventArgs e)
