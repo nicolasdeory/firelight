@@ -59,11 +59,15 @@ namespace LedDashboard.Modules.LeagueOfLegends
 
         private char lastPressedKey = '\0';
 
+        protected int _ItemID;
+        public int ItemID => _ItemID;
+
         protected ItemModule(int itemID, int itemSlot, GameState state, LightingMode preferredMode)
         {
             LightingMode = preferredMode;
             ItemAttributes = ItemUtils.GetItemAttributes(itemID);
             GameState = state;
+            this._ItemID = itemID;
             this.itemSlot = itemSlot;
             this.activationKey = GetKeyForItemSlot(itemSlot); // TODO: Handle key rebinds...
 
@@ -180,7 +184,7 @@ namespace LedDashboard.Modules.LeagueOfLegends
         private void ActivateItem()
         {
             ItemCast?.Invoke(this, null);
-            StartCooldownTimer();
+            //StartCooldownTimer();
             itemIsSelected = false;
         }
 
@@ -203,7 +207,7 @@ namespace LedDashboard.Modules.LeagueOfLegends
             return true;
         }
 
-        /// <summary>
+       /* /// <summary>
         /// Starts the cooldown timer for an ability. It should be called after an ability is cast.
         /// </summary>
         protected void StartCooldownTimer()
@@ -214,7 +218,7 @@ namespace LedDashboard.Modules.LeagueOfLegends
                 await Task.Delay(CooldownDuration - 350); // a bit less cooldown than the real one (if the user spams)
                 _OnCooldown = false;
             });
-        }
+        }*/
 
         public void Dispose()
         {

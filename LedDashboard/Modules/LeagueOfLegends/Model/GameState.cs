@@ -13,6 +13,6 @@ namespace LedDashboard.Modules.LeagueOfLegends.Model
         public Champion PlayerChampion;
         public List<Event> GameEvents;
         public Dictionary<AbilityKey, bool> PlayerAbilityCooldowns;
-        public bool[] PlayerItemCooldowns = new bool[7];
+       // public bool[] PlayerItemCooldowns = new bool[7];
     }
 }

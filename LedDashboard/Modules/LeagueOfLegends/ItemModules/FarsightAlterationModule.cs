@@ -10,10 +10,10 @@ using System.Threading.Tasks;
 namespace LedDashboard.Modules.LeagueOfLegends.ItemModules
 {
     [Item(ITEM_ID)]
-    class OracleLensModule : ItemModule
+    class FarsightAlterationModule : ItemModule
     {
 
-        public const int ITEM_ID = 3364;
+        public const int ITEM_ID = 3363;
 
         // Variables
 
@@ -27,13 +27,13 @@ namespace LedDashboard.Modules.LeagueOfLegends.ItemModules
         /// <param name="gameState">Game state data</param>
         /// <param name="preferredLightMode">Preferred light mode</param>
         /// <param name="preferredCastMode">Preferred ability cast mode (Normal, Quick Cast, Quick Cast with Indicator)</param>
-        public static OracleLensModule Create(int ledCount, GameState gameState, int itemSlot, LightingMode preferredLightMode, AbilityCastPreference preferredCastMode = AbilityCastPreference.Normal)
+        public static FarsightAlterationModule Create(int ledCount, GameState gameState, int itemSlot, LightingMode preferredLightMode, AbilityCastPreference preferredCastMode = AbilityCastPreference.Normal)
         {
-            return new OracleLensModule(ledCount, gameState, ITEM_ID, itemSlot, preferredLightMode, preferredCastMode);
+            return new FarsightAlterationModule(ledCount, gameState, ITEM_ID, itemSlot, preferredLightMode, preferredCastMode);
         }
 
 
-        private OracleLensModule(int ledCount, GameState gameState, int itemID, int itemSlot, LightingMode preferredLightMode, AbilityCastPreference preferredCastMode)
+        private FarsightAlterationModule(int ledCount, GameState gameState, int itemID, int itemSlot, LightingMode preferredLightMode, AbilityCastPreference preferredCastMode)
                             : base(itemID, itemSlot, gameState, preferredLightMode)
         {
             // Initialization for the item module occurs here.
@@ -47,7 +47,7 @@ namespace LedDashboard.Modules.LeagueOfLegends.ItemModules
             // For Oracle Lens, for example:
             // It's Instant Cast (press it, and the trinket activates)
             // For a ward, it's normal cast (press & click)
-            ItemCastMode = AbilityCastMode.Instant();
+            ItemCastMode = AbilityCastMode.Normal();
 
             // Preload all the animations you'll want to use. MAKE SURE that each animation file
             // has its Build Action set to "Content" and "Copy to Output Directory" is set to "Always".
@@ -55,20 +55,19 @@ namespace LedDashboard.Modules.LeagueOfLegends.ItemModules
             animator = AnimationModule.Create(ledCount);
             animator.NewFrameReady += (_, ls, mode) => DispatchNewFrame(ls, mode);
 
-            animator.PreloadAnimation(ITEM_ANIMATION_PATH + "OracleLens/activation.txt");
+            animator.PreloadAnimation(ITEM_ANIMATION_PATH + "FarsightAlteration/activation.txt");
 
         }
 
         private void OnItemActivated(object s, EventArgs e)
         {
-            if (ItemCooldownController.IsOnCooldown(ITEM_ID)) return; // If the item is on cooldown, nothing to do here.
             // Play relevant animations here
-            animator.RunAnimationInLoop(ITEM_ANIMATION_PATH + "OracleLens/activation.txt", 8500);
+            animator.RunAnimationOnce(ITEM_ANIMATION_PATH + "FarsightAlteration/activation.txt", false, 0.05f);
 
             double avgChampLevel = ItemCooldownController.GetAverageChampionLevel(GameState);
             ItemCooldownController.SetCooldown(ITEM_ID, GetCooldownDuration(avgChampLevel));
-            ItemCooldownController.SetCooldown(FarsightAlterationModule.ITEM_ID, 
-                                                FarsightAlterationModule.GetCooldownDuration(avgChampLevel));
+            ItemCooldownController.SetCooldown(OracleLensModule.ITEM_ID,
+                                                OracleLensModule.GetCooldownDuration(avgChampLevel));
         }
 
         private void OnGameStateUpdated(GameState state) // TODO: Handle when player buys a different trinket and cooldown gets transferred over
@@ -81,7 +80,7 @@ namespace LedDashboard.Modules.LeagueOfLegends.ItemModules
 
         public static int GetCooldownDuration(double averageLevel)
         {
-            return (int)((91.765 - 1.765 * averageLevel) * 1000);
+            return (int)((203.824 - 5.824 * averageLevel) * 1000);
         }
 
     }
