@@ -15,6 +15,9 @@ namespace LedDashboard.Modules.LeagueOfLegends.ChampionModules.Common
         public bool IsNormal { get; private set; }
         public bool IsInstant { get; private set; }
         public bool HasRecast { get; private set; }
+
+        public AbilityCastMode RecastMode { get; private set; }
+
         public int RecastTime { get; private set; }
 
         public int MaxRecasts { get; private set; }
@@ -27,12 +30,13 @@ namespace LedDashboard.Modules.LeagueOfLegends.ChampionModules.Common
             };
         }
 
-        public static AbilityCastMode Normal(int recastTime = -1, int maxCasts = 1)
+        public static AbilityCastMode Normal(int recastTime = -1, int maxCasts = 1, AbilityCastMode recastMode = null)
         {
             return new AbilityCastMode()
             {
                 IsNormal = true,
                 HasRecast = recastTime > 0,
+                RecastMode = recastTime > 0 ? recastMode ?? AbilityCastMode.Instant() : null,
                 RecastTime = recastTime,
                 MaxRecasts = maxCasts
             };

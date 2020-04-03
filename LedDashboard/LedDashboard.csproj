@@ -97,6 +97,9 @@
     <Content Include="Animations\LeagueOfLegends\Champions\Ezreal\w_cast.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Include="Animations\LeagueOfLegends\Champions\TwistedFate\q_cast.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="Animations\LeagueOfLegends\Items\FarsightAlteration\activation.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>

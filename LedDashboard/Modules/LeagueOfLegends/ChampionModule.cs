@@ -160,28 +160,67 @@ namespace LedDashboard.Modules.LeagueOfLegends
                 if (SelectedAbility == AbilityKey.Q)
                 {
                     if (CanCastAbility(AbilityKey.Q))
-                        CastAbility(AbilityKey.Q);
+                    {
+                        if (AbilityCastModes[SelectedAbility].HasRecast && AbilitiesOnRecast[SelectedAbility] > 0)
+                        {
+                            // its a recast
+                            RecastAbility(AbilityKey.Q);
+                        } else
+                        {
+                            CastAbility(AbilityKey.Q);
+                        }
+                    } 
                 }
 
                 // CODE FOR W
                 if (SelectedAbility == AbilityKey.W)
                 {
                     if (CanCastAbility(AbilityKey.W))
-                        CastAbility(AbilityKey.W);
+                    {
+                        if (AbilityCastModes[SelectedAbility].HasRecast && AbilitiesOnRecast[SelectedAbility] > 0)
+                        {
+                            // its a recast
+                            RecastAbility(AbilityKey.W);
+                        }
+                        else
+                        {
+                            CastAbility(AbilityKey.W);
+                        }
+                    }
                 }
 
                 // CODE FOR E
                 if (SelectedAbility == AbilityKey.E)
                 {
                     if (CanCastAbility(AbilityKey.E))
-                        CastAbility(AbilityKey.E);
+                    {
+                        if (AbilityCastModes[SelectedAbility].HasRecast && AbilitiesOnRecast[SelectedAbility] > 0)
+                        {
+                            // its a recast
+                            RecastAbility(AbilityKey.E);
+                        }
+                        else
+                        {
+                            CastAbility(AbilityKey.E);
+                        }
+                    }
                 }
 
                 // CODE FOR R
                 if (SelectedAbility == AbilityKey.R)
                 {
                     if (CanCastAbility(AbilityKey.R))
-                        CastAbility(AbilityKey.R);
+                    {
+                        if (AbilityCastModes[SelectedAbility].HasRecast && AbilitiesOnRecast[SelectedAbility] > 0)
+                        {
+                            // its a recast
+                            RecastAbility(AbilityKey.R);
+                        }
+                        else
+                        {
+                            CastAbility(AbilityKey.R);
+                        }
+                    }
                 }
             }
             //OnMouseClicked?.Invoke(s,e);
@@ -234,9 +273,23 @@ namespace LedDashboard.Modules.LeagueOfLegends
 
             if (castMode.HasRecast && AbilitiesOnRecast[key] > 0)
             {
-                if (CanCastAbility(key)) // We must check if CanCastAbility is true. Players can't recast abilities if they're dead or in zhonyas.
+                if (castMode.RecastMode.IsInstant
+                    || PreferredCastMode == AbilityCastPreference.Quick
+                    || (PreferredCastMode == AbilityCastPreference.QuickWithIndicator && keyUp))
                 {
-                    RecastAbility(key);
+                    if (CanCastAbility(key)) // We must check if CanCastAbility is true. Players can't recast abilities if they're dead or in zhonyas.
+                    {
+                        RecastAbility(key);
+                    }
+                    return;
+                }
+                if (PreferredCastMode == AbilityCastPreference.Normal)
+                {
+                    if (CanCastAbility(key))
+                    {
+                        SelectedAbility = key;
+                        // RECAST SELECTED
+                    }
                 }
                 return;
             }
