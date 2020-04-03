@@ -48,6 +48,9 @@ namespace LedDashboard.Modules.LeagueOfLegends
         /// </summary>
         protected event GameStateUpdatedHandler GameStateUpdated;
 
+      /*  protected delegate void ItemInfoRetrievedHandler();
+        protected event ItemInfoRetrievedHandler ItemInfoRetrieved;*/
+
         public event EventHandler ItemCast;
 
         protected AbilityCastPreference PreferredCastMode; // User defined setting, preferred cast mode.
@@ -75,7 +78,15 @@ namespace LedDashboard.Modules.LeagueOfLegends
             KeyboardHookService.Instance.OnMouseClicked += OnMouseClick; // TODO. Abstract this to league of legends module, so it pairs with summoner spells and items.
             KeyboardHookService.Instance.OnKeyPressed += OnKeyPress;
             KeyboardHookService.Instance.OnKeyReleased += OnKeyRelease;
-
+           /* Task.Run(async () =>
+            {
+                while (true)
+                {
+                    Console.WriteLine(PreferredCastMode);
+                    var xx = PreferredCastMode;
+                    await Task.Delay(1000);
+                }
+            });*/
 
         }
 
@@ -105,7 +116,16 @@ namespace LedDashboard.Modules.LeagueOfLegends
 
         private void OnKeyRelease(object s, KeyEventArgs e)
         {
-            ProcessKeyPress(s, e.KeyCode.ToString().ToLower()[0], true);
+            int keyCode = (int)e.KeyCode; // HACK why dont just use Keys enum as event arg instead of this
+            char keyChar;
+            if (keyCode >= 48 && keyCode <= 57) 
+            {
+                keyChar = e.KeyCode.ToString()[1];
+            } else
+            {
+                keyChar = e.KeyCode.ToString().ToLower()[0];
+            }
+            ProcessKeyPress(s, keyChar, true);
         }
 
         private void OnKeyPress(object s, KeyPressEventArgs e)
@@ -127,7 +147,7 @@ namespace LedDashboard.Modules.LeagueOfLegends
         {
             if (keyUp && !itemIsSelected) return; // keyUp event shouldn't trigger anything if the ability is not selected.
 
-
+            
             if (ItemCastMode.IsInstant) // item is activated with just pressing down the key
             {
                 if (CanActivateItem())
@@ -243,7 +263,8 @@ namespace LedDashboard.Modules.LeagueOfLegends
                 3 => '5',
                 4 => '6',
                 5 => '7',
-                6 => '4'
+                6 => '4',
+                _ => '\0'
             };
         }
     }

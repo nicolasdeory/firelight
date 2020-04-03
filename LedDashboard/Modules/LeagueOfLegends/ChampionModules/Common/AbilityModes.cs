@@ -73,6 +73,6 @@ namespace LedDashboard.Modules.LeagueOfLegends.ChampionModules.Common
 
     public enum AbilityCastPreference
     {
-        Normal, Quick, QuickWithIndicator
+        Normal = 1, Quick = 2, QuickWithIndicator = 4
     }
 }

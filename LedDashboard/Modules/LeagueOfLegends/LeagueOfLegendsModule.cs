@@ -465,6 +465,12 @@ namespace LedDashboard.Modules.LeagueOfLegends
             masterCancelToken.Cancel();
             animationModule.StopCurrentAnimation();
             championModule?.Dispose();
+            for (int i = 0; i < ItemModules.Length; i++)
+            {
+                ItemModules[i]?.Dispose();
+                ItemModules[i] = null;
+            }
+            ItemUtils.Dispose();
             ItemCooldownController.Dispose();
         }
     }
