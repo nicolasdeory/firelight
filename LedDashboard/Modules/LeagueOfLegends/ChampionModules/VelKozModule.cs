@@ -10,12 +10,13 @@ using System.Windows.Forms;
 namespace LedDashboard.Modules.LeagueOfLegends.ChampionModules
 {
 
-    [Champion("Velkoz")]
+    [Champion(CHAMPION_NAME)]
     class VelKozModule : ChampionModule
     {
-        
+        public const string CHAMPION_NAME = "Velkoz";
+
         // Variables
-        
+
         // Champion-specific Variables
 
         bool qCastInProgress = false;
@@ -31,7 +32,7 @@ namespace LedDashboard.Modules.LeagueOfLegends.ChampionModules
         /// <param name="preferredCastMode">Preferred ability cast mode (Normal, Quick Cast, Quick Cast with Indicator)</param>
         public static VelKozModule Create(int ledCount, GameState gameState, LightingMode preferredLightMode, AbilityCastPreference preferredCastMode = AbilityCastPreference.Normal)
         {
-            return new VelKozModule(ledCount, gameState, "Velkoz", preferredLightMode, preferredCastMode);
+            return new VelKozModule(ledCount, gameState, CHAMPION_NAME, preferredLightMode, preferredCastMode);
         }
 
 
