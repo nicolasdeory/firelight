@@ -107,7 +107,7 @@ namespace LedDashboard.Modules.LeagueOfLegends.ItemModules
                 else
                 {
                     // some magic here regarding trinket cooldowns to handle edge cases when you swap trinkets.
-                    ItemCooldownController.SetCooldown(ITEM_ID, GetCooldownPerCharge(GameState) * 2 - 100);
+                    ItemCooldownController.SetCooldown(ITEM_ID, GetCooldownPerCharge(GameState) * 2 - rechargedSecondCharge - 100);
                     ItemCooldownController // this trinket affects the other trinket cooldowns
                         .SetCooldown(
                                         FarsightAlterationModule.ITEM_ID,

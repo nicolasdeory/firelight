@@ -148,7 +148,7 @@ namespace LedDashboard
             RestartManager(this.preferredMode, ledCount, reverseOrder);
         }
 
-        private void RestartManager(LightingMode preferredMode, int ledCount, bool reverseOrder)
+        private void RestartManager(LightingMode preferredMode, int ledCount, bool reverseOrder) // TODO: Keep game state (i.e. league of legends cooldowns etc)
         {
             InitLeds(this.preferredMode, ledCount, reverseOrder);
             CurrentLEDModule = null; // restart the whole service (force module reload)

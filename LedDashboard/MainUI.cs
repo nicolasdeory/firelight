@@ -100,9 +100,10 @@ namespace LedDashboard
         /// </summary>
         public void UpdateUI(Led[] leds, LightingMode mode)
         {
-            if(!updatingUI)
+            if (updatingUI) return;
+            updatingUI = true;
+            Task.Run(() => // HACK This is done asynchronously but the fact is that it's very slow. 10ms to draw stuff...
             {
-                updatingUI = true;
                 if (currentLightingMode == LightingMode.Keyboard)
                 {
                     if (mode == LightingMode.Keyboard)
@@ -117,11 +118,12 @@ namespace LedDashboard
                             byte[] col = led.color.ToRGB();
                             SolidBrush colBrush = new SolidBrush(Color.FromArgb(col[0], col[1], col[2]));
                             KeyboardKey key = keyboardLayout[i];
-                            canvas.FillRectangle(colBrush, new Rectangle(key.X, key.Y, (key.Width ?? 20)-2 , (key.Height ?? 20)-2));
+                            canvas.FillRectangle(colBrush, new Rectangle(key.X, key.Y, (key.Width ?? 20) - 2, (key.Height ?? 20) - 2));
                             i++;
                         }
                         lastDrawnMode = LightingMode.Keyboard;
-                    } else
+                    }
+                    else
                     {
                         SolidBrush blackBrush = new SolidBrush(Color.Black);
                         if (lastDrawnMode != LightingMode.Line)
@@ -139,16 +141,17 @@ namespace LedDashboard
                             // SolidBrush colBrush = new SolidBrush(Color.FromArgb((int)(leds[i].color.v*255), col[0], col[1], col[2]));
                             SolidBrush colBrush = new SolidBrush(Color.FromArgb(col[0], col[1], col[2]));
                             int x = (int)Utils.Scale(i, 0, leds.Length, 0, 22);
-                            for(int j = 0; j < 6; j++)
+                            for (int j = 0; j < 6; j++)
                             {
                                 canvas.FillRectangle(colBrush, new Rectangle(x * 20, j * 20, 18, 18));
                             }
-                            
+
                         }
                         lastDrawnMode = LightingMode.Line;
                     }
 
-                } else
+                }
+                else
                 {
                     int i = 0;
                     foreach (var led in leds)
@@ -162,7 +165,7 @@ namespace LedDashboard
                 }
 
                 updatingUI = false;
-            }   
+            });
         }
 
         public void UseRazerChromaClicked(object s, EventArgs e)

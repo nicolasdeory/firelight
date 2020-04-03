@@ -112,7 +112,7 @@ namespace LedDashboard.Modules.LeagueOfLegends.ChampionModules
             Task.Run(async () =>
             {
                 await Task.Delay(100);
-                if (!rCastInProgress) animator.RunAnimationOnce(ANIMATION_PATH + "Vel'Koz/q_start.txt", true);
+                if (!rCastInProgress) _ = animator.RunAnimationOnce(ANIMATION_PATH + "Vel'Koz/q_start.txt", keepTail: true, timeScale: 0.9f);
             });
 
             // The Q cast is in progress.
@@ -124,7 +124,7 @@ namespace LedDashboard.Modules.LeagueOfLegends.ChampionModules
                 await Task.Delay(1150);
                 if (!rCastInProgress && qCastInProgress)
                 {
-                    animator.RunAnimationOnce(ANIMATION_PATH + "Vel'Koz/q_recast.txt");
+                    _ = animator.RunAnimationOnce(ANIMATION_PATH + "Vel'Koz/q_recast.txt", keepTail: false, fadeOutAfterRate: 0);
                 }
                 qCastInProgress = false;
             });
@@ -134,9 +134,9 @@ namespace LedDashboard.Modules.LeagueOfLegends.ChampionModules
         {
             Task.Run(async () =>
             {
-                animator.RunAnimationOnce(ANIMATION_PATH + "Vel'Koz/w_cast.txt", true);
+                _ = animator.RunAnimationOnce(ANIMATION_PATH + "Vel'Koz/w_cast.txt", true, timeScale: 0.85f);
                 await Task.Delay(1800);
-                if (!rCastInProgress) animator.RunAnimationOnce(ANIMATION_PATH + "Vel'Koz/w_close.txt", false, 0.15f);
+                if (!rCastInProgress) _ = animator.RunAnimationOnce(ANIMATION_PATH + "Vel'Koz/w_close.txt", keepTail: false, fadeOutAfterRate: 0.15f);
             });
         }
 
@@ -152,7 +152,7 @@ namespace LedDashboard.Modules.LeagueOfLegends.ChampionModules
         private void OnCastR()
         {
             animator.StopCurrentAnimation();
-            animator.RunAnimationInLoop(ANIMATION_PATH + "Vel'Koz/r_loop.txt", 2300, 0.15f);
+            animator.RunAnimationInLoop(ANIMATION_PATH + "Vel'Koz/r_loop.txt", 2300, fadeOutAfterRate: 0.15f);
             rCastInProgress = true;
             Task.Run(async () =>
             {
