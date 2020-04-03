@@ -100,6 +100,12 @@
     <Content Include="Animations\LeagueOfLegends\Champions\TwistedFate\q_cast.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Include="Animations\LeagueOfLegends\Champions\TwistedFate\r_cast.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Animations\LeagueOfLegends\Champions\TwistedFate\w_loop.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="Animations\LeagueOfLegends\Items\FarsightAlteration\activation.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
@@ -133,6 +139,7 @@
     <Compile Include="Modules\FourierAudioLED\FFTUtil.cs" />
     <Compile Include="Modules\FourierAudioLED\FourierAudioLED.cs" />
     <Compile Include="Modules\LeagueOfLegends\ChampionAttribute.cs" />
+    <Compile Include="Modules\LeagueOfLegends\ChampionModules\TwistedFateModule.cs" />
     <Compile Include="Modules\LeagueOfLegends\ChampionModules\EzrealModule.cs" />
     <Compile Include="Modules\LeagueOfLegends\ChampionModules\UdyrModule.cs" />
     <Compile Include="Modules\LeagueOfLegends\ChampionModules\AhriModule.cs" />

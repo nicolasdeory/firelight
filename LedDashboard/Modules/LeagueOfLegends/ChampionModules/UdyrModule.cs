@@ -73,6 +73,7 @@ namespace LedDashboard.Modules.LeagueOfLegends.ChampionModules
         {
             animator.NewFrameReady += (_, ls, mode) => DispatchNewFrame(ls, mode);
             AbilityCast += OnAbilityCast;
+            AbilityRecast += OnAbilityRecast;
         }
 
         /// <summary>
@@ -117,6 +118,14 @@ namespace LedDashboard.Modules.LeagueOfLegends.ChampionModules
         {
 
             animator.ColorBurst(RColor);
+
+        }
+
+        /// <summary>
+        /// Called when an ability is casted again (few champions have abilities that can be recast, only those with special abilities such as Vel'Koz or Zoes Q)
+        /// </summary>
+        private void OnAbilityRecast(object s, AbilityKey key)
+        {
 
         }
 

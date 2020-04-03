@@ -10,14 +10,15 @@ using System.Windows.Forms;
 namespace LedDashboard.Modules.LeagueOfLegends.ChampionModules
 {
     [Champion(CHAMPION_NAME)]
-    class EzrealModule : ChampionModule
+    class TwistedFateModule : ChampionModule
     {
 
-        public const string CHAMPION_NAME = "Ezreal";
+        public const string CHAMPION_NAME = "TwistedFate";
         // Variables
 
         // Champion-specific Variables
-
+        HSVColor RColor = new HSVColor(0.81f, 0.43f, 1);
+        HSVColor RColor2 = new HSVColor(0.91f, 0.87f, 1);
 
         /// <summary>
         /// Creates a new champion instance.
@@ -26,13 +27,13 @@ namespace LedDashboard.Modules.LeagueOfLegends.ChampionModules
         /// <param name="gameState">Game state data</param>
         /// <param name="preferredLightMode">Preferred light mode</param>
         /// <param name="preferredCastMode">Preferred ability cast mode (Normal, Quick Cast, Quick Cast with Indicator)</param>
-        public static EzrealModule Create(int ledCount, GameState gameState, LightingMode preferredLightMode, AbilityCastPreference preferredCastMode = AbilityCastPreference.Normal)
+        public static TwistedFateModule Create(int ledCount, GameState gameState, LightingMode preferredLightMode, AbilityCastPreference preferredCastMode = AbilityCastPreference.Normal)
         {
-            return new EzrealModule(ledCount, gameState, CHAMPION_NAME, preferredLightMode, preferredCastMode);
+            return new TwistedFateModule(ledCount, gameState, CHAMPION_NAME, preferredLightMode, preferredCastMode);
         }
 
 
-        private EzrealModule(int ledCount, GameState gameState, string championName, LightingMode preferredLightMode, AbilityCastPreference preferredCastMode)
+        private TwistedFateModule(int ledCount, GameState gameState, string championName, LightingMode preferredLightMode, AbilityCastPreference preferredCastMode)
                             : base(ledCount, championName, gameState, preferredLightMode)
         {
             // Initialization for the champion module occurs here.
@@ -41,27 +42,20 @@ namespace LedDashboard.Modules.LeagueOfLegends.ChampionModules
             PreferredCastMode = preferredCastMode;
 
             // Set cast modes for abilities.
-            // For Vel'Koz, for example:
-            // Q -> Normal ability, but it can be recast within 1.15s
-            // W -> Normal ability
-            // E -> Normal ability
-            // R -> Instant ability, it is cast the moment the key is pressed, but it can be recast within 2.3s
             Dictionary<AbilityKey, AbilityCastMode> abilityCastModes = new Dictionary<AbilityKey, AbilityCastMode>()
             {
                 [AbilityKey.Q] = AbilityCastMode.Normal(),
-                [AbilityKey.W] = AbilityCastMode.Normal(),
-                [AbilityKey.E] = AbilityCastMode.Normal(),
-                [AbilityKey.R] = AbilityCastMode.Normal(),
+                [AbilityKey.W] = AbilityCastMode.Instant(6000,1),
+                [AbilityKey.E] = AbilityCastMode.UnCastable(),
+                [AbilityKey.R] = AbilityCastMode.Instant(6000,1,AbilityCastMode.Normal()),
             };
             AbilityCastModes = abilityCastModes;
 
             // Preload all the animations you'll want to use. MAKE SURE that each animation file
             // has its Build Action set to "Content" and "Copy to Output Directory" is set to "Always".
-            animator.PreloadAnimation(ANIMATION_PATH + "Ezreal/q_cast.txt");
-            animator.PreloadAnimation(ANIMATION_PATH + "Ezreal/w_cast.txt");
-            animator.PreloadAnimation(ANIMATION_PATH + "Ezreal/e_cast.txt");
-            animator.PreloadAnimation(ANIMATION_PATH + "Ezreal/r_channel.txt");
-            animator.PreloadAnimation(ANIMATION_PATH + "Ezreal/r_launch.txt");
+            animator.PreloadAnimation(ANIMATION_PATH + "TwistedFate/q_cast.txt");
+            animator.PreloadAnimation(ANIMATION_PATH + "TwistedFate/w_loop.txt");
+            animator.PreloadAnimation(ANIMATION_PATH + "TwistedFate/r_cast.txt");
 
             ChampionInfoLoaded += OnChampionInfoLoaded;
         }
@@ -103,41 +97,26 @@ namespace LedDashboard.Modules.LeagueOfLegends.ChampionModules
         {
             Task.Run(async () =>
             {
-                await Task.Delay(150);
-                _ = animator.RunAnimationOnce(ANIMATION_PATH + "Ezreal/q_cast.txt", timeScale: 0.8f);
+                await Task.Delay(100);
+                _ = animator.RunAnimationOnce(ANIMATION_PATH + "TwistedFate/q_cast.txt", timeScale: 0.4f);
             });
             
         }
 
         private void OnCastW()
         {
-            Task.Run(async () =>
-            {
-                await Task.Delay(150);
-                _ = animator.RunAnimationOnce(ANIMATION_PATH + "Ezreal/w_cast.txt");
-            });
+            animator.RunAnimationInLoop(ANIMATION_PATH + "TwistedFate/w_loop.txt", 5500, 0.1f, 0.08f);
             
         }
 
         private void OnCastE()
         {
-            Task.Run(async () =>
-            {
-                await Task.Delay(250);
-                _ = animator.RunAnimationOnce(ANIMATION_PATH + "Ezreal/e_cast.txt", false, 0.15f);
-            });
-            
+           
         }
 
         private void OnCastR()
         {
-            Task.Run(async () =>
-            {
-                await animator.RunAnimationOnce(ANIMATION_PATH + "Ezreal/r_channel.txt", true);
-                await Task.Delay(700);
-                _ = animator.RunAnimationOnce(ANIMATION_PATH + "Ezreal/r_launch.txt", timeScale: 0.7f);
-            });
-
+            animator.ColorBurst(RColor, 0.05f, RColor2);
         }
 
         /// <summary>
@@ -145,7 +124,14 @@ namespace LedDashboard.Modules.LeagueOfLegends.ChampionModules
         /// </summary>
         private void OnAbilityRecast(object s, AbilityKey key)
         {
-
+            if (key == AbilityKey.W)
+            {
+                animator.ColorBurst(new HSVColor(0, 0, 1));
+            }
+            if (key == AbilityKey.R)
+            {
+                _ = animator.RunAnimationOnce(ANIMATION_PATH + "TwistedFate/r_cast.txt", fadeOutAfterRate: 0.1f, timeScale: 0.2f);
+            }
         }
 
     }
