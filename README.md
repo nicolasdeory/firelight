@@ -35,3 +35,6 @@ A modular League of Legends integration for Razer Chroma and RGB LED devices.
 
 ## Contributing
 Check out the [contributing guide](CONTRIBUTING.md). Help is greatly appreciated with anything, really.
+
+### Reporting Issues
+If you found that something isn't working as expected, please post an issue detailing the problem and the steps to reproduce it. If you get an "Unhandled Exception" error, please paste the text inside the box. Thank you!
