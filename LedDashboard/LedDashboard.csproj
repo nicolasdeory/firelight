@@ -82,6 +82,21 @@
     <Content Include="Animations\LeagueOfLegends\Champions\Ahri\w_cast.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Include="Animations\LeagueOfLegends\Champions\Ezreal\e_cast.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Animations\LeagueOfLegends\Champions\Ezreal\q_cast.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Animations\LeagueOfLegends\Champions\Ezreal\r_launch.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Animations\LeagueOfLegends\Champions\Ezreal\r_channel.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Animations\LeagueOfLegends\Champions\Ezreal\w_cast.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="Animations\LeagueOfLegends\Items\FarsightAlteration\activation.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
@@ -115,6 +130,7 @@
     <Compile Include="Modules\FourierAudioLED\FFTUtil.cs" />
     <Compile Include="Modules\FourierAudioLED\FourierAudioLED.cs" />
     <Compile Include="Modules\LeagueOfLegends\ChampionAttribute.cs" />
+    <Compile Include="Modules\LeagueOfLegends\ChampionModules\EzrealModule.cs" />
     <Compile Include="Modules\LeagueOfLegends\ChampionModules\UdyrModule.cs" />
     <Compile Include="Modules\LeagueOfLegends\ChampionModules\AhriModule.cs" />
     <Compile Include="Modules\LeagueOfLegends\ChampionModules\Common\AbilityModes.cs" />
