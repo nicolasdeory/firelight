@@ -284,6 +284,7 @@ namespace LedDashboard.Modules.BasicAnimation
                 if (cancelToken.IsCancellationRequested) throw new TaskCanceledException();
                 NewFrameReady.Invoke(this, this.leds, anim.AnimationMode);
                 await Task.Delay(frameTime);
+                if (cancelToken.IsCancellationRequested) throw new TaskCanceledException(); // it seems to prevent some simultaneous-update bugs
                 msCounter += frameTime;
                 if (msCounter >= durationMs) break;
             }
