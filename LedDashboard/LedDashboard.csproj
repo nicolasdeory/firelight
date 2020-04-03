@@ -177,6 +177,7 @@
     <Compile Include="ProcessListenerService.cs" />
     <Compile Include="RazerChromaController.cs" />
     <Compile Include="SACNController.cs" />
+    <Compile Include="TaskRunner.cs" />
     <Compile Include="Utils.cs" />
     <Compile Include="UtilsLED.cs" />
   </ItemGroup>

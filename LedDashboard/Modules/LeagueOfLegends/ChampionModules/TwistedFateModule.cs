@@ -126,6 +126,7 @@ namespace LedDashboard.Modules.LeagueOfLegends.ChampionModules
         {
             if (key == AbilityKey.W)
             {
+                animator.StopCurrentAnimation();
                 animator.ColorBurst(new HSVColor(0, 0, 1));
             }
             if (key == AbilityKey.R)

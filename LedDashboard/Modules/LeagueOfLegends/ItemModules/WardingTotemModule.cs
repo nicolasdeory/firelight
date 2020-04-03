@@ -107,7 +107,7 @@ namespace LedDashboard.Modules.LeagueOfLegends.ItemModules
                 else
                 {
                     // some magic here regarding trinket cooldowns to handle edge cases when you swap trinkets.
-                    ItemCooldownController.SetCooldown(ITEM_ID, GetCooldownPerCharge(GameState) * 2 - rechargedSecondCharge - 100);
+                    ItemCooldownController.SetCooldown(ITEM_ID, cdpercharge * 2 - rechargedSecondCharge - 100);
                     ItemCooldownController // this trinket affects the other trinket cooldowns
                         .SetCooldown(
                                         FarsightAlterationModule.ITEM_ID,
@@ -119,8 +119,6 @@ namespace LedDashboard.Modules.LeagueOfLegends.ItemModules
 
                     //CooldownDuration = cooldownPerCharge - 100; // substract some duration to account for other delays;
                 }
-                wardCharges--;
-
             }
             
         }
@@ -134,7 +132,7 @@ namespace LedDashboard.Modules.LeagueOfLegends.ItemModules
 
         public static int GetCooldownDuration(double averageLevel)
         {
-            return (int)((247.059 - 7.059 * averageLevel) * 1000);
+            return (int)(((247.059 - 7.059 * averageLevel) * 1000));
         }
 
         public static WardingTotemModule Current { get; set; } // HACK: Access to current instance

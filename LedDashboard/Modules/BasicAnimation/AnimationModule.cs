@@ -60,8 +60,9 @@ namespace LedDashboard.Modules.BasicAnimation
             if (currentlyRunningAnim != null) currentlyRunningAnim.Cancel();
             currentlyRunningAnim = new CancellationTokenSource();
             //isAnimationRunning = true;
-            return Task.Run(() => PlayOnce(anim, currentlyRunningAnim.Token, timeScale)).ContinueWith(async (t) =>
+            return TaskRunner.RunAsync(Task.Run(() => PlayOnce(anim, currentlyRunningAnim.Token, timeScale)).ContinueWith(async (t) =>
             {
+                if (t.IsCanceled) return; // don't continue if task was cancelled
                 if (!keepTail)
                 {
                     if (fadeOutAfterRate > 0)
@@ -75,7 +76,7 @@ namespace LedDashboard.Modules.BasicAnimation
                     }
                 }
                 //isAnimationRunning = false;
-            });
+            }));
         }
 
         /// <summary>
@@ -90,9 +91,9 @@ namespace LedDashboard.Modules.BasicAnimation
             if (currentlyRunningAnim != null) currentlyRunningAnim.Cancel();
             currentlyRunningAnim = new CancellationTokenSource();
             //isAnimationRunning = true;
-            var t = Task.Run(() => PlayLoop(anim, currentlyRunningAnim.Token, loopDuration, timeScale)).ContinueWith(async (t) =>
+            var t = TaskRunner.RunAsync(Task.Run(() => PlayLoop(anim, currentlyRunningAnim.Token, loopDuration, timeScale)).ContinueWith(async (t) =>
             {
-
+                if (t.IsCanceled) return; // don't continue if task was cancelled
                 if (fadeOutAfterRate > 0)
                 {
                     await FadeOutToBlack(fadeOutAfterRate, currentlyRunningAnim.Token, anim.AnimationMode);
@@ -103,7 +104,7 @@ namespace LedDashboard.Modules.BasicAnimation
                     NewFrameReady.Invoke(this, this.leds, LightingMode.Line);
                 }
                 //isAnimationRunning = false;
-            });
+            }));
 
 
         }
@@ -118,12 +119,12 @@ namespace LedDashboard.Modules.BasicAnimation
                 currentlyRunningAnim.Cancel();
                 this.leds.SetAllToBlack();
                 NewFrameReady.Invoke(this, this.leds, LightingMode.Line);
-                Task.Run(async () =>
+                _ = TaskRunner.RunAsync(Task.Run(async () =>
                 {
                     // wait a bit for the current frame
                     await Task.Delay(50);
                     NewFrameReady.Invoke(this, this.leds, LightingMode.Line);
-                });
+                }));
 
                 //isAnimationRunning = false;
             }
@@ -133,7 +134,7 @@ namespace LedDashboard.Modules.BasicAnimation
         {
             if (currentlyRunningAnim != null) currentlyRunningAnim.Cancel();
             currentlyRunningAnim = new CancellationTokenSource();
-            Task.Run(() => FadeBetweenTwoColors(fadeRate, col1, col2, duration, currentlyRunningAnim.Token));
+            _ = TaskRunner.RunAsync(Task.Run(() => FadeBetweenTwoColors(fadeRate, col1, col2, duration, currentlyRunningAnim.Token)));
         }
 
         /// <summary>
@@ -148,7 +149,7 @@ namespace LedDashboard.Modules.BasicAnimation
             if (currentlyRunningAnim != null) currentlyRunningAnim.Cancel();
             currentlyRunningAnim = new CancellationTokenSource();
             //isAnimationRunning = true;
-            return Task.Run(async () =>
+            return TaskRunner.RunAsync(Task.Run(async () =>
             {
                 foreach (Led l in this.leds)
                 {
@@ -179,7 +180,7 @@ namespace LedDashboard.Modules.BasicAnimation
                     }
                     NewFrameReady.Invoke(this, this.leds, LightingMode.Line);
                 }
-            });
+            }));
         }
 
         private Animation LoadAnimation(string animPath)
