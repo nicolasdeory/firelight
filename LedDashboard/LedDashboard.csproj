@@ -103,6 +103,9 @@
     <Content Include="Animations\LeagueOfLegends\Champions\TwistedFate\r_cast.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Include="Animations\LeagueOfLegends\Champions\TwistedFate\r_cast_line.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="Animations\LeagueOfLegends\Champions\TwistedFate\w_loop.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>

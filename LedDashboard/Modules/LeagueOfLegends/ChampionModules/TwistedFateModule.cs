@@ -95,11 +95,16 @@ namespace LedDashboard.Modules.LeagueOfLegends.ChampionModules
 
         private void OnCastQ()
         {
-            Task.Run(async () =>
+            if (LightingMode == LightingMode.Keyboard)
             {
-                await Task.Delay(100);
-                _ = animator.RunAnimationOnce(ANIMATION_PATH + "TwistedFate/q_cast.txt", timeScale: 0.4f);
-            });
+                // only for keyboard, for line mode it's too distracting
+                Task.Run(async () =>
+                {
+                    await Task.Delay(100);
+                    _ = animator.RunAnimationOnce(ANIMATION_PATH + "TwistedFate/q_cast.txt", timeScale: 0.4f);
+                });
+            }
+            
             
         }
 
@@ -131,7 +136,18 @@ namespace LedDashboard.Modules.LeagueOfLegends.ChampionModules
             }
             if (key == AbilityKey.R)
             {
-                _ = animator.RunAnimationOnce(ANIMATION_PATH + "TwistedFate/r_cast.txt", fadeOutAfterRate: 0.1f, timeScale: 0.2f);
+                if (LightingMode == LightingMode.Keyboard)
+                {
+                    _ = animator.RunAnimationOnce(ANIMATION_PATH + "TwistedFate/r_cast.txt", fadeOutAfterRate: 0.1f, timeScale: 0.2f);
+                } else
+                {
+                    Task.Run(async () =>
+                    {
+                        await animator.RunAnimationOnce(ANIMATION_PATH + "TwistedFate/r_cast_line.txt", true, timeScale: 0.3f);
+                        await animator.ColorBurst(new HSVColor(0, 0, 1));
+                    });
+                }
+                
             }
         }
 

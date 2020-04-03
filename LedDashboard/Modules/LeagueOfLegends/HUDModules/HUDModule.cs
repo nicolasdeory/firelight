@@ -55,15 +55,19 @@ namespace LedDashboard.Modules.LeagueOfLegends.HUDModules
 
         private static void GoldView(Led[] leds, LightingMode lightMode, GameState gameState)
         {
-            HSVColor col = HSVColor.Black;
-            if (gameState.ActivePlayer.CurrentGold >= GoldNotificationThreshold)
+            if (lightMode == LightingMode.Keyboard)
             {
-                col = GoldColor;
+                HSVColor col = HSVColor.Black;
+                if (gameState.ActivePlayer.CurrentGold >= GoldNotificationThreshold)
+                {
+                    col = GoldColor;
+                }
+                foreach (int k in goldKeys)
+                {
+                    leds[k].Color(col);
+                }
             }
-            foreach (int k in goldKeys)
-            {
-                leds[k].Color(col);
-            }
+            
         }
 
         private static void WardView(Led[] leds, LightingMode lightMode, GameState gameState)
