@@ -11,18 +11,18 @@ namespace LedDashboard.Modules.LeagueOfLegends.ChampionModules.Common
     /// </summary>
     public class AbilityCastMode
     {
-        public bool Castable { get; private set; } = true;
-        public bool IsNormal { get; private set; }
-        public bool IsInstant { get; private set; }
-        public bool HasRecast { get; private set; }
+        public bool Castable { get; set; } = true;
+        public bool IsNormal { get; set; }
+        public bool IsInstant { get; set; }
+        public bool HasRecast { get; set; }
 
-        public AbilityCastMode RecastMode { get; private set; }
+        public AbilityCastMode RecastMode { get; set; }
 
-        public int RecastTime { get; private set; }
+        public int RecastTime { get; set; }
 
-        public bool RecastOnKeyUp { get; private set; }
+        public bool RecastOnKeyUp { get; set; }
 
-        public int MaxRecasts { get; private set; }
+        public int MaxRecasts { get; set; }
 
         /// <summary>
         /// Returns an ability that cannot be cast.

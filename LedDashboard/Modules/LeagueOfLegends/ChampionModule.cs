@@ -506,12 +506,15 @@ namespace LedDashboard.Modules.LeagueOfLegends
         /// <summary>
         /// Starts the cooldown timer for an ability. It should be called after an ability is cast.
         /// </summary>
-        protected void StartCooldownTimer(AbilityKey ability)
+        protected void StartCooldownTimer(AbilityKey ability, int overrideTime = 0)
         {
-            Task.Run(async () =>
+            // TODO: Refactor this into tracking cooldowns accurately, 
+            // if this method is called twice (needed for Xerath or others that have different cooldowns on different circumstances), it won't work properly
+            Task.Run(async () => 
             {
                 _AbilitiesOnCooldown[ability] = true;
-                await Task.Delay(GetCooldownForAbility(ability) - 350); // a bit less cooldown than the real one (if the user spams)
+                int cd = overrideTime > 0 ? overrideTime : GetCooldownForAbility(ability);
+                await Task.Delay(cd - 350); // a bit less cooldown than the real one (if the user spams)
                 _AbilitiesOnCooldown[ability] = false;
             });
         }
@@ -528,6 +531,11 @@ namespace LedDashboard.Modules.LeagueOfLegends
                     StartCooldownTimer(ability);
                 }
             });
+        }
+
+        protected void CancelRecast(AbilityKey ability)
+        {
+            AbilitiesOnRecast[ability] = 0;
         }
 
         public void Dispose()

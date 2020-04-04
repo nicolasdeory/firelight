@@ -18,12 +18,11 @@ namespace LedDashboard.Modules.LeagueOfLegends.ChampionModules
         // Variables
 
         // Champion-specific Variables
+        int rTimeRemaining = 0;
+        int chargesRemaining = 0;
+        bool castingQ;
 
-        static HSVColor QColor = new HSVColor(0.09f, 1, 1);
-        static HSVColor WColor = new HSVColor(0.24f, 1, 0.74f);
-        static HSVColor EColor = new HSVColor(0.08f, 1, 0.64f);
-        static HSVColor RColor = new HSVColor(0.54f, 1, 1);
-
+        HSVColor BlueExplodeColor = new HSVColor(0.59f, 1, 1);
 
         /// <summary>
         /// Creates a new champion instance.
@@ -64,7 +63,16 @@ namespace LedDashboard.Modules.LeagueOfLegends.ChampionModules
             // Preload all the animations you'll want to use. MAKE SURE that each animation file
             // has its Build Action set to "Content" and "Copy to Output Directory" is set to "Always".
 
+            animator.PreloadAnimation(ANIMATION_PATH + "Xerath/q_charge.txt");
+            animator.PreloadAnimation(ANIMATION_PATH + "Xerath/q_retract.txt");
+            animator.PreloadAnimation(ANIMATION_PATH + "Xerath/w_cast.txt");
+            animator.PreloadAnimation(ANIMATION_PATH + "Xerath/e_cast.txt");
+            animator.PreloadAnimation(ANIMATION_PATH + "Xerath/r_launch.txt");
+            animator.PreloadAnimation(ANIMATION_PATH + "Xerath/r_open.txt");
+
+
             ChampionInfoLoaded += OnChampionInfoLoaded;
+            GameStateUpdated += OnGameStateUpdated;
         }
 
         /// <summary>
@@ -75,6 +83,45 @@ namespace LedDashboard.Modules.LeagueOfLegends.ChampionModules
             animator.NewFrameReady += (_, ls, mode) => DispatchNewFrame(ls, mode);
             AbilityCast += OnAbilityCast;
             AbilityRecast += OnAbilityRecast;
+            KeyboardHookService.Instance.OnMouseClicked += MouseClicked;
+        }
+
+        private void MouseClicked(object sender, MouseEventArgs e)
+        {
+            if (e.Button == MouseButtons.Right && chargesRemaining > 0)
+            {
+                if (chargesRemaining == GameState.ActivePlayer.AbilityLoadout.R_Level + 2)
+                {
+                    StartCooldownTimer(AbilityKey.R, GetCooldownForAbility(AbilityKey.R) / 2);
+                } else
+                {
+                    StartCooldownTimer(AbilityKey.R, GetCooldownForAbility(AbilityKey.R));
+                }
+                CancelRecast(AbilityKey.R);
+                _ = animator.RunAnimationOnce(ANIMATION_PATH + "Xerath/q_retract.txt", timeScale: 0.6f);
+                chargesRemaining = 0;
+            }
+        }
+
+        /// <summary>
+        /// Called when the game state is updated
+        /// </summary>
+        private void OnGameStateUpdated(GameState state)
+        {
+            int casts = 3;
+            switch (state.ActivePlayer.AbilityLoadout.R_Level)
+            {
+                case 1:
+                    casts = 3;
+                    break;
+                case 2:
+                    casts = 4;
+                    break;
+                case 3:
+                    casts = 5;
+                    break;
+            }
+            AbilityCastModes[AbilityKey.R].MaxRecasts = casts;
         }
 
         /// <summary>
@@ -102,28 +149,72 @@ namespace LedDashboard.Modules.LeagueOfLegends.ChampionModules
 
         private void OnCastQ()
         {
-            Console.WriteLine("Cast Q");
-            animator.ColorBurst(QColor);
+            Task.Run(async () =>
+            {
+                castingQ = true;
+                await animator.RunAnimationOnce(ANIMATION_PATH + "Xerath/q_charge.txt", true, timeScale: 0.3f);
+                if (castingQ) // we need to check again after playing last anim
+                    await animator.HoldColor(BlueExplodeColor, 1500);
+                if (castingQ)
+                {
+                    _ = animator.RunAnimationOnce(ANIMATION_PATH + "Xerath/q_retract.txt", timeScale: 0.6f);
+                    castingQ = false;
+                }
+            });
         }
 
         private void OnCastW()
         {
-            Console.WriteLine("Cast W");
-            animator.ColorBurst(WColor);
+            Task.Run(async () =>
+            {
+                await Task.Delay(100);
+                animator.RunAnimationInLoop(ANIMATION_PATH + "Xerath/w_cast.txt", 1000, timeScale: 1f);
+                await Task.Delay(1000);
+                _ = animator.ColorBurst(HSVColor.White);
+            });
         }
 
         private void OnCastE()
         {
-            Console.WriteLine("Cast E");
-            animator.ColorBurst(EColor);
+            Task.Run(async () =>
+            {
+                await Task.Delay(100);
+                _ = animator.RunAnimationOnce(ANIMATION_PATH + "Xerath/e_cast.txt", timeScale: 0.5f);
+            });
         }
 
         private void OnCastR()
         {
-            Console.WriteLine("Cast R");
-            animator.ColorBurst(RColor);
-
+            Task.Run(async () =>
+            {
+                _ = animator.RunAnimationOnce(ANIMATION_PATH + "Xerath/r_open.txt", true, timeScale: 0.23f);
+                StartRTimer();
+                await Task.Delay(500);
+                if (chargesRemaining == 3) _ = animator.HoldColor(HSVColor.White, 10000);
+                
+            });
         }
+
+        private void StartRTimer()
+        {
+            chargesRemaining = GameState.ActivePlayer.AbilityLoadout.R_Level + 2;
+            Task.Run(async () =>
+            {
+                rTimeRemaining = 10000;
+                while (rTimeRemaining >= 0)
+                {
+                    await Task.Delay(100);
+                    rTimeRemaining -= 100;
+                }
+                
+                if (chargesRemaining > 0)
+                {
+                    chargesRemaining = 0;
+                    animator.StopCurrentAnimation();
+                }
+            });
+        }
+
 
         /// <summary>
         /// Called when an ability is casted again (few champions have abilities that can be recast, only those with special abilities such as Vel'Koz or Zoes Q)
@@ -132,14 +223,35 @@ namespace LedDashboard.Modules.LeagueOfLegends.ChampionModules
         {
             if (key == AbilityKey.Q)
             {
-                Console.WriteLine("Recast Q");
-                animator.ColorBurst(HSVColor.FromRGB(0, 255, 100));
+                Task.Run(async () =>
+                {
+                    castingQ = false;
+                    await animator.RunAnimationOnce(ANIMATION_PATH + "Xerath/q_retract.txt", timeScale: 0.6f);
+                    await Task.Delay(300);
+                    _ = animator.ColorBurst(BlueExplodeColor);
+                });
 
             }
             else if (key == AbilityKey.R)
             {
-                Console.WriteLine("Recast R");
-                animator.ColorBurst(HSVColor.FromRGB(255, 0, 0));
+                if (chargesRemaining == 0) return;
+                chargesRemaining--;
+                Task.Run(async () =>
+                {
+                    _ = animator.RunAnimationOnce(ANIMATION_PATH + "Xerath/r_launch.txt", true, timeScale: 0.4f);
+                    await Task.Delay(700);
+                    if (chargesRemaining > 0)
+                    {
+                        int previousCharges = chargesRemaining;
+                        await animator.ColorBurst(BlueExplodeColor, 0.15f, HSVColor.White);
+                        if (previousCharges == chargesRemaining) _ = animator.HoldColor(HSVColor.White, rTimeRemaining);
+                    } else if (chargesRemaining == 0)
+                    {
+                        await animator.ColorBurst(BlueExplodeColor, 0.10f);
+                    }
+                    
+                });
+                
             }
         }
 

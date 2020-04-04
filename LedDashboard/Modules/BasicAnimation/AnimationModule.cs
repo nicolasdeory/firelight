@@ -59,15 +59,16 @@ namespace LedDashboard.Modules.BasicAnimation
 
             if (currentlyRunningAnim != null) currentlyRunningAnim.Cancel();
             currentlyRunningAnim = new CancellationTokenSource();
+            CancellationToken token = currentlyRunningAnim.Token;
             //isAnimationRunning = true;
-            return TaskRunner.RunAsync(Task.Run(() => PlayOnce(anim, currentlyRunningAnim.Token, timeScale)).ContinueWith(async (t) =>
+            return TaskRunner.RunAsync(Task.Run(() => PlayOnce(anim, token, timeScale)).ContinueWith(async (t) =>
             {
                 if (t.IsCanceled) return; // don't continue if task was cancelled
                 if (!keepTail)
                 {
                     if (fadeOutAfterRate > 0)
                     {
-                        await FadeOutToBlack(fadeOutAfterRate, currentlyRunningAnim.Token, anim.AnimationMode);
+                        await FadeOutToBlack(fadeOutAfterRate, token, anim.AnimationMode);
                     }
                     else
                     {
@@ -90,13 +91,13 @@ namespace LedDashboard.Modules.BasicAnimation
 
             if (currentlyRunningAnim != null) currentlyRunningAnim.Cancel();
             currentlyRunningAnim = new CancellationTokenSource();
-            //isAnimationRunning = true;
-            var t = TaskRunner.RunAsync(Task.Run(() => PlayLoop(anim, currentlyRunningAnim.Token, loopDuration, timeScale)).ContinueWith(async (t) =>
+            CancellationToken token = currentlyRunningAnim.Token;
+            var t = TaskRunner.RunAsync(Task.Run(() => PlayLoop(anim, token, loopDuration, timeScale)).ContinueWith(async (t) =>
             {
                 if (t.IsCanceled) return; // don't continue if task was cancelled
                 if (fadeOutAfterRate > 0)
                 {
-                    await FadeOutToBlack(fadeOutAfterRate, currentlyRunningAnim.Token, anim.AnimationMode);
+                    await FadeOutToBlack(fadeOutAfterRate, token, anim.AnimationMode);
                 }
                 else
                 {
@@ -107,6 +108,29 @@ namespace LedDashboard.Modules.BasicAnimation
             }));
 
 
+        }
+
+        public Task HoldColor(HSVColor col, int durationMS)
+        {
+            if (currentlyRunningAnim != null) currentlyRunningAnim.Cancel();
+            currentlyRunningAnim = new CancellationTokenSource();
+            //isAnimationRunning = true;
+            return TaskRunner.RunAsync(Task.Run(async () =>
+            {
+                CancellationToken token = currentlyRunningAnim.Token;
+                foreach (Led l in this.leds)
+                {
+                    l.Color(col);
+                }
+                int msCounter = 0;
+                while (msCounter < durationMS)
+                {
+                    if (token.IsCancellationRequested) throw new TaskCanceledException();
+                    NewFrameReady.Invoke(this, this.leds, LightingMode.Line);
+                    await Task.Delay(50);
+                    msCounter += 50;
+                }
+            }));
         }
 
         /// <summary>
@@ -151,6 +175,7 @@ namespace LedDashboard.Modules.BasicAnimation
             //isAnimationRunning = true;
             return TaskRunner.RunAsync(Task.Run(async () =>
             {
+                CancellationToken token = currentlyRunningAnim.Token;
                 foreach (Led l in this.leds)
                 {
                     l.Color(color);
@@ -160,11 +185,11 @@ namespace LedDashboard.Modules.BasicAnimation
                 {
                     if (destinationColor.Equals(HSVColor.Black))
                     {
-                        await FadeOutToBlack(fadeoutRate, currentlyRunningAnim.Token, LightingMode.Line);
+                        await FadeOutToBlack(fadeoutRate, token, LightingMode.Line);
                     }
                     else
                     {
-                        await FadeOutToColor(fadeoutRate, destinationColor, currentlyRunningAnim.Token);
+                        await FadeOutToColor(fadeoutRate, destinationColor, token);
                     }
 
                 }
@@ -235,6 +260,7 @@ namespace LedDashboard.Modules.BasicAnimation
                 if (cancelToken.IsCancellationRequested) throw new TaskCanceledException();
                 NewFrameReady.Invoke(this, this.leds, anim.AnimationMode);
                 await Task.Delay(frameTime);
+                if (cancelToken.IsCancellationRequested) throw new TaskCanceledException();
                 if (i == anim.FrameCount) break;
             }
             //currentlyRunningAnim = null;
@@ -327,6 +353,7 @@ namespace LedDashboard.Modules.BasicAnimation
                 msCounter += 30;
             }
             this.leds.SetAllToColor(color);
+            NewFrameReady.Invoke(this, this.leds, LightingMode.Line);
         }
 
         // Set duration to -1 for indefinite
