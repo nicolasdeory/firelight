@@ -72,12 +72,22 @@ namespace LedDashboard.Modules.LeagueOfLegends.ChampionModules.Common
             };
         }
 
-        public static AbilityCastMode KeyUpRecast()
+        /// <summary>
+        /// Right now it's used for Xerath Q
+        /// </summary>
+        public static AbilityCastMode KeyUpRecast(bool instant = false)
         {
             return new AbilityCastMode()
             {
                 RecastOnKeyUp = true
             };
+        }
+
+        public override string ToString()
+        {
+            return $"Castable: {Castable} Instant: {IsInstant}, " +
+                $"HasRecast: {HasRecast}, RecastMode: {RecastMode?.ToString()}, " +
+                $"RecastTime: {RecastTime}, RecastOnKeyUp: {RecastOnKeyUp}, MaxRecasts: {MaxRecasts}";
         }
 
     }

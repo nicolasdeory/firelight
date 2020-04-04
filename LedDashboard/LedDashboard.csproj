@@ -150,6 +150,7 @@
     <Compile Include="Modules\LeagueOfLegends\ChampionAttribute.cs" />
     <Compile Include="Modules\LeagueOfLegends\ChampionModules\TwistedFateModule.cs" />
     <Compile Include="Modules\LeagueOfLegends\ChampionModules\EzrealModule.cs" />
+    <Compile Include="Modules\LeagueOfLegends\ChampionModules\XerathModule.cs" />
     <Compile Include="Modules\LeagueOfLegends\ChampionModules\UdyrModule.cs" />
     <Compile Include="Modules\LeagueOfLegends\ChampionModules\AhriModule.cs" />
     <Compile Include="Modules\LeagueOfLegends\ChampionModules\Common\AbilityModes.cs" />
