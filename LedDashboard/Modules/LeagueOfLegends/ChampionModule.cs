@@ -152,7 +152,8 @@ namespace LedDashboard.Modules.LeagueOfLegends
         {
             if (e.Button == MouseButtons.Right)
             {
-                SelectedAbility = AbilityKey.None;
+                if (CanRecastAbility(SelectedAbility) && !AbilityCastModes[SelectedAbility].RecastOnKeyUp)
+                    SelectedAbility = AbilityKey.None;
             }
             else if (e.Button == MouseButtons.Left) // cooldowns are accounted for here aswell in case between key press and click user died, or did zhonyas...
             {
@@ -161,7 +162,7 @@ namespace LedDashboard.Modules.LeagueOfLegends
                 {
                     if (CanCastAbility(AbilityKey.Q))
                     {
-                        if (AbilityCastModes[SelectedAbility].HasRecast && AbilitiesOnRecast[SelectedAbility] > 0)
+                        if (CanRecastAbility(AbilityKey.Q))
                         {
                             // its a recast
                             RecastAbility(AbilityKey.Q);
@@ -177,7 +178,7 @@ namespace LedDashboard.Modules.LeagueOfLegends
                 {
                     if (CanCastAbility(AbilityKey.W))
                     {
-                        if (AbilityCastModes[SelectedAbility].HasRecast && AbilitiesOnRecast[SelectedAbility] > 0)
+                        if (CanRecastAbility(AbilityKey.W))
                         {
                             // its a recast
                             RecastAbility(AbilityKey.W);
@@ -194,7 +195,7 @@ namespace LedDashboard.Modules.LeagueOfLegends
                 {
                     if (CanCastAbility(AbilityKey.E))
                     {
-                        if (AbilityCastModes[SelectedAbility].HasRecast && AbilitiesOnRecast[SelectedAbility] > 0)
+                        if (CanRecastAbility(AbilityKey.E))
                         {
                             // its a recast
                             RecastAbility(AbilityKey.E);
@@ -211,7 +212,7 @@ namespace LedDashboard.Modules.LeagueOfLegends
                 {
                     if (CanCastAbility(AbilityKey.R))
                     {
-                        if (AbilityCastModes[SelectedAbility].HasRecast && AbilitiesOnRecast[SelectedAbility] > 0)
+                        if (CanRecastAbility(AbilityKey.R))
                         {
                             // its a recast
                             RecastAbility(AbilityKey.R);
@@ -239,7 +240,7 @@ namespace LedDashboard.Modules.LeagueOfLegends
         private void ProcessKeyPress(object s, char keyChar, bool keyUp = false)
         {
             if (keyChar == lastPressedKey && !keyUp) return; // prevent duplicate calls. Without this, this gets called every frame a key is pressed.
-            lastPressedKey = keyUp ? '\0' : keyChar; 
+            lastPressedKey = keyUp ? '\0' : keyChar;
             // TODO: quick cast with indicator bug - repro: hold w, then hold q, then right click, then release w, then release q. The ability is cast, even when it shouldn't.
 
             if (keyChar == 'q')
@@ -262,7 +263,6 @@ namespace LedDashboard.Modules.LeagueOfLegends
             {
                 animator.ColorBurst(HSVColor.FromRGB(255, 237, 41), 0.1f);
             }*/
-            //OnKeyPressed?.Invoke(s,e);
         }
 
         private void DoCastLogicForAbility(AbilityKey key, bool keyUp)
@@ -273,9 +273,10 @@ namespace LedDashboard.Modules.LeagueOfLegends
 
             if (castMode.HasRecast && AbilitiesOnRecast[key] > 0)
             {
-                if (castMode.RecastMode.IsInstant
+                if (castMode.RecastMode.IsInstant // TODO: Make this much more readable
                     || PreferredCastMode == AbilityCastPreference.Quick
-                    || (PreferredCastMode == AbilityCastPreference.QuickWithIndicator && keyUp))
+                    || (PreferredCastMode == AbilityCastPreference.QuickWithIndicator && keyUp && SelectedAbility == key)
+                    || ((PreferredCastMode == AbilityCastPreference.Quick || PreferredCastMode == AbilityCastPreference.QuickWithIndicator) && keyUp && castMode.RecastMode.RecastOnKeyUp))
                 {
                     if (CanCastAbility(key)) // We must check if CanCastAbility is true. Players can't recast abilities if they're dead or in zhonyas.
                     {
@@ -283,7 +284,7 @@ namespace LedDashboard.Modules.LeagueOfLegends
                     }
                     return;
                 }
-                if (PreferredCastMode == AbilityCastPreference.Normal)
+                if (PreferredCastMode == AbilityCastPreference.Normal || PreferredCastMode == AbilityCastPreference.QuickWithIndicator)
                 {
                     if (CanCastAbility(key))
                     {
@@ -357,7 +358,8 @@ namespace LedDashboard.Modules.LeagueOfLegends
             {
                 StartCooldownTimer(key);
             }
-            SelectedAbility = AbilityKey.None;
+            if (!AbilityCastModes[key].RecastOnKeyUp)
+                SelectedAbility = AbilityKey.None;
         }
         private void RecastAbility(AbilityKey key)
         {
@@ -417,6 +419,11 @@ namespace LedDashboard.Modules.LeagueOfLegends
                 return false;
             }
             return true;
+        }
+
+        protected bool CanRecastAbility(AbilityKey key)
+        {
+            return AbilityCastModes[key].HasRecast && AbilitiesOnRecast[key] > 0;
         }
 
         /// <summary>

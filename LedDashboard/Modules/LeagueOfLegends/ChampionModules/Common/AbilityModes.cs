@@ -20,6 +20,8 @@ namespace LedDashboard.Modules.LeagueOfLegends.ChampionModules.Common
 
         public int RecastTime { get; private set; }
 
+        public bool RecastOnKeyUp { get; private set; }
+
         public int MaxRecasts { get; private set; }
 
         /// <summary>
@@ -69,6 +71,15 @@ namespace LedDashboard.Modules.LeagueOfLegends.ChampionModules.Common
                 MaxRecasts = maxRecasts
             };
         }
+
+        public static AbilityCastMode KeyUpRecast()
+        {
+            return new AbilityCastMode()
+            {
+                RecastOnKeyUp = true
+            };
+        }
+
     }
 
     public enum AbilityCastPreference

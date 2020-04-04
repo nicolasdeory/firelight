@@ -74,7 +74,7 @@ namespace LedDashboard.Modules.LeagueOfLegends.ItemModules
                     await Task.Delay(1000); // wait a bit to retrieve item info
                 }
                 // Set cooldown duration
-                CooldownDuration = (int)(ItemUtils.GetItemAttributes(ITEM_ID).EffectAmounts[5] * 1000);
+                CooldownDuration = (int)(ItemUtils.GetItemAttributes(ITEM_ID).EffectAmounts[5] * 1000); // TODO: Maybe parse the cooldown from item desc?
             });
             
         }
