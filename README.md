@@ -39,6 +39,8 @@ If you play with one of these champions, you will see animations for their abili
 - Effects for summoner spells
 - Add support for different keyboard brands and more RGB devices
 
+You can join our [Discord](https://discord.gg/EyBuGv) to follow the latest updates.
+
 ## Known Issues
 - Window focus isn't taken into account
 - Game chat isn't taken into account (keypresses are treated as ability casts)
