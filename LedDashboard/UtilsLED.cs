@@ -33,7 +33,7 @@ namespace LedDashboard
             }
         }
 
-        public static void AddColorToLedsAround(this Led[] leds, int ledNum, HSVColor colHSV, int colorMixSpread = 5)
+        public static void AddColorToLedsAround(this Led[] leds, int ledNum, HSVColor colHSV, int colorMixSpread = 5, bool overrideColor = false)
         {
             leds[ledNum].MixNewColor(colHSV);
             if (colHSV.v == 0) return;
@@ -43,11 +43,24 @@ namespace LedDashboard
                 HSVColor c = new HSVColor(colHSV.h, colHSV.s, (float)cVal);
                 if (ledNum + i < leds.Length)
                 {
-                    leds[ledNum + i].MixNewColor(c);
+                    if (overrideColor)
+                    {
+                        leds[ledNum + i].Color(colHSV);
+                    } else
+                    {
+                        leds[ledNum + i].MixNewColor(c);
+                    }
                 }
                 if (ledNum - i >= 0)
                 {
-                    leds[ledNum - i].MixNewColor(c);
+                    if (overrideColor)
+                    {
+                        leds[ledNum - i].Color(colHSV);
+                    }
+                    else
+                    {
+                        leds[ledNum - i].MixNewColor(c);
+                    }
                 }
             }
         }
