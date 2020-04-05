@@ -24,10 +24,9 @@ A modular League of Legends integration for Razer Chroma and RGB LED devices.
 - Enjoy the lights!
 
 ## Roadmap / Planned Features
-- Animation sets for each champion
+- Animation sets for each champion and active ability item
 - Effects for summoner spells
-- Effects for items
-- Improve support for keyboard animations
+- Add support for different keyboard brands and more RGB devices
 
 ## Known Issues
 - Window focus isn't taken into account
