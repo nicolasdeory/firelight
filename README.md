@@ -29,7 +29,7 @@ If you play with one of these champions, you will see animations for their abili
 
 ## Usage
 - Setup a LED strip that listens to color data via sACN. If you don't have a LED strip, you will be able to see the simulated LED display in your screen. Alternatively, if you have a Razer Chroma Keyboard, the program should work out of the box!
-- Open the program (`Release/netcoreapp3.0/LedDashboard.exe`). It will default to Razer Chroma mode. If you want to use it with an LED strip, click on "Use LED strip".
+- Open the program (`LedDashboard.exe`). It will default to Razer Chroma mode. If you want to use it with an LED strip, click on "Use LED strip".
 - Load into a LoL game
 - Enjoy the lights!
 
