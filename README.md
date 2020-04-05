@@ -6,13 +6,23 @@ A modular League of Legends integration for Razer Chroma and RGB LED devices.
 
 ## Features
 - Health Bar
-- Custom spellcast animations for several champions
+- Custom spellcast animations for several champions and items
 - Trinket notifications - lights up when you have a ward available
 - Gold notification - lights up when you should back to buy
 - Keeps track of cooldowns and mana
+- Kill Lights
 - Death Lights
-- Compatible with E1.31 devices
+- Compatible with E1.31 devices (LED strips)
 - Razer Chroma support
+
+### Supported champions
+If you play with one of these champions, you will see animations for their abilities.
+- Ahri
+- Ezreal
+- Twisted Fate
+- Udyr
+- Vel'Koz
+- Xerath
 
 ![Death light](repo/img-death.png)
 ![Out of Mana light](repo/img-oom.png)
@@ -20,7 +30,7 @@ A modular League of Legends integration for Razer Chroma and RGB LED devices.
 ## Usage
 - Setup a LED strip that listens to color data via sACN. If you don't have a LED strip, you will be able to see the simulated LED display in your screen. Alternatively, if you have a Razer Chroma Keyboard, the program should work out of the box!
 - Open the program. It will default to Razer Chroma mode. If you want to use it with an LED strip, click on "Use LED strip".
-- Load into a LoL game (preferably with Vel'Koz)
+- Load into a LoL game
 - Enjoy the lights!
 
 ## Roadmap / Planned Features
@@ -36,4 +46,4 @@ A modular League of Legends integration for Razer Chroma and RGB LED devices.
 Check out the [contributing guide](CONTRIBUTING.md). Help is greatly appreciated with anything, really.
 
 ### Reporting Issues
-If you found that something isn't working as expected, please post an issue detailing the problem and the steps to reproduce it. If you get an "Unhandled Exception" error, please paste the text inside the box. Thank you!
+If you found that something isn't working as expected, please post an issue detailing the problem and the steps to reproduce it. If you get an "Unhandled Exception" error, please paste the text that appears inside the box. Thank you!
