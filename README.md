@@ -3,6 +3,7 @@ A modular League of Legends integration for Razer Chroma and RGB LED devices.
 
 ![](repo/video-gif.gif)
 
+You can join our [Discord server](https://discord.gg/EyBuGv) to follow the latest updates.
 
 ## Features
 - Health Bar
@@ -35,8 +36,6 @@ If you play with one of these champions, you will see animations for their abili
 - Animation sets for each champion and active ability item
 - Effects for summoner spells
 - Add support for different keyboard brands and more RGB devices
-
-You can join our [Discord](https://discord.gg/EyBuGv) to follow the latest updates.
 
 ## Known Issues
 - Window focus isn't taken into account
