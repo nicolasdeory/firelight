@@ -53,6 +53,8 @@ namespace LedDashboard.Modules.LeagueOfLegends
 
         public event EventHandler ItemCast;
 
+        public event EventHandler RequestActivation;
+
         protected AbilityCastPreference PreferredCastMode; // User defined setting, preferred cast mode.
         protected AbilityCastMode ItemCastMode;
 
@@ -78,15 +80,6 @@ namespace LedDashboard.Modules.LeagueOfLegends
             KeyboardHookService.Instance.OnMouseClicked += OnMouseClick; // TODO. Abstract this to league of legends module, so it pairs with summoner spells and items.
             KeyboardHookService.Instance.OnKeyPressed += OnKeyPress;
             KeyboardHookService.Instance.OnKeyReleased += OnKeyRelease;
-           /* Task.Run(async () =>
-            {
-                while (true)
-                {
-                    Console.WriteLine(PreferredCastMode);
-                    var xx = PreferredCastMode;
-                    await Task.Delay(1000);
-                }
-            });*/
 
         }
 
@@ -203,9 +196,18 @@ namespace LedDashboard.Modules.LeagueOfLegends
 
         private void ActivateItem()
         {
+            RequestLEDActivation();
             ItemCast?.Invoke(this, null);
             //StartCooldownTimer();
             itemIsSelected = false;
+        }
+
+        /// <summary>
+        /// Tell to the LoL module to listen for data from this module
+        /// </summary>
+        protected void RequestLEDActivation()
+        {
+            RequestActivation?.Invoke(this, null);
         }
 
         /// <summary>

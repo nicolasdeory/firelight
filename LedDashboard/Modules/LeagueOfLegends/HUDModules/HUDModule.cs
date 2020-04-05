@@ -22,6 +22,7 @@ namespace LedDashboard.Modules.LeagueOfLegends.HUDModules
         static HSVColor YellowTrinketColor = new HSVColor(0.15f, 0.8f, 1f);
         static HSVColor RedTrinketColor = new HSVColor(0.01f, 0.8f, 1f);
         static HSVColor BlueTrinketColor = new HSVColor(0.58f, 0.8f, 1f);
+        static HSVColor HeraldColor = new HSVColor(0.81f, 0.8f, 1);
 
         static HSVColor GoldColor = new HSVColor(0.11f, 0.8f, 1f);
 
@@ -75,7 +76,10 @@ namespace LedDashboard.Modules.LeagueOfLegends.HUDModules
             if (lightMode != LightingMode.Keyboard) return; // TODO: Implement some sort of notification for LED strip perhaps
 
             Item trinket = gameState.PlayerChampion.Items.FirstOrDefault(x => x.Slot == 6);
-            if (trinket == null || (ItemCooldownController.IsSlotOnCooldown(6) && trinket.ItemID != ItemModules.WardingTotemModule.ITEM_ID)) 
+            if (trinket == null || 
+                                    (ItemCooldownController.IsSlotOnCooldown(6) 
+                                    && trinket.ItemID != ItemModules.WardingTotemModule.ITEM_ID 
+                                    && trinket.ItemID != ItemModules.HeraldEyeModule.ITEM_ID)) 
             {
                 // if trinket is on cooldown, set black
                 foreach (int k in trinketKeys)
@@ -97,6 +101,9 @@ namespace LedDashboard.Modules.LeagueOfLegends.HUDModules
                 else if (trinket.ItemID == 3363)
                 {
                     col = BlueTrinketColor;
+                } else if (trinket.ItemID == 3513)
+                {
+                    col = HeraldColor;
                 }
                 // TODO: HANDLE HERALD EYE
                 foreach (int k in trinketKeys)

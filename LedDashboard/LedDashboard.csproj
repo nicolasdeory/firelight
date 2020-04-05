@@ -130,6 +130,18 @@
     <Content Include="Animations\LeagueOfLegends\Items\FarsightAlteration\activation.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Include="Animations\LeagueOfLegends\Items\HeraldEye\anim_1.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Animations\LeagueOfLegends\Items\HeraldEye\anim_2.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Animations\LeagueOfLegends\Items\HeraldEye\anim_3.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Animations\LeagueOfLegends\Items\HeraldEye\anim_4.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="Animations\LeagueOfLegends\Items\OracleLens\activation.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
@@ -178,6 +190,7 @@
     <Compile Include="Modules\LeagueOfLegends\ItemAttribute.cs" />
     <Compile Include="Modules\LeagueOfLegends\ItemCooldownController.cs" />
     <Compile Include="Modules\LeagueOfLegends\ItemModule.cs" />
+    <Compile Include="Modules\LeagueOfLegends\ItemModules\HeraldEyeModule.cs" />
     <Compile Include="Modules\LeagueOfLegends\ItemModules\RedemptionModule.cs" />
     <Compile Include="Modules\LeagueOfLegends\ItemModules\FarsightAlterationModule.cs" />
     <Compile Include="Modules\LeagueOfLegends\ItemModules\WardingTotemModule.cs" />
