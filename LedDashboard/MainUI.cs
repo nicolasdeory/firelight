@@ -102,7 +102,7 @@ namespace LedDashboard
         {
             if (updatingUI) return;
             updatingUI = true;
-            Task.Run(() => // HACK This is done asynchronously but the fact is that it's very slow. 10ms to draw stuff...
+            Task.Run(() => // HACK This is done asynchronously but it's still very slow. 10ms to draw stuff...
             {
                 if (currentLightingMode == LightingMode.Keyboard)
                 {
@@ -151,10 +151,15 @@ namespace LedDashboard
                     }
 
                 }
-                else
+                else if (currentLightingMode == LightingMode.Line)
                 {
+
+                    Led[] ledsToDraw = null;
+                    if (mode == LightingMode.Line) ledsToDraw = leds;
+                    else if (mode == LightingMode.Keyboard) ledsToDraw = SACNController.GetKeyboardToLedStripArray(leds.ToByteArray());
+                    else if (mode == LightingMode.Point) throw new NotImplementedException();
                     int i = 0;
-                    foreach (var led in leds)
+                    foreach (var led in ledsToDraw)
                     {
                         byte[] col = led.color.ToRGB();
                         SolidBrush colBrush = new SolidBrush(Color.FromArgb(col[0], col[1], col[2]));

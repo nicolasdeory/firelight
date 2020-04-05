@@ -14,6 +14,7 @@ namespace LedDashboard
         public float v;
 
         public readonly static HSVColor Black = new HSVColor(0, 0, 0);
+        public readonly static HSVColor White = new HSVColor(0, 0, 1);
         public HSVColor(float h, float s, float v)
         {
             this.h = h;

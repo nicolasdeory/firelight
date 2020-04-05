@@ -10,17 +10,18 @@ using System.Windows.Forms;
 namespace LedDashboard.Modules.LeagueOfLegends.ChampionModules
 {
     [Champion(CHAMPION_NAME)]
-    class AhriModule : ChampionModule
+    class UdyrModule : ChampionModule
     {
 
-        // Change to whatever champion you want to implement
-        public const string CHAMPION_NAME = "Ahri";
-
+        public const string CHAMPION_NAME = "Udyr";
         // Variables
 
         // Champion-specific Variables
 
-        int rCastInProgress = 0;
+        static HSVColor QColor = new HSVColor(0.09f, 1, 1);
+        static HSVColor WColor = new HSVColor(0.24f, 1, 0.74f);
+        static HSVColor EColor = new HSVColor(0.08f, 1, 0.64f);
+        static HSVColor RColor = new HSVColor(0.54f, 1, 1);
 
 
         /// <summary>
@@ -30,13 +31,13 @@ namespace LedDashboard.Modules.LeagueOfLegends.ChampionModules
         /// <param name="gameState">Game state data</param>
         /// <param name="preferredLightMode">Preferred light mode</param>
         /// <param name="preferredCastMode">Preferred ability cast mode (Normal, Quick Cast, Quick Cast with Indicator)</param>
-        public static AhriModule Create(int ledCount, GameState gameState, LightingMode preferredLightMode, AbilityCastPreference preferredCastMode = AbilityCastPreference.Normal)
+        public static UdyrModule Create(int ledCount, GameState gameState, LightingMode preferredLightMode, AbilityCastPreference preferredCastMode = AbilityCastPreference.Normal)
         {
-            return new AhriModule(ledCount, gameState, CHAMPION_NAME, preferredLightMode, preferredCastMode);
+            return new UdyrModule(ledCount, gameState, CHAMPION_NAME, preferredLightMode, preferredCastMode);
         }
 
 
-        private AhriModule(int ledCount, GameState gameState, string championName, LightingMode preferredLightMode, AbilityCastPreference preferredCastMode)
+        private UdyrModule(int ledCount, GameState gameState, string championName, LightingMode preferredLightMode, AbilityCastPreference preferredCastMode)
                             : base(ledCount, championName, gameState, preferredLightMode)
         {
             // Initialization for the champion module occurs here.
@@ -52,22 +53,15 @@ namespace LedDashboard.Modules.LeagueOfLegends.ChampionModules
             // R -> Instant ability, it is cast the moment the key is pressed, but it can be recast within 2.3s
             Dictionary<AbilityKey, AbilityCastMode> abilityCastModes = new Dictionary<AbilityKey, AbilityCastMode>()
             {
-                [AbilityKey.Q] = AbilityCastMode.Normal(),
+                [AbilityKey.Q] = AbilityCastMode.Instant(),
                 [AbilityKey.W] = AbilityCastMode.Instant(),
-                [AbilityKey.E] = AbilityCastMode.Normal(),
-                [AbilityKey.R] = AbilityCastMode.Instant(10000,2),
+                [AbilityKey.E] = AbilityCastMode.Instant(),
+                [AbilityKey.R] = AbilityCastMode.Instant(),
             };
             AbilityCastModes = abilityCastModes;
 
             // Preload all the animations you'll want to use. MAKE SURE that each animation file
             // has its Build Action set to "Content" and "Copy to Output Directory" is set to "Always".
-
-            animator.PreloadAnimation(ANIMATION_PATH + "Ahri/q_start.txt");
-            animator.PreloadAnimation(ANIMATION_PATH + "Ahri/q_end.txt");
-            animator.PreloadAnimation(ANIMATION_PATH + "Ahri/w_cast.txt");
-            animator.PreloadAnimation(ANIMATION_PATH + "Ahri/e_cast.txt");
-            animator.PreloadAnimation(ANIMATION_PATH + "Ahri/r_right.txt");
-            animator.PreloadAnimation(ANIMATION_PATH + "Ahri/r_left.txt");
 
             ChampionInfoLoaded += OnChampionInfoLoaded;
         }
@@ -107,70 +101,35 @@ namespace LedDashboard.Modules.LeagueOfLegends.ChampionModules
 
         private void OnCastQ()
         {
-            Task.Run(async () =>
-            {
-                animator.RunAnimationOnce(ANIMATION_PATH + "Ahri/q_start.txt", true);
-                await Task.Delay(1000);
-                animator.RunAnimationOnce(ANIMATION_PATH + "Ahri/q_end.txt", true);
-            });
+            animator.ColorBurst(QColor);
         }
 
         private void OnCastW()
         {
-            Task.Run(async () =>
-            {
-                animator.RunAnimationOnce(ANIMATION_PATH + "Ahri/w_cast.txt", false, 0.08f);
-            });
+            animator.ColorBurst(WColor);
         }
 
         private void OnCastE()
         {
-            Task.Run(async () =>
-            {
-                await Task.Delay(100);
-                animator.RunAnimationOnce(ANIMATION_PATH + "Ahri/e_cast.txt");
-            });
+            animator.ColorBurst(EColor);
         }
 
         private void OnCastR()
         {
 
-            // Trigger the start animation.
-
-            animator.RunAnimationOnce(ANIMATION_PATH + "Ahri/r_right.txt");
-
-            // The R cast is in progress.
-            rCastInProgress = 1;
-
-            Task.Run(async () =>
-            {
-                await Task.Delay(7000); // if after 7s no recast, effect disappears
-                rCastInProgress = 0;
-            });
+            animator.ColorBurst(RColor);
 
         }
-
 
         /// <summary>
         /// Called when an ability is casted again (few champions have abilities that can be recast, only those with special abilities such as Vel'Koz or Zoes Q)
         /// </summary>
         private void OnAbilityRecast(object s, AbilityKey key)
         {
-            // Add any abilities that need special logic when they are recasted.
 
-            if (key == AbilityKey.R)
-            {
-                if (rCastInProgress == 1)
-                {
-                    animator.RunAnimationOnce(ANIMATION_PATH + "Ahri/r_left.txt");
-                    rCastInProgress++;
-                } else if (rCastInProgress == 2)
-                {
-                    animator.RunAnimationOnce(ANIMATION_PATH + "Ahri/r_right.txt");
-                    rCastInProgress = 0; // done, all 3 casts have been used.
-                }
-                
-            }
         }
+
+        // udy
+
     }
 }

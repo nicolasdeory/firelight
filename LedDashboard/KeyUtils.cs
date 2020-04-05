@@ -19,7 +19,7 @@ namespace LedDashboard
             return pointToKeyArray[p.Y,p.X];
         }
 
-        public static List<Point> KeyToPoints(int key)
+        private static void KeyToPoints()
         {
             if (keyToPointsList == null)
             {
@@ -42,6 +42,14 @@ namespace LedDashboard
                     }
                 }
             }
+        }
+
+        /// <summary>
+        /// Returns several points because a key can span two points or more (e.g. return key)
+        /// </summary>
+        public static List<Point> KeyToPoint(int key)
+        {
+            if (keyToPointsList == null) KeyToPoints();
             return keyToPointsList[key];
         }
 

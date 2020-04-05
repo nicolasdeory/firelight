@@ -116,6 +116,7 @@ namespace LedDashboard
             }
         }
 
+        bool updatingDisplay = false;
         /// <summary>
         /// Updates the LED display
         /// </summary>
@@ -123,9 +124,16 @@ namespace LedDashboard
         /// <param name="ls">Array containing values for each LED in the strip</param>
         public void UpdateLEDDisplay(object s, Led[] ls, LightingMode mode)
         {
+            if (updatingDisplay)
+            {
+                Console.WriteLine("SEVERE: UpdateLEDDisplay was called at the same time as an ongoing one");
+                return;
+            }
+            updatingDisplay = true;
             this.leds = ls;
             DisplayUpdated?.Invoke(this.leds, mode);
             SendData(mode);
+            updatingDisplay = false;
         }
 
         

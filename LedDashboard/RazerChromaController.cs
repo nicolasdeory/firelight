@@ -90,19 +90,22 @@ namespace LedDashboard
                 {
                     Console.WriteLine("Error sending data to Chroma keyboard. Perhaps it doesn't have a keypad");
                 }
-                
-            } else if (mode == LightingMode.Keyboard)
+
+            }
+            else if (mode == LightingMode.Keyboard)
             {
-                foreach(RzKey key in numPadKeys)
+                foreach (RzKey key in numPadKeys)
                 {
                     keyboardFrame.SetKey(key, Color.Black); // set numpad keys to black
                 }
-                for(int i = 0; i < 88;i++)
+                for (int i = 0; i < 88; i++)
                 {
                     Color c = Color.FromArgb(colorArray[i * 3], colorArray[i * 3 + 1], colorArray[i * 3 + 2]);
                     keyboardFrame.SetKey(indexKeyMap[i], c);
                 }
-            } else
+
+            }
+            else
             {
                 Console.Error.WriteLine("RazerChroma: Invalid lighting mode");
                 throw new ArgumentException("Invalid lighting mode");

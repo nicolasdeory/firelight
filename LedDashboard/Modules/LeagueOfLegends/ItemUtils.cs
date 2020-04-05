@@ -17,6 +17,8 @@ namespace LedDashboard.Modules.LeagueOfLegends
 
         static Dictionary<int, ItemAttributes> itemAttributeDict;
 
+        public static bool IsLoaded => itemAttributeDict.Keys.Count > 0;
+
         public static ItemAttributes GetItemAttributes(int itemID)
         {
             if (!itemAttributeDict.ContainsKey(itemID))
@@ -69,6 +71,11 @@ namespace LedDashboard.Modules.LeagueOfLegends
                 ItemAttributes itemData = ItemAttributes.FromData(k.Value);
                 itemAttributeDict.Add(itemID, itemData);
             }
+        }
+
+        public static void Dispose()
+        {
+            itemAttributeDict = null;
         }
 
     }

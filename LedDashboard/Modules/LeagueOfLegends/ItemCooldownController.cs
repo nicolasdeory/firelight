@@ -31,7 +31,7 @@ namespace LedDashboard.Modules.LeagueOfLegends
             Task.Run(() => CooldownLoop(cancellationToken.Token));
         }
 
-        public static void SetCooldown(int itemID, int cooldownDuration) 
+        public static void SetCooldown(int itemID, int cooldownDuration)  // TODO: There is an object CDR rune!! Ingenious Hunter. Implement
         {
             if (!cooldownDict.ContainsKey(itemID))
             {

@@ -150,41 +150,86 @@ namespace LedDashboard.Modules.LeagueOfLegends
 
         private void OnMouseClick(object s, MouseEventArgs e)
         {
+            //Console.WriteLine("Mouse click. Selected: " + SelectedAbility);
             if (e.Button == MouseButtons.Right)
             {
-                SelectedAbility = AbilityKey.None;
+                if (SelectedAbility != AbilityKey.None && CanRecastAbility(SelectedAbility) && !AbilityCastModes[SelectedAbility].RecastOnKeyUp)
+                    SelectedAbility = AbilityKey.None;
             }
             else if (e.Button == MouseButtons.Left) // cooldowns are accounted for here aswell in case between key press and click user died, or did zhonyas...
             {
-                // CODE FOR Q
+                if (SelectedAbility == AbilityKey.None) return;
+
+                if (CanCastAbility(SelectedAbility))
+                    {
+                    if (CanRecastAbility(SelectedAbility))
+                    {
+                        // its a recast
+                        RecastAbility(SelectedAbility);
+                    }
+                    else
+                    {
+                        CastAbility(SelectedAbility);
+                    }
+                }
+
+                /*// CODE FOR Q
                 if (SelectedAbility == AbilityKey.Q)
                 {
-                    if (CanCastAbility(AbilityKey.Q))
-                        CastAbility(AbilityKey.Q);
+                    
                 }
 
                 // CODE FOR W
                 if (SelectedAbility == AbilityKey.W)
                 {
                     if (CanCastAbility(AbilityKey.W))
-                        CastAbility(AbilityKey.W);
+                    {
+                        if (CanRecastAbility(AbilityKey.W))
+                        {
+                            // its a recast
+                            RecastAbility(AbilityKey.W);
+                        }
+                        else
+                        {
+                            CastAbility(AbilityKey.W);
+                        }
+                    }
                 }
 
                 // CODE FOR E
                 if (SelectedAbility == AbilityKey.E)
                 {
                     if (CanCastAbility(AbilityKey.E))
-                        CastAbility(AbilityKey.E);
+                    {
+                        if (CanRecastAbility(AbilityKey.E))
+                        {
+                            // its a recast
+                            RecastAbility(AbilityKey.E);
+                        }
+                        else
+                        {
+                            CastAbility(AbilityKey.E);
+                        }
+                    }
                 }
 
                 // CODE FOR R
                 if (SelectedAbility == AbilityKey.R)
                 {
                     if (CanCastAbility(AbilityKey.R))
-                        CastAbility(AbilityKey.R);
-                }
+                    {
+                        if (CanRecastAbility(AbilityKey.R))
+                        {
+                            // its a recast
+                            RecastAbility(AbilityKey.R);
+                        }
+                        else
+                        {
+                            CastAbility(AbilityKey.R);
+                        }
+                    }
+                }*/
             }
-            //OnMouseClicked?.Invoke(s,e);
         }
 
         private void OnKeyRelease(object s, KeyEventArgs e)
@@ -199,10 +244,11 @@ namespace LedDashboard.Modules.LeagueOfLegends
 
         private void ProcessKeyPress(object s, char keyChar, bool keyUp = false)
         {
+            
             if (keyChar == lastPressedKey && !keyUp) return; // prevent duplicate calls. Without this, this gets called every frame a key is pressed.
-            lastPressedKey = keyUp ? '\0' : keyChar; 
+            lastPressedKey = keyUp ? '\0' : keyChar;
             // TODO: quick cast with indicator bug - repro: hold w, then hold q, then right click, then release w, then release q. The ability is cast, even when it shouldn't.
-
+           // Console.WriteLine("Keypressed. Selected: " + SelectedAbility);
             if (keyChar == 'q')
             {
                 DoCastLogicForAbility(AbilityKey.Q, keyUp);
@@ -223,7 +269,6 @@ namespace LedDashboard.Modules.LeagueOfLegends
             {
                 animator.ColorBurst(HSVColor.FromRGB(255, 237, 41), 0.1f);
             }*/
-            //OnKeyPressed?.Invoke(s,e);
         }
 
         private void DoCastLogicForAbility(AbilityKey key, bool keyUp)
@@ -231,13 +276,91 @@ namespace LedDashboard.Modules.LeagueOfLegends
             if (keyUp && SelectedAbility != key) return; // keyUp event shouldn't trigger anything if the ability is not selected.
 
             AbilityCastMode castMode = AbilityCastModes[key];
+           //Console.WriteLine(key + " " + (keyUp ? "up" : "down"));
 
             if (castMode.HasRecast && AbilitiesOnRecast[key] > 0)
             {
-                if (CanCastAbility(key)) // We must check if CanCastAbility is true. Players can't recast abilities if they're dead or in zhonyas.
+                //Console.WriteLine(castMode);
+                if (castMode.RecastMode.IsInstant)
                 {
-                    RecastAbility(key);
+                    if (CanCastAbility(key)) // We must check if CanCastAbility is true. Players can't recast abilities if they're dead or in zhonyas.
+                    {
+                        RecastAbility(key);
+                    }
+                    return;
                 }
+                if (PreferredCastMode == AbilityCastPreference.Normal)
+                {
+                    if (castMode.RecastMode.IsNormal)
+                    {
+                        if (CanCastAbility(key))
+                        {
+                            SelectedAbility = key;
+                            // RECAST SELECTED
+                        }
+                    }
+                    if (castMode.RecastMode.RecastOnKeyUp && !keyUp)
+                    {
+                        if (CanCastAbility(key))
+                        {
+                            RecastAbility(key);
+                        }
+                    }
+                    return;
+                }
+                if (PreferredCastMode == AbilityCastPreference.Quick)
+                {
+                    if (CanCastAbility(key))
+                    {
+                        RecastAbility(key);
+                    }
+                    return;
+                }
+                if (PreferredCastMode == AbilityCastPreference.QuickWithIndicator)
+                {
+                    if (castMode.RecastMode.RecastOnKeyUp && keyUp && SelectedAbility == key)
+                    {
+                        if (CanCastAbility(key))
+                        {
+                            RecastAbility(key);
+                        }
+                    }
+                    if (castMode.RecastMode.IsNormal)
+                    {
+                        if (CanCastAbility(key))
+                        {
+                            SelectedAbility = key;
+                            // RECAST SELECTED
+                        }
+                    }
+                    if (castMode.RecastMode.IsNormal && keyUp && SelectedAbility == key)
+                    {
+                        if (CanCastAbility(key))
+                        {
+                            RecastAbility(key);
+                        }
+                    }
+                    return;
+                }
+                /*if (castMode.RecastMode.IsInstant
+                    || PreferredCastMode == AbilityCastPreference.Quick
+                    || (PreferredCastMode == AbilityCastPreference.QuickWithIndicator && keyUp && SelectedAbility == key)
+                    || ((PreferredCastMode == AbilityCastPreference.Quick || PreferredCastMode == AbilityCastPreference.QuickWithIndicator) && keyUp && castMode.RecastMode.RecastOnKeyUp))
+                {
+                    if (CanCastAbility(key))
+                    {
+                        RecastAbility(key);
+                    }
+                    return;
+                }
+                if (PreferredCastMode == AbilityCastPreference.Normal || PreferredCastMode == AbilityCastPreference.QuickWithIndicator)
+                {
+                    if (CanCastAbility(key))
+                    {
+                        SelectedAbility = key;
+                        // RECAST SELECTED
+                    }
+                }*/
                 return;
             }
 
@@ -304,13 +427,22 @@ namespace LedDashboard.Modules.LeagueOfLegends
             {
                 StartCooldownTimer(key);
             }
-            SelectedAbility = AbilityKey.None;
+            if (AbilityCastModes[key].RecastMode != null && AbilityCastModes[key].RecastMode.RecastOnKeyUp)
+                SelectedAbility = key;
+            else
+                SelectedAbility = AbilityKey.None;
         }
         private void RecastAbility(AbilityKey key)
         {
             AbilityRecast?.Invoke(this, key);
             AbilitiesOnRecast[key]--;
-            if (AbilitiesOnRecast[key] == 0) StartCooldownTimer(key);
+            if (AbilitiesOnRecast[key] == 0)
+            {
+                if (AbilityCastModes[key].RecastMode.RecastOnKeyUp)
+                    SelectedAbility = AbilityKey.None;
+                StartCooldownTimer(key);
+            }
+            
         }
 
         /// <summary>
@@ -366,15 +498,23 @@ namespace LedDashboard.Modules.LeagueOfLegends
             return true;
         }
 
+        protected bool CanRecastAbility(AbilityKey key)
+        {
+            return AbilityCastModes[key].HasRecast && AbilitiesOnRecast[key] > 0;
+        }
+
         /// <summary>
         /// Starts the cooldown timer for an ability. It should be called after an ability is cast.
         /// </summary>
-        protected void StartCooldownTimer(AbilityKey ability)
+        protected void StartCooldownTimer(AbilityKey ability, int overrideTime = 0)
         {
-            Task.Run(async () =>
+            // TODO: Refactor this into tracking cooldowns accurately, 
+            // if this method is called twice (needed for Xerath or others that have different cooldowns on different circumstances), it won't work properly
+            Task.Run(async () => 
             {
                 _AbilitiesOnCooldown[ability] = true;
-                await Task.Delay(GetCooldownForAbility(ability) - 350); // a bit less cooldown than the real one (if the user spams)
+                int cd = overrideTime > 0 ? overrideTime : GetCooldownForAbility(ability);
+                await Task.Delay(cd - 350); // a bit less cooldown than the real one (if the user spams)
                 _AbilitiesOnCooldown[ability] = false;
             });
         }
@@ -391,6 +531,11 @@ namespace LedDashboard.Modules.LeagueOfLegends
                     StartCooldownTimer(ability);
                 }
             });
+        }
+
+        protected void CancelRecast(AbilityKey ability)
+        {
+            AbilitiesOnRecast[ability] = 0;
         }
 
         public void Dispose()

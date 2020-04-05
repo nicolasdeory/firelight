@@ -265,7 +265,7 @@ namespace LedDashboard.Modules.LeagueOfLegends
                     ItemModules[item.Slot] = itemType.GetMethod("Create")
                                         .Invoke(null, new object[] { this.leds.Length, this.gameState, item.Slot, this.lightingMode, this.preferredCastMode })
                                         as ItemModule;
-                    ItemModules[item.Slot].ItemCast += OnItemActivated;
+                    ItemModules[item.Slot].RequestActivation += OnItemActivated;
                     ItemModules[item.Slot].NewFrameReady += OnNewFrameReceived;
                     ItemCooldownController.AssignItemIdToSlot(item.Slot, item.ItemID);
                     if (item.ItemID == WardingTotemModule.ITEM_ID)
@@ -465,6 +465,12 @@ namespace LedDashboard.Modules.LeagueOfLegends
             masterCancelToken.Cancel();
             animationModule.StopCurrentAnimation();
             championModule?.Dispose();
+            for (int i = 0; i < ItemModules.Length; i++)
+            {
+                ItemModules[i]?.Dispose();
+                ItemModules[i] = null;
+            }
+            ItemUtils.Dispose();
             ItemCooldownController.Dispose();
         }
     }

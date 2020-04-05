@@ -38,32 +38,42 @@ namespace LedDashboard
             }
             if (mode == LightingMode.Keyboard) // TODO: Keyboard lighting mode support for led strip
             {
-                int ledStripLength = 170; // TODO: hardcoded number, standard led strip length?
-                Led[] ls = new Led[ledStripLength]; 
-                                         /* List<Point> pts = new List<Point>();
-                                          List<byte> bytes = new List<byte>();*/
-                for (int i = 0; i < ledStripLength; i++)
-                {
-                    ls[i] = new Led();
-                }
-                List<Point> pts;
-                for (int i = 0; i < 88; i++)
-                {
-                    byte[] col = new byte[3] { data[i * 3], data[i * 3 + 1], data[i * 3 + 2] };
-                    pts = KeyUtils.KeyToPoints(i);
-                    foreach(Point pt in pts)
-                    {
-                        int xScaled = (int) Utils.Scale(pt.X, 0, 19, 0, ledStripLength);
-                        ls.AddColorToLedsAround(xScaled, HSVColor.FromRGB(col),10);
-                    }
-                }
-                return ls.ToByteArray();
+                return GetKeyboardToLedStripArray(data).ToByteArray();
             }
             else
             {
                 Console.Error.WriteLine("SACN: Invalid lighting mode");
                 throw new ArgumentException("Invalid lighting mode");
             }
+        }
+
+        public static Led[] GetKeyboardToLedStripArray(byte[] data)
+        {
+            int ledStripLength = 170; // TODO: hardcoded number, standard led strip length?
+            Led[] ls = new Led[ledStripLength];
+            for (int i = 0; i < ledStripLength; i++)
+            {
+                ls[i] = new Led();
+            }
+            List<Point> pts;
+            for (int i = 0; i < ledStripLength; i++)
+            {
+
+                int x = GetNearestXForLed(i);
+                for (int j = 0; j < 6; j++)
+                {
+                    int key = KeyUtils.PointToKey(new Point(x, j));
+                    if (key == -1) continue;
+                    byte[] col = new byte[3] { data[key * 3], data[key * 3 + 1], data[key * 3 + 2] };
+                    ls[i].MixNewColor(HSVColor.FromRGB(col));
+                }
+            }
+            return ls;
+        }
+
+        private static int GetNearestXForLed(int led)
+        {
+            return (int)Utils.Scale(led, 0, 170, 0, 19);
         }
 
         public void Dispose() { }
