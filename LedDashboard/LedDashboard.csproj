@@ -151,6 +151,10 @@
     <Content Include="Animations\LeagueOfLegends\Items\Redemption\start.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Include="Lib\RazerChroma.Net.dll" />
+    <Content Include="Lib\RazerChroma.Net.pdb" />
+    <Content Include="Lib\RazerChromaFrameEngine.dll" />
+    <Content Include="Lib\RazerChromaFrameEngine.pdb" />
     <Content Include="Resources\keyboardLayout.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
@@ -260,11 +264,13 @@
     <Reference Include="Python.Runtime.NETStandard, Version=3.7.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\Python.Runtime.NETStandard.3.7.0\lib\netstandard2.0\Python.Runtime.NETStandard.dll</HintPath>
     </Reference>
-    <Reference Include="RazerChroma.Net">
-      <HintPath>C:\Users\Nico\Desktop\RazerChroma.Net-master\RazerChroma.Net\bin\Release\RazerChroma.Net.dll</HintPath>
+    <Reference Include="RazerChroma.Net, Version=1.0.0.0, Culture=neutral, processorArchitecture=AMD64">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>Lib\RazerChroma.Net.dll</HintPath>
     </Reference>
-    <Reference Include="RazerChromaFrameEngine">
-      <HintPath>C:\Users\Nico\Desktop\RazerChroma.Net-master\RazerChromaFrameEngine\bin\Release\RazerChromaFrameEngine.dll</HintPath>
+    <Reference Include="RazerChromaFrameEngine, Version=1.0.0.0, Culture=neutral, processorArchitecture=AMD64">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>Lib\RazerChromaFrameEngine.dll</HintPath>
     </Reference>
     <Reference Include="SciColorMaps.Portable, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\ar1st0crat.SciColorMaps.Portable.1.0.2\lib\portable40-net40+win8+wpa81\SciColorMaps.Portable.dll</HintPath>
