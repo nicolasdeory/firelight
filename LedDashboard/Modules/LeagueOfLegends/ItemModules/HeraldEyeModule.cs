@@ -73,11 +73,11 @@ namespace LedDashboard.Modules.LeagueOfLegends.ItemModules
             Task.Run(async () =>
             {
                 await animator.RunAnimationOnce(ITEM_ANIMATION_PATH + "HeraldEye/anim_1.txt", true);
-                await Task.Delay(1000);
+                await Task.Delay(1200);
                 await animator.RunAnimationOnce(ITEM_ANIMATION_PATH + "HeraldEye/anim_2.txt", true);
-                await Task.Delay(1000);
+                await Task.Delay(1200);
                 await animator.RunAnimationOnce(ITEM_ANIMATION_PATH + "HeraldEye/anim_3.txt", true);
-                await Task.Delay(1300);
+                await Task.Delay(1600);
                 await animator.RunAnimationOnce(ITEM_ANIMATION_PATH + "HeraldEye/anim_4.txt",false, 0.08f);
             });
 
