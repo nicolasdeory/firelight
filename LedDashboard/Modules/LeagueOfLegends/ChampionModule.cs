@@ -83,7 +83,7 @@ namespace LedDashboard.Modules.LeagueOfLegends
 
         // TODO: Handle champions with cooldown resets?
 
-        protected ChampionModule(int ledCount, string champName, GameState gameState, LightingMode preferredLightingMode) // TODO: Pass gamestate instead of active player
+        protected ChampionModule(int ledCount, string champName, GameState gameState, LightingMode preferredLightingMode, bool preloadAllAnimations = false) // TODO: Pass gamestate instead of active player
         {
             Name = champName;
             GameState = gameState;
@@ -91,11 +91,19 @@ namespace LedDashboard.Modules.LeagueOfLegends
             animator = AnimationModule.Create(ledCount);
 
             LoadChampionInformation(champName);
+
+            if (preloadAllAnimations)
+                PreloadAllAnimations();
         }
 
         protected void PreloadAnimation(string animationName)
         {
             animator.PreloadAnimation($"{ANIMATION_PATH}{Name}/{animationName}.txt");
+        }
+        protected void PreloadAllAnimations()
+        {
+            foreach (var file in Directory.GetFiles($"{ANIMATION_PATH}{Name}/"))
+                animator.PreloadAnimation(file);
         }
 
         private void LoadChampionInformation(string champName)

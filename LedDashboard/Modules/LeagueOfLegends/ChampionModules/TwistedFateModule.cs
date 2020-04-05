@@ -34,7 +34,7 @@ namespace LedDashboard.Modules.LeagueOfLegends.ChampionModules
 
 
         private TwistedFateModule(int ledCount, GameState gameState, string championName, LightingMode preferredLightMode, AbilityCastPreference preferredCastMode)
-                            : base(ledCount, championName, gameState, preferredLightMode)
+                            : base(ledCount, championName, gameState, preferredLightMode, true)
         {
             // Initialization for the champion module occurs here.
 
@@ -53,9 +53,9 @@ namespace LedDashboard.Modules.LeagueOfLegends.ChampionModules
 
             // Preload all the animations you'll want to use. MAKE SURE that each animation file
             // has its Build Action set to "Content" and "Copy to Output Directory" is set to "Always".
-            animator.PreloadAnimation(ANIMATION_PATH + "TwistedFate/q_cast.txt");
-            animator.PreloadAnimation(ANIMATION_PATH + "TwistedFate/w_loop.txt");
-            animator.PreloadAnimation(ANIMATION_PATH + "TwistedFate/r_cast.txt");
+            PreloadAnimation("q_cast.txt");
+            PreloadAnimation("w_loop.txt");
+            PreloadAnimation("r_cast.txt");
 
             ChampionInfoLoaded += OnChampionInfoLoaded;
         }
