@@ -10,15 +10,8 @@ namespace LedDashboard.Modules.LeagueOfLegends.Model
     public class ActivePlayer
     {
         public AbilityLoadout AbilityLoadout;
-        public ChampionStats Stats
-        {
-            get { return stats; }
-            set
-            {
-                stats = value;
-            }
-        }
-        private ChampionStats stats;
+        public ChampionStats Stats { get; set; }
+
         public float CurrentGold;
         public List<Rune> Runes;
         public int Level;
@@ -27,21 +20,17 @@ namespace LedDashboard.Modules.LeagueOfLegends.Model
         public bool IsDead;
         public bool IsOnZhonyas;
 
+        private ActivePlayer(bool isDead = false, bool isOnZhonyas = false)
+        {
+            IsDead = isDead;
+            IsOnZhonyas = isOnZhonyas;
+        }
 
         public static ActivePlayer FromData(dynamic data, bool isDead = false, bool isOnZhonyas = false)
         {
-            
-            return new ActivePlayer()
-            {
-                AbilityLoadout = AbilityLoadout.FromData(data.abilities),
-                Stats = (data.championStats as JObject).ToObject<ChampionStats>(),
-                CurrentGold = data.currentGold,
-                Runes = (data.fullRunes.generalRunes as JArray).ToObject<List<Rune>>(),
-                Level = data.level,
-                SummonerName = data.summonerName,
-                IsDead = isDead,
-                IsOnZhonyas = isOnZhonyas
-        };
+            var player = new ActivePlayer(isDead, isOnZhonyas);
+            player.UpdateFromData(data);
+            return player;
         }
 
         public void UpdateFromData(dynamic data)
