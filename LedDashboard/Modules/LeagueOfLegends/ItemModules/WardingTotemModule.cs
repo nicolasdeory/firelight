@@ -54,24 +54,8 @@ namespace LedDashboard.Modules.LeagueOfLegends.ItemModules
             // For a ward, it's normal cast (press & click)
             ItemCastMode = AbilityCastMode.Normal();
 
-            ItemCooldownController.SetCooldown(this.ItemID, GetCooldownPerCharge(gameState)); // Game bug? Set the cooldown to 0, because everytime
-
-            // Since it's a ward trinket, setup ward recharging
-            /*Task.Run(async () =>
-            {
-                while (true)
-                {
-                    if (wardCharges < 2)
-                    {
-                        await Task.Delay(cooldownPerCharge);
-                        wardCharges++;
-                    } else
-                    {
-                        await Task.Delay(300);
-                    }
-                }
-                
-            });*/
+            // TODO: This is because of a game bug, IT WILL GET FIXED and this will have to be changed
+            ItemCooldownController.SetCooldown(this.ItemID, GetCooldownPerCharge(gameState));
 
             // Preload all the animations you'll want to use. MAKE SURE that each animation file
             // has its Build Action set to "Content" and "Copy to Output Directory" is set to "Always".
