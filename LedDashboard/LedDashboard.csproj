@@ -120,19 +120,19 @@
     <Content Include="Animations\Basic\basic1.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="Animations\LeagueOfLegends\Champions\Vel%27Koz\q_recast.txt">
+    <Content Include="Animations\LeagueOfLegends\Champions\Velkoz\q_recast.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="Animations\LeagueOfLegends\Champions\Vel%27Koz\q_start.txt">
+    <Content Include="Animations\LeagueOfLegends\Champions\Velkoz\q_start.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="Animations\LeagueOfLegends\Champions\Vel%27Koz\r_loop.txt">
+    <Content Include="Animations\LeagueOfLegends\Champions\Velkoz\r_loop.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="Animations\LeagueOfLegends\Champions\Vel%27Koz\w_cast.txt">
+    <Content Include="Animations\LeagueOfLegends\Champions\Velkoz\w_cast.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="Animations\LeagueOfLegends\Champions\Vel%27Koz\w_close.txt">
+    <Content Include="Animations\LeagueOfLegends\Champions\Velkoz\w_close.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="ChromaAppInfo.xml" />

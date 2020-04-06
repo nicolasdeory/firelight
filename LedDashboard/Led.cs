@@ -16,7 +16,7 @@ namespace LedDashboard
 
         public void FadeToBlackBy(float factor)
         {
-            color.v = color.v - color.v * factor;
+            color.v *= 1 - factor;
             if (color.v <= 0.025f)
             {
                 color.v = 0;
@@ -25,43 +25,26 @@ namespace LedDashboard
 
         public void FadeToColorBy(HSVColor c, float factor)
         {
-            if (color.h < c.h)
-            {
-                color.h = color.h + (c.h - color.h) * factor;
-            } else
-            {
-                color.h = color.h - (color.h - c.h) * factor;
-            }
-            if(Math.Abs(color.h - c.h) <= 0.025f)
-            {
-                color.h = c.h;
-            }
+            color.h = FadeHSVProperty(color.h, c.h, factor);
+            color.s = FadeHSVProperty(color.s, c.s, factor);
+            color.v = FadeHSVProperty(color.v, c.v, factor);
+        }
 
-            if (color.s < c.s)
+        private static float FadeHSVProperty(float a, float b, float factor)
+        {
+            if (a < b)
             {
-                color.s = color.s + (c.s - color.s) * factor;
+                a += (b - a) * factor;
             }
             else
             {
-                color.s = color.s - (color.s - c.s) * factor;
+                a -= (a - b) * factor;
             }
-            if (Math.Abs(color.s - c.s) <= 0.025f)
+            if (Math.Abs(a - b) <= 0.025f)
             {
-                color.s = c.s;
+                a = b;
             }
-
-            if (color.v < c.v)
-            {
-                color.v = color.v + (c.v - color.v) * factor;
-            }
-            else
-            {
-                color.v = color.v - (color.v - c.v) * factor;
-            }
-            if (Math.Abs(color.h - c.h) <= 0.025f)
-            {
-                color.v = c.v;
-            }
+            return a;
         }
 
         public void SetBlack()
@@ -97,6 +80,7 @@ namespace LedDashboard
                 }
             }
         }
+
 
     }
 }

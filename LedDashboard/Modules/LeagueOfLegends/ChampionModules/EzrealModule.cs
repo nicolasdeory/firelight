@@ -33,7 +33,7 @@ namespace LedDashboard.Modules.LeagueOfLegends.ChampionModules
 
 
         private EzrealModule(int ledCount, GameState gameState, string championName, LightingMode preferredLightMode, AbilityCastPreference preferredCastMode)
-                            : base(ledCount, championName, gameState, preferredLightMode)
+                            : base(ledCount, championName, gameState, preferredLightMode, true)
         {
             // Initialization for the champion module occurs here.
 
@@ -54,14 +54,6 @@ namespace LedDashboard.Modules.LeagueOfLegends.ChampionModules
                 [AbilityKey.R] = AbilityCastMode.Normal(),
             };
             AbilityCastModes = abilityCastModes;
-
-            // Preload all the animations you'll want to use. MAKE SURE that each animation file
-            // has its Build Action set to "Content" and "Copy to Output Directory" is set to "Always".
-            animator.PreloadAnimation(ANIMATION_PATH + "Ezreal/q_cast.txt");
-            animator.PreloadAnimation(ANIMATION_PATH + "Ezreal/w_cast.txt");
-            animator.PreloadAnimation(ANIMATION_PATH + "Ezreal/e_cast.txt");
-            animator.PreloadAnimation(ANIMATION_PATH + "Ezreal/r_channel.txt");
-            animator.PreloadAnimation(ANIMATION_PATH + "Ezreal/r_launch.txt");
 
             ChampionInfoLoaded += OnChampionInfoLoaded;
         }

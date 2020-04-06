@@ -37,7 +37,7 @@ namespace LedDashboard.Modules.LeagueOfLegends.ChampionModules
 
 
         private VelKozModule(int ledCount, GameState gameState, string championName, LightingMode preferredLightMode, AbilityCastPreference preferredCastMode) 
-                            : base(ledCount, championName, gameState, preferredLightMode)
+                            : base(ledCount, championName, gameState, preferredLightMode, true)
         {
             // Initialization for the champion module occurs here.
 
@@ -58,15 +58,6 @@ namespace LedDashboard.Modules.LeagueOfLegends.ChampionModules
                 [AbilityKey.R] = AbilityCastMode.Instant(2300),
             };
             AbilityCastModes = abilityCastModes;
-
-            // Preload all the animations you'll want to use. MAKE SURE that each animation file
-            // has its Build Action set to "Content" and "Copy to Output Directory" is set to "Always".
-            animator.PreloadAnimation(ANIMATION_PATH + "Vel'Koz/q_start.txt");
-            animator.PreloadAnimation(ANIMATION_PATH + "Vel'Koz/q_recast.txt");
-            animator.PreloadAnimation(ANIMATION_PATH + "Vel'Koz/w_cast.txt");
-            animator.PreloadAnimation(ANIMATION_PATH + "Vel'Koz/w_close.txt");
-            animator.PreloadAnimation(ANIMATION_PATH + "Vel'Koz/r_loop.txt");
-
 
             ChampionInfoLoaded += OnChampionInfoLoaded;
         }

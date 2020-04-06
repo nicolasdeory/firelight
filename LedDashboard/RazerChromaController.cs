@@ -58,16 +58,13 @@ namespace LedDashboard
                     Color c = Color.FromArgb(colorArray[i * 3], colorArray[i * 3 + 1], colorArray[i * 3 + 2]);
                     int x = (int)Utils.Scale(i, 0, ledCount, 0, 22);// TODO: Handle keyboards without numpads
                     points.Clear();
-                    points.Add(new Point(x, 0));
-                    points.Add(new Point(x, 1));
-                    points.Add(new Point(x, 2));
-                    points.Add(new Point(x, 3));
-                    points.Add(new Point(x, 4));
-                    points.Add(new Point(x, 5));
+                    for (int j = 0; j < 6; j++)
+                        points.Add(new Point(x, j));
                     try
                     {
                         keyboardFrame.SetKeys(points, c);
-                    } catch (Exception)
+                    }
+                    catch
                     {
                         Console.WriteLine("Error sending data to Chroma keyboard. Perhaps it doesn't have a keypad");
                     }
@@ -115,19 +112,23 @@ namespace LedDashboard
         }
 
         bool enabled = true;
-        public void SetEnabled(bool enabled)
+
+        public bool Enabled
         {
-            if (this.enabled == enabled) return;
-            if(!enabled)
+            get => enabled;
+            set
             {
-                if (api != null) api.Dispose();
-                api = null;
-                keyboardFrame = null;
-            } else
-            {
-                Init();
+                if (enabled == value) return;
+                if (!value)
+                {
+                    Dispose();
+                }
+                else
+                {
+                    Init();
+                }
+                enabled = value;
             }
-            this.enabled = enabled;
         }
 
         public void Dispose()

@@ -38,7 +38,7 @@ namespace LedDashboard.Modules.LeagueOfLegends.ChampionModules
 
 
         private XerathModule(int ledCount, GameState gameState, string championName, LightingMode preferredLightMode, AbilityCastPreference preferredCastMode)
-                            : base(ledCount, championName, gameState, preferredLightMode)
+                            : base(ledCount, championName, gameState, preferredLightMode, true)
         {
             // Initialization for the champion module occurs here.
 
@@ -59,17 +59,6 @@ namespace LedDashboard.Modules.LeagueOfLegends.ChampionModules
                 [AbilityKey.R] = AbilityCastMode.Instant(10000,3,AbilityCastMode.Instant()), // TODO: Handle levels! Recast number changes
             };
             AbilityCastModes = abilityCastModes;
-
-            // Preload all the animations you'll want to use. MAKE SURE that each animation file
-            // has its Build Action set to "Content" and "Copy to Output Directory" is set to "Always".
-
-            animator.PreloadAnimation(ANIMATION_PATH + "Xerath/q_charge.txt");
-            animator.PreloadAnimation(ANIMATION_PATH + "Xerath/q_retract.txt");
-            animator.PreloadAnimation(ANIMATION_PATH + "Xerath/w_cast.txt");
-            animator.PreloadAnimation(ANIMATION_PATH + "Xerath/e_cast.txt");
-            animator.PreloadAnimation(ANIMATION_PATH + "Xerath/r_launch.txt");
-            animator.PreloadAnimation(ANIMATION_PATH + "Xerath/r_open.txt");
-
 
             ChampionInfoLoaded += OnChampionInfoLoaded;
             GameStateUpdated += OnGameStateUpdated;

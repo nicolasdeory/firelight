@@ -8,8 +8,8 @@ namespace LedDashboard
 {
     public interface LightController : IDisposable
     {
+        public bool Enabled { get; set; }
+
         public void SendData(int ledCount, byte[] data, LightingMode mode);
-        public void SetEnabled(bool enabled);
-        public bool IsEnabled();
     }
 }
