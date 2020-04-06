@@ -35,14 +35,8 @@ namespace LedDashboard
             }
             set
             {
-                if (value == null)
-                {
-                    SetEnabled(false);
-                } else
-                {
-                    SetEnabled(true);
-                }
-                if (_currentLEDModule != null) _currentLEDModule.Dispose();
+                SetEnabled(value != null);
+                _currentLEDModule?.Dispose();
                 _currentLEDModule = value;
             }
         }
@@ -94,7 +88,7 @@ namespace LedDashboard
                 LEDModule lolModule = LeagueOfLegendsModule.Create(preferredMode, ledCount, ModuleOptions.ContainsKey("lol") ? ModuleOptions["lol"] : new Dictionary<string, string>());
                 lolModule.NewFrameReady += UpdateLEDDisplay;
                 CurrentLEDModule = lolModule;
-            } else if (name == "")
+            } else if (name.Length == 0)
             {
                 CurrentLEDModule = null;
                 return;
@@ -106,13 +100,7 @@ namespace LedDashboard
             if (this.enabled != enable)
             {
                 this.enabled = enable;
-                if(enable)
-                {
-                    lightController.SetEnabled(true);
-                } else
-                {
-                    lightController.SetEnabled(false);
-                }
+                lightController.Enabled = enable;
             }
         }
 

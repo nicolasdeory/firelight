@@ -401,10 +401,10 @@ namespace LedDashboard.Modules.LeagueOfLegends
                 if (customKillAnimation != null)
                 {
                     animationModule.RunAnimationOnce(customKillAnimation, false, 0.1f).ContinueWith((t) =>
-                      {
-                          CurrentLEDSource = championModule;
-                          customKillAnimation = null;
-                      });
+                    {
+                        CurrentLEDSource = championModule;
+                        customKillAnimation = null;
+                    });
                 }
                 else
                 {
