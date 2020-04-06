@@ -1,5 +1,4 @@
-name: NetFramework.CI
-
+name: build
 on:
   push:
     branches: [ master ]
