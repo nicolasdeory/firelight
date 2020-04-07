@@ -1,7 +1,6 @@
 ﻿using LedDashboard.Modules.BasicAnimation;
 using LedDashboard.Modules.LeagueOfLegends.ChampionModules;
 using LedDashboard.Modules.LeagueOfLegends.ChampionModules.Common;
-using LedDashboard.Modules.LeagueOfLegends.HUDModules;
 using LedDashboard.Modules.LeagueOfLegends.ItemModules;
 using LedDashboard.Modules.LeagueOfLegends.Model;
 using Newtonsoft.Json;

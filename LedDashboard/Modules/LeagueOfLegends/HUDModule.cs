@@ -1,4 +1,4 @@
-﻿using LedDashboard.Modules.LeagueOfLegends.Constants;
+﻿using LedDashboard.Modules.LeagueOfLegends.ItemModules;
 using LedDashboard.Modules.LeagueOfLegends.Model;
 using System;
 using System.Collections.Generic;
@@ -7,7 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace LedDashboard.Modules.LeagueOfLegends.HUDModules
+namespace LedDashboard.Modules.LeagueOfLegends
 {
     /// <summary>
     /// The league of legends HUD lights are handled here. This is responsible for rendering
@@ -77,12 +77,12 @@ namespace LedDashboard.Modules.LeagueOfLegends.HUDModules
             if (lightMode != LightingMode.Keyboard) return; // TODO: Implement some sort of notification for LED strip perhaps
 
             Item trinket = gameState.PlayerChampion.Items.FirstOrDefault(x => x.Slot == 6);
-            if (trinket == null || 
+            if (trinket == null /*|| 
                                     (ItemCooldownController.IsSlotOnCooldown(6) 
                                     && trinket.ItemID != ItemModules.WardingTotemModule.ITEM_ID 
-                                    && trinket.ItemID != ItemModules.HeraldEyeModule.ITEM_ID)) 
+                                    && trinket.ItemID != ItemModules.HeraldEyeModule.ITEM_ID)*/) 
             {
-                // if trinket is on cooldown, set black
+                // if there is no trinket, set to black
                 foreach (int k in trinketKeys)
                 {
                     leds[k].SetBlack();
@@ -90,19 +90,19 @@ namespace LedDashboard.Modules.LeagueOfLegends.HUDModules
             } else
             {
                 HSVColor col = HSVColor.Black;
-                if (trinket.ItemID == (int)TrinketItemID.YellowTrinket)
+                if (trinket.ItemID == WardingTotemModule.ITEM_ID)
                 {
                     if (ItemModules.WardingTotemModule.Current.HasCharge)
                         col = YellowTrinketColor;
                 }
-                else if (trinket.ItemID == (int)TrinketItemID.RedTrinket)
+                else if (trinket.ItemID == OracleLensModule.ITEM_ID)
                 {
                     col = RedTrinketColor;
                 }
-                else if (trinket.ItemID == (int)TrinketItemID.BlueTrinket)
+                else if (trinket.ItemID == FarsightAlterationModule.ITEM_ID)
                 {
                     col = BlueTrinketColor;
-                } else if (trinket.ItemID == (int)TrinketItemID.RiftHerald)
+                } else if (trinket.ItemID == HeraldEyeModule.ITEM_ID)
                 {
                     col = HeraldColor;
                 }
