@@ -132,5 +132,13 @@ namespace LedDashboard.Modules.LeagueOfLegends.ChampionModules
 
             animator.RunAnimationOnce(ANIMATION_PATH + "Azir/r_cast.txt");
         }
+        
+        /// <summary>
+        /// Called when an ability is casted again (few champions have abilities that can be recast, only those with special abilities such as Vel'Koz or Zoes Q)
+        /// </summary>
+        private void OnAbilityRecast(object s, AbilityKey key)
+        {
+
+        }
     }
 }
