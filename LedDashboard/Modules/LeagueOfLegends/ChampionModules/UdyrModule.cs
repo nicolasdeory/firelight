@@ -38,12 +38,9 @@ namespace LedDashboard.Modules.LeagueOfLegends.ChampionModules
 
 
         private UdyrModule(int ledCount, GameState gameState, string championName, LightingMode preferredLightMode, AbilityCastPreference preferredCastMode)
-                            : base(ledCount, championName, gameState, preferredLightMode)
+            : base(ledCount, championName, gameState, preferredLightMode, preferredCastMode)
         {
             // Initialization for the champion module occurs here.
-
-            // Set preferred cast mode. It's a player choice (Quick cast, Quick cast with indicator, or Normal cast)
-            PreferredCastMode = preferredCastMode;
 
             // Set cast modes for abilities.
             // For Vel'Koz, for example:
@@ -63,73 +60,23 @@ namespace LedDashboard.Modules.LeagueOfLegends.ChampionModules
             // Preload all the animations you'll want to use. MAKE SURE that each animation file
             // has its Build Action set to "Content" and "Copy to Output Directory" is set to "Always".
 
-            ChampionInfoLoaded += OnChampionInfoLoaded;
         }
 
-        /// <summary>
-        /// Called when the champion info has been retrieved.
-        /// </summary>
-        private void OnChampionInfoLoaded(ChampionAttributes champInfo)
-        {
-            animator.NewFrameReady += (_, ls, mode) => DispatchNewFrame(ls, mode);
-            AbilityCast += OnAbilityCast;
-            AbilityRecast += OnAbilityRecast;
-        }
-
-        /// <summary>
-        /// Called when an ability is cast.
-        /// </summary>
-        private void OnAbilityCast(object s, AbilityKey key)
-        {
-            if (key == AbilityKey.Q)
-            {
-                OnCastQ();
-            }
-            if (key == AbilityKey.W)
-            {
-                OnCastW();
-            }
-            if (key == AbilityKey.E)
-            {
-                OnCastE();
-            }
-            if (key == AbilityKey.R)
-            {
-                OnCastR();
-            }
-        }
-
-        private void OnCastQ()
+        protected override async Task OnCastQ()
         {
             animator.ColorBurst(QColor);
         }
-
-        private void OnCastW()
+        protected override async Task OnCastW()
         {
             animator.ColorBurst(WColor);
         }
-
-        private void OnCastE()
+        protected override async Task OnCastE()
         {
             animator.ColorBurst(EColor);
         }
-
-        private void OnCastR()
+        protected override async Task OnCastR()
         {
-
             animator.ColorBurst(RColor);
-
         }
-
-        /// <summary>
-        /// Called when an ability is casted again (few champions have abilities that can be recast, only those with special abilities such as Vel'Koz or Zoes Q)
-        /// </summary>
-        private void OnAbilityRecast(object s, AbilityKey key)
-        {
-
-        }
-
-        // udy
-
     }
 }

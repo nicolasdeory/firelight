@@ -83,28 +83,109 @@ namespace LedDashboard.Modules.LeagueOfLegends
 
         // TODO: Handle champions with cooldown resets?
 
-        protected ChampionModule(int ledCount, string champName, GameState gameState, LightingMode preferredLightingMode, bool preloadAllAnimations = false) // TODO: Pass gamestate instead of active player
+        protected ChampionModule(int ledCount, string champName, GameState gameState, LightingMode preferredLightingMode, AbilityCastPreference preferredCastMode, bool preloadAllAnimations = false) // TODO: Pass gamestate instead of active player
         {
             Name = champName;
             GameState = gameState;
             LightingMode = preferredLightingMode;
+            PreferredCastMode = preferredCastMode;
             animator = AnimationModule.Create(ledCount);
 
             LoadChampionInformation(champName);
+
+            ChampionInfoLoaded += OnChampionInfoLoaded;
 
             if (preloadAllAnimations)
                 PreloadAllAnimations();
         }
 
+        /// <summary>
+        /// Called when the champion info has been retrieved.
+        /// </summary>
+        protected virtual void OnChampionInfoLoaded(ChampionAttributes champInfo)
+        {
+            animator.NewFrameReady += (_, ls, mode) => DispatchNewFrame(ls, mode);
+            AbilityCast += OnAbilityCast;
+            AbilityRecast += OnAbilityRecast;
+        }
+
+        protected string GetAnimationPath(string animationName) => $"{ANIMATION_PATH}{Name}/{animationName}.txt";
+
         protected void PreloadAnimation(string animationName)
         {
-            animator.PreloadAnimation($"{ANIMATION_PATH}{Name}/{animationName}.txt");
+            animator.PreloadAnimation(GetAnimationPath(animationName));
         }
         protected void PreloadAllAnimations()
         {
             foreach (var file in Directory.GetFiles($"{ANIMATION_PATH}{Name}/"))
                 animator.PreloadAnimation(file);
         }
+
+        protected async Task RunAnimationOnce(string animationName, bool keepTail = false, float fadeOutAfterRate = 0, float timeScale = 1)
+        {
+            await animator.RunAnimationOnce(GetAnimationPath(animationName), keepTail, fadeOutAfterRate, timeScale);
+        }
+        protected void RunAnimationInLoop(string animationName, int loopDuration, float fadeOutAfterRate = 0, float timeScale = 1)
+        {
+            animator.RunAnimationInLoop(GetAnimationPath(animationName), loopDuration, fadeOutAfterRate, timeScale);
+        }
+
+        /// <summary>
+        /// Called when an ability is cast.
+        /// </summary>
+        protected virtual void OnAbilityCast(object s, AbilityKey key)
+        {
+            Task.Run(GetAbilityCastTask(key));
+        }
+        /// <summary>
+        /// Called when an ability is casted again (few champions have abilities that can be recast, only those with special abilities such as Vel'Koz or Zoes Q)
+        /// </summary>
+        protected virtual void OnAbilityRecast(object s, AbilityKey key)
+        {
+            Task.Run(GetAbilityRecastTask(key));
+        }
+
+        private Func<Task> GetAbilityCastTask(AbilityKey key)
+        {
+            switch (key)
+            {
+                case AbilityKey.Q:
+                    return OnCastQ;
+                case AbilityKey.W:
+                    return OnCastW;
+                case AbilityKey.E:
+                    return OnCastE;
+                case AbilityKey.R:
+                    return OnCastR;
+            }
+            // Should never happen
+            return null;
+        }
+        private Func<Task> GetAbilityRecastTask(AbilityKey key)
+        {
+            switch (key)
+            {
+                case AbilityKey.Q:
+                    return OnRecastQ;
+                case AbilityKey.W:
+                    return OnRecastW;
+                case AbilityKey.E:
+                    return OnRecastE;
+                case AbilityKey.R:
+                    return OnRecastR;
+            }
+            // Should never happen
+            return null;
+        }
+
+        protected virtual async Task OnCastQ() { }
+        protected virtual async Task OnCastW() { }
+        protected virtual async Task OnCastE() { }
+        protected virtual async Task OnCastR() { }
+        protected virtual async Task OnRecastQ() { }
+        protected virtual async Task OnRecastW() { }
+        protected virtual async Task OnRecastE() { }
+        protected virtual async Task OnRecastR() { }
 
         private void LoadChampionInformation(string champName)
         {

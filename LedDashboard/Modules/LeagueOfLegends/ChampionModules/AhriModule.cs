@@ -4,6 +4,7 @@ using LedDashboard.Modules.LeagueOfLegends.ChampionModules.Common;
 using LedDashboard.Modules.LeagueOfLegends.Model;
 using SharpDX.RawInput;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
@@ -35,14 +36,10 @@ namespace LedDashboard.Modules.LeagueOfLegends.ChampionModules
             return new AhriModule(ledCount, gameState, CHAMPION_NAME, preferredLightMode, preferredCastMode);
         }
 
-
         private AhriModule(int ledCount, GameState gameState, string championName, LightingMode preferredLightMode, AbilityCastPreference preferredCastMode)
-                            : base(ledCount, championName, gameState, preferredLightMode, true)
+            : base(ledCount, championName, gameState, preferredLightMode, preferredCastMode, true)
         {
             // Initialization for the champion module occurs here.
-
-            // Set preferred cast mode. It's a player choice (Quick cast, Quick cast with indicator, or Normal cast)
-            PreferredCastMode = preferredCastMode;
 
             // Set cast modes for abilities.
             // For Vel'Koz, for example:
@@ -58,109 +55,52 @@ namespace LedDashboard.Modules.LeagueOfLegends.ChampionModules
                 [AbilityKey.R] = AbilityCastMode.Instant(10000,2),
             };
             AbilityCastModes = abilityCastModes;
-
-            ChampionInfoLoaded += OnChampionInfoLoaded;
         }
 
-        /// <summary>
-        /// Called when the champion info has been retrieved.
-        /// </summary>
-        private void OnChampionInfoLoaded(ChampionAttributes champInfo)
+        protected override async Task OnCastQ()
         {
-            animator.NewFrameReady += (_, ls, mode) => DispatchNewFrame(ls, mode);
-            AbilityCast += OnAbilityCast;
-            AbilityRecast += OnAbilityRecast;
+            RunAnimationOnce("q_start", true);
+            await Task.Delay(1000);
+            RunAnimationOnce("q_end", true);
         }
-
-        /// <summary>
-        /// Called when an ability is cast.
-        /// </summary>
-        private void OnAbilityCast(object s, AbilityKey key)
+        protected override async Task OnCastW()
         {
-            if (key == AbilityKey.Q)
-            {
-                OnCastQ();
-            }
-            if (key == AbilityKey.W)
-            {
-                OnCastW();
-            }
-            if (key == AbilityKey.E)
-            {
-                OnCastE();
-            }
-            if (key == AbilityKey.R)
-            {
-                OnCastR();
-            }
+            RunAnimationOnce("w_cast", false, 0.08f);
         }
-
-        private void OnCastQ()
+        protected override async Task OnCastE()
         {
-            Task.Run(async () =>
-            {
-                animator.RunAnimationOnce(ANIMATION_PATH + "Ahri/q_start.txt", true);
-                await Task.Delay(1000);
-                animator.RunAnimationOnce(ANIMATION_PATH + "Ahri/q_end.txt", true);
-            });
+            await Task.Delay(100);
+            RunAnimationOnce("e_cast");
         }
-
-        private void OnCastW()
+        protected override async Task OnCastR()
         {
-            Task.Run(async () =>
-            {
-                animator.RunAnimationOnce(ANIMATION_PATH + "Ahri/w_cast.txt", false, 0.08f);
-            });
-        }
-
-        private void OnCastE()
-        {
-            Task.Run(async () =>
-            {
-                await Task.Delay(100);
-                animator.RunAnimationOnce(ANIMATION_PATH + "Ahri/e_cast.txt");
-            });
-        }
-
-        private void OnCastR()
-        {
-
             // Trigger the start animation.
 
-            animator.RunAnimationOnce(ANIMATION_PATH + "Ahri/r_right.txt");
+            RunAnimationOnce("r_right");
 
             // The R cast is in progress.
             rCastInProgress = 1;
 
-            Task.Run(async () =>
-            {
-                await Task.Delay(7000); // if after 7s no recast, effect disappears
-                rCastInProgress = 0;
-            });
-
+            // TODO: Validate that this does not break
+            await Task.Delay(7000); // if after 7s no recast, effect disappears
+            rCastInProgress = 0;
         }
 
-
-        /// <summary>
-        /// Called when an ability is casted again (few champions have abilities that can be recast, only those with special abilities such as Vel'Koz or Zoes Q)
-        /// </summary>
-        private void OnAbilityRecast(object s, AbilityKey key)
+        protected override async Task OnRecastR()
         {
-            // Add any abilities that need special logic when they are recasted.
+            await ProcessRCasts();
+            rCastInProgress++;
+            rCastInProgress %= 3;
+        }
 
-            if (key == AbilityKey.R)
+        private Task ProcessRCasts()
+        {
+            return rCastInProgress switch
             {
-                if (rCastInProgress == 1)
-                {
-                    animator.RunAnimationOnce(ANIMATION_PATH + "Ahri/r_left.txt");
-                    rCastInProgress++;
-                } else if (rCastInProgress == 2)
-                {
-                    animator.RunAnimationOnce(ANIMATION_PATH + "Ahri/r_right.txt");
-                    rCastInProgress = 0; // done, all 3 casts have been used.
-                }
-                
-            }
+                1 => RunAnimationOnce("r_left"),
+                2 => RunAnimationOnce("r_right"),
+                _ => Task.FromResult(false),
+            };
         }
     }
 }

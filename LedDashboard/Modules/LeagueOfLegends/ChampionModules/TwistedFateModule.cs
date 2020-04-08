@@ -12,7 +12,6 @@ namespace LedDashboard.Modules.LeagueOfLegends.ChampionModules
     [Champion(CHAMPION_NAME)]
     class TwistedFateModule : ChampionModule
     {
-
         public const string CHAMPION_NAME = "TwistedFate";
         // Variables
 
@@ -34,12 +33,9 @@ namespace LedDashboard.Modules.LeagueOfLegends.ChampionModules
 
 
         private TwistedFateModule(int ledCount, GameState gameState, string championName, LightingMode preferredLightMode, AbilityCastPreference preferredCastMode)
-                            : base(ledCount, championName, gameState, preferredLightMode, true)
+            : base(ledCount, championName, gameState, preferredLightMode, preferredCastMode, true)
         {
             // Initialization for the champion module occurs here.
-
-            // Set preferred cast mode. It's a player choice (Quick cast, Quick cast with indicator, or Normal cast)
-            PreferredCastMode = preferredCastMode;
 
             // Set cast modes for abilities.
             Dictionary<AbilityKey, AbilityCastMode> abilityCastModes = new Dictionary<AbilityKey, AbilityCastMode>()
@@ -56,106 +52,44 @@ namespace LedDashboard.Modules.LeagueOfLegends.ChampionModules
             PreloadAnimation("q_cast.txt");
             PreloadAnimation("w_loop.txt");
             PreloadAnimation("r_cast.txt");
-
-            ChampionInfoLoaded += OnChampionInfoLoaded;
         }
 
-        /// <summary>
-        /// Called when the champion info has been retrieved.
-        /// </summary>
-        private void OnChampionInfoLoaded(ChampionAttributes champInfo)
-        {
-            animator.NewFrameReady += (_, ls, mode) => DispatchNewFrame(ls, mode);
-            AbilityCast += OnAbilityCast;
-            AbilityRecast += OnAbilityRecast;
-        }
-
-        /// <summary>
-        /// Called when an ability is cast.
-        /// </summary>
-        private void OnAbilityCast(object s, AbilityKey key)
-        {
-            if (key == AbilityKey.Q)
-            {
-                OnCastQ();
-            }
-            if (key == AbilityKey.W)
-            {
-                OnCastW();
-            }
-            if (key == AbilityKey.E)
-            {
-                OnCastE();
-            }
-            if (key == AbilityKey.R)
-            {
-                OnCastR();
-            }
-        }
-
-        private void OnCastQ()
+        protected override async Task OnCastQ()
         {
             if (LightingMode == LightingMode.Keyboard)
             {
                 // only for keyboard, for line mode it's too distracting
-                Task.Run(async () =>
-                {
-                    await Task.Delay(100);
-                    _ = animator.RunAnimationOnce(ANIMATION_PATH + "TwistedFate/q_cast.txt", timeScale: 0.4f);
-                });
+                await Task.Delay(100);
+                RunAnimationOnce("q_cast", timeScale: 0.4f);
             }
-            
-            
+        }
+        protected override async Task OnCastW()
+        {
+            RunAnimationInLoop("w_loop", 5500, 0.1f, 0.08f);
+        }
+        protected override async Task OnCastR()
+        {
+            await animator.ColorBurst(RColor, 0.05f, RColor2);
         }
 
-        private void OnCastW()
+        protected override async Task OnRecastW()
         {
-            animator.RunAnimationInLoop(ANIMATION_PATH + "TwistedFate/w_loop.txt", 5500, 0.1f, 0.08f);
-            
+            animator.StopCurrentAnimation();
+            animator.ColorBurst(new HSVColor(0, 0, 1));
         }
-
-        private void OnCastE()
+        protected override async Task OnRecastR()
         {
-           
-        }
-
-        private void OnCastR()
-        {
-            animator.ColorBurst(RColor, 0.05f, RColor2);
-        }
-
-        /// <summary>
-        /// Called when an ability is casted again (few champions have abilities that can be recast, only those with special abilities such as Vel'Koz or Zoes Q)
-        /// </summary>
-        private void OnAbilityRecast(object s, AbilityKey key)
-        {
-            if (key == AbilityKey.W)
+            if (LightingMode == LightingMode.Keyboard)
             {
-                animator.StopCurrentAnimation();
-                animator.ColorBurst(new HSVColor(0, 0, 1));
+                RunAnimationOnce("r_cast", fadeOutAfterRate: 0.1f, timeScale: 0.22f);
+                await Task.Delay(300);
+                animator.ColorBurst(new HSVColor(0, 0, 1), 0.08f);
             }
-            if (key == AbilityKey.R)
+            else
             {
-                if (LightingMode == LightingMode.Keyboard)
-                {
-                    Task.Run(async () =>
-                    {
-                        await animator.RunAnimationOnce(ANIMATION_PATH + "TwistedFate/r_cast.txt", fadeOutAfterRate: 0.1f, timeScale: 0.22f);
-                        await Task.Delay(300);
-                        _ =  animator.ColorBurst(new HSVColor(0, 0, 1), 0.08f);
-                    });
-                   
-                } else
-                {
-                    Task.Run(async () =>
-                    {
-                        await animator.RunAnimationOnce(ANIMATION_PATH + "TwistedFate/r_cast_line.txt", true, timeScale: 0.3f);
-                        await animator.ColorBurst(new HSVColor(0, 0, 1));
-                    });
-                }
-                
+                RunAnimationOnce("r_cast_line", true, timeScale: 0.3f);
+                await animator.ColorBurst(new HSVColor(0, 0, 1));
             }
         }
-
     }
 }
