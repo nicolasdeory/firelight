@@ -79,7 +79,7 @@ namespace LedDashboard.Modules.LeagueOfLegends.ChampionModules
         {
             if (e.Button == MouseButtons.Right && chargesRemaining > 0)
             {
-                if (chargesRemaining == GameState.ActivePlayer.AbilityLoadout.R_Level + 2)
+                if (chargesRemaining == GameState.ActivePlayer.Abilities.R_Level + 2)
                 {
                     StartCooldownTimer(AbilityKey.R, GetCooldownForAbility(AbilityKey.R) / 2);
                 } else
@@ -98,7 +98,7 @@ namespace LedDashboard.Modules.LeagueOfLegends.ChampionModules
         private void OnGameStateUpdated(GameState state)
         {
             int casts = 3;
-            switch (state.ActivePlayer.AbilityLoadout.R_Level)
+            switch (state.ActivePlayer.Abilities.R_Level)
             {
                 case 1:
                     casts = 3;
@@ -186,7 +186,7 @@ namespace LedDashboard.Modules.LeagueOfLegends.ChampionModules
 
         private void StartRTimer()
         {
-            chargesRemaining = GameState.ActivePlayer.AbilityLoadout.R_Level + 2;
+            chargesRemaining = GameState.ActivePlayer.Abilities.R_Level + 2;
             Task.Run(async () =>
             {
                 rTimeRemaining = 10000;

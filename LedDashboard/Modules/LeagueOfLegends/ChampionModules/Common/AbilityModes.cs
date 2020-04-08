@@ -25,6 +25,11 @@ namespace LedDashboard.Modules.LeagueOfLegends.ChampionModules.Common
         public int MaxRecasts { get; set; }
 
         /// <summary>
+        /// The ability is point and click.
+        /// </summary>
+        public bool IsPointAndClick { get; set; }
+
+        /// <summary>
         /// Returns an ability that cannot be cast.
         /// </summary>
         /// <returns></returns>
@@ -69,6 +74,15 @@ namespace LedDashboard.Modules.LeagueOfLegends.ChampionModules.Common
                 RecastMode = recastTime > 0 ? recastMode ?? AbilityCastMode.Instant() : null,
                 RecastTime = recastTime,
                 MaxRecasts = maxRecasts
+            };
+        }
+
+        public static AbilityCastMode PointAndClick()
+        {
+            return new AbilityCastMode()
+            {
+                IsPointAndClick = true,
+                IsNormal = true
             };
         }
 

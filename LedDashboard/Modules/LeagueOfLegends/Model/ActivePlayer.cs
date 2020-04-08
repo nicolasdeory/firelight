@@ -9,7 +9,7 @@ namespace LedDashboard.Modules.LeagueOfLegends.Model
 {
     public class ActivePlayer
     {
-        public AbilityLoadout AbilityLoadout;
+        public AbilityLoadout Abilities { get; set; }
         public ChampionStats Stats { get; set; }
 
         public float CurrentGold;
@@ -35,7 +35,7 @@ namespace LedDashboard.Modules.LeagueOfLegends.Model
 
         public void UpdateFromData(dynamic data)
         {
-            this.AbilityLoadout = AbilityLoadout.FromData(data.abilities);
+            this.Abilities = AbilityLoadout.FromData(data.abilities);
             this.Stats = (data.championStats as JObject).ToObject<ChampionStats>();
             this.CurrentGold = data.currentGold;
             this.Runes = (data.fullRunes.generalRunes as JArray).ToObject<List<Rune>>();

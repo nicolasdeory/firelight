@@ -22,6 +22,10 @@ namespace LedDashboard.Modules.LeagueOfLegends
     class LeagueOfLegendsModule : LEDModule
     {
 
+        // Static members
+
+        public static GameState CurrentGameState { get; set; }
+
         // Constants
 
         HSVColor LoadingColor = new HSVColor(0.09f, 0.8f, 1f);
@@ -213,7 +217,6 @@ namespace LedDashboard.Modules.LeagueOfLegends
         /// </summary>
         private async Task QueryPlayerInfo(bool firstTime = false)
         {
-
             string json;
             try
             {
@@ -224,7 +227,7 @@ namespace LedDashboard.Modules.LeagueOfLegends
                 Console.WriteLine("InvalidOperationException: Game client disconnected");
                 throw new InvalidOperationException("Couldn't connect with the game client", e);
             }
-
+            
             var gameData = JsonConvert.DeserializeObject<dynamic>(json);
             gameState.GameEvents = (gameData.events.Events as JArray).ToObject<List<Event>>();
             // Get active player info
@@ -238,8 +241,10 @@ namespace LedDashboard.Modules.LeagueOfLegends
             if (championModule != null) championModule.UpdateGameState(gameState);
             // Update player ability cooldowns
             gameState.PlayerAbilityCooldowns = championModule?.AbilitiesOnCooldown;
+            // Set current game state
+            CurrentGameState = gameState; // This call is possibly not needed because the reference is always the same
             // Get player items
-            //gameState.PlayerItemCooldowns = new bool[7];
+
             foreach (Item item in gameState.PlayerChampion.Items)
             {
                 SetModuleForItem(item);

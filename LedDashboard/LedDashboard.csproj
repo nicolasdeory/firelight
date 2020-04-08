@@ -168,4 +168,21 @@
       <HintPath>Lib\RazerChromaFrameEngine.dll</HintPath>
     </Reference>
   </ItemGroup>
+  <ItemGroup>
+    <None Update="Animations\LeagueOfLegends\Champions\Jax\e_cast_loop.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Animations\LeagueOfLegends\Champions\Jax\e_recast_end.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Animations\LeagueOfLegends\Champions\Jax\q_cast.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Animations\LeagueOfLegends\Champions\Jax\w_cast_end.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Animations\LeagueOfLegends\Champions\Jax\w_cast_loop.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
 </Project>
