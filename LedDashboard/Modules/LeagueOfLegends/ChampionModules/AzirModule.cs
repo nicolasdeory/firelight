@@ -50,10 +50,10 @@ namespace LedDashboard.Modules.LeagueOfLegends.ChampionModules
             // R -> Instant ability, it is cast the moment the key is pressed, but it can be recast within 2.3s
             Dictionary<AbilityKey, AbilityCastMode> abilityCastModes = new Dictionary<AbilityKey, AbilityCastMode>()
             {
-                [AbilityKey.Q] = AbilityCastMode.Instant(),
-                [AbilityKey.W] = AbilityCastMode.Instant(),
+                [AbilityKey.Q] = AbilityCastMode.Normal(),
+                [AbilityKey.W] = AbilityCastMode.Normal(),
                 [AbilityKey.E] = AbilityCastMode.Instant(),
-                [AbilityKey.R] = AbilityCastMode.Instant(),
+                [AbilityKey.R] = AbilityCastMode.Normal(),
             };
             AbilityCastModes = abilityCastModes;
 
@@ -104,32 +104,21 @@ namespace LedDashboard.Modules.LeagueOfLegends.ChampionModules
 
         private void OnCastQ()
         {
-            Task.Run(async () =>
-            {
                 animator.RunAnimationOnce(ANIMATION_PATH + "Azir/q_start.txt");
-            });
         }
 
         private void OnCastW()
         {
-            Task.Run(async () =>
-            {
                 animator.RunAnimationOnce(ANIMATION_PATH + "Azir/w_cast.txt");
-            });
         }
 
         private void OnCastE()
         {
-            Task.Run(async () =>
-            {
                 animator.RunAnimationOnce(ANIMATION_PATH + "Azir/e_cast.txt");
-            });
         }
 
         private void OnCastR()
         {
-            // Trigger the start animation.
-
             animator.RunAnimationOnce(ANIMATION_PATH + "Azir/r_cast.txt");
         }
     }
