@@ -1,4 +1,6 @@
-﻿using System;
+﻿#define X64
+
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Runtime.InteropServices;
