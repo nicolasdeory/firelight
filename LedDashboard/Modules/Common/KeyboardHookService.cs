@@ -10,15 +10,11 @@ namespace LedDashboard
 {
     public class KeyboardHookService
     {
+        public static KeyboardHookService Instance { get; private set; }
 
-        private static KeyboardHookService _instance;
-        public static KeyboardHookService Instance
+        static KeyboardHookService()
         {
-            get
-            {
-                if (_instance == null) _instance = new KeyboardHookService();
-                return _instance;
-            }
+            Instance = new KeyboardHookService();
         }
 
         private IKeyboardMouseEvents m_GlobalHook;
@@ -43,7 +39,7 @@ namespace LedDashboard
 
         public static void Init()
         {
-            _instance = new KeyboardHookService();
+            Instance = new KeyboardHookService();
         }
 
         private KeyboardHookService()
@@ -59,16 +55,13 @@ namespace LedDashboard
         {
             OnMouseClicked?.Invoke(sender, e);
         }
-
         private void OnKeyPress(object sender, KeyPressEventArgs e)
         {
             OnKeyPressed?.Invoke(sender, e);
         }
-
         private void OnKeyRelease(object sender, KeyEventArgs e)
         {
             OnKeyReleased?.Invoke(sender, e);
         }
-
     }
 }

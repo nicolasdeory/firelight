@@ -17,9 +17,7 @@ namespace LedDashboard.Modules.BlinkWhite
 
         public static LEDModule Create(int ledCount)
         {
-
             return new BlinkWhiteModule(ledCount);
-
         }
 
         private BlinkWhiteModule(int ledCount)
@@ -43,9 +41,11 @@ namespace LedDashboard.Modules.BlinkWhite
                         l.Color(HSVColor.Black);
                     }
                     on = false;
-                } else
+                }
+                else
                 {
-                    foreach(Led l in this.leds) {
+                    foreach(Led l in this.leds)
+                    {
                         l.Color(new HSVColor(0.2f, 1f, 1f));
                     }
                     on = true;

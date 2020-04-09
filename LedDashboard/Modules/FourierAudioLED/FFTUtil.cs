@@ -17,8 +17,14 @@ namespace LedDashboard.Modules.FourierAudioLED
             int frameSize = AudioEngine.BUFFERSIZE;
             var audioBytes = new byte[frameSize];
             audio.bwp.Read(audioBytes, 0, frameSize);
-            if (audioBytes.Length == 0) return new double[0];
-            if (audioBytes[frameSize - 2] == 0) return new double[0]; // Return if there's nothing new to plot
+            if (audioBytes.Length == 0)
+            {
+                return new double[0];
+            }
+            if (audioBytes[frameSize - 2] == 0)
+            {
+                return new double[0]; // Return if there's nothing new to plot
+            }
 
             const int BYTES_PER_POINT = 2; // incoming data is 16-bit (2 bytes per audio point)
 
@@ -34,10 +40,10 @@ namespace LedDashboard.Modules.FourierAudioLED
             for (int i = 0; i < graphPointCount; i++)
             {
                 // read the int16 from the two bytes
-                Int16 val = BitConverter.ToInt16(audioBytes, i * 2);
+                short val = BitConverter.ToInt16(audioBytes, i * 2);
 
                 // store the value in Ys as a percent (+/- 100% = 200%)
-                pcm[i] = (double)(val) / Math.Pow(2, 16) * 200.0;
+                pcm[i] = val / Math.Pow(2, 16) * 200.0;
             }
             double maxPCM = pcm.Max(x => Math.Abs(x));
             fft = FFT(pcm);
@@ -63,7 +69,7 @@ namespace LedDashboard.Modules.FourierAudioLED
             double[] fft = new double[data.Length];
             Complex[] fftComplex = new Complex[data.Length];
             for (int i = 0; i < data.Length; i++)
-                fftComplex[i] = new System.Numerics.Complex(data[i], 0.0);
+                fftComplex[i] = new Complex(data[i], 0.0);
             FourierTransform.FFT(fftComplex, FourierTransform.Direction.Forward);
             for (int i = 0; i < data.Length; i++)
                 fft[i] = fftComplex[i].Magnitude;

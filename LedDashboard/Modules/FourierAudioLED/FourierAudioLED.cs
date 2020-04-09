@@ -49,7 +49,7 @@ namespace LedDashboard.Modules.FourierAudioLED
             this.freqArray = new int[this.lastIndex];
             for (int i = 0; i < freqArray.Length; i++)
             {
-                this.freqArray[i] = (int)Math.Floor(Utils.Scale(FFTUtil.GetFreqForIndex(i, FFT_SPACING_HZ), 0, 2500, 0, this.ledCount/2 + 1));
+                this.freqArray[i] = (int)Math.Floor(Utils.Scale(FFTUtil.GetFreqForIndex(i, FFT_SPACING_HZ), 0, 2500, 0, this.ledCount / 2 + 1));
             }
             leds = new Led[ledCount];
             for(int i = 0; i < ledCount; i++)
@@ -61,10 +61,16 @@ namespace LedDashboard.Modules.FourierAudioLED
         public Led[] DoFrame() // TODO: Latency issues...
         {
             leds.FadeToBlackAllLeds(0.3f); // 0.3f * delta que es 20 ms se supone
-            if (!newAudioAvailable) return this.leds;
+            if (!newAudioAvailable)
+            {
+                return this.leds;
+            }
             newAudioAvailable = false;
             var y_in = FFTUtil.ProcessAudio(audio);
-            if (y_in.Length < this.lastIndex) return this.leds;
+            if (y_in.Length < this.lastIndex)
+            {
+                return this.leds;
+            }
             var y = new double[this.lastIndex];
             Array.Copy(y_in, 0, y, 0, this.lastIndex);
             y = y.Select(x => x < 0 ? 0 : x).ToArray();
@@ -74,15 +80,8 @@ namespace LedDashboard.Modules.FourierAudioLED
             {
                 var freq = FFTUtil.GetFreqForIndex(i, FFT_SPACING_HZ);
                 var val = y[i];
-                double scaled;
-                if (freq <= BASS_MAX_FREQ)
-                {
-                    scaled = Utils.Scale(val, 0, BASS_TOP_LIMIT, 0, 1);
-                }
-                else
-                {
-                    scaled = Utils.Scale(val, 0, MID_TOP_LIMIT, 0, 1);
-                }
+                var limit = freq <= BASS_MAX_FREQ ? BASS_TOP_LIMIT : MID_TOP_LIMIT;
+                double scaled = Utils.Scale(val, 0, limit, 0, 1);
                 y_scaled[i] = scaled;
             }
 
@@ -94,7 +93,8 @@ namespace LedDashboard.Modules.FourierAudioLED
 
             for (int i = 0; i < this.lastIndex; i++)
             {
-                if (this.freqArray[i] == this.ledCount / 2) break;
+                if (this.freqArray[i] == this.ledCount / 2)
+                    break;
                 leds.AddSymmetricColorAroundLeds(this.freqArray[i], yColors[i]);
             }
 
