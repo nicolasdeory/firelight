@@ -2,7 +2,6 @@
 using LedDashboard.Modules.Common;
 using LedDashboard.Modules.LeagueOfLegends.ChampionModules.Common;
 using LedDashboard.Modules.LeagueOfLegends.Model;
-using SharpDX.RawInput;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Windows.Forms;
