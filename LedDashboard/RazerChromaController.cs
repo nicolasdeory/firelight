@@ -40,9 +40,10 @@ namespace LedDashboard
         private void Init()
         {
             // TODO: Check synapse version. https://chromasdk.io:54236/razer/chromasdk Version must be >= 3.X
+            int status = 0;
             try
             {
-                int status = ChromaAnimationAPI.Init();
+                status = ChromaAnimationAPI.Init();
                 if (status != 0)
                 {
                     throw new InvalidOperationException("Chroma SDK exception. Status " + status);
@@ -50,7 +51,7 @@ namespace LedDashboard
             }
             catch (Exception e)
             {
-                MessageBox.Show("Error initializing Razer Chroma controller. Is Razer Synapse installed?");
+                MessageBox.Show("Error initializing Razer Chroma controller. Is Razer Synapse installed? Status=" + status);
                 throw new InvalidOperationException("Error initializing Razer Chroma controller. Is Razer Synapse installed?", e);
             }
             baseKeyboardAnim = ChromaAnimationAPI.CreateAnimationInMemory((int)ChromaAnimationAPI.DeviceType.DE_2D, (int)ChromaAnimationAPI.Device2D.Keyboard);
@@ -81,7 +82,7 @@ namespace LedDashboard
                     {
                         foreach (var point in points)
                         {
-                            ChromaAnimationAPI.Set2DColor(baseKeyboardAnim, 0, point.X, point.Y, ChromaAnimationAPI.GetRGB(c.R, c.G, c.B));
+                            ChromaAnimationAPI.Set2DColor(baseKeyboardAnim, 0, point.Y, point.X, ChromaAnimationAPI.GetRGB(c.R, c.G, c.B));
                         }
                        // keyboardFrame.SetKeys(points, c);
                     }
@@ -125,7 +126,9 @@ namespace LedDashboard
                 }
                 for (int i = 0; i < 88; i++)
                 {
-                    Color c = Color.FromArgb(colorArray[i * 3], colorArray[i * 3 + 1], colorArray[i * 3 + 2]);
+                    //Color c = Color.FromArgb();
+                    int color = ChromaAnimationAPI.GetRGB(colorArray[i * 3], colorArray[i * 3 + 1], colorArray[i * 3 + 2]);
+                    ChromaAnimationAPI.SetKeyColor(baseKeyboardAnim, 0, (int)indexKeyMap[i], color);
                     //keyboardFrame.SetKey(indexKeyMap[i], c);
                 }
 
@@ -185,7 +188,7 @@ namespace LedDashboard
             RZKEY.RZKEY_SCROLL,
             RZKEY.RZKEY_PAUSE,
             RZKEY.RZKEY_OEM_1, // º SPAIN
-            RZKEY.RZKEY_NUMPAD1,RZKEY.RZKEY_NUMPAD2,RZKEY.RZKEY_NUMPAD3,RZKEY.RZKEY_NUMPAD4,RZKEY.RZKEY_NUMPAD5,RZKEY.RZKEY_NUMPAD6,RZKEY.RZKEY_NUMPAD7,RZKEY.RZKEY_NUMPAD8,RZKEY.RZKEY_NUMPAD9,RZKEY.RZKEY_NUMPAD0,
+            RZKEY.RZKEY_1,RZKEY.RZKEY_2,RZKEY.RZKEY_3,RZKEY.RZKEY_4,RZKEY.RZKEY_5,RZKEY.RZKEY_6,RZKEY.RZKEY_7,RZKEY.RZKEY_8,RZKEY.RZKEY_9,RZKEY.RZKEY_0,
             RZKEY.RZKEY_OEM_2,
             RZKEY.RZKEY_OEM_3,
             RZKEY.RZKEY_BACKSPACE,

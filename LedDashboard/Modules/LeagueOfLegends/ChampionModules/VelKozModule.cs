@@ -103,7 +103,7 @@ namespace LedDashboard.Modules.LeagueOfLegends.ChampionModules
             Task.Run(async () =>
             {
                 await Task.Delay(100);
-                if (!rCastInProgress) _ = animator.RunAnimationOnce(ANIMATION_PATH + "Vel'Koz/q_start.txt", keepTail: true, timeScale: 0.9f);
+                if (!rCastInProgress) _ = animator.RunAnimationOnce(ANIMATION_PATH + "Velkoz/q_start.txt", keepTail: true, timeScale: 0.9f);
             });
 
             // The Q cast is in progress.
@@ -115,7 +115,7 @@ namespace LedDashboard.Modules.LeagueOfLegends.ChampionModules
                 await Task.Delay(1150);
                 if (!rCastInProgress && qCastInProgress)
                 {
-                    _ = animator.RunAnimationOnce(ANIMATION_PATH + "Vel'Koz/q_recast.txt", keepTail: false, fadeOutAfterRate: 0);
+                    _ = animator.RunAnimationOnce(ANIMATION_PATH + "Velkoz/q_recast.txt", keepTail: false, fadeOutAfterRate: 0);
                 }
                 qCastInProgress = false;
             });
@@ -125,9 +125,9 @@ namespace LedDashboard.Modules.LeagueOfLegends.ChampionModules
         {
             Task.Run(async () =>
             {
-                _ = animator.RunAnimationOnce(ANIMATION_PATH + "Vel'Koz/w_cast.txt", true, timeScale: 0.85f);
+                _ = animator.RunAnimationOnce(ANIMATION_PATH + "Velkoz/w_cast.txt", true, timeScale: 0.85f);
                 await Task.Delay(1800);
-                if (!rCastInProgress) _ = animator.RunAnimationOnce(ANIMATION_PATH + "Vel'Koz/w_close.txt", keepTail: false, fadeOutAfterRate: 0.15f);
+                if (!rCastInProgress) _ = animator.RunAnimationOnce(ANIMATION_PATH + "Velkoz/w_close.txt", keepTail: false, fadeOutAfterRate: 0.15f);
             });
         }
 
@@ -143,7 +143,7 @@ namespace LedDashboard.Modules.LeagueOfLegends.ChampionModules
         private void OnCastR()
         {
             animator.StopCurrentAnimation();
-            animator.RunAnimationInLoop(ANIMATION_PATH + "Vel'Koz/r_loop.txt", 2300, fadeOutAfterRate: 0.15f);
+            animator.RunAnimationInLoop(ANIMATION_PATH + "Velkoz/r_loop.txt", 2300, fadeOutAfterRate: 0.15f);
             rCastInProgress = true;
             Task.Run(async () =>
             {
@@ -168,7 +168,7 @@ namespace LedDashboard.Modules.LeagueOfLegends.ChampionModules
                 if (qCastInProgress)
                 {
                     qCastInProgress = false;
-                    if (!rCastInProgress) animator.RunAnimationOnce(ANIMATION_PATH + "Vel'Koz/q_recast.txt");
+                    if (!rCastInProgress) animator.RunAnimationOnce(ANIMATION_PATH + "Velkoz/q_recast.txt");
                 }
             }
 
