@@ -111,7 +111,7 @@ namespace LedDashboard.Modules.LeagueOfLegends.ChampionModules
 
         private void OnCastW()
         {
-                animator.RunAnimationOnce(ANIMATION_PATH + "Azir/w_cast.txt", timeScale: 0.6f);
+                animator.RunAnimationOnce(ANIMATION_PATH + "Azir/w_cast.txt", timeScale: 0.5f);
         }
 
         private void OnCastE()
