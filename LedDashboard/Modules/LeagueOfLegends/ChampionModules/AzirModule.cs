@@ -2,7 +2,6 @@ using LedDashboard.Modules.BasicAnimation;
 using LedDashboard.Modules.Common;
 using LedDashboard.Modules.LeagueOfLegends.ChampionModules.Common;
 using LedDashboard.Modules.LeagueOfLegends.Model;
-using SharpDX.RawInput;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -36,7 +35,7 @@ namespace LedDashboard.Modules.LeagueOfLegends.ChampionModules
 
 
         private AzirModule(int ledCount, GameState gameState, string championName, LightingMode preferredLightMode, AbilityCastPreference preferredCastMode)
-                            : base(ledCount, championName, gameState, preferredLightMode)
+                            : base(ledCount, championName, gameState, preferredLightMode, true)
         {
             // Initialization for the champion module occurs here.
 
@@ -51,7 +50,7 @@ namespace LedDashboard.Modules.LeagueOfLegends.ChampionModules
             // R -> Instant ability, it is cast the moment the key is pressed, but it can be recast within 2.3s
             Dictionary<AbilityKey, AbilityCastMode> abilityCastModes = new Dictionary<AbilityKey, AbilityCastMode>()
             {
-                [AbilityKey.Q] = AbilityCastMode.Normal(),
+                [AbilityKey.Q] = AbilityCastMode.PointAndClick(),
                 [AbilityKey.W] = AbilityCastMode.Normal(),
                 [AbilityKey.E] = AbilityCastMode.Instant(),
                 [AbilityKey.R] = AbilityCastMode.Normal(),
@@ -107,22 +106,22 @@ namespace LedDashboard.Modules.LeagueOfLegends.ChampionModules
 
         private void OnCastQ()
         {
-                animator.RunAnimationOnce(ANIMATION_PATH + "Azir/q_start.txt");
+                animator.RunAnimationOnce(ANIMATION_PATH + "Azir/q_cast.txt", timeScale: 1.5f);
         }
 
         private void OnCastW()
         {
-                animator.RunAnimationOnce(ANIMATION_PATH + "Azir/w_cast.txt");
+                animator.RunAnimationOnce(ANIMATION_PATH + "Azir/w_cast.txt", timeScale: 0.6f);
         }
 
         private void OnCastE()
         {
-                animator.RunAnimationOnce(ANIMATION_PATH + "Azir/e_cast.txt");
+                animator.RunAnimationOnce(ANIMATION_PATH + "Azir/e_cast.txt", timeScale: 1.6f);
         }
 
         private void OnCastR()
         {
-            animator.RunAnimationOnce(ANIMATION_PATH + "Azir/r_cast.txt");
+            animator.RunAnimationOnce(ANIMATION_PATH + "Azir/r_cast.txt", timeScale: 0.3f);
         }
         
         private void OnAbilityRecast(object sender, AbilityKey e)

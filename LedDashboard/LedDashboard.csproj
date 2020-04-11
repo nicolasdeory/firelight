@@ -39,6 +39,18 @@
     <Content Include="Animations\LeagueOfLegends\Champions\Ahri\w_cast.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Include="Animations\LeagueOfLegends\Champions\Azir\e_cast.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Animations\LeagueOfLegends\Champions\Azir\q_cast.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Animations\LeagueOfLegends\Champions\Azir\r_cast.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Animations\LeagueOfLegends\Champions\Azir\w_cast.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="Animations\LeagueOfLegends\Champions\Ezreal\e_cast.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
@@ -152,6 +164,12 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Remove="KeyboardLayout.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Remove="Animations\LeagueOfLegends\Champions\Azir\e_cast.txt" />
+    <None Remove="Animations\LeagueOfLegends\Champions\Azir\q_cast.txt" />
+    <None Remove="Animations\LeagueOfLegends\Champions\Azir\r_cast.txt" />
+    <None Remove="Animations\LeagueOfLegends\Champions\Azir\w_cast.txt" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\ChromaSDK\ChromaSDK.csproj" />
