@@ -5,7 +5,7 @@ A modular League of Legends integration for Razer Chroma and RGB LED devices.
 
 ![](repo/video-gif.gif)
 
-You can join our [Discord server](https://discord.gg/EyBuGv) to follow the latest updates.
+You can join our [Discord server](https://discord.gg/KtTRPZt) to follow the latest updates.
 
 ## Features
 - Health Bar
