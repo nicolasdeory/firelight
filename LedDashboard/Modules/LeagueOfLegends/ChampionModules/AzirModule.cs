@@ -3,6 +3,7 @@ using LedDashboard.Modules.Common;
 using LedDashboard.Modules.LeagueOfLegends.ChampionModules.Common;
 using LedDashboard.Modules.LeagueOfLegends.Model;
 using SharpDX.RawInput;
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -60,10 +61,10 @@ namespace LedDashboard.Modules.LeagueOfLegends.ChampionModules
             // Preload all the animations you'll want to use. MAKE SURE that each animation file
             // has its Build Action set to "Content" and "Copy to Output Directory" is set to "Always".
 
-            animator.PreloadAnimation(ANIMATION_PATH + "Azir/q_cast.txt");
+           /* animator.PreloadAnimation(ANIMATION_PATH + "Azir/q_cast.txt");
             animator.PreloadAnimation(ANIMATION_PATH + "Azir/w_cast.txt");
             animator.PreloadAnimation(ANIMATION_PATH + "Azir/e_cast.txt");
-            animator.PreloadAnimation(ANIMATION_PATH + "Azir/r_cast.txt");
+            animator.PreloadAnimation(ANIMATION_PATH + "Azir/r_cast.txt");*/
 
 
             ChampionInfoLoaded += OnChampionInfoLoaded;
@@ -78,6 +79,8 @@ namespace LedDashboard.Modules.LeagueOfLegends.ChampionModules
             AbilityCast += OnAbilityCast;
             AbilityRecast += OnAbilityRecast;
         }
+
+        
 
         /// <summary>
         /// Called when an ability is cast.
@@ -120,6 +123,11 @@ namespace LedDashboard.Modules.LeagueOfLegends.ChampionModules
         private void OnCastR()
         {
             animator.RunAnimationOnce(ANIMATION_PATH + "Azir/r_cast.txt");
+        }
+        
+        private void OnAbilityRecast(object sender, AbilityKey e)
+        {
+
         }
     }
 }
