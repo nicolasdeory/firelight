@@ -361,7 +361,7 @@ namespace LedDashboard.Modules.LeagueOfLegends
         {
             Task.Run(async () =>
             {
-                if (AbilityCastModes[key].IsPointAndClick)
+                /*if (AbilityCastModes[key].IsPointAndClick)
                 {
                     // check if mana was substracted, right after casting the ability
                     
@@ -377,7 +377,7 @@ namespace LedDashboard.Modules.LeagueOfLegends
                         SelectedAbility = AbilityKey.None;
                         return;
                     }
-                }
+                }*/
                 AbilityCast?.Invoke(this, key);
                 if (AbilityCastModes[key].HasRecast)
                 {
@@ -385,7 +385,8 @@ namespace LedDashboard.Modules.LeagueOfLegends
                 }
                 else
                 {
-                    StartCooldownTimer(key);
+                    if (!AbilityCastModes[key].IsPointAndClick) // no cooldown for point and clicks
+                        StartCooldownTimer(key);
                 }
                 if (AbilityCastModes[key].RecastMode != null && AbilityCastModes[key].RecastMode.RecastOnKeyUp)
                     SelectedAbility = key;
