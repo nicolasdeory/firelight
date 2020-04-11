@@ -1,6 +1,8 @@
-﻿using System;
+﻿using Accord.Math;
+using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Numerics;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -18,7 +20,7 @@ namespace LedDashboard.Modules.FourierAudioLED
             if (audioBytes.Length == 0) return new double[0];
             if (audioBytes[frameSize - 2] == 0) return new double[0]; // Return if there's nothing new to plot
 
-            int BYTES_PER_POINT = 2; // incoming data is 16-bit (2 bytes per audio point)
+            const int BYTES_PER_POINT = 2; // incoming data is 16-bit (2 bytes per audio point)
 
             // create 32 bit int array ready to fill with 16-bit data
             int graphPointCount = audioBytes.Length / BYTES_PER_POINT;
@@ -59,10 +61,10 @@ namespace LedDashboard.Modules.FourierAudioLED
         public static double[] FFT(double[] data)
         {
             double[] fft = new double[data.Length];
-            System.Numerics.Complex[] fftComplex = new System.Numerics.Complex[data.Length];
+            Complex[] fftComplex = new Complex[data.Length];
             for (int i = 0; i < data.Length; i++)
                 fftComplex[i] = new System.Numerics.Complex(data[i], 0.0);
-            Accord.Math.FourierTransform.FFT(fftComplex, Accord.Math.FourierTransform.Direction.Forward);
+            FourierTransform.FFT(fftComplex, FourierTransform.Direction.Forward);
             for (int i = 0; i < data.Length; i++)
                 fft[i] = fftComplex[i].Magnitude;
             return fft;

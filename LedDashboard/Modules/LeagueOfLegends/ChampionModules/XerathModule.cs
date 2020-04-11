@@ -2,7 +2,6 @@
 using LedDashboard.Modules.Common;
 using LedDashboard.Modules.LeagueOfLegends.ChampionModules.Common;
 using LedDashboard.Modules.LeagueOfLegends.Model;
-using SharpDX.RawInput;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -38,7 +37,7 @@ namespace LedDashboard.Modules.LeagueOfLegends.ChampionModules
 
 
         private XerathModule(int ledCount, GameState gameState, string championName, LightingMode preferredLightMode, AbilityCastPreference preferredCastMode)
-                            : base(ledCount, championName, gameState, preferredLightMode)
+                            : base(ledCount, championName, gameState, preferredLightMode, true)
         {
             // Initialization for the champion module occurs here.
 
@@ -60,17 +59,6 @@ namespace LedDashboard.Modules.LeagueOfLegends.ChampionModules
             };
             AbilityCastModes = abilityCastModes;
 
-            // Preload all the animations you'll want to use. MAKE SURE that each animation file
-            // has its Build Action set to "Content" and "Copy to Output Directory" is set to "Always".
-
-            animator.PreloadAnimation(ANIMATION_PATH + "Xerath/q_charge.txt");
-            animator.PreloadAnimation(ANIMATION_PATH + "Xerath/q_retract.txt");
-            animator.PreloadAnimation(ANIMATION_PATH + "Xerath/w_cast.txt");
-            animator.PreloadAnimation(ANIMATION_PATH + "Xerath/e_cast.txt");
-            animator.PreloadAnimation(ANIMATION_PATH + "Xerath/r_launch.txt");
-            animator.PreloadAnimation(ANIMATION_PATH + "Xerath/r_open.txt");
-
-
             ChampionInfoLoaded += OnChampionInfoLoaded;
             GameStateUpdated += OnGameStateUpdated;
         }
@@ -90,7 +78,7 @@ namespace LedDashboard.Modules.LeagueOfLegends.ChampionModules
         {
             if (e.Button == MouseButtons.Right && chargesRemaining > 0)
             {
-                if (chargesRemaining == GameState.ActivePlayer.AbilityLoadout.R_Level + 2)
+                if (chargesRemaining == GameState.ActivePlayer.Abilities.R_Level + 2)
                 {
                     StartCooldownTimer(AbilityKey.R, GetCooldownForAbility(AbilityKey.R) / 2);
                 } else
@@ -109,7 +97,7 @@ namespace LedDashboard.Modules.LeagueOfLegends.ChampionModules
         private void OnGameStateUpdated(GameState state)
         {
             int casts = 3;
-            switch (state.ActivePlayer.AbilityLoadout.R_Level)
+            switch (state.ActivePlayer.Abilities.R_Level)
             {
                 case 1:
                     casts = 3;
@@ -197,7 +185,7 @@ namespace LedDashboard.Modules.LeagueOfLegends.ChampionModules
 
         private void StartRTimer()
         {
-            chargesRemaining = GameState.ActivePlayer.AbilityLoadout.R_Level + 2;
+            chargesRemaining = GameState.ActivePlayer.Abilities.R_Level + 2;
             Task.Run(async () =>
             {
                 rTimeRemaining = 10000;

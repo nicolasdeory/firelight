@@ -16,34 +16,45 @@ namespace LedDashboard
         }
 
         static SACNSender sender;
+
+        static SACNController()
+        {
+            // If the method throws no exceptions, consider directly initializing the sender variable
+            try
+            {
+                sender = new SACNSender(Guid.NewGuid(), "wled-nico");
+            }
+            catch
+            {
+                Console.Error.WriteLine("Cound not initialize a SACN sender.");
+            }
+        }
+
         public void SendData(int ledCount, byte[] data, LightingMode mode) // todo: when on keyboard mode, ledCount still has to be correct for the strip!
         {
-            if (sender == null) sender = new SACNSender(Guid.NewGuid(), "wled-nico");
             Task.Run(() => sender.Send(1, SanitizeDataArray(ledCount,data,mode)));
         }
 
         private byte[] SanitizeDataArray(int ledCount, byte[] data, LightingMode mode)
         {
-            if (mode == LightingMode.Line) return data;
-            if (mode == LightingMode.Point)
+            switch (mode)
             {
-                List<byte> bytes = new List<byte>();
-                for(int i = 0; i < ledCount; i++)
-                {
-                    bytes.Add(data[0]);
-                    bytes.Add(data[1]);
-                    bytes.Add(data[2]);
-                }
-                return bytes.ToArray();
-            }
-            if (mode == LightingMode.Keyboard) // TODO: Keyboard lighting mode support for led strip
-            {
-                return GetKeyboardToLedStripArray(data).ToByteArray();
-            }
-            else
-            {
-                Console.Error.WriteLine("SACN: Invalid lighting mode");
-                throw new ArgumentException("Invalid lighting mode");
+                case LightingMode.Line:
+                    return data;
+                case LightingMode.Point:
+                    var bytes = new List<byte>();
+                    for (int i = 0; i < ledCount; i++)
+                    {
+                        bytes.Add(data[0]);
+                        bytes.Add(data[1]);
+                        bytes.Add(data[2]);
+                    }
+                    return bytes.ToArray();
+                case LightingMode.Keyboard:
+                    return GetKeyboardToLedStripArray(data).ToByteArray();
+                default:
+                    Console.Error.WriteLine("SACN: Invalid lighting mode");
+                    throw new ArgumentException("Invalid lighting mode");
             }
         }
 
@@ -78,12 +89,6 @@ namespace LedDashboard
 
         public void Dispose() { }
 
-        bool enabled; 
-        public void SetEnabled(bool enabled) { this.enabled = enabled; } // Kind of irrelevant for this controller / protocol but well.
-
-        public bool IsEnabled()
-        {
-            return enabled;
-        }
+        public bool Enabled { get; set; }
     }
 }

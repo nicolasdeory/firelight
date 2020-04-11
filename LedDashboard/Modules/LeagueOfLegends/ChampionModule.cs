@@ -5,6 +5,7 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -57,12 +58,15 @@ namespace LedDashboard.Modules.LeagueOfLegends
         private AbilityKey SelectedAbility = AbilityKey.None; // Currently selected ability (for example, if you pressed Q but you haven't yet clicked LMB to cast the ability)
         private char lastPressedKey = '\0';
 
-        public Dictionary<AbilityKey, bool> AbilitiesOnCooldown => _AbilitiesOnCooldown;
+        /// <summary>
+        /// Mana that the champion had in the last frame. Useful for point and click cast detection
+        /// </summary>
+        protected float lastManaAmount = 0;
 
         /// <summary>
         /// Dictionary that keeps track of which abilities are currently on cooldown. 
         /// </summary>
-        protected Dictionary<AbilityKey, bool> _AbilitiesOnCooldown = new Dictionary<AbilityKey, bool>()
+        public Dictionary<AbilityKey, bool> AbilitiesOnCooldown { get; protected set; } = new Dictionary<AbilityKey, bool>()
         {
             [AbilityKey.Q] = false,
             [AbilityKey.W] = false,
@@ -85,7 +89,7 @@ namespace LedDashboard.Modules.LeagueOfLegends
 
         // TODO: Handle champions with cooldown resets?
 
-        protected ChampionModule(int ledCount, string champName, GameState gameState, LightingMode preferredLightingMode) // TODO: Pass gamestate instead of active player
+        protected ChampionModule(int ledCount, string champName, GameState gameState, LightingMode preferredLightingMode, bool preloadAllAnimations = false) // TODO: Pass gamestate instead of active player
         {
             Name = champName;
             GameState = gameState;
@@ -93,6 +97,19 @@ namespace LedDashboard.Modules.LeagueOfLegends
             animator = AnimationModule.Create(ledCount);
 
             LoadChampionInformation(champName);
+
+            if (preloadAllAnimations)
+                PreloadAllAnimations();
+        }
+
+        protected void PreloadAnimation(string animationName)
+        {
+            animator.PreloadAnimation($"{ANIMATION_PATH}{Name}/{animationName}.txt");
+        }
+        protected void PreloadAllAnimations()
+        {
+            foreach (var file in Directory.GetFiles($"{ANIMATION_PATH}{Name}/"))
+                animator.PreloadAnimation(file);
         }
 
         private void LoadChampionInformation(string champName)
@@ -130,7 +147,6 @@ namespace LedDashboard.Modules.LeagueOfLegends
             try
             {
                 championJSON = await WebRequestUtil.GetResponse(String.Format(CHAMPION_INFO_ENDPOINT, latestVersion, championName));
-                
             }
             catch (WebException e)
             {
@@ -161,7 +177,7 @@ namespace LedDashboard.Modules.LeagueOfLegends
                 if (SelectedAbility == AbilityKey.None) return;
 
                 if (CanCastAbility(SelectedAbility))
-                    {
+                {
                     if (CanRecastAbility(SelectedAbility))
                     {
                         // its a recast
@@ -172,63 +188,6 @@ namespace LedDashboard.Modules.LeagueOfLegends
                         CastAbility(SelectedAbility);
                     }
                 }
-
-                /*// CODE FOR Q
-                if (SelectedAbility == AbilityKey.Q)
-                {
-                    
-                }
-
-                // CODE FOR W
-                if (SelectedAbility == AbilityKey.W)
-                {
-                    if (CanCastAbility(AbilityKey.W))
-                    {
-                        if (CanRecastAbility(AbilityKey.W))
-                        {
-                            // its a recast
-                            RecastAbility(AbilityKey.W);
-                        }
-                        else
-                        {
-                            CastAbility(AbilityKey.W);
-                        }
-                    }
-                }
-
-                // CODE FOR E
-                if (SelectedAbility == AbilityKey.E)
-                {
-                    if (CanCastAbility(AbilityKey.E))
-                    {
-                        if (CanRecastAbility(AbilityKey.E))
-                        {
-                            // its a recast
-                            RecastAbility(AbilityKey.E);
-                        }
-                        else
-                        {
-                            CastAbility(AbilityKey.E);
-                        }
-                    }
-                }
-
-                // CODE FOR R
-                if (SelectedAbility == AbilityKey.R)
-                {
-                    if (CanCastAbility(AbilityKey.R))
-                    {
-                        if (CanRecastAbility(AbilityKey.R))
-                        {
-                            // its a recast
-                            RecastAbility(AbilityKey.R);
-                        }
-                        else
-                        {
-                            CastAbility(AbilityKey.R);
-                        }
-                    }
-                }*/
             }
         }
 
@@ -248,7 +207,7 @@ namespace LedDashboard.Modules.LeagueOfLegends
             if (keyChar == lastPressedKey && !keyUp) return; // prevent duplicate calls. Without this, this gets called every frame a key is pressed.
             lastPressedKey = keyUp ? '\0' : keyChar;
             // TODO: quick cast with indicator bug - repro: hold w, then hold q, then right click, then release w, then release q. The ability is cast, even when it shouldn't.
-           // Console.WriteLine("Keypressed. Selected: " + SelectedAbility);
+            // Console.WriteLine("Keypressed. Selected: " + SelectedAbility);
             if (keyChar == 'q')
             {
                 DoCastLogicForAbility(AbilityKey.Q, keyUp);
@@ -276,7 +235,7 @@ namespace LedDashboard.Modules.LeagueOfLegends
             if (keyUp && SelectedAbility != key) return; // keyUp event shouldn't trigger anything if the ability is not selected.
 
             AbilityCastMode castMode = AbilityCastModes[key];
-           //Console.WriteLine(key + " " + (keyUp ? "up" : "down"));
+            //Console.WriteLine(key + " " + (keyUp ? "up" : "down"));
 
             if (castMode.HasRecast && AbilitiesOnRecast[key] > 0)
             {
@@ -342,25 +301,6 @@ namespace LedDashboard.Modules.LeagueOfLegends
                     }
                     return;
                 }
-                /*if (castMode.RecastMode.IsInstant
-                    || PreferredCastMode == AbilityCastPreference.Quick
-                    || (PreferredCastMode == AbilityCastPreference.QuickWithIndicator && keyUp && SelectedAbility == key)
-                    || ((PreferredCastMode == AbilityCastPreference.Quick || PreferredCastMode == AbilityCastPreference.QuickWithIndicator) && keyUp && castMode.RecastMode.RecastOnKeyUp))
-                {
-                    if (CanCastAbility(key))
-                    {
-                        RecastAbility(key);
-                    }
-                    return;
-                }
-                if (PreferredCastMode == AbilityCastPreference.Normal || PreferredCastMode == AbilityCastPreference.QuickWithIndicator)
-                {
-                    if (CanCastAbility(key))
-                    {
-                        SelectedAbility = key;
-                        // RECAST SELECTED
-                    }
-                }*/
                 return;
             }
 
@@ -419,18 +359,41 @@ namespace LedDashboard.Modules.LeagueOfLegends
 
         private void CastAbility(AbilityKey key)
         {
-            AbilityCast?.Invoke(this, key);
-            if (AbilityCastModes[key].HasRecast)
+            Task.Run(async () =>
             {
-                StartRecastTimer(key);
-            } else
-            {
-                StartCooldownTimer(key);
-            }
-            if (AbilityCastModes[key].RecastMode != null && AbilityCastModes[key].RecastMode.RecastOnKeyUp)
-                SelectedAbility = key;
-            else
-                SelectedAbility = AbilityKey.None;
+                /*if (AbilityCastModes[key].IsPointAndClick)
+                {
+                    // check if mana was substracted, right after casting the ability
+                    
+                    lastManaAmount = LeagueOfLegendsModule.CurrentGameState.ActivePlayer.Stats.ResourceValue;
+                   // Debug.WriteLine("A: " + lastManaAmount);
+                    // TODO: Find an alternative method for point and click
+                    await Task.Delay(300); // This is very slow, but if you put less time, the mana change won't be detected. There seems to be about 300ms delay in stats.
+                  //  Debug.WriteLine("B: " + LeagueOfLegendsModule.CurrentGameState.ActivePlayer.Stats.ResourceValue);
+
+                    if (LeagueOfLegendsModule.CurrentGameState.ActivePlayer.Stats.ResourceValue >= lastManaAmount) 
+                    {
+                        // mana wasn't consumed, so no ability was cast. Maybe this trick doesn't always work. E.g. Anivia E while having R enabled?
+                        SelectedAbility = AbilityKey.None;
+                        return;
+                    }
+                }*/
+                AbilityCast?.Invoke(this, key);
+                if (AbilityCastModes[key].HasRecast)
+                {
+                    StartRecastTimer(key);
+                }
+                else
+                {
+                    if (!AbilityCastModes[key].IsPointAndClick) // no cooldown for point and clicks
+                        StartCooldownTimer(key);
+                }
+                if (AbilityCastModes[key].RecastMode != null && AbilityCastModes[key].RecastMode.RecastOnKeyUp)
+                    SelectedAbility = key;
+                else
+                    SelectedAbility = AbilityKey.None;
+            });
+            
         }
         private void RecastAbility(AbilityKey key)
         {
@@ -459,22 +422,15 @@ namespace LedDashboard.Modules.LeagueOfLegends
         /// </summary>
         protected int GetCooldownForAbility(AbilityKey ability)
         {
-            AbilityLoadout abilities = GameState.ActivePlayer.AbilityLoadout;
+            AbilityLoadout abilities = GameState.ActivePlayer.Abilities;
             ChampionCosts costs = ChampionInfo.Costs;
             float cdr = GameState.ActivePlayer.Stats.CooldownReduction;
             return ability switch
             {
-                AbilityKey.Q => (int)(costs.Q_Cooldown[abilities.Q_Level-1]
-                                   + costs.Q_Cooldown[abilities.Q_Level - 1] * cdr),
-
-                AbilityKey.W => (int)(costs.W_Cooldown[abilities.W_Level - 1]
-                                    + costs.W_Cooldown[abilities.W_Level - 1] * cdr),
-
-                AbilityKey.E => (int)(costs.E_Cooldown[abilities.E_Level - 1]
-                                    + costs.E_Cooldown[abilities.E_Level - 1] * cdr),
-
-                AbilityKey.R => (int)(costs.R_Cooldown[abilities.R_Level - 1]
-                                    + costs.R_Cooldown[abilities.R_Level - 1] * cdr),
+                AbilityKey.Q => (int)(costs.Q_Cooldown[abilities.Q_Level - 1] * (1 - cdr)),
+                AbilityKey.W => (int)(costs.W_Cooldown[abilities.W_Level - 1] * (1 - cdr)),
+                AbilityKey.E => (int)(costs.E_Cooldown[abilities.E_Level - 1] * (1 - cdr)),
+                AbilityKey.R => (int)(costs.R_Cooldown[abilities.R_Level - 1] * (1 - cdr)),
 
                 _ => 0,
             };
@@ -486,9 +442,9 @@ namespace LedDashboard.Modules.LeagueOfLegends
         protected bool CanCastAbility(AbilityKey spellKey)
         {
             if (GameState.ActivePlayer.IsDead || !AbilityCastModes[spellKey].Castable) return false;
-            if (GameState.ActivePlayer.AbilityLoadout.GetAbilityLevel(spellKey) == 0) return false;
-            if (_AbilitiesOnCooldown[spellKey]) return false;
-            int manaCost = ChampionInfo.Costs.GetManaCost(spellKey, GameState.ActivePlayer.AbilityLoadout.GetAbilityLevel(spellKey));
+            if (GameState.ActivePlayer.Abilities.GetAbilityLevel(spellKey) == 0) return false;
+            if (AbilitiesOnCooldown[spellKey]) return false;
+            int manaCost = ChampionInfo.Costs.GetManaCost(spellKey, GameState.ActivePlayer.Abilities.GetAbilityLevel(spellKey));
             if (GameState.ActivePlayer.Stats.ResourceValue < manaCost)
             {
                 // raise not enough mana event
@@ -512,10 +468,10 @@ namespace LedDashboard.Modules.LeagueOfLegends
             // if this method is called twice (needed for Xerath or others that have different cooldowns on different circumstances), it won't work properly
             Task.Run(async () => 
             {
-                _AbilitiesOnCooldown[ability] = true;
+                AbilitiesOnCooldown[ability] = true;
                 int cd = overrideTime > 0 ? overrideTime : GetCooldownForAbility(ability);
                 await Task.Delay(cd - 350); // a bit less cooldown than the real one (if the user spams)
-                _AbilitiesOnCooldown[ability] = false;
+                AbilitiesOnCooldown[ability] = false;
             });
         }
 

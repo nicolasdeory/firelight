@@ -2,7 +2,6 @@
 using LedDashboard.Modules.Common;
 using LedDashboard.Modules.LeagueOfLegends.ChampionModules.Common;
 using LedDashboard.Modules.LeagueOfLegends.Model;
-using SharpDX.RawInput;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -37,7 +36,7 @@ namespace LedDashboard.Modules.LeagueOfLegends.ChampionModules
 
 
         private AhriModule(int ledCount, GameState gameState, string championName, LightingMode preferredLightMode, AbilityCastPreference preferredCastMode)
-                            : base(ledCount, championName, gameState, preferredLightMode)
+                            : base(ledCount, championName, gameState, preferredLightMode, true)
         {
             // Initialization for the champion module occurs here.
 
@@ -58,16 +57,6 @@ namespace LedDashboard.Modules.LeagueOfLegends.ChampionModules
                 [AbilityKey.R] = AbilityCastMode.Instant(10000,2),
             };
             AbilityCastModes = abilityCastModes;
-
-            // Preload all the animations you'll want to use. MAKE SURE that each animation file
-            // has its Build Action set to "Content" and "Copy to Output Directory" is set to "Always".
-
-            animator.PreloadAnimation(ANIMATION_PATH + "Ahri/q_start.txt");
-            animator.PreloadAnimation(ANIMATION_PATH + "Ahri/q_end.txt");
-            animator.PreloadAnimation(ANIMATION_PATH + "Ahri/w_cast.txt");
-            animator.PreloadAnimation(ANIMATION_PATH + "Ahri/e_cast.txt");
-            animator.PreloadAnimation(ANIMATION_PATH + "Ahri/r_right.txt");
-            animator.PreloadAnimation(ANIMATION_PATH + "Ahri/r_left.txt");
 
             ChampionInfoLoaded += OnChampionInfoLoaded;
         }

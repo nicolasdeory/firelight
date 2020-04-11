@@ -9,13 +9,17 @@ using System.Windows.Forms;
 namespace LedDashboard.Modules.LeagueOfLegends.ChampionModules
 {
     [Champion(CHAMPION_NAME)]
-    class EzrealModule : ChampionModule
+    class JaxModule : ChampionModule
     {
 
-        public const string CHAMPION_NAME = "Ezreal";
+        public const string CHAMPION_NAME = "Jax";
         // Variables
 
         // Champion-specific Variables
+
+        static HSVColor RColor = new HSVColor(0.17f, 0.83f, 0.93f);
+        bool castingE;
+        bool canRecastE;
 
 
         /// <summary>
@@ -25,13 +29,13 @@ namespace LedDashboard.Modules.LeagueOfLegends.ChampionModules
         /// <param name="gameState">Game state data</param>
         /// <param name="preferredLightMode">Preferred light mode</param>
         /// <param name="preferredCastMode">Preferred ability cast mode (Normal, Quick Cast, Quick Cast with Indicator)</param>
-        public static EzrealModule Create(int ledCount, GameState gameState, LightingMode preferredLightMode, AbilityCastPreference preferredCastMode = AbilityCastPreference.Normal)
+        public static JaxModule Create(int ledCount, GameState gameState, LightingMode preferredLightMode, AbilityCastPreference preferredCastMode = AbilityCastPreference.Normal)
         {
-            return new EzrealModule(ledCount, gameState, CHAMPION_NAME, preferredLightMode, preferredCastMode);
+            return new JaxModule(ledCount, gameState, CHAMPION_NAME, preferredLightMode, preferredCastMode);
         }
 
 
-        private EzrealModule(int ledCount, GameState gameState, string championName, LightingMode preferredLightMode, AbilityCastPreference preferredCastMode)
+        private JaxModule(int ledCount, GameState gameState, string championName, LightingMode preferredLightMode, AbilityCastPreference preferredCastMode)
                             : base(ledCount, championName, gameState, preferredLightMode, true)
         {
             // Initialization for the champion module occurs here.
@@ -47,10 +51,10 @@ namespace LedDashboard.Modules.LeagueOfLegends.ChampionModules
             // R -> Instant ability, it is cast the moment the key is pressed, but it can be recast within 2.3s
             Dictionary<AbilityKey, AbilityCastMode> abilityCastModes = new Dictionary<AbilityKey, AbilityCastMode>()
             {
-                [AbilityKey.Q] = AbilityCastMode.Normal(),
-                [AbilityKey.W] = AbilityCastMode.Normal(),
-                [AbilityKey.E] = AbilityCastMode.Normal(),
-                [AbilityKey.R] = AbilityCastMode.Normal(),
+                [AbilityKey.Q] = AbilityCastMode.PointAndClick(),
+                [AbilityKey.W] = AbilityCastMode.Instant(),
+                [AbilityKey.E] = AbilityCastMode.Instant(recastTime: 3000),
+                [AbilityKey.R] = AbilityCastMode.Instant(),
             };
             AbilityCastModes = abilityCastModes;
 
@@ -92,21 +96,17 @@ namespace LedDashboard.Modules.LeagueOfLegends.ChampionModules
 
         private void OnCastQ()
         {
-            Task.Run(async () =>
-            {
-                await Task.Delay(150);
-                _ = animator.RunAnimationOnce(ANIMATION_PATH + "Ezreal/q_cast.txt", timeScale: 0.8f);
-            });
-            
+            animator.RunAnimationOnce(ANIMATION_PATH + "Jax/q_cast.txt", timeScale: 1.7f);
         }
 
         private void OnCastW()
         {
             Task.Run(async () =>
             {
-                await Task.Delay(150);
-                _ = animator.RunAnimationOnce(ANIMATION_PATH + "Ezreal/w_cast.txt");
-            });
+                animator.RunAnimationInLoop(ANIMATION_PATH + "Jax/w_cast_loop.txt", 500);
+                await Task.Delay(500);
+                _ = animator.RunAnimationOnce(ANIMATION_PATH + "Jax/w_cast_end.txt");
+            });        
             
         }
 
@@ -114,21 +114,24 @@ namespace LedDashboard.Modules.LeagueOfLegends.ChampionModules
         {
             Task.Run(async () =>
             {
-                await Task.Delay(250);
-                _ = animator.RunAnimationOnce(ANIMATION_PATH + "Ezreal/e_cast.txt", false, 0.15f);
+                castingE = true;
+                animator.RunAnimationInLoop(ANIMATION_PATH + "Jax/e_cast_loop.txt", 2000, 0.15f);
+                await Task.Delay(1000);
+                canRecastE = true;
+                await Task.Delay(1000);
+                if (castingE)
+                {
+                    _ = animator.RunAnimationOnce(ANIMATION_PATH + "Jax/e_recast_end.txt");
+                    castingE = false;
+                    canRecastE = false;
+                }
             });
             
         }
 
         private void OnCastR()
         {
-            Task.Run(async () =>
-            {
-                await animator.RunAnimationOnce(ANIMATION_PATH + "Ezreal/r_channel.txt", true);
-                await Task.Delay(700);
-                _ = animator.RunAnimationOnce(ANIMATION_PATH + "Ezreal/r_launch.txt", timeScale: 0.7f);
-            });
-
+            animator.ColorBurst(RColor, 0.1f);
         }
 
         /// <summary>
@@ -136,7 +139,16 @@ namespace LedDashboard.Modules.LeagueOfLegends.ChampionModules
         /// </summary>
         private void OnAbilityRecast(object s, AbilityKey key)
         {
-
+            if (key == AbilityKey.E && canRecastE)
+            {
+                Task.Run(async () =>
+                {
+                    castingE = false;
+                    await Task.Delay(200);
+                    _ = animator.RunAnimationOnce(ANIMATION_PATH + "Jax/e_recast_end.txt");
+                });
+                
+            }
         }
 
     }

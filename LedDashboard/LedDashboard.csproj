@@ -39,6 +39,18 @@
     <Content Include="Animations\LeagueOfLegends\Champions\Ahri\w_cast.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Include="Animations\LeagueOfLegends\Champions\Azir\e_cast.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Animations\LeagueOfLegends\Champions\Azir\q_cast.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Animations\LeagueOfLegends\Champions\Azir\r_cast.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Animations\LeagueOfLegends\Champions\Azir\w_cast.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="Animations\LeagueOfLegends\Champions\Ezreal\e_cast.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
@@ -120,33 +132,28 @@
     <Content Include="Animations\Basic\basic1.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="Animations\LeagueOfLegends\Champions\Vel%27Koz\q_recast.txt">
+    <Content Include="Animations\LeagueOfLegends\Champions\Velkoz\q_recast.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="Animations\LeagueOfLegends\Champions\Vel%27Koz\q_start.txt">
+    <Content Include="Animations\LeagueOfLegends\Champions\Velkoz\q_start.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="Animations\LeagueOfLegends\Champions\Vel%27Koz\r_loop.txt">
+    <Content Include="Animations\LeagueOfLegends\Champions\Velkoz\r_loop.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="Animations\LeagueOfLegends\Champions\Vel%27Koz\w_cast.txt">
+    <Content Include="Animations\LeagueOfLegends\Champions\Velkoz\w_cast.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="Animations\LeagueOfLegends\Champions\Vel%27Koz\w_close.txt">
+    <Content Include="Animations\LeagueOfLegends\Champions\Velkoz\w_close.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="ChromaAppInfo.xml" />
-  </ItemGroup>
-  <ItemGroup>
-    <PackageReference Include="Microsoft.CSharp" Version="4.7.0" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Accord" Version="3.8.2-alpha" />
     <PackageReference Include="Accord.Math" Version="3.8.0" />
     <PackageReference Include="ar1st0crat.SciColorMaps.Portable" Version="1.0.2" />
     <PackageReference Include="kadmium-sacn-core" Version="0.0.11" />
-    <PackageReference Include="Microsoft.CSharp" Version="4.5.0" />
-    <PackageReference Include="Microsoft.Win32.Primitives" Version="4.0.1" />
     <PackageReference Include="MouseKeyHook" Version="5.6.0" />
     <PackageReference Include="NAudio" Version="1.10.0" />
     <PackageReference Include="NETStandard.Library" Version="2.0.3" />
@@ -154,18 +161,37 @@
     <PackageReference Include="Numpy" Version="3.7.1.10" />
     <PackageReference Include="ScottPlot" Version="4.0.1" />
     <PackageReference Include="ScottPlot.WinForms" Version="4.0.1" />
-    <PackageReference Include="SharpDX" Version="4.2.0" />
-    <PackageReference Include="SharpDX.RawInput" Version="4.2.0" />
   </ItemGroup>
   <ItemGroup>
     <Compile Remove="KeyboardLayout.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Reference Include="RazerChroma.Net">
-      <HintPath>Lib\RazerChroma.Net.dll</HintPath>
-    </Reference>
-    <Reference Include="RazerChromaFrameEngine">
-      <HintPath>Lib\RazerChromaFrameEngine.dll</HintPath>
-    </Reference>
+    <None Remove="Animations\LeagueOfLegends\Champions\Azir\e_cast.txt" />
+    <None Remove="Animations\LeagueOfLegends\Champions\Azir\q_cast.txt" />
+    <None Remove="Animations\LeagueOfLegends\Champions\Azir\r_cast.txt" />
+    <None Remove="Animations\LeagueOfLegends\Champions\Azir\w_cast.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\ChromaSDK\ChromaSDK.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Update="Animations\LeagueOfLegends\Champions\Jax\e_cast_loop.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Animations\LeagueOfLegends\Champions\Jax\e_recast_end.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Animations\LeagueOfLegends\Champions\Jax\q_cast.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Animations\LeagueOfLegends\Champions\Jax\w_cast_end.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Animations\LeagueOfLegends\Champions\Jax\w_cast_loop.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Lib\CChromaEditorLibrary.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 </Project>

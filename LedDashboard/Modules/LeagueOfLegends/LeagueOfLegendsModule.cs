@@ -1,7 +1,6 @@
 ﻿using LedDashboard.Modules.BasicAnimation;
 using LedDashboard.Modules.LeagueOfLegends.ChampionModules;
 using LedDashboard.Modules.LeagueOfLegends.ChampionModules.Common;
-using LedDashboard.Modules.LeagueOfLegends.HUDModules;
 using LedDashboard.Modules.LeagueOfLegends.ItemModules;
 using LedDashboard.Modules.LeagueOfLegends.Model;
 using Newtonsoft.Json;
@@ -22,6 +21,10 @@ namespace LedDashboard.Modules.LeagueOfLegends
 {
     class LeagueOfLegendsModule : LEDModule
     {
+
+        // Static members
+
+        public static GameState CurrentGameState { get; set; }
 
         // Constants
 
@@ -214,7 +217,6 @@ namespace LedDashboard.Modules.LeagueOfLegends
         /// </summary>
         private async Task QueryPlayerInfo(bool firstTime = false)
         {
-
             string json;
             try
             {
@@ -225,7 +227,7 @@ namespace LedDashboard.Modules.LeagueOfLegends
                 Console.WriteLine("InvalidOperationException: Game client disconnected");
                 throw new InvalidOperationException("Couldn't connect with the game client", e);
             }
-
+            
             var gameData = JsonConvert.DeserializeObject<dynamic>(json);
             gameState.GameEvents = (gameData.events.Events as JArray).ToObject<List<Event>>();
             // Get active player info
@@ -239,8 +241,10 @@ namespace LedDashboard.Modules.LeagueOfLegends
             if (championModule != null) championModule.UpdateGameState(gameState);
             // Update player ability cooldowns
             gameState.PlayerAbilityCooldowns = championModule?.AbilitiesOnCooldown;
+            // Set current game state
+            CurrentGameState = gameState; // This call is possibly not needed because the reference is always the same
             // Get player items
-            //gameState.PlayerItemCooldowns = new bool[7];
+
             foreach (Item item in gameState.PlayerChampion.Items)
             {
                 SetModuleForItem(item);
@@ -401,10 +405,10 @@ namespace LedDashboard.Modules.LeagueOfLegends
                 if (customKillAnimation != null)
                 {
                     animationModule.RunAnimationOnce(customKillAnimation, false, 0.1f).ContinueWith((t) =>
-                      {
-                          CurrentLEDSource = championModule;
-                          customKillAnimation = null;
-                      });
+                    {
+                        CurrentLEDSource = championModule;
+                        customKillAnimation = null;
+                    });
                 }
                 else
                 {
