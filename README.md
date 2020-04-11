@@ -26,6 +26,8 @@ If you play with one of these champions, you will see animations for their abili
 - Udyr
 - Vel'Koz
 - Xerath
+- Azir
+- Jax
 
 ## Usage
 - Download the [latest release](https://github.com/nicolasdeory/leagueoflegends-led/releases)
