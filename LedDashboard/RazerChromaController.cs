@@ -21,6 +21,46 @@ namespace LedDashboard
     class RazerChromaController : LightController
     {
 
+        // Error codes
+        //! Invalid
+        const long RZRESULT_INVALID = -1;
+        //! Success
+        const long RZRESULT_SUCCESS = 0;
+        //! Access denied
+        const long RZRESULT_ACCESS_DENIED = 5;
+        //! Invalid handle
+        const long RZRESULT_INVALID_HANDLE = 6;
+        //! Not supported
+        const long RZRESULT_NOT_SUPPORTED = 50;
+        //! Invalid parameter.
+        const long RZRESULT_INVALID_PARAMETER = 87;
+        //! The service has not been started
+        const long RZRESULT_SERVICE_NOT_ACTIVE = 1062;
+        //! Cannot start more than one instance of the specified program.
+        const long RZRESULT_SINGLE_INSTANCE_APP = 1152;
+        //! Device not connected
+        const long RZRESULT_DEVICE_NOT_CONNECTED = 1167;
+        //! Element not found.
+        const long RZRESULT_NOT_FOUND = 1168;
+        //! Request aborted.
+        const long RZRESULT_REQUEST_ABORTED = 1235;
+        //! An attempt was made to perform an initialization operation when initialization has already been completed.
+        const long RZRESULT_ALREADY_INITIALIZED = 1247;
+        //! Resource not available or disabled
+        const long RZRESULT_RESOURCE_DISABLED = 4309;
+        //! Device not available or supported
+        const long RZRESULT_DEVICE_NOT_AVAILABLE = 4319;
+        //! The group or resource is not in the correct state to perform the requested operation.
+        const long RZRESULT_NOT_VALID_STATE = 5023;
+        //! No more items
+        const long RZRESULT_NO_MORE_ITEMS = 259;
+        //! DLL not found
+        const long RZRESULT_DLL_NOT_FOUND = 6023;
+        //! Invalid signature
+        const long RZRESULT_DLL_INVALID_SIGNATURE = 6033;
+        //! General failure.
+        const long RZRESULT_FAILED = 2147500037;
+
         private int baseKeyboardAnim;
         private static int MAX_KEYBOARD_COLS = ChromaAnimationAPI.GetMaxColumn((int)ChromaAnimationAPI.Device2D.Keyboard);
         private static int MAX_KEYBOARD_ROWS = ChromaAnimationAPI.GetMaxRow((int)ChromaAnimationAPI.Device2D.Keyboard);
@@ -51,7 +91,17 @@ namespace LedDashboard
             }
             catch (Exception e)
             {
-                MessageBox.Show("Error initializing Razer Chroma controller. Is Razer Synapse installed? Status=" + status);
+                string errorString = "Please make sure that Razer Synapse 3 is installed and updated to the latest version.";
+                switch((long)status)
+                {
+                    case RZRESULT_DLL_NOT_FOUND:
+                        errorString = "Couldn't find Chroma SDK. This is usually caused because Razer Synapse 3 is not installed or updated to the latest version.";
+                        break;
+                    case RZRESULT_SERVICE_NOT_ACTIVE:
+                        errorString = "The Chroma SDK service is not active. This is usually caused because Razer Synapse VERSION 3 is not installed or updated to the latest version.";
+                        break;
+                }
+                MessageBox.Show("Error initializing Razer Chroma controller. Status=" + status + "\n" + errorString);
                 throw new InvalidOperationException("Error initializing Razer Chroma controller. Is Razer Synapse installed?", e);
             }
             baseKeyboardAnim = ChromaAnimationAPI.CreateAnimationInMemory((int)ChromaAnimationAPI.DeviceType.DE_2D, (int)ChromaAnimationAPI.Device2D.Keyboard);
