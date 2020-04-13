@@ -12,8 +12,8 @@ namespace LedDashboard.Modules.LeagueOfLegends.ItemModules
     [Item(ITEM_ID)]
     class OracleLensModule : ItemModule
     {
-
         public const int ITEM_ID = 3364;
+        public const string ITEM_NAME = "OracleLens";
 
         // Variables
 
@@ -32,57 +32,33 @@ namespace LedDashboard.Modules.LeagueOfLegends.ItemModules
             return new OracleLensModule(ledCount, gameState, ITEM_ID, itemSlot, preferredLightMode, preferredCastMode);
         }
 
-
         private OracleLensModule(int ledCount, GameState gameState, int itemID, int itemSlot, LightingMode preferredLightMode, AbilityCastPreference preferredCastMode)
-                            : base(itemID, itemSlot, gameState, preferredLightMode)
+            : base(ledCount, itemID, ITEM_NAME, itemSlot, gameState, preferredLightMode, preferredCastMode, true)
         {
             // Initialization for the item module occurs here.
-
-            // Set preferred cast mode. It's a player choice (Quick cast, Quick cast with indicator, or Normal cast)
-            PreferredCastMode = preferredCastMode;
-
-            ItemCast += OnItemActivated;
-            GameStateUpdated += OnGameStateUpdated;
-            // Set item cast mode.
-            // For Oracle Lens, for example:
-            // It's Instant Cast (press it, and the trinket activates)
-            // For a ward, it's normal cast (press & click)
-            ItemCastMode = AbilityCastMode.Instant();
-
-            // Preload all the animations you'll want to use. MAKE SURE that each animation file
-            // has its Build Action set to "Content" and "Copy to Output Directory" is set to "Always".
-
-            animator = AnimationModule.Create(ledCount);
-            animator.NewFrameReady += (_, ls, mode) => DispatchNewFrame(ls, mode);
-
-            animator.PreloadAnimation(ITEM_ANIMATION_PATH + "OracleLens/activation.txt");
-
         }
 
-        private void OnItemActivated(object s, EventArgs e)
+        protected override AbilityCastMode GetItemCastMode() => AbilityCastMode.Instant();
+
+        protected override void OnItemActivated(object s, EventArgs e)
         {
             if (ItemCooldownController.IsOnCooldown(ITEM_ID)) return; // If the item is on cooldown, nothing to do here.
             // Play relevant animations here
-            animator.RunAnimationInLoop(ITEM_ANIMATION_PATH + "OracleLens/activation.txt", 8500);
+            RunAnimationInLoop("activation", 8500);
 
-            double avgChampLevel = ItemCooldownController.GetAverageChampionLevel(GameState);
+            double avgChampLevel = GameState.AverageChampionLevel;
             ItemCooldownController.SetCooldown(ITEM_ID, GetCooldownDuration(avgChampLevel));
             ItemCooldownController.SetCooldown(FarsightAlterationModule.ITEM_ID, 
-                                                FarsightAlterationModule.GetCooldownDuration(avgChampLevel));
+                                               FarsightAlterationModule.GetCooldownDuration(avgChampLevel));
         }
 
-        private void OnGameStateUpdated(GameState state) // TODO: Handle when player buys a different trinket and cooldown gets transferred over
+        protected override void OnGameStateUpdated(GameState state) // TODO: Handle when player buys a different trinket and cooldown gets transferred over
         {
             // Normally you wouldn't need to do this, but since some trinket cooldowns depend on
             // average champion level, we need to contemplate this.
-            double averageLevel = state.Champions.Select(x => x.Level).Average();
-            CooldownDuration = (int)((91.765 - 1.765 * averageLevel) * 1000);
+            CooldownDuration = GetCooldownDuration(state.AverageChampionLevel);
         }
 
-        public static int GetCooldownDuration(double averageLevel)
-        {
-            return (int)((91.765 - 1.765 * averageLevel) * 1000);
-        }
-
+        public static int GetCooldownDuration(double averageLevel) => GetCooldownDuration(91.765, 1.765, averageLevel);
     }
 }

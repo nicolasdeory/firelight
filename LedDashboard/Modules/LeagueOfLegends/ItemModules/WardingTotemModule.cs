@@ -12,8 +12,8 @@ namespace LedDashboard.Modules.LeagueOfLegends.ItemModules
     [Item(ITEM_ID)]
     class WardingTotemModule : ItemModule
     {
-
         public const int ITEM_ID = 3340;
+        public const string ITEM_NAME = "WardingTotem";
 
 
         // Variables
@@ -35,41 +35,22 @@ namespace LedDashboard.Modules.LeagueOfLegends.ItemModules
             return new WardingTotemModule(ledCount, gameState, ITEM_ID, itemSlot, preferredLightMode, preferredCastMode);
         }
 
-
         private WardingTotemModule(int ledCount, GameState gameState, int itemID, int itemSlot, LightingMode preferredLightMode, AbilityCastPreference preferredCastMode)
-                            : base(itemID, itemSlot, gameState, preferredLightMode)
+            : base(ledCount, itemID, ITEM_NAME, itemSlot, gameState, preferredLightMode, preferredCastMode, true)
         {
             // Initialization for the item module occurs here.
 
-            // Set preferred cast mode. It's a player choice (Quick cast, Quick cast with indicator, or Normal cast)
-            PreferredCastMode = preferredCastMode;
-
-            ItemCast += OnItemActivated;
-            /*GameStateUpdated += OnGameStateUpdated;
-            OnGameStateUpdated(gameState);*/
-
-            // Set item cast mode.
-            // For Oracle Lens, for example:
-            // It's Instant Cast (press it, and the trinket activates)
-            // For a ward, it's normal cast (press & click)
-            ItemCastMode = AbilityCastMode.Normal();
-
             // TODO: This is because of a game bug, IT WILL GET FIXED and this will have to be changed
-            ItemCooldownController.SetCooldown(this.ItemID, GetCooldownPerCharge(gameState));
-
-            // Preload all the animations you'll want to use. MAKE SURE that each animation file
-            // has its Build Action set to "Content" and "Copy to Output Directory" is set to "Always".
-
-            animator = AnimationModule.Create(ledCount);
-            animator.NewFrameReady += (_, ls, mode) => DispatchNewFrame(ls, mode);
-
+            ItemCooldownController.SetCooldown(this.ItemID, GetCooldownPerCharge());
         }
 
-        private void OnItemActivated(object s, EventArgs e)
+        protected override AbilityCastMode GetItemCastMode() => AbilityCastMode.Normal();
+
+        protected override void OnItemActivated(object s, EventArgs e)
         {
             int wardCharges = 0;
             int cd = ItemCooldownController.GetCooldownRemaining(this.ItemID);
-            int cdpercharge = GetCooldownPerCharge(GameState);
+            int cdpercharge = GetCooldownPerCharge();
             int rechargedSecondCharge = -1;
             if (cd > cdpercharge)
                 wardCharges = 0;
@@ -77,7 +58,8 @@ namespace LedDashboard.Modules.LeagueOfLegends.ItemModules
             {
                 wardCharges = 1;
                 rechargedSecondCharge = cdpercharge - cd;
-            } else
+            }
+            else
             {
                 wardCharges = 2;
             }
@@ -86,7 +68,7 @@ namespace LedDashboard.Modules.LeagueOfLegends.ItemModules
             {
                 if (wardCharges > 1)
                 {
-                    ItemCooldownController.SetCooldown(ITEM_ID, GetCooldownPerCharge(GameState) + 1800); // Warding small 2s cooldown
+                    ItemCooldownController.SetCooldown(ITEM_ID, GetCooldownPerCharge() + 1800); // Warding small 2s cooldown
                 }
                 else
                 {
@@ -95,29 +77,25 @@ namespace LedDashboard.Modules.LeagueOfLegends.ItemModules
                     ItemCooldownController // this trinket affects the other trinket cooldowns
                         .SetCooldown(
                                         FarsightAlterationModule.ITEM_ID,
-                                        FarsightAlterationModule.GetCooldownDuration(ItemCooldownController.GetAverageChampionLevel(GameState)) - rechargedSecondCharge - 100);
+                                        FarsightAlterationModule.GetCooldownDuration(GameState.AverageChampionLevel) - rechargedSecondCharge - 100);
                     ItemCooldownController
                         .SetCooldown(
                                         OracleLensModule.ITEM_ID,
-                                        OracleLensModule.GetCooldownDuration(ItemCooldownController.GetAverageChampionLevel(GameState)) - rechargedSecondCharge - 100);
+                                        OracleLensModule.GetCooldownDuration(GameState.AverageChampionLevel) - rechargedSecondCharge - 100);
 
                     //CooldownDuration = cooldownPerCharge - 100; // substract some duration to account for other delays;
                 }
             }
-            
         }
 
-        public bool HasCharge => ItemCooldownController.GetCooldownRemaining(ITEM_ID) < GetCooldownPerCharge(GameState);
+        public bool HasCharge => ItemCooldownController.GetCooldownRemaining(ITEM_ID) < GetCooldownPerCharge();
 
-        private int GetCooldownPerCharge(GameState state)
+        private int GetCooldownPerCharge()
         {
-            return GetCooldownDuration(ItemCooldownController.GetAverageChampionLevel(state));
+            return GetCooldownDuration(GameState.AverageChampionLevel);
         }
 
-        public static int GetCooldownDuration(double averageLevel)
-        {
-            return (int)(((247.059 - 7.059 * averageLevel) * 1000));
-        }
+        public static int GetCooldownDuration(double averageLevel) => GetCooldownDuration(247.059, 7.059, averageLevel);
 
         public static WardingTotemModule Current { get; set; } // HACK: Access to current instance
     }

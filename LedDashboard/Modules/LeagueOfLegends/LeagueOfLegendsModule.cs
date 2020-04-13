@@ -161,7 +161,7 @@ namespace LedDashboard.Modules.LeagueOfLegends
             await QueryPlayerInfo(true);
 
             // Set trinket initial cooldowns
-            double avgChampLevel = ItemCooldownController.GetAverageChampionLevel(this.gameState);
+            double avgChampLevel = gameState.AverageChampionLevel;
             // note: this assumes the program is run BEFORE the game starts, or else it won't be very accurate.
             ItemCooldownController.SetCooldown(OracleLensModule.ITEM_ID, OracleLensModule.GetCooldownDuration(avgChampLevel)); 
             ItemCooldownController.SetCooldown(FarsightAlterationModule.ITEM_ID, FarsightAlterationModule.GetCooldownDuration(avgChampLevel));
@@ -338,8 +338,6 @@ namespace LedDashboard.Modules.LeagueOfLegends
             {
                 if (gameState.GameEvents.Count > 0)
                     currentGameTimestamp = gameState.GameEvents.Last().EventTime;
-                else
-                    currentGameTimestamp = 0;
 
                 return;
             }

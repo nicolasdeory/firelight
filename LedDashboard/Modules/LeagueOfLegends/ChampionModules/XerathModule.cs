@@ -43,24 +43,12 @@ namespace LedDashboard.Modules.LeagueOfLegends.ChampionModules
             : base(ledCount, championName, gameState, preferredLightMode, preferredCastMode, true)
         {
             // Initialization for the champion module occurs here.
-
-            // Set cast modes for abilities.
-            // For Vel'Koz, for example:
-            // Q -> Normal ability, but it can be recast within 1.15s
-            // W -> Normal ability
-            // E -> Normal ability
-            // R -> Instant ability, it is cast the moment the key is pressed, but it can be recast within 2.3s
-            Dictionary<AbilityKey, AbilityCastMode> abilityCastModes = new Dictionary<AbilityKey, AbilityCastMode>()
-            {
-                [AbilityKey.Q] = AbilityCastMode.Instant(3500, 1, AbilityCastMode.KeyUpRecast()),
-                [AbilityKey.W] = AbilityCastMode.Normal(),
-                [AbilityKey.E] = AbilityCastMode.Normal(),
-                [AbilityKey.R] = AbilityCastMode.Instant(10000,3,AbilityCastMode.Instant()), // TODO: Handle levels! Recast number changes
-            };
-            AbilityCastModes = abilityCastModes;
-
-            GameStateUpdated += OnGameStateUpdated;
         }
+
+        protected override AbilityCastMode GetQCastMode() => AbilityCastMode.Instant(3500, 1, AbilityCastMode.KeyUpRecast());
+        protected override AbilityCastMode GetWCastMode() => AbilityCastMode.Normal();
+        protected override AbilityCastMode GetECastMode() => AbilityCastMode.Normal();
+        protected override AbilityCastMode GetRCastMode() => AbilityCastMode.Instant(10000, 3, AbilityCastMode.Instant());
 
         /// <summary>
         /// Called when the champion info has been retrieved.
@@ -100,7 +88,7 @@ namespace LedDashboard.Modules.LeagueOfLegends.ChampionModules
             castingQ = true;
             await RunAnimationOnce("q_charge", true, timeScale: 0.3f);
             if (castingQ) // we need to check again after playing last anim
-                await animator.HoldColor(BlueExplodeColor, 1500);
+                await Animator.HoldColor(BlueExplodeColor, 1500);
             if (castingQ)
             {
                 RunAnimationOnce("q_retract", timeScale: 0.6f);
@@ -112,7 +100,7 @@ namespace LedDashboard.Modules.LeagueOfLegends.ChampionModules
             await Task.Delay(100);
             RunAnimationInLoop("w_cast", 1000, timeScale: 1f);
             await Task.Delay(1000);
-            animator.ColorBurst(HSVColor.White);
+            Animator.ColorBurst(HSVColor.White);
         }
         protected override async Task OnCastE()
         {
@@ -126,7 +114,7 @@ namespace LedDashboard.Modules.LeagueOfLegends.ChampionModules
             await Task.Delay(500);
             if (chargesRemaining == 3)
             {
-                animator.HoldColor(HSVColor.White, 10000);
+                Animator.HoldColor(HSVColor.White, 10000);
             }
         }
 
@@ -138,7 +126,7 @@ namespace LedDashboard.Modules.LeagueOfLegends.ChampionModules
                 
             if (chargesRemaining > 0)
             {
-                animator.StopCurrentAnimation();
+                Animator.StopCurrentAnimation();
             }
             chargesRemaining = 0;
         }
@@ -148,7 +136,7 @@ namespace LedDashboard.Modules.LeagueOfLegends.ChampionModules
             castingQ = false;
             await RunAnimationOnce("q_retract", timeScale: 0.6f);
             await Task.Delay(300);
-            animator.ColorBurst(BlueExplodeColor);
+            Animator.ColorBurst(BlueExplodeColor);
         }
         protected override async Task OnRecastR()
         {
@@ -164,15 +152,15 @@ namespace LedDashboard.Modules.LeagueOfLegends.ChampionModules
             if (chargesRemaining > 0)
             {
                 int previousCharges = chargesRemaining;
-                await animator.ColorBurst(BlueExplodeColor, 0.15f, HSVColor.White);
+                await Animator.ColorBurst(BlueExplodeColor, 0.15f, HSVColor.White);
                 if (previousCharges == chargesRemaining)
                 {
-                    animator.HoldColor(HSVColor.White, rTimeRemaining);
+                    Animator.HoldColor(HSVColor.White, rTimeRemaining);
                 }
             }
             else if (chargesRemaining == 0)
             {
-                await animator.ColorBurst(BlueExplodeColor, 0.10f);
+                await Animator.ColorBurst(BlueExplodeColor, 0.10f);
             }
         }
     }

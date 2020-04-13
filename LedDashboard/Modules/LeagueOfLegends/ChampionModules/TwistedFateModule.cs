@@ -33,19 +33,9 @@ namespace LedDashboard.Modules.LeagueOfLegends.ChampionModules
 
 
         private TwistedFateModule(int ledCount, GameState gameState, string championName, LightingMode preferredLightMode, AbilityCastPreference preferredCastMode)
-            : base(ledCount, championName, gameState, preferredLightMode, preferredCastMode, true)
+            : base(ledCount, championName, gameState, preferredLightMode, preferredCastMode)
         {
             // Initialization for the champion module occurs here.
-
-            // Set cast modes for abilities.
-            Dictionary<AbilityKey, AbilityCastMode> abilityCastModes = new Dictionary<AbilityKey, AbilityCastMode>()
-            {
-                [AbilityKey.Q] = AbilityCastMode.Normal(),
-                [AbilityKey.W] = AbilityCastMode.Instant(6000,1),
-                [AbilityKey.E] = AbilityCastMode.UnCastable(),
-                [AbilityKey.R] = AbilityCastMode.Instant(6000,1,AbilityCastMode.Normal()),
-            };
-            AbilityCastModes = abilityCastModes;
 
             // Preload all the animations you'll want to use. MAKE SURE that each animation file
             // has its Build Action set to "Content" and "Copy to Output Directory" is set to "Always".
@@ -53,6 +43,11 @@ namespace LedDashboard.Modules.LeagueOfLegends.ChampionModules
             PreloadAnimation("w_loop.txt");
             PreloadAnimation("r_cast.txt");
         }
+
+        protected override AbilityCastMode GetQCastMode() => AbilityCastMode.Normal();
+        protected override AbilityCastMode GetWCastMode() => AbilityCastMode.Instant(6000, 1);
+        protected override AbilityCastMode GetECastMode() => AbilityCastMode.UnCastable();
+        protected override AbilityCastMode GetRCastMode() => AbilityCastMode.Instant(6000, 1, AbilityCastMode.Normal());
 
         protected override async Task OnCastQ()
         {
@@ -69,13 +64,13 @@ namespace LedDashboard.Modules.LeagueOfLegends.ChampionModules
         }
         protected override async Task OnCastR()
         {
-            await animator.ColorBurst(RColor, 0.05f, RColor2);
+            await Animator.ColorBurst(RColor, 0.05f, RColor2);
         }
 
         protected override async Task OnRecastW()
         {
-            animator.StopCurrentAnimation();
-            animator.ColorBurst(new HSVColor(0, 0, 1));
+            Animator.StopCurrentAnimation();
+            Animator.ColorBurst(new HSVColor(0, 0, 1));
         }
         protected override async Task OnRecastR()
         {
@@ -83,12 +78,12 @@ namespace LedDashboard.Modules.LeagueOfLegends.ChampionModules
             {
                 RunAnimationOnce("r_cast", fadeOutAfterRate: 0.1f, timeScale: 0.22f);
                 await Task.Delay(300);
-                animator.ColorBurst(new HSVColor(0, 0, 1), 0.08f);
+                Animator.ColorBurst(new HSVColor(0, 0, 1), 0.08f);
             }
             else
             {
                 RunAnimationOnce("r_cast_line", true, timeScale: 0.3f);
-                await animator.ColorBurst(new HSVColor(0, 0, 1));
+                await Animator.ColorBurst(new HSVColor(0, 0, 1));
             }
         }
     }

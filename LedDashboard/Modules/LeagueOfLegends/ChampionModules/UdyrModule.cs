@@ -41,42 +41,28 @@ namespace LedDashboard.Modules.LeagueOfLegends.ChampionModules
             : base(ledCount, championName, gameState, preferredLightMode, preferredCastMode)
         {
             // Initialization for the champion module occurs here.
-
-            // Set cast modes for abilities.
-            // For Vel'Koz, for example:
-            // Q -> Normal ability, but it can be recast within 1.15s
-            // W -> Normal ability
-            // E -> Normal ability
-            // R -> Instant ability, it is cast the moment the key is pressed, but it can be recast within 2.3s
-            Dictionary<AbilityKey, AbilityCastMode> abilityCastModes = new Dictionary<AbilityKey, AbilityCastMode>()
-            {
-                [AbilityKey.Q] = AbilityCastMode.Instant(),
-                [AbilityKey.W] = AbilityCastMode.Instant(),
-                [AbilityKey.E] = AbilityCastMode.Instant(),
-                [AbilityKey.R] = AbilityCastMode.Instant(),
-            };
-            AbilityCastModes = abilityCastModes;
-
-            // Preload all the animations you'll want to use. MAKE SURE that each animation file
-            // has its Build Action set to "Content" and "Copy to Output Directory" is set to "Always".
-
         }
+
+        protected override AbilityCastMode GetQCastMode() => AbilityCastMode.Instant();
+        protected override AbilityCastMode GetWCastMode() => AbilityCastMode.Instant();
+        protected override AbilityCastMode GetECastMode() => AbilityCastMode.Instant();
+        protected override AbilityCastMode GetRCastMode() => AbilityCastMode.Instant();
 
         protected override async Task OnCastQ()
         {
-            animator.ColorBurst(QColor);
+            Animator.ColorBurst(QColor);
         }
         protected override async Task OnCastW()
         {
-            animator.ColorBurst(WColor);
+            Animator.ColorBurst(WColor);
         }
         protected override async Task OnCastE()
         {
-            animator.ColorBurst(EColor);
+            Animator.ColorBurst(EColor);
         }
         protected override async Task OnCastR()
         {
-            animator.ColorBurst(RColor);
+            Animator.ColorBurst(RColor);
         }
     }
 }

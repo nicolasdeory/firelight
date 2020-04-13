@@ -40,22 +40,12 @@ namespace LedDashboard.Modules.LeagueOfLegends.ChampionModules
             : base(ledCount, championName, gameState, preferredLightMode, preferredCastMode, true)
         {
             // Initialization for the champion module occurs here.
-
-            // Set cast modes for abilities.
-            // For Vel'Koz, for example:
-            // Q -> Normal ability, but it can be recast within 1.15s
-            // W -> Normal ability
-            // E -> Normal ability
-            // R -> Instant ability, it is cast the moment the key is pressed, but it can be recast within 2.3s
-            Dictionary<AbilityKey, AbilityCastMode> abilityCastModes = new Dictionary<AbilityKey, AbilityCastMode>()
-            {
-                [AbilityKey.Q] = AbilityCastMode.Normal(),
-                [AbilityKey.W] = AbilityCastMode.Instant(),
-                [AbilityKey.E] = AbilityCastMode.Normal(),
-                [AbilityKey.R] = AbilityCastMode.Instant(10000,2),
-            };
-            AbilityCastModes = abilityCastModes;
         }
+
+        protected override AbilityCastMode GetQCastMode() => AbilityCastMode.Normal();
+        protected override AbilityCastMode GetWCastMode() => AbilityCastMode.Instant();
+        protected override AbilityCastMode GetECastMode() => AbilityCastMode.Normal();
+        protected override AbilityCastMode GetRCastMode() => AbilityCastMode.Instant(10000, 2);
 
         protected override async Task OnCastQ()
         {
