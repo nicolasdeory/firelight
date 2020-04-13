@@ -7,18 +7,13 @@ using System.Threading.Tasks;
 namespace LedDashboard.Modules.LeagueOfLegends
 {
     [System.AttributeUsage(AttributeTargets.Class, Inherited = false, AllowMultiple = true)]
-    sealed class ChampionAttribute : Attribute
+    public sealed class ChampionAttribute : Attribute
     {
-        readonly string _championName;
+        public string ChampionName { get; }
 
         public ChampionAttribute(string name)
         {
-            this._championName = name;
-        }
-
-        public string ChampionName
-        {
-            get { return _championName; }
+            ChampionName = name;
         }
     }
 }

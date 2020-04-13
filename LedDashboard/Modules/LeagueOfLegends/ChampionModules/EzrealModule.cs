@@ -32,112 +32,36 @@ namespace LedDashboard.Modules.LeagueOfLegends.ChampionModules
 
 
         private EzrealModule(int ledCount, GameState gameState, string championName, LightingMode preferredLightMode, AbilityCastPreference preferredCastMode)
-                            : base(ledCount, championName, gameState, preferredLightMode, true)
+            : base(ledCount, championName, gameState, preferredLightMode, preferredCastMode, true)
         {
             // Initialization for the champion module occurs here.
-
-            // Set preferred cast mode. It's a player choice (Quick cast, Quick cast with indicator, or Normal cast)
-            PreferredCastMode = preferredCastMode;
-
-            // Set cast modes for abilities.
-            // For Vel'Koz, for example:
-            // Q -> Normal ability, but it can be recast within 1.15s
-            // W -> Normal ability
-            // E -> Normal ability
-            // R -> Instant ability, it is cast the moment the key is pressed, but it can be recast within 2.3s
-            Dictionary<AbilityKey, AbilityCastMode> abilityCastModes = new Dictionary<AbilityKey, AbilityCastMode>()
-            {
-                [AbilityKey.Q] = AbilityCastMode.Normal(),
-                [AbilityKey.W] = AbilityCastMode.Normal(),
-                [AbilityKey.E] = AbilityCastMode.Normal(),
-                [AbilityKey.R] = AbilityCastMode.Normal(),
-            };
-            AbilityCastModes = abilityCastModes;
-
-            ChampionInfoLoaded += OnChampionInfoLoaded;
         }
 
-        /// <summary>
-        /// Called when the champion info has been retrieved.
-        /// </summary>
-        private void OnChampionInfoLoaded(ChampionAttributes champInfo)
+        protected override AbilityCastMode GetQCastMode() => AbilityCastMode.Normal();
+        protected override AbilityCastMode GetWCastMode() => AbilityCastMode.Normal();
+        protected override AbilityCastMode GetECastMode() => AbilityCastMode.Normal();
+        protected override AbilityCastMode GetRCastMode() => AbilityCastMode.Normal();
+
+        protected override async Task OnCastQ()
         {
-            animator.NewFrameReady += (_, ls, mode) => DispatchNewFrame(ls, mode);
-            AbilityCast += OnAbilityCast;
-            AbilityRecast += OnAbilityRecast;
+            await Task.Delay(150);
+            await RunAnimationOnce("q_cast", timeScale: 0.8f);
         }
-
-        /// <summary>
-        /// Called when an ability is cast.
-        /// </summary>
-        private void OnAbilityCast(object s, AbilityKey key)
+        protected override async Task OnCastW()
         {
-            if (key == AbilityKey.Q)
-            {
-                OnCastQ();
-            }
-            if (key == AbilityKey.W)
-            {
-                OnCastW();
-            }
-            if (key == AbilityKey.E)
-            {
-                OnCastE();
-            }
-            if (key == AbilityKey.R)
-            {
-                OnCastR();
-            }
+            await Task.Delay(150);
+            await RunAnimationOnce("w_cast");
         }
-
-        private void OnCastQ()
+        protected override async Task OnCastE()
         {
-            Task.Run(async () =>
-            {
-                await Task.Delay(150);
-                _ = animator.RunAnimationOnce(ANIMATION_PATH + "Ezreal/q_cast.txt", timeScale: 0.8f);
-            });
-            
+            await Task.Delay(250);
+            await RunAnimationOnce("e_cast", false, 0.15f);
         }
-
-        private void OnCastW()
+        protected override async Task OnCastR()
         {
-            Task.Run(async () =>
-            {
-                await Task.Delay(150);
-                _ = animator.RunAnimationOnce(ANIMATION_PATH + "Ezreal/w_cast.txt");
-            });
-            
+            await RunAnimationOnce("r_channel", true);
+            await Task.Delay(700);
+            await RunAnimationOnce("r_launch", timeScale: 0.7f);
         }
-
-        private void OnCastE()
-        {
-            Task.Run(async () =>
-            {
-                await Task.Delay(250);
-                _ = animator.RunAnimationOnce(ANIMATION_PATH + "Ezreal/e_cast.txt", false, 0.15f);
-            });
-            
-        }
-
-        private void OnCastR()
-        {
-            Task.Run(async () =>
-            {
-                await animator.RunAnimationOnce(ANIMATION_PATH + "Ezreal/r_channel.txt", true);
-                await Task.Delay(700);
-                _ = animator.RunAnimationOnce(ANIMATION_PATH + "Ezreal/r_launch.txt", timeScale: 0.7f);
-            });
-
-        }
-
-        /// <summary>
-        /// Called when an ability is casted again (few champions have abilities that can be recast, only those with special abilities such as Vel'Koz or Zoes Q)
-        /// </summary>
-        private void OnAbilityRecast(object s, AbilityKey key)
-        {
-
-        }
-
     }
 }

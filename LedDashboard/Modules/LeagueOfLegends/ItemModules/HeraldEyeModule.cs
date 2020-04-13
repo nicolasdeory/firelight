@@ -12,8 +12,8 @@ namespace LedDashboard.Modules.LeagueOfLegends.ItemModules
     [Item(ITEM_ID)]
     class HeraldEyeModule : ItemModule
     {
-
         public const int ITEM_ID = 3513;
+        public const string ITEM_NAME = "HeraldEye";
 
         // Variables
 
@@ -35,55 +35,33 @@ namespace LedDashboard.Modules.LeagueOfLegends.ItemModules
             return new HeraldEyeModule(ledCount, gameState, ITEM_ID, itemSlot, preferredLightMode, preferredCastMode);
         }
 
-
         private HeraldEyeModule(int ledCount, GameState gameState, int itemID, int itemSlot, LightingMode preferredLightMode, AbilityCastPreference preferredCastMode)
-                            : base(itemID, itemSlot, gameState, preferredLightMode)
+            : base(ledCount, itemID, ITEM_NAME, itemSlot, gameState, preferredLightMode, preferredCastMode, true)
         {
             // Initialization for the item module occurs here.
 
-            PreferredCastMode = preferredCastMode;
-
-            ItemCast += OnItemActivated;
-            GameStateUpdated += OnGameStateUpdated;
-
-            ItemCastMode = AbilityCastMode.Instant();
-
             ItemCooldownController.SetCooldown(ITEM_ID, 240000);
-
-            // Preload all the animations you'll want to use. MAKE SURE that each animation file
-            // has its Build Action set to "Content" and "Copy to Output Directory" is set to "Always".
-
-            animator = AnimationModule.Create(ledCount);
-            animator.NewFrameReady += (_, ls, mode) => DispatchNewFrame(ls, mode);
-
-            animator.PreloadAnimation(ITEM_ANIMATION_PATH + "HeraldEye/anim_1.txt");
-            animator.PreloadAnimation(ITEM_ANIMATION_PATH + "HeraldEye/anim_2.txt");
-            animator.PreloadAnimation(ITEM_ANIMATION_PATH + "HeraldEye/anim_3.txt");
-            animator.PreloadAnimation(ITEM_ANIMATION_PATH + "HeraldEye/anim_4.txt");
-
-            
-
         }
 
-        private void OnItemActivated(object s, EventArgs e)
-        {
+        protected override AbilityCastMode GetItemCastMode() => AbilityCastMode.Instant();
 
+        protected override void OnItemActivated(object s, EventArgs e)
+        {
             // Play relevant animations here
             wasCast = true;
             Task.Run(async () =>
             {
-                await animator.RunAnimationOnce(ITEM_ANIMATION_PATH + "HeraldEye/anim_1.txt", true);
+                await RunAnimationOnce("anim_1", true);
                 await Task.Delay(1200);
-                await animator.RunAnimationOnce(ITEM_ANIMATION_PATH + "HeraldEye/anim_2.txt", true);
+                await RunAnimationOnce("anim_2", true);
                 await Task.Delay(1200);
-                await animator.RunAnimationOnce(ITEM_ANIMATION_PATH + "HeraldEye/anim_3.txt", true);
+                await RunAnimationOnce("anim_3", true);
                 await Task.Delay(1600);
-                await animator.RunAnimationOnce(ITEM_ANIMATION_PATH + "HeraldEye/anim_4.txt",false, 0.08f);
+                await RunAnimationOnce("anim_4", false, 0.08f);
             });
-
         }
 
-        private void OnGameStateUpdated(GameState state) // TODO: Handle when player buys a different trinket and cooldown gets transferred over
+        protected override void OnGameStateUpdated(GameState state) // TODO: Handle when player buys a different trinket and cooldown gets transferred over
         {
             // Check the cooldown
             if (ItemCooldownController.GetCooldownRemaining(ITEM_ID) < 30000 && !didWarning)
@@ -94,15 +72,16 @@ namespace LedDashboard.Modules.LeagueOfLegends.ItemModules
                 {
                     for (int i = 0; i < 3; i++)
                     {
-                        if (wasCast) return;
-                        await animator.HoldColor(PurpleColor, 300);
-                        if (wasCast) return;
-                        animator.StopCurrentAnimation();
+                        if (wasCast)
+                            return;
+                        await Animator.HoldColor(PurpleColor, 300);
+                        if (wasCast)
+                            return;
+                        Animator.StopCurrentAnimation();
                         await Task.Delay(300);
                     }
                 }); 
             }
         }
-
     }
 }

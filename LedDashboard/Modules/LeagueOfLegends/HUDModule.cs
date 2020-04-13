@@ -87,7 +87,8 @@ namespace LedDashboard.Modules.LeagueOfLegends
                 {
                     leds[k].SetBlack();
                 }
-            } else
+            }
+            else
             {
                 HSVColor col = HSVColor.Black;
                 if (trinket.ItemID == WardingTotemModule.ITEM_ID)
@@ -137,7 +138,8 @@ namespace LedDashboard.Modules.LeagueOfLegends
                     {
                         foreach (int idx in ledsToTurnOn.Where(x => x != -1))
                         {
-                            if (alreadyTouchedLeds.Contains(idx)) continue;
+                            if (alreadyTouchedLeds.Contains(idx))
+                                continue;
                             leds[idx].MixNewColor(HealthColor, true, 0.2f);
                         }
                     }
@@ -145,7 +147,8 @@ namespace LedDashboard.Modules.LeagueOfLegends
                     {
                         foreach (int idx in ledsToTurnOn.Where(x => x != -1))
                         {
-                            if (alreadyTouchedLeds.Contains(idx)) continue;
+                            if (alreadyTouchedLeds.Contains(idx))
+                                continue;
                             if (leds[idx].color.AlmostEqual(HealthColor))
                             {
                                 leds[idx].Color(HurtColor);
@@ -179,7 +182,6 @@ namespace LedDashboard.Modules.LeagueOfLegends
                             leds[i].FadeToBlackBy(0.05f);
                         }
                     }
-
                 }
             }
         }

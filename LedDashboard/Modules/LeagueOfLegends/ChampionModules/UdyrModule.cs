@@ -37,98 +37,31 @@ namespace LedDashboard.Modules.LeagueOfLegends.ChampionModules
 
 
         private UdyrModule(int ledCount, GameState gameState, string championName, LightingMode preferredLightMode, AbilityCastPreference preferredCastMode)
-                            : base(ledCount, championName, gameState, preferredLightMode)
+            : base(ledCount, championName, gameState, preferredLightMode, preferredCastMode)
         {
             // Initialization for the champion module occurs here.
-
-            // Set preferred cast mode. It's a player choice (Quick cast, Quick cast with indicator, or Normal cast)
-            PreferredCastMode = preferredCastMode;
-
-            // Set cast modes for abilities.
-            // For Vel'Koz, for example:
-            // Q -> Normal ability, but it can be recast within 1.15s
-            // W -> Normal ability
-            // E -> Normal ability
-            // R -> Instant ability, it is cast the moment the key is pressed, but it can be recast within 2.3s
-            Dictionary<AbilityKey, AbilityCastMode> abilityCastModes = new Dictionary<AbilityKey, AbilityCastMode>()
-            {
-                [AbilityKey.Q] = AbilityCastMode.Instant(),
-                [AbilityKey.W] = AbilityCastMode.Instant(),
-                [AbilityKey.E] = AbilityCastMode.Instant(),
-                [AbilityKey.R] = AbilityCastMode.Instant(),
-            };
-            AbilityCastModes = abilityCastModes;
-
-            // Preload all the animations you'll want to use. MAKE SURE that each animation file
-            // has its Build Action set to "Content" and "Copy to Output Directory" is set to "Always".
-
-            ChampionInfoLoaded += OnChampionInfoLoaded;
         }
 
-        /// <summary>
-        /// Called when the champion info has been retrieved.
-        /// </summary>
-        private void OnChampionInfoLoaded(ChampionAttributes champInfo)
+        protected override AbilityCastMode GetQCastMode() => AbilityCastMode.Instant();
+        protected override AbilityCastMode GetWCastMode() => AbilityCastMode.Instant();
+        protected override AbilityCastMode GetECastMode() => AbilityCastMode.Instant();
+        protected override AbilityCastMode GetRCastMode() => AbilityCastMode.Instant();
+
+        protected override async Task OnCastQ()
         {
-            animator.NewFrameReady += (_, ls, mode) => DispatchNewFrame(ls, mode);
-            AbilityCast += OnAbilityCast;
-            AbilityRecast += OnAbilityRecast;
+            Animator.ColorBurst(QColor);
         }
-
-        /// <summary>
-        /// Called when an ability is cast.
-        /// </summary>
-        private void OnAbilityCast(object s, AbilityKey key)
+        protected override async Task OnCastW()
         {
-            if (key == AbilityKey.Q)
-            {
-                OnCastQ();
-            }
-            if (key == AbilityKey.W)
-            {
-                OnCastW();
-            }
-            if (key == AbilityKey.E)
-            {
-                OnCastE();
-            }
-            if (key == AbilityKey.R)
-            {
-                OnCastR();
-            }
+            Animator.ColorBurst(WColor);
         }
-
-        private void OnCastQ()
+        protected override async Task OnCastE()
         {
-            animator.ColorBurst(QColor);
+            Animator.ColorBurst(EColor);
         }
-
-        private void OnCastW()
+        protected override async Task OnCastR()
         {
-            animator.ColorBurst(WColor);
+            Animator.ColorBurst(RColor);
         }
-
-        private void OnCastE()
-        {
-            animator.ColorBurst(EColor);
-        }
-
-        private void OnCastR()
-        {
-
-            animator.ColorBurst(RColor);
-
-        }
-
-        /// <summary>
-        /// Called when an ability is casted again (few champions have abilities that can be recast, only those with special abilities such as Vel'Koz or Zoes Q)
-        /// </summary>
-        private void OnAbilityRecast(object s, AbilityKey key)
-        {
-
-        }
-
-        // udy
-
     }
 }

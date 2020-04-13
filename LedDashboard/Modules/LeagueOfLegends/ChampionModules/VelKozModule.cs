@@ -36,147 +36,84 @@ namespace LedDashboard.Modules.LeagueOfLegends.ChampionModules
 
 
         private VelKozModule(int ledCount, GameState gameState, string championName, LightingMode preferredLightMode, AbilityCastPreference preferredCastMode) 
-                            : base(ledCount, championName, gameState, preferredLightMode, true)
+            : base(ledCount, championName, gameState, preferredLightMode, preferredCastMode, true)
         {
             // Initialization for the champion module occurs here.
-
-            // Set preferred cast mode. It's a player choice (Quick cast, Quick cast with indicator, or Normal cast)
-            PreferredCastMode = preferredCastMode;
-
-            // Set cast modes for abilities.
-            // For Vel'Koz, for example:
-            // Q -> Normal ability, but it can be recast within 1.15s
-            // W -> Normal ability
-            // E -> Normal ability
-            // R -> Instant ability, it is cast the moment the key is pressed, but it can be recast within 2.3s
-            Dictionary<AbilityKey, AbilityCastMode> abilityCastModes = new Dictionary<AbilityKey, AbilityCastMode>()
-            {
-                [AbilityKey.Q] = AbilityCastMode.Normal(1150), 
-                [AbilityKey.W] = AbilityCastMode.Normal(),
-                [AbilityKey.E] = AbilityCastMode.Normal(),
-                [AbilityKey.R] = AbilityCastMode.Instant(2300),
-            };
-            AbilityCastModes = abilityCastModes;
-
-            ChampionInfoLoaded += OnChampionInfoLoaded;
         }
 
-        /// <summary>
-        /// Called when the champion info has been retrieved.
-        /// </summary>
-        private void OnChampionInfoLoaded(ChampionAttributes champInfo)
-        {
-            animator.NewFrameReady += (_, ls, mode) => DispatchNewFrame(ls,mode);
-            AbilityCast += OnAbilityCast;
-            AbilityRecast += OnAbilityRecast;
-        }
-        
-        /// <summary>
-        /// Called when an ability is cast.
-        /// </summary>
-        private void OnAbilityCast(object s, AbilityKey key)
-        {
-            if (key == AbilityKey.Q)
-            {
-                OnCastQ();
-            }
-            if (key == AbilityKey.W)
-            {
-                OnCastW();
-            }
-            if (key == AbilityKey.E)
-            {
-                OnCastE();
-            }
-            if (key == AbilityKey.R)
-            {
-                OnCastR();
-            }
-        }
+        protected override AbilityCastMode GetQCastMode() => AbilityCastMode.Normal(1150);
+        protected override AbilityCastMode GetWCastMode() => AbilityCastMode.Normal();
+        protected override AbilityCastMode GetECastMode() => AbilityCastMode.Normal();
+        protected override AbilityCastMode GetRCastMode() => AbilityCastMode.Instant(2300);
 
-        private void OnCastQ()
+        protected override async Task OnCastQ()
         {
             // Here you should write code to trigger the appropiate animations to play when the user casts Q.
             // The code will slightly change between each champion, because you might want to implement custom animation logic.
 
             // Trigger the start animation.
-            Task.Run(async () =>
+            await Task.Delay(100);
+            if (!rCastInProgress)
             {
-                await Task.Delay(100);
-                if (!rCastInProgress) _ = animator.RunAnimationOnce(ANIMATION_PATH + "Velkoz/q_start.txt", keepTail: true, timeScale: 0.9f);
-            });
+                RunAnimationOnce("q_start", true, 0.9f);
+            }
 
             // The Q cast is in progress.
             qCastInProgress = true;
 
             // After 1.15s, if user didn't press Q again already, the Q split animation plays.
-            Task.Run(async () => // TODO: Q runs a bit slow.
+            // TODO: Q runs a bit slow.
+            
+            await Task.Delay(1150);
+            if (!rCastInProgress && qCastInProgress)
             {
-                await Task.Delay(1150);
-                if (!rCastInProgress && qCastInProgress)
-                {
-                    _ = animator.RunAnimationOnce(ANIMATION_PATH + "Velkoz/q_recast.txt", keepTail: false, fadeOutAfterRate: 0);
-                }
-                qCastInProgress = false;
-            });
+                RunAnimationOnce("q_recast", true, 0);
+            }
+            qCastInProgress = false;
         }
-
-        private void OnCastW()
+        protected override async Task OnCastW()
         {
-            Task.Run(async () =>
+            RunAnimationOnce("w_cast", true, 0.85f);
+            await Task.Delay(1800);
+            if (!rCastInProgress)
             {
-                _ = animator.RunAnimationOnce(ANIMATION_PATH + "Velkoz/w_cast.txt", true, timeScale: 0.85f);
-                await Task.Delay(1800);
-                if (!rCastInProgress) _ = animator.RunAnimationOnce(ANIMATION_PATH + "Velkoz/w_close.txt", keepTail: false, fadeOutAfterRate: 0.15f);
-            });
+                RunAnimationOnce("w_close", false, 0.15f);
+            }
         }
-
-        private void OnCastE()
+        protected override async Task OnCastE()
         {
-            Task.Run(async () =>
+            await Task.Delay(1000);
+            if (!rCastInProgress)
             {
-                await Task.Delay(1000);
-                if (!rCastInProgress) _ = animator.ColorBurst(HSVColor.FromRGB(229, 115, 255), 0.15f);
-            });
+                Animator.ColorBurst(HSVColor.FromRGB(229, 115, 255), 0.15f);
+            }
         }
-
-        private void OnCastR()
+        protected override async Task OnCastR()
         {
-            animator.StopCurrentAnimation();
-            animator.RunAnimationInLoop(ANIMATION_PATH + "Velkoz/r_loop.txt", 2300, fadeOutAfterRate: 0.15f);
+            Animator.StopCurrentAnimation();
+            RunAnimationInLoop("r_loop", 2300, 0.15f);
             rCastInProgress = true;
-            Task.Run(async () =>
-            {
-                await Task.Delay(2300);
-                if (rCastInProgress)
-                {
-                    rCastInProgress = false;
-                }
-            });
+
+            await Task.Delay(2300);
+            rCastInProgress = false;
         }
 
-
-        /// <summary>
-        /// Called when an ability is casted again (few champions have abilities that can be recast, only those with special abilities such as Vel'Koz or Zoes Q)
-        /// </summary>
-        private void OnAbilityRecast(object s, AbilityKey key)
+        protected override async Task OnRecastQ()
         {
-            // Add any abilities that need special logic when they are recasted.
-
-            if (key == AbilityKey.Q)
+            if (qCastInProgress)
             {
-                if (qCastInProgress)
+                // Would there ever be a Q recast while R is being cast?
+                if (!rCastInProgress)
                 {
-                    qCastInProgress = false;
-                    if (!rCastInProgress) animator.RunAnimationOnce(ANIMATION_PATH + "Velkoz/q_recast.txt");
+                    RunAnimationOnce("q_recast");
                 }
             }
-
-            if (key == AbilityKey.R)
-            {
-                animator.StopCurrentAnimation();
-                rCastInProgress = false;
-            }
+            qCastInProgress = false;
+        }
+        protected override async Task OnRecastR()
+        {
+            Animator.StopCurrentAnimation();
+            rCastInProgress = false;
         }
     }
 }
