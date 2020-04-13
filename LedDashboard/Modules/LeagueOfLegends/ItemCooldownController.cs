@@ -36,7 +36,8 @@ namespace LedDashboard.Modules.LeagueOfLegends
             if (!cooldownDict.ContainsKey(itemID))
             {
                 cooldownDict.Add(itemID, cooldownDuration);
-            } else
+            }
+            else
             {
                 cooldownDict[itemID] = cooldownDuration;
             }
@@ -65,7 +66,8 @@ namespace LedDashboard.Modules.LeagueOfLegends
                // Console.WriteLine("Tried to get " + itemID + " which is not an item with tracked cooldowns. Returning false");
                // it's expected behavior so don't print anything
                 return true;
-            } else
+            }
+            else
             {
                 return cooldownDict[itemID] > 0;
             }
@@ -75,8 +77,6 @@ namespace LedDashboard.Modules.LeagueOfLegends
         {
             return IsOnCooldown(slotItemIdDict[slot]);
         }
-
-
 
         public static void AssignItemIdToSlot(int slot, int itemID)
         {
@@ -96,15 +96,9 @@ namespace LedDashboard.Modules.LeagueOfLegends
             }
         }
 
-        public static double GetAverageChampionLevel(GameState state)
-        {
-            return state.Champions.Select(x => x.Level).Average();
-        }
-
         public static void Dispose()
         {
             cancellationToken.Cancel();
         }
-
     }
 }
