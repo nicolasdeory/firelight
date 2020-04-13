@@ -13,6 +13,7 @@ namespace LedDashboard.Modules.Common
     {
         public static Animation LoadFromFile(string path)
         {
+            string text = "";
             try
             {
                 text = File.ReadAllText(path);

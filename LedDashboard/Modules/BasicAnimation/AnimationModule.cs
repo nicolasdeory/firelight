@@ -101,23 +101,17 @@ namespace LedDashboard.Modules.BasicAnimation
                 }
                 //isAnimationRunning = false;
             }));
-
-
         }
 
         private void CleanCancellationToken()
         {
-            if (currentlyRunningAnim != null)
-            {
-                currentlyRunningAnim.Cancel();
-            }
+            currentlyRunningAnim?.Cancel();
             currentlyRunningAnim = new CancellationTokenSource();
         }
 
         public Task HoldColor(HSVColor col, int durationMS)
         {
-            if (currentlyRunningAnim != null) currentlyRunningAnim.Cancel();
-            currentlyRunningAnim = new CancellationTokenSource();
+            CleanCancellationToken();
             //isAnimationRunning = true;
             return TaskRunner.RunAsync(Task.Run(async () =>
             {
@@ -142,27 +136,26 @@ namespace LedDashboard.Modules.BasicAnimation
         /// </summary>
         public void StopCurrentAnimation()
         {
-            if (currentlyRunningAnim != null)
+            if (currentlyRunningAnim == null)
+                return;
+            
+            currentlyRunningAnim.Cancel();
+            this.leds.SetAllToBlack();
+            NewFrameReady.Invoke(this, this.leds, LightingMode.Line);
+            TaskRunner.RunAsync(Task.Run(async () =>
             {
-                currentlyRunningAnim.Cancel();
-                this.leds.SetAllToBlack();
+                // wait a bit for the current frame
+                await Task.Delay(50);
                 NewFrameReady.Invoke(this, this.leds, LightingMode.Line);
-                _ = TaskRunner.RunAsync(Task.Run(async () =>
-                {
-                    // wait a bit for the current frame
-                    await Task.Delay(50);
-                    NewFrameReady.Invoke(this, this.leds, LightingMode.Line);
-                }));
+            }));
 
-                //isAnimationRunning = false;
-            }
+            //isAnimationRunning = false;
         }
 
         public void AlternateBetweenTwoColors(HSVColor col1, HSVColor col2, float duration = 2000, float fadeRate = 0.15f) // -1 duration for indefinite
         {
-            if (currentlyRunningAnim != null) currentlyRunningAnim.Cancel();
-            currentlyRunningAnim = new CancellationTokenSource();
-            _ = TaskRunner.RunAsync(Task.Run(() => FadeBetweenTwoColors(fadeRate, col1, col2, duration, currentlyRunningAnim.Token)));
+            CleanCancellationToken();
+            TaskRunner.RunAsync(Task.Run(() => FadeBetweenTwoColors(fadeRate, col1, col2, duration, currentlyRunningAnim.Token)));
         }
 
         /// <summary>
@@ -174,8 +167,7 @@ namespace LedDashboard.Modules.BasicAnimation
         /// <returns></returns>
         public Task ColorBurst(HSVColor color, float fadeoutRate = 0.15f, HSVColor destinationColor = default)
         {
-            if (currentlyRunningAnim != null) currentlyRunningAnim.Cancel();
-            currentlyRunningAnim = new CancellationTokenSource();
+            CleanCancellationToken();
             //isAnimationRunning = true;
             return TaskRunner.RunAsync(Task.Run(async () =>
             {
@@ -195,7 +187,6 @@ namespace LedDashboard.Modules.BasicAnimation
                     {
                         await FadeOutToColor(fadeoutRate, destinationColor, token);
                     }
-
                 }
                 else
                 {

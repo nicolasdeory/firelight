@@ -33,7 +33,8 @@ namespace LedDashboard.Modules.BlinkWhite
             bool on = false;
             while (true)
             {
-                if (masterCancelToken.IsCancellationRequested) return;
+                if (masterCancelToken.IsCancellationRequested)
+                    return;
                 if (on)
                 {
                     foreach (Led l in this.leds)

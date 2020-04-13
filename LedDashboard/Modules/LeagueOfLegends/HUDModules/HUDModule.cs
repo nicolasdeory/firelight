@@ -87,7 +87,8 @@ namespace LedDashboard.Modules.LeagueOfLegends.HUDModules
                 {
                     leds[k].SetBlack();
                 }
-            } else
+            }
+            else
             {
                 HSVColor col = HSVColor.Black;
                 if (trinket.ItemID == (int)TrinketItemID.YellowTrinket)
@@ -102,7 +103,8 @@ namespace LedDashboard.Modules.LeagueOfLegends.HUDModules
                 else if (trinket.ItemID == (int)TrinketItemID.BlueTrinket)
                 {
                     col = BlueTrinketColor;
-                } else if (trinket.ItemID == (int)TrinketItemID.RiftHerald)
+                }
+                else if (trinket.ItemID == (int)TrinketItemID.RiftHerald)
                 {
                     col = HeraldColor;
                 }
@@ -181,7 +183,6 @@ namespace LedDashboard.Modules.LeagueOfLegends.HUDModules
                             leds[i].FadeToBlackBy(0.05f);
                         }
                     }
-
                 }
             }
         }
