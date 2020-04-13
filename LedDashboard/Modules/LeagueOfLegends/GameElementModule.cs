@@ -15,7 +15,7 @@ using System.Windows.Forms;
 
 namespace LedDashboard.Modules.LeagueOfLegends
 {
-    abstract class GameModule : LEDModule
+    abstract class GameElementModule : LEDModule
     {
         public event LEDModule.FrameReadyHandler NewFrameReady;
 
@@ -43,7 +43,7 @@ namespace LedDashboard.Modules.LeagueOfLegends
 
         // TODO: Handle champions with cooldown resets?
 
-        protected GameModule(int ledCount, string name, GameState gameState, LightingMode preferredLightingMode, AbilityCastPreference preferredCastMode, bool preloadAllAnimations = false) // TODO: Pass gamestate instead of active player
+        protected GameElementModule(int ledCount, string name, GameState gameState, LightingMode preferredLightingMode, AbilityCastPreference preferredCastMode, bool preloadAllAnimations = false) // TODO: Pass gamestate instead of active player
         {
             Name = name;
             GameState = gameState;

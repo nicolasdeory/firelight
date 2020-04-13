@@ -15,7 +15,7 @@ using System.Windows.Forms;
 
 namespace LedDashboard.Modules.LeagueOfLegends
 {
-    abstract class ChampionModule : GameModule
+    abstract class ChampionModule : GameElementModule
     {
         const string VERSION_ENDPOINT = "https://ddragon.leagueoflegends.com/api/versions.json";
         const string CHAMPION_INFO_ENDPOINT = "http://ddragon.leagueoflegends.com/cdn/{0}/data/en_US/champion/{1}.json";

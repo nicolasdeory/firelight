@@ -10,7 +10,7 @@ using System.Windows.Forms;
 
 namespace LedDashboard.Modules.LeagueOfLegends
 {
-    abstract class ItemModule : GameModule
+    abstract class ItemModule : GameElementModule
     {
         protected const string ITEM_ANIMATION_PATH = @"Animations/LeagueOfLegends/Items/";
 
