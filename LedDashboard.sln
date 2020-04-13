@@ -5,7 +5,11 @@ VisualStudioVersion = 16.0.29326.143
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LedDashboard", "LedDashboard\LedDashboard.csproj", "{AD75C0B1-A782-4A79-888D-A7D2DAFA6B75}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ChromaSDK", "ChromaSDK\ChromaSDK.csproj", "{74B5CFA3-8F45-4DB8-8DD6-BA8126A4F4BD}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ChromaSDK", "ChromaSDK\ChromaSDK.csproj", "{74B5CFA3-8F45-4DB8-8DD6-BA8126A4F4BD}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LeagueOfLegends", "LeagueOfLegends\LeagueOfLegends.csproj", "{00ED0CBB-F29B-433C-B5C7-B81D31CFDBF1}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LedDashboardCore", "LedDashboardCore\LedDashboardCore.csproj", "{552F632D-3C3B-432F-B2DD-E6D225013534}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -31,6 +35,22 @@ Global
 		{74B5CFA3-8F45-4DB8-8DD6-BA8126A4F4BD}.Release|Any CPU.Build.0 = Release|Any CPU
 		{74B5CFA3-8F45-4DB8-8DD6-BA8126A4F4BD}.Release|x64.ActiveCfg = Release|Any CPU
 		{74B5CFA3-8F45-4DB8-8DD6-BA8126A4F4BD}.Release|x64.Build.0 = Release|Any CPU
+		{00ED0CBB-F29B-433C-B5C7-B81D31CFDBF1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{00ED0CBB-F29B-433C-B5C7-B81D31CFDBF1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{00ED0CBB-F29B-433C-B5C7-B81D31CFDBF1}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{00ED0CBB-F29B-433C-B5C7-B81D31CFDBF1}.Debug|x64.Build.0 = Debug|Any CPU
+		{00ED0CBB-F29B-433C-B5C7-B81D31CFDBF1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{00ED0CBB-F29B-433C-B5C7-B81D31CFDBF1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{00ED0CBB-F29B-433C-B5C7-B81D31CFDBF1}.Release|x64.ActiveCfg = Release|Any CPU
+		{00ED0CBB-F29B-433C-B5C7-B81D31CFDBF1}.Release|x64.Build.0 = Release|Any CPU
+		{552F632D-3C3B-432F-B2DD-E6D225013534}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{552F632D-3C3B-432F-B2DD-E6D225013534}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{552F632D-3C3B-432F-B2DD-E6D225013534}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{552F632D-3C3B-432F-B2DD-E6D225013534}.Debug|x64.Build.0 = Debug|Any CPU
+		{552F632D-3C3B-432F-B2DD-E6D225013534}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{552F632D-3C3B-432F-B2DD-E6D225013534}.Release|Any CPU.Build.0 = Release|Any CPU
+		{552F632D-3C3B-432F-B2DD-E6D225013534}.Release|x64.ActiveCfg = Release|Any CPU
+		{552F632D-3C3B-432F-B2DD-E6D225013534}.Release|x64.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

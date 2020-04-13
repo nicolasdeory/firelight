@@ -10,6 +10,7 @@ using ScottPlot;
 using Python.Runtime;
 using System.IO;
 using System.Diagnostics;
+using LedDashboardCore;
 
 namespace LedDashboard
 {

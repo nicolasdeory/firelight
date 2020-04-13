@@ -1,6 +1,5 @@
-﻿
-using LedDashboard.Modules.BlinkWhite;
-using LedDashboard.Modules.LeagueOfLegends;
+﻿using Games.LeagueOfLegends;
+using LedDashboardCore;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;

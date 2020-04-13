@@ -1,0 +1,192 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp3.0</TargetFramework>
+    <LangVersion>8.0</LangVersion>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="Animations\Champions\Ahri\e_cast.txt" />
+    <None Remove="Animations\Champions\Ahri\q_end.txt" />
+    <None Remove="Animations\Champions\Ahri\q_start.txt" />
+    <None Remove="Animations\Champions\Ahri\r_left.txt" />
+    <None Remove="Animations\Champions\Ahri\r_right.txt" />
+    <None Remove="Animations\Champions\Ahri\w_cast.txt" />
+    <None Remove="Animations\Champions\Azir\e_cast.txt" />
+    <None Remove="Animations\Champions\Azir\q_cast.txt" />
+    <None Remove="Animations\Champions\Azir\r_cast.txt" />
+    <None Remove="Animations\Champions\Azir\w_cast.txt" />
+    <None Remove="Animations\Champions\Ezreal\e_cast.txt" />
+    <None Remove="Animations\Champions\Ezreal\q_cast.txt" />
+    <None Remove="Animations\Champions\Ezreal\r_channel.txt" />
+    <None Remove="Animations\Champions\Ezreal\r_launch.txt" />
+    <None Remove="Animations\Champions\Ezreal\w_cast.txt" />
+    <None Remove="Animations\Champions\TwistedFate\q_cast.txt" />
+    <None Remove="Animations\Champions\TwistedFate\r_cast.txt" />
+    <None Remove="Animations\Champions\TwistedFate\r_cast_line.txt" />
+    <None Remove="Animations\Champions\TwistedFate\w_loop.txt" />
+    <None Remove="Animations\Champions\Velkoz\q_recast.txt" />
+    <None Remove="Animations\Champions\Velkoz\q_start.txt" />
+    <None Remove="Animations\Champions\Velkoz\r_loop.txt" />
+    <None Remove="Animations\Champions\Velkoz\w_cast.txt" />
+    <None Remove="Animations\Champions\Velkoz\w_close.txt" />
+    <None Remove="Animations\Champions\Xerath\e_cast.txt" />
+    <None Remove="Animations\Champions\Xerath\q_charge.txt" />
+    <None Remove="Animations\Champions\Xerath\q_retract.txt" />
+    <None Remove="Animations\Champions\Xerath\r_launch.txt" />
+    <None Remove="Animations\Champions\Xerath\r_open.txt" />
+    <None Remove="Animations\Champions\Xerath\w_cast.txt" />
+    <None Remove="Animations\Items\FarsightAlteration\activation.txt" />
+    <None Remove="Animations\Items\HeraldEye\anim_1.txt" />
+    <None Remove="Animations\Items\HeraldEye\anim_2.txt" />
+    <None Remove="Animations\Items\HeraldEye\anim_3.txt" />
+    <None Remove="Animations\Items\HeraldEye\anim_4.txt" />
+    <None Remove="Animations\Items\OracleLens\activation.txt" />
+    <None Remove="Animations\Items\Redemption\impact.txt" />
+    <None Remove="Animations\Items\Redemption\start.txt" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="Animations\Champions\Ahri\e_cast.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Animations\Champions\Ahri\q_end.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Animations\Champions\Ahri\q_start.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Animations\Champions\Ahri\r_left.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Animations\Champions\Ahri\r_right.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Animations\Champions\Ahri\w_cast.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Animations\Champions\Azir\e_cast.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Animations\Champions\Azir\q_cast.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Animations\Champions\Azir\r_cast.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Animations\Champions\Azir\w_cast.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Animations\Champions\Ezreal\e_cast.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Animations\Champions\Ezreal\q_cast.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Animations\Champions\Ezreal\r_channel.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Animations\Champions\Ezreal\r_launch.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Animations\Champions\Ezreal\w_cast.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Animations\Champions\TwistedFate\q_cast.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Animations\Champions\TwistedFate\r_cast.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Animations\Champions\TwistedFate\r_cast_line.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Animations\Champions\TwistedFate\w_loop.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Animations\Champions\Velkoz\q_recast.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Animations\Champions\Velkoz\q_start.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Animations\Champions\Velkoz\r_loop.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Animations\Champions\Velkoz\w_cast.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Animations\Champions\Velkoz\w_close.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Animations\Champions\Xerath\e_cast.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Animations\Champions\Xerath\q_charge.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Animations\Champions\Xerath\q_retract.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Animations\Champions\Xerath\r_launch.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Animations\Champions\Xerath\r_open.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Animations\Champions\Xerath\w_cast.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Animations\Items\FarsightAlteration\activation.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Animations\Items\HeraldEye\anim_1.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Animations\Items\HeraldEye\anim_2.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Animations\Items\HeraldEye\anim_3.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Animations\Items\HeraldEye\anim_4.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Animations\Items\OracleLens\activation.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Animations\Items\Redemption\impact.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Animations\Items\Redemption\start.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\LedDashboardCore\LedDashboardCore.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="Animations\Champions\Jax\e_cast_loop.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Animations\Champions\Jax\e_recast_end.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Animations\Champions\Jax\q_cast.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Animations\Champions\Jax\w_cast_end.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Animations\Champions\Jax\w_cast_loop.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
+</Project>
