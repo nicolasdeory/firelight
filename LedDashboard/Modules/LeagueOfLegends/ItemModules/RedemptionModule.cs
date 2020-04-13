@@ -3,6 +3,7 @@ using LedDashboard.Modules.LeagueOfLegends.ChampionModules.Common;
 using LedDashboard.Modules.LeagueOfLegends.Model;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -49,7 +50,7 @@ namespace LedDashboard.Modules.LeagueOfLegends.ItemModules
             {
                 while (!ItemUtils.IsLoaded)
                 {
-                    Console.WriteLine("Waiting for item info...");
+                    Debug.WriteLine("Waiting for item info...");
                     await Task.Delay(1000); // wait a bit to retrieve item info
                 }
                 // Set cooldown duration

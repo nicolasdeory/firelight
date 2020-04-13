@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Net;
 using System.Text;
@@ -24,10 +25,10 @@ namespace LedDashboard
                     {
                         if (e is WebException || e is TaskCanceledException) return;
                     }
-                    Console.WriteLine("Exception ocurred in task: " + e);
-                    Console.WriteLine(e.Message);
-                    if (e.InnerException != null) Console.WriteLine("Inner: " + e.InnerException);
-                    Console.WriteLine(e.StackTrace);
+                    Debug.WriteLine("Exception ocurred in task: " + e);
+                    Debug.WriteLine(e.Message);
+                    if (e.InnerException != null) Debug.WriteLine("Inner: " + e.InnerException);
+                    Debug.WriteLine(e.StackTrace);
                 }
             });
         }*/
@@ -44,10 +45,10 @@ namespace LedDashboard
                 {
                     if (e is WebException || e is TaskCanceledException) return;
                 }
-                Console.WriteLine("Exception ocurred in task: " + e);
-                Console.WriteLine(e.Message);
-                if (e.InnerException != null) Console.WriteLine("Inner: " + e.InnerException);
-                Console.WriteLine(e.StackTrace);
+                Debug.WriteLine("Exception ocurred in task: " + e);
+                Debug.WriteLine(e.Message);
+                if (e.InnerException != null) Debug.WriteLine("Inner: " + e.InnerException);
+                Debug.WriteLine(e.StackTrace);
             }
         }
     }

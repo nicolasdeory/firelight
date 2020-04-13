@@ -9,6 +9,7 @@ using System.Windows.Forms;
 using ScottPlot;
 using Python.Runtime;
 using System.IO;
+using System.Diagnostics;
 
 namespace LedDashboard
 {
@@ -117,7 +118,7 @@ namespace LedDashboard
                         {
                             byte[] col = led.color.ToRGB();
                             SolidBrush colBrush = new SolidBrush(Color.FromArgb(col[0], col[1], col[2]));
-                            KeyboardKey key = keyboardLayout[i];
+                            KeyboardKey key = keyboardLayout[i];                          
                             canvas.FillRectangle(colBrush, new Rectangle(key.X, key.Y, (key.Width ?? 20) - 2, (key.Height ?? 20) - 2));
                             i++;
                         }
@@ -188,7 +189,7 @@ namespace LedDashboard
             chromabtn.Enabled = true;
             ledstripbtn.Enabled = false;
             currentLightingMode = LightingMode.Line;
-            canvas.Clear(Color.White);
+            canvas.Clear(Color.White); // TODO: Delay between changing lighting modes. It causes crashes if it's switched too fast.
         }
 
         private List<KeyboardKey> LoadKeyboardLayout()

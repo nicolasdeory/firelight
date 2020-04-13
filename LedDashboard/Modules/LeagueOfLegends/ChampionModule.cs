@@ -219,7 +219,7 @@ namespace LedDashboard.Modules.LeagueOfLegends
 
         protected override void OnMouseClick(object s, MouseEventArgs e)
         {
-            //Console.WriteLine("Mouse click. Selected: " + SelectedAbility);
+            //Debug.WriteLine("Mouse click. Selected: " + SelectedAbility);
             if (e.Button == MouseButtons.Right)
             {
                 if (SelectedAbility != AbilityKey.None && CanRecastAbility(SelectedAbility) && !AbilityCastModes[SelectedAbility].RecastOnKeyUp)
@@ -244,7 +244,7 @@ namespace LedDashboard.Modules.LeagueOfLegends
             }
         }
 
-        private void OnKeyRelease(object s, KeyEventArgs e)
+        protected override void OnKeyRelease(object s, KeyEventArgs e)
         {
             ProcessKeyPress(s, e.KeyCode.ToString().ToLower()[0], true);
         }
@@ -258,7 +258,7 @@ namespace LedDashboard.Modules.LeagueOfLegends
         {
             base.ProcessKeyPress(s, keyChar, keyUp);
             // TODO: quick cast with indicator bug - repro: hold w, then hold q, then right click, then release w, then release q. The ability is cast, even when it shouldn't.
-            // Console.WriteLine("Keypressed. Selected: " + SelectedAbility);
+            // Debug.WriteLine("Keypressed. Selected: " + SelectedAbility);
             if (keyChar == 'q')
             {
                 DoCastLogicForAbility(AbilityKey.Q, keyUp);
@@ -290,11 +290,11 @@ namespace LedDashboard.Modules.LeagueOfLegends
                 return;
 
             AbilityCastMode castMode = AbilityCastModes[key];
-            //Console.WriteLine(key + " " + (keyUp ? "up" : "down"));
+            //Debug.WriteLine(key + " " + (keyUp ? "up" : "down"));
 
             if (castMode.HasRecast && AbilitiesOnRecast[key] > 0)
             {
-                //Console.WriteLine(castMode);
+                //Debug.WriteLine(castMode);
                 if (castMode.RecastMode.IsInstant)
                 {
                     RecastAbility(key);
@@ -427,15 +427,6 @@ namespace LedDashboard.Modules.LeagueOfLegends
         }
 
         /// <summary>
-        /// Updates player info and raises the appropiate events.
-        /// </summary>
-        public void UpdateGameState(GameState newState)
-        {
-            GameState = newState;
-            GameStateUpdated?.Invoke(newState);
-        }
-
-        /// <summary>
         /// Returns the cooldown in milliseconds for a given ability, after applying cooldown reduction.
         /// </summary>
         protected int GetCooldownForAbility(AbilityKey ability)
@@ -461,11 +452,11 @@ namespace LedDashboard.Modules.LeagueOfLegends
         {
             if (GameState.ActivePlayer.IsDead || !AbilityCastModes[spellKey].Castable)
                 return false;
-            if (GameState.ActivePlayer.AbilityLoadout.GetAbilityLevel(spellKey) == 0)
+            if (GameState.ActivePlayer.Abilities.GetAbilityLevel(spellKey) == 0)
                 return false;
             if (AbilitiesOnCooldown[spellKey])
                 return false;
-            int manaCost = ChampionInfo.Costs.GetManaCost(spellKey, GameState.ActivePlayer.AbilityLoadout.GetAbilityLevel(spellKey));
+            int manaCost = ChampionInfo.Costs.GetManaCost(spellKey, GameState.ActivePlayer.Abilities.GetAbilityLevel(spellKey));
             if (GameState.ActivePlayer.Stats.ResourceValue < manaCost)
             {
                 // raise not enough mana event
@@ -515,17 +506,5 @@ namespace LedDashboard.Modules.LeagueOfLegends
             AbilitiesOnRecast[ability] = 0;
         }
 
-        public void Dispose()
-        {
-            animator?.Dispose();
-            KeyboardHookService.Instance.OnMouseClicked -= OnMouseClick;
-            KeyboardHookService.Instance.OnKeyPressed -= OnKeyPress;
-            KeyboardHookService.Instance.OnKeyReleased -= OnKeyRelease;
-        }
-
-        public void StopAnimations()
-        {
-            animator.StopCurrentAnimation();
-        }
     }
 }

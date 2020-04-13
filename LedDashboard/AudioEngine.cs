@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Numpy;
 using Python.Runtime;
+using System.Diagnostics;
 
 namespace LedDashboard
 {
@@ -35,7 +36,7 @@ namespace LedDashboard
             for (int waveInDevice = 0; waveInDevice < waveInDevices; waveInDevice++)
             {
                 WaveInCapabilities deviceInfo = WaveIn.GetCapabilities(waveInDevice);
-                Console.WriteLine("Device {0}: {1}, {2} channels", waveInDevice, deviceInfo.ProductName, deviceInfo.Channels);
+                Debug.WriteLine("Device {0}: {1}, {2} channels", waveInDevice, deviceInfo.ProductName, deviceInfo.Channels);
                 if (deviceInfo.ProductName.Contains("VoiceMeeter"))
                 {
                     IN_DEVICE_INDEX = waveInDevice;
@@ -49,7 +50,7 @@ namespace LedDashboard
             for (int waveOutDevice = 0; waveOutDevice < waveOutDevices; waveOutDevice++)
             {
                 WaveOutCapabilities deviceInfo = WaveOut.GetCapabilities(waveOutDevice);
-                Console.WriteLine("Device {0}: {1}, {2} channels", waveOutDevice, deviceInfo.ProductName, deviceInfo.Channels);
+                Debug.WriteLine("Device {0}: {1}, {2} channels", waveOutDevice, deviceInfo.ProductName, deviceInfo.Channels);
                 if (deviceInfo.ProductName.Contains("VoiceMeeter" +
                     ""))
                 {
@@ -63,7 +64,7 @@ namespace LedDashboard
             wi.DeviceNumber = IN_DEVICE_INDEX;
             wi.WaveFormat = new WaveFormat(RATE,1);
             sampleRate = RATE;
-            Console.WriteLine("Running at a sample rate of " + sampleRate);
+            Debug.WriteLine("Running at a sample rate of " + sampleRate);
             wi.BufferMilliseconds = (int)((double)BUFFERSIZE / (double)RATE * 1000.0);
             wi.RecordingStopped += waveIn_RecordingStopped;
             wi.DataAvailable += waveIn_DataAvailable;

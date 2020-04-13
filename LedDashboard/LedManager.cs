@@ -3,6 +3,7 @@ using LedDashboard.Modules.BlinkWhite;
 using LedDashboard.Modules.LeagueOfLegends;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 
 namespace LedDashboard
 {
@@ -114,11 +115,15 @@ namespace LedDashboard
         {
             if (updatingDisplay)
             {
-                Console.WriteLine("SEVERE: UpdateLEDDisplay was called at the same time as an ongoing one");
+                Debug.WriteLine("SEVERE: UpdateLEDDisplay was called at the same time as an ongoing one");
                 return;
             }
             updatingDisplay = true;
             this.leds = ls;
+            if (mode == LightingMode.Keyboard && ls.Length != 88)
+            {
+                Debug.WriteLine("SEVERE: Tried to send a keyboard frame but LED array had incorrect length");
+            }
             DisplayUpdated?.Invoke(this.leds, mode);
             SendData(mode);
             updatingDisplay = false;

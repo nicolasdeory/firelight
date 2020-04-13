@@ -23,7 +23,7 @@ namespace LedDashboard.Modules.LeagueOfLegends.ChampionModules
 
         HSVColor BlueExplodeColor = new HSVColor(0.59f, 1, 1);
 
-        public int MaxRCasts => GameState.ActivePlayer.AbilityLoadout.R_Level + 2;
+        public int MaxRCasts => GameState.ActivePlayer.Abilities.R_Level + 2;
 
         /// <summary>
         /// Creates a new champion instance.

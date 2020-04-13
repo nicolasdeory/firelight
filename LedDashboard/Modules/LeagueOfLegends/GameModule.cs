@@ -5,6 +5,7 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -62,8 +63,16 @@ namespace LedDashboard.Modules.LeagueOfLegends
         }
         protected void PreloadAllAnimations()
         {
-            foreach (var file in Directory.GetFiles($"{ModuleAnimationPath}{Name}/"))
-                Animator.PreloadAnimation(file);
+            try
+            {
+                foreach (var file in Directory.GetFiles($"{ModuleAnimationPath}{Name}/"))
+                    Animator.PreloadAnimation(file);
+            } 
+            catch (DirectoryNotFoundException)
+            {
+                Debug.WriteLine("No animations found for " + Name);
+            }
+            
         }
 
         protected async Task RunAnimationOnce(string animationName, bool keepTail = false, float fadeOutAfterRate = 0, float timeScale = 1)

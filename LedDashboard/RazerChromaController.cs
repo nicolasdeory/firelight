@@ -138,7 +138,7 @@ namespace LedDashboard
                     }
                     catch
                     {
-                        Console.WriteLine("Error sending data to Chroma keyboard. Perhaps it doesn't have a keypad");
+                        Debug.WriteLine("Error sending data to Chroma keyboard. Perhaps it doesn't have a keypad");
                     }
                     
                 }
@@ -162,7 +162,7 @@ namespace LedDashboard
                     keyboardFrame.SetKeys(points, Color.FromArgb(colorArray[0], colorArray[1], colorArray[2]));
                 } catch (Exception) // TODO: Handle keyboards without numpads
                 {
-                    Console.WriteLine("Error sending data to Chroma keyboard. Perhaps it doesn't have a keypad");
+                    Debug.WriteLine("Error sending data to Chroma keyboard. Perhaps it doesn't have a keypad");
                 }*/
 
             }

@@ -77,10 +77,7 @@ namespace LedDashboard.Modules.LeagueOfLegends
             if (lightMode != LightingMode.Keyboard) return; // TODO: Implement some sort of notification for LED strip perhaps
 
             Item trinket = gameState.PlayerChampion.Items.FirstOrDefault(x => x.Slot == 6);
-            if (trinket == null /*|| 
-                                    (ItemCooldownController.IsSlotOnCooldown(6) 
-                                    && trinket.ItemID != ItemModules.WardingTotemModule.ITEM_ID 
-                                    && trinket.ItemID != ItemModules.HeraldEyeModule.ITEM_ID)*/) 
+            if (trinket == null) 
             {
                 // if there is no trinket, set to black
                 foreach (int k in trinketKeys)
@@ -93,8 +90,7 @@ namespace LedDashboard.Modules.LeagueOfLegends
                 HSVColor col = HSVColor.Black;
                 if (trinket.ItemID == WardingTotemModule.ITEM_ID)
                 {
-                    if (ItemModules.WardingTotemModule.Current.HasCharge)
-                        col = YellowTrinketColor;
+                    col = YellowTrinketColor;
                 }
                 else if (trinket.ItemID == OracleLensModule.ITEM_ID)
                 {

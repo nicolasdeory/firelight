@@ -40,7 +40,7 @@ namespace LedDashboard.Modules.LeagueOfLegends.ChampionModules
             // has its Build Action set to "Content" and "Copy to Output Directory" is set to "Always".
            /* PreloadAnimation("q_cast.txt");
             PreloadAnimation("w_loop.txt");
-            PreloadAnimation("r_cast.txt");
+            PreloadAnimation("r_cast.txt");*/
         }
 
         protected override AbilityCastMode GetQCastMode() => AbilityCastMode.Normal();

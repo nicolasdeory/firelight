@@ -69,6 +69,7 @@ namespace LedDashboard.Modules.LeagueOfLegends
             {
                 int itemID = int.Parse(k.Name);
                 ItemAttributes itemData = ItemAttributes.FromData(k.Value);
+                if (itemAttributeDict == null) break;
                 itemAttributeDict.Add(itemID, itemData);
             }
         }

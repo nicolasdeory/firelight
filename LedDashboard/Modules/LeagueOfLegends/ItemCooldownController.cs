@@ -1,6 +1,7 @@
 ﻿using LedDashboard.Modules.LeagueOfLegends.Model;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading;
@@ -63,7 +64,7 @@ namespace LedDashboard.Modules.LeagueOfLegends
         {
             if (!cooldownDict.ContainsKey(itemID))
             {
-               // Console.WriteLine("Tried to get " + itemID + " which is not an item with tracked cooldowns. Returning false");
+               // Debug.WriteLine("Tried to get " + itemID + " which is not an item with tracked cooldowns. Returning false");
                // it's expected behavior so don't print anything
                 return true;
             }
@@ -87,7 +88,7 @@ namespace LedDashboard.Modules.LeagueOfLegends
         {
             if (!cooldownDict.ContainsKey(itemID))
             {
-                Console.WriteLine("Tried to get " + itemID + " which is not an item with tracked cooldowns. Returning 0");
+                Debug.WriteLine("Tried to get " + itemID + " which is not an item with tracked cooldowns. Returning 0");
                 return 0;
             }
             else
