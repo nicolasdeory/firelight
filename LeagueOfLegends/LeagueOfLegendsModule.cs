@@ -25,12 +25,12 @@ namespace Games.LeagueOfLegends
 
         // Constants
 
-        HSVColor LoadingColor = new HSVColor(0.09f, 0.8f, 1f);
+        public static HSVColor LoadingColor { get; } = new HSVColor(0.09f, 0.8f, 1f);
 
-        HSVColor DeadColor = new HSVColor(0f, 0.8f, 0.77f);
-        HSVColor NoManaColor = new HSVColor(0.52f, 0.66f, 1f);
+        public static HSVColor DeadColor { get; } = new HSVColor(0f, 0.8f, 0.77f);
+        public static HSVColor NoManaColor { get; } = new HSVColor(0.52f, 0.66f, 1f);
 
-        HSVColor KillColor = new HSVColor(0.06f, 0.96f, 1f);
+        public static HSVColor KillColor { get; } = new HSVColor(0.06f, 0.96f, 1f);
 
         // Variables
 
