@@ -1,10 +1,6 @@
 ﻿using Newtonsoft.Json.Linq;
-using System;
 using System.Collections.Generic;
-using System.Dynamic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Games.LeagueOfLegends.Model
 {
@@ -20,7 +16,7 @@ namespace Games.LeagueOfLegends.Model
             return new ItemAttributes()
             {
                 Name = data.name,
-                GoldBaseCost =  data.gold.@base,
+                GoldBaseCost = data.gold.@base,
                 GoldTotalCost = data.gold.total,
                 EffectAmounts = (data.effect as JObject)?.Properties().Select(x => (float)(x.Value)).ToList()
             };

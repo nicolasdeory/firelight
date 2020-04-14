@@ -1,12 +1,7 @@
-﻿using LedDashboardCore.Modules.BasicAnimation;
-using Games.LeagueOfLegends.ChampionModules.Common;
+﻿using Games.LeagueOfLegends.ChampionModules.Common;
 using Games.LeagueOfLegends.Model;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using LedDashboardCore;
+using System;
 
 namespace Games.LeagueOfLegends.ItemModules
 {
@@ -37,7 +32,7 @@ namespace Games.LeagueOfLegends.ItemModules
 
             double avgChampLevel = GameState.AverageChampionLevel;
             ItemCooldownController.SetCooldown(ITEM_ID, GetCooldownDuration(avgChampLevel));
-            ItemCooldownController.SetCooldown(FarsightAlterationModule.ITEM_ID, 
+            ItemCooldownController.SetCooldown(FarsightAlterationModule.ITEM_ID,
                                                FarsightAlterationModule.GetCooldownDuration(avgChampLevel));
         }
 

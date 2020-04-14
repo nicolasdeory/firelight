@@ -1,8 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace LedDashboardCore
@@ -22,7 +19,7 @@ namespace LedDashboardCore
             {
                 bool processChangedToARegisteredOne = false;
                 bool atLeastARegisteredProcessIsRunning = false;
-                for (;;)
+                for (; ; )
                 {
                     processChangedToARegisteredOne = false;
                     atLeastARegisteredProcessIsRunning = false;
@@ -39,7 +36,7 @@ namespace LedDashboardCore
                         }
                         atLeastARegisteredProcessIsRunning = true;
                     }
-                    if(!processChangedToARegisteredOne)
+                    if (!processChangedToARegisteredOne)
                     {
                         if (!atLeastARegisteredProcessIsRunning)
                         {
@@ -48,9 +45,9 @@ namespace LedDashboardCore
                         }
                         await Task.Delay(2000);
                     }
-                    
+
                 }
-                
+
             });
         }
 

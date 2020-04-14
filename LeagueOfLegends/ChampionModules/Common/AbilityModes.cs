@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Games.LeagueOfLegends.ChampionModules.Common
+﻿namespace Games.LeagueOfLegends.ChampionModules.Common
 {
     /// <summary>
     /// Instant means the moment the key is pressed down, the ability is cast (e.g summoner spell, Vel'Koz's R)

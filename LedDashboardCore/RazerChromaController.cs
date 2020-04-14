@@ -3,15 +3,12 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 using static ChromaSDK.Keyboard;
 
 namespace LedDashboardCore
 {
-    
+
 
     public class RazerChromaController : LightController
     {
@@ -87,7 +84,7 @@ namespace LedDashboardCore
             catch (Exception e)
             {
                 string errorString = "Please make sure that Razer Synapse 3 is installed and updated to the latest version.";
-                switch((long)status)
+                switch ((long)status)
                 {
                     case RZRESULT_DLL_NOT_FOUND:
                         errorString = "Couldn't find Chroma SDK. This is usually caused because Razer Synapse 3 is not installed or updated to the latest version.";
@@ -108,7 +105,7 @@ namespace LedDashboardCore
             }
             // is AddFrame needed?
             ChromaAnimationAPI.AddFrame(baseKeyboardAnim, 1, new int[MAX_KEYBOARD_COLS * MAX_KEYBOARD_ROWS], MAX_KEYBOARD_COLS * MAX_KEYBOARD_ROWS);
-            
+
         }
 
         public void SendData(int ledCount, byte[] colorArray, LightingMode mode)
@@ -130,15 +127,16 @@ namespace LedDashboardCore
                         {
                             ChromaAnimationAPI.Set2DColor(baseKeyboardAnim, 0, point.Y, point.X, ChromaAnimationAPI.GetRGB(c.R, c.G, c.B));
                         }
-                       // keyboardFrame.SetKeys(points, c);
+                        // keyboardFrame.SetKeys(points, c);
                     }
                     catch
                     {
                         Debug.WriteLine("Error sending data to Chroma keyboard. Perhaps it doesn't have a keypad");
                     }
-                    
+
                 }
-            } else if (mode == LightingMode.Point)
+            }
+            else if (mode == LightingMode.Point)
             {
                 for (int i = 0; i < KEYBOARD_LED_COUNT; i++)
                 {
@@ -211,9 +209,9 @@ namespace LedDashboardCore
 
         public void Dispose()
         {
-         /*   if (api != null) api.Dispose();
-            api = null;
-            keyboardFrame = null;*/
+            /*   if (api != null) api.Dispose();
+               api = null;
+               keyboardFrame = null;*/
             int res = ChromaAnimationAPI.Uninit();
             if (res != 0)
             {

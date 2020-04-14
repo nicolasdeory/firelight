@@ -1,16 +1,8 @@
 ﻿using Games.LeagueOfLegends.ChampionModules.Common;
 using Games.LeagueOfLegends.Model;
 using LedDashboardCore;
-using LedDashboardCore.Modules.BasicAnimation;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
-using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
-using System.Linq;
-using System.Net;
-using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
@@ -54,7 +46,7 @@ namespace Games.LeagueOfLegends
             {
                 foreach (var file in Directory.GetFiles($"{ModuleAnimationPath}{Name}/"))
                     Animator.PreloadAnimation(file);
-            } 
+            }
             catch (DirectoryNotFoundException)
             {
                 Debug.WriteLine("No animations found for " + Name);

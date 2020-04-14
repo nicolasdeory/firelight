@@ -3,9 +3,7 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Net;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace Games.LeagueOfLegends
@@ -27,7 +25,7 @@ namespace Games.LeagueOfLegends
             }
             return itemAttributeDict[itemID];
         }
-        
+
         public static void Init()
         {
             itemAttributeDict = new Dictionary<int, ItemAttributes>();
@@ -65,7 +63,7 @@ namespace Games.LeagueOfLegends
         private static void ParseItemInfo(dynamic itemsInfo)
         {
             JObject itemsData = itemsInfo.data as JObject;
-            foreach(var k in itemsData.Properties())
+            foreach (var k in itemsData.Properties())
             {
                 int itemID = int.Parse(k.Name);
                 ItemAttributes itemData = ItemAttributes.FromData(k.Value);

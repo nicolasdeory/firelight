@@ -5,8 +5,6 @@ using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Games.LeagueOfLegends
 {
@@ -70,7 +68,7 @@ namespace Games.LeagueOfLegends
                     leds[k].Color(col);
                 }
             }
-            
+
         }
 
         private static void WardView(Led[] leds, LightingMode lightMode, GameState gameState)
@@ -78,7 +76,7 @@ namespace Games.LeagueOfLegends
             if (lightMode != LightingMode.Keyboard) return; // TODO: Implement some sort of notification for LED strip perhaps
 
             Item trinket = gameState.PlayerChampion.Items.FirstOrDefault(x => x.Slot == 6);
-            if (trinket == null) 
+            if (trinket == null)
             {
                 // if there is no trinket, set to black
                 foreach (int k in trinketKeys)
@@ -100,7 +98,8 @@ namespace Games.LeagueOfLegends
                 else if (trinket.ItemID == FarsightAlterationModule.ITEM_ID)
                 {
                     col = BlueTrinketColor;
-                } else if (trinket.ItemID == HeraldEyeModule.ITEM_ID)
+                }
+                else if (trinket.ItemID == HeraldEyeModule.ITEM_ID)
                 {
                     col = HeraldColor;
                 }
@@ -110,7 +109,7 @@ namespace Games.LeagueOfLegends
                     leds[k].Color(col);
                 }
             }
-            
+
         }
 
         private static List<int> alreadyTouchedLeds = new List<int>(); // fixes a weird flickering bug

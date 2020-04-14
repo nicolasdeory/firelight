@@ -1,8 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Games.LeagueOfLegends.Model
 {
@@ -22,7 +19,7 @@ namespace Games.LeagueOfLegends.Model
         /// </summary>
         public int this[int level]
         {
-            get 
+            get
             {
                 return level < levels.Length ? levels[level] : 0;
             }

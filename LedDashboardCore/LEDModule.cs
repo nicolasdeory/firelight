@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace LedDashboardCore
 {
@@ -11,7 +7,7 @@ namespace LedDashboardCore
     /// The Dispose() method should be used to get rid of periodic tasks such as event loops.
     /// </summary>
     public interface LEDModule : IDisposable
-    { 
+    {
 
         public delegate void FrameReadyHandler(object s, Led[] ls, LightingMode mode);
         /// <summary>

@@ -1,8 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Games.LeagueOfLegends.Model
 {
@@ -23,11 +20,12 @@ namespace Games.LeagueOfLegends.Model
             {
                 level3 = costs[3];
                 level4 = costs[4];
-            } else
+            }
+            else
             {
                 level3 = level4 = 0;
             }
-            
+
         }
         public int this[int level]
         {

@@ -1,9 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
 using System.Net;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace LedDashboardCore
@@ -39,7 +36,8 @@ namespace LedDashboardCore
             try
             {
                 await t;
-            } catch (Exception e)
+            }
+            catch (Exception e)
             {
                 if (LOG_LEVEL < TaskRunnerLogLevel.Verbose)
                 {

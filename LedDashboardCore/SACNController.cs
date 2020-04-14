@@ -2,8 +2,6 @@
 using System;
 using System.Collections.Generic;
 using System.Drawing;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace LedDashboardCore
@@ -32,7 +30,7 @@ namespace LedDashboardCore
 
         public void SendData(int ledCount, byte[] data, LightingMode mode) // todo: when on keyboard mode, ledCount still has to be correct for the strip!
         {
-            Task.Run(() => sender.Send(1, SanitizeDataArray(ledCount,data,mode)));
+            Task.Run(() => sender.Send(1, SanitizeDataArray(ledCount, data, mode)));
         }
 
         private byte[] SanitizeDataArray(int ledCount, byte[] data, LightingMode mode)

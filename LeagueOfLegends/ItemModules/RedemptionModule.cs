@@ -1,13 +1,9 @@
-﻿using LedDashboardCore.Modules.BasicAnimation;
-using Games.LeagueOfLegends.ChampionModules.Common;
+﻿using Games.LeagueOfLegends.ChampionModules.Common;
 using Games.LeagueOfLegends.Model;
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using LedDashboardCore;
+using System;
+using System.Diagnostics;
+using System.Threading.Tasks;
 
 namespace Games.LeagueOfLegends.ItemModules
 {

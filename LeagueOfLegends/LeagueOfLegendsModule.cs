@@ -2,13 +2,10 @@
 using Games.LeagueOfLegends.ItemModules;
 using Games.LeagueOfLegends.Model;
 using LedDashboardCore;
-using LedDashboardCore.Modules.BasicAnimation;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
-using System.Drawing;
 using System.Linq;
 using System.Net;
 using System.Reflection;
@@ -132,7 +129,7 @@ namespace Games.LeagueOfLegends
             // Set trinket initial cooldowns
             double avgChampLevel = GameState.AverageChampionLevel;
             // note: this assumes the program is run BEFORE the game starts, or else it won't be very accurate.
-            ItemCooldownController.SetCooldown(OracleLensModule.ITEM_ID, OracleLensModule.GetCooldownDuration(avgChampLevel)); 
+            ItemCooldownController.SetCooldown(OracleLensModule.ITEM_ID, OracleLensModule.GetCooldownDuration(avgChampLevel));
             ItemCooldownController.SetCooldown(FarsightAlterationModule.ITEM_ID, FarsightAlterationModule.GetCooldownDuration(avgChampLevel));
 
             // Load champion module. Different modules will be loaded depending on the champion.
@@ -144,7 +141,7 @@ namespace Games.LeagueOfLegends
             if (champType != null)
             {
                 championModule = champType.GetConstructors().First()
-                                    .Invoke(new object[] { Leds.Length, GameState, LightingMode, PreferredCastMode }) 
+                                    .Invoke(new object[] { Leds.Length, GameState, LightingMode, PreferredCastMode })
                                     as ChampionModule;
                 championModule.NewFrameReady += NewFrameReadyHandler;
                 championModule.TriedToCastOutOfMana += OnAbilityCastNoMana;

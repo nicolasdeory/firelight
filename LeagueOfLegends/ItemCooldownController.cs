@@ -1,9 +1,6 @@
-﻿using Games.LeagueOfLegends.Model;
-using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -51,7 +48,7 @@ namespace Games.LeagueOfLegends
                 if (token.IsCancellationRequested)
                     token.ThrowIfCancellationRequested();
                 List<int> keys = cooldownDict.Keys.ToList(); // in order to prevent "collection modified"-related errors
-                foreach(var k in keys)
+                foreach (var k in keys)
                 {
                     cooldownDict[k] -= 1000;
                     cooldownDict[k] = cooldownDict[k] < 0 ? 0 : cooldownDict[k];
@@ -64,8 +61,8 @@ namespace Games.LeagueOfLegends
         {
             if (!cooldownDict.ContainsKey(itemID))
             {
-               // Debug.WriteLine("Tried to get " + itemID + " which is not an item with tracked cooldowns. Returning false");
-               // it's expected behavior so don't print anything
+                // Debug.WriteLine("Tried to get " + itemID + " which is not an item with tracked cooldowns. Returning false");
+                // it's expected behavior so don't print anything
                 return true;
             }
             else

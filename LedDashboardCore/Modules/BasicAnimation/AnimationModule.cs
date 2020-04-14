@@ -1,9 +1,6 @@
 ﻿using LedDashboardCore.Modules.Common;
 using System;
 using System.Collections.Generic;
-using System.Drawing;
-using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -138,7 +135,7 @@ namespace LedDashboardCore.Modules.BasicAnimation
         {
             if (currentlyRunningAnim == null)
                 return;
-            
+
             currentlyRunningAnim.Cancel();
             this.leds.SetAllToBlack();
             NewFrameReady.Invoke(this, this.leds, LightingMode.Line);
@@ -222,7 +219,7 @@ namespace LedDashboardCore.Modules.BasicAnimation
             {
                 this.leds[j] = new Led();
             }
-            
+
             int frameTime = (int)(30 / timeScale);
             for (int i = 0; i < anim.FrameCount; i++)
             {

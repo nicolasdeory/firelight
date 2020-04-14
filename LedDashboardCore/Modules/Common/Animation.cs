@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 
 namespace LedDashboardCore.Modules.Common
 {
@@ -17,8 +13,8 @@ namespace LedDashboardCore.Modules.Common
             frames = anim;
         }
 
-        public HSVColor[] this[int index] 
-        { 
+        public HSVColor[] this[int index]
+        {
             get => frames[index];
         }
 

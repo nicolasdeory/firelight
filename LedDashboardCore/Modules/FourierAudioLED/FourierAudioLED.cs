@@ -1,8 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace LedDashboardCore.Modules.FourierAudioLED
 {
@@ -52,7 +49,7 @@ namespace LedDashboardCore.Modules.FourierAudioLED
                 this.freqArray[i] = (int)Math.Floor(Utils.Scale(FFTUtil.GetFreqForIndex(i, FFT_SPACING_HZ), 0, 2500, 0, this.ledCount / 2 + 1));
             }
             leds = new Led[ledCount];
-            for(int i = 0; i < ledCount; i++)
+            for (int i = 0; i < ledCount; i++)
             {
                 leds[i] = new Led();
             }

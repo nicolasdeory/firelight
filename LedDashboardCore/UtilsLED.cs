@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace LedDashboardCore
+﻿namespace LedDashboardCore
 {
     public static class UtilsLED
     {
@@ -46,7 +40,8 @@ namespace LedDashboardCore
                     if (overrideColor)
                     {
                         leds[ledNum + i].Color(colHSV);
-                    } else
+                    }
+                    else
                     {
                         leds[ledNum + i].MixNewColor(c);
                     }
@@ -77,11 +72,11 @@ namespace LedDashboardCore
         {
             foreach (var led in leds)
             {
-                led.FadeToColorBy(color,fadeToColorFactor);
+                led.FadeToColorBy(color, fadeToColorFactor);
             }
         }
 
-        public static Led GetLedIn2D(this Led[] leds, int x, int y, int rowSize=21)
+        public static Led GetLedIn2D(this Led[] leds, int x, int y, int rowSize = 21)
         {
             return leds[y * rowSize + x];
         }
@@ -110,7 +105,7 @@ namespace LedDashboardCore
         public static Led[] LedsFromBytes(int ledCount, byte[] data)
         {
             Led[] leds = new Led[ledCount];
-            for(int i = 0; i < ledCount; i++)
+            for (int i = 0; i < ledCount; i++)
             {
                 leds[i] = new Led();
                 leds[i].Color(HSVColor.FromRGB(data[i * 3], data[i * 3 + 1], data[i * 3 + 2]));
@@ -123,7 +118,7 @@ namespace LedDashboardCore
         /// </summary>
         /// <param name="reverseOrder"></param>
         /// <returns>A byte array of length ledCount * 3</returns>
-        public static byte[] ToByteArray(this Led[] leds,bool reverseOrder = false)
+        public static byte[] ToByteArray(this Led[] leds, bool reverseOrder = false)
         {
             byte[] data = new byte[leds.Length * 3];
             if (reverseOrder)

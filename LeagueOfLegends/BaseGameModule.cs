@@ -1,20 +1,7 @@
 ﻿using Games.LeagueOfLegends.ChampionModules.Common;
-using Games.LeagueOfLegends.ItemModules;
 using Games.LeagueOfLegends.Model;
 using LedDashboardCore;
 using LedDashboardCore.Modules.BasicAnimation;
-using LedDashboardCore.Modules.Common;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Drawing;
-using System.Linq;
-using System.Net;
-using System.Reflection;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace Games.LeagueOfLegends
 {

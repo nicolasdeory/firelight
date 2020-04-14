@@ -46,13 +46,13 @@ namespace LedDashboard
 
         LightingMode preferredMode;
 
-        
+
         /// <summary>
         /// Starts the LED Manager in keyboard mode by default. Use <seealso cref="SetController"/> to further customize settings, especially for LED strips
         /// </summary>
         public LedManager() // by default starts in keyboard mode
         {
-            
+
             lightController = RazerChromaController.Create();
 
             InitLeds(LightingMode.Keyboard);
@@ -88,7 +88,8 @@ namespace LedDashboard
                 LEDModule lolModule = LeagueOfLegendsModule.Create(preferredMode, ledCount, ModuleOptions.ContainsKey("lol") ? ModuleOptions["lol"] : new Dictionary<string, string>());
                 lolModule.NewFrameReady += UpdateLEDDisplay;
                 CurrentLEDModule = lolModule;
-            } else if (name.Length == 0)
+            }
+            else if (name.Length == 0)
             {
                 CurrentLEDModule = null;
                 return;
@@ -128,8 +129,8 @@ namespace LedDashboard
             updatingDisplay = false;
         }
 
-        
-        
+
+
         /// <summary>
         /// Sets the light controller to be used
         /// </summary>
@@ -140,7 +141,8 @@ namespace LedDashboard
             {
                 lightController = SACNController.Create();
                 this.preferredMode = LightingMode.Line;
-            } else if (type == LightControllerType.RazerChroma)
+            }
+            else if (type == LightControllerType.RazerChroma)
             {
                 lightController = RazerChromaController.Create();
                 this.preferredMode = LightingMode.Keyboard;
@@ -176,15 +178,16 @@ namespace LedDashboard
             {
                 ModuleOptions.Add(moduleId, new Dictionary<string, string>());
             }
-            if(ModuleOptions[moduleId].ContainsKey(option))
+            if (ModuleOptions[moduleId].ContainsKey(option))
             {
                 ModuleOptions[moduleId][option] = value;
-            } else
+            }
+            else
             {
                 ModuleOptions[moduleId].Add(option, value);
             }
             RestartManager();
-            
+
         }
 
     }

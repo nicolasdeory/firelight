@@ -3,10 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
 using System.IO;
-using System.Linq;
 using System.Text;
-using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 
 namespace LedDashboardCore.Modules.Common
 {
@@ -22,9 +19,9 @@ namespace LedDashboardCore.Modules.Common
             catch (Exception e)
             {
                 Debug.WriteLine(e.StackTrace);
-                throw new ArgumentException("File does not exist.",e);
+                throw new ArgumentException("File does not exist.", e);
             }
-            
+
             string[] lines = text.Split('\n');
             string[] data = lines[0].Split(',');
             int numLeds = int.Parse(data[0]);

@@ -1,8 +1,8 @@
 ﻿using Games.LeagueOfLegends.ChampionModules.Common;
 using Games.LeagueOfLegends.Model;
+using LedDashboardCore;
 using System;
 using System.Windows.Forms;
-using LedDashboardCore;
 
 namespace Games.LeagueOfLegends
 {
@@ -31,8 +31,8 @@ namespace Games.LeagueOfLegends
 
         ItemAttributes ItemAttributes;
 
-      /*  protected delegate void ItemInfoRetrievedHandler();
-        protected event ItemInfoRetrievedHandler ItemInfoRetrieved;*/
+        /*  protected delegate void ItemInfoRetrievedHandler();
+          protected event ItemInfoRetrievedHandler ItemInfoRetrieved;*/
 
         public event EventHandler ItemCast;
 
@@ -88,7 +88,7 @@ namespace Games.LeagueOfLegends
         {
             var keyCode = e.KeyCode; // HACK why dont just use Keys enum as event arg instead of this
             int index = 0;
-            if (keyCode >= Keys.D0 && keyCode <= Keys.D9) 
+            if (keyCode >= Keys.D0 && keyCode <= Keys.D9)
             {
                 index = 1;
             }

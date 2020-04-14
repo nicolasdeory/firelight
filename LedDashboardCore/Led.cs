@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace LedDashboardCore
 {
@@ -57,14 +53,14 @@ namespace LedDashboardCore
             color = col;
         }
 
-        public void MixNewColor(HSVColor col, bool additive = false, float rate=0.5f)
+        public void MixNewColor(HSVColor col, bool additive = false, float rate = 0.5f)
         {
             if (!additive && color.Equals(HSVColor.Black))
             {
                 color.h = col.h;
                 color.s = col.s;
                 color.v = col.v;
-               // color.v = 0.5f * col.v;
+                // color.v = 0.5f * col.v;
             }
             else
             {
@@ -73,7 +69,8 @@ namespace LedDashboardCore
                 if (additive)
                 {
                     color.v = 0.5f * color.v + 0.5f * col.v;
-                } else
+                }
+                else
                 {
                     if (col.v > color.v) color.v = col.v;
 

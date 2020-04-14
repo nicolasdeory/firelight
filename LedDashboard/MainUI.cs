@@ -1,16 +1,10 @@
-﻿using Numpy;
+﻿using LedDashboardCore;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
-using System.Linq;
-using System.Text;
+using System.IO;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using ScottPlot;
-using Python.Runtime;
-using System.IO;
-using System.Diagnostics;
-using LedDashboardCore;
 
 namespace LedDashboard
 {
@@ -85,12 +79,15 @@ namespace LedDashboard
 
         private void LolModeSelectionChanged(object sender, EventArgs e)
         {
-            if(lolModeSelector.SelectedIndex == 0)
+            if (lolModeSelector.SelectedIndex == 0)
             {
                 ledManager.SetModuleOption("lol", "castMode", "normal");
-            } else if (lolModeSelector.SelectedIndex == 1) {
+            }
+            else if (lolModeSelector.SelectedIndex == 1)
+            {
                 ledManager.SetModuleOption("lol", "castMode", "quick");
-            } else if (lolModeSelector.SelectedIndex == 2)
+            }
+            else if (lolModeSelector.SelectedIndex == 2)
             {
                 ledManager.SetModuleOption("lol", "castMode", "quickindicator");
             }
@@ -119,7 +116,7 @@ namespace LedDashboard
                         {
                             byte[] col = led.color.ToRGB();
                             SolidBrush colBrush = new SolidBrush(Color.FromArgb(col[0], col[1], col[2]));
-                            KeyboardKey key = keyboardLayout[i];                          
+                            KeyboardKey key = keyboardLayout[i];
                             canvas.FillRectangle(colBrush, new Rectangle(key.X, key.Y, (key.Width ?? 20) - 2, (key.Height ?? 20) - 2));
                             i++;
                         }

@@ -1,13 +1,10 @@
 ﻿using SciColorMaps.Portable;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace LedDashboardCore
 {
     public static class Gradient
     {
-        private static byte[][] RAINBOW_PALETTE_RGB = new []
+        private static byte[][] RAINBOW_PALETTE_RGB = new[]
         {
             new byte[] { 255, 0, 0 },
             new byte[] { 255, 102, 0 },

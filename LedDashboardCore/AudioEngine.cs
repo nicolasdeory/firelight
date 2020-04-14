@@ -1,9 +1,4 @@
 ﻿using NAudio.Wave;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Diagnostics;
 
 namespace LedDashboardCore
@@ -60,7 +55,7 @@ namespace LedDashboardCore
             // create wave input from mic
             wi = new WaveInEvent();
             wi.DeviceNumber = IN_DEVICE_INDEX;
-            wi.WaveFormat = new WaveFormat(RATE,1);
+            wi.WaveFormat = new WaveFormat(RATE, 1);
             sampleRate = RATE;
             Debug.WriteLine("Running at a sample rate of " + sampleRate);
             wi.BufferMilliseconds = (int)((double)BUFFERSIZE / (double)RATE * 1000.0);

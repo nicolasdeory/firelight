@@ -1,9 +1,4 @@
 ﻿using Gma.System.MouseKeyHook;
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Runtime.InteropServices;
-using System.Text;
 using System.Windows.Forms;
 
 namespace LedDashboardCore
@@ -34,7 +29,7 @@ namespace LedDashboardCore
         /// </summary>
         public event KeyEventHandler OnKeyReleased;
 
-        
+
         //public event KeyEventHandler OnKeyDown; // this shouldn't be needed
 
         public static void Init()

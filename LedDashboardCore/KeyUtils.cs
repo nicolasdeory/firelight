@@ -1,9 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace LedDashboardCore
 {
@@ -16,7 +12,7 @@ namespace LedDashboardCore
         /// <returns></returns>
         public static int PointToKey(Point p)
         {
-            return pointToKeyArray[p.Y,p.X];
+            return pointToKeyArray[p.Y, p.X];
         }
 
         private static void KeyToPoints()
@@ -24,17 +20,17 @@ namespace LedDashboardCore
             if (keyToPointsList == null)
             {
                 keyToPointsList = new List<List<Point>>();
-                for(int i = 0; i < 88; i++)
+                for (int i = 0; i < 88; i++)
                 {
                     if (keyToPointsList.Count <= i)
                     {
                         keyToPointsList.Add(new List<Point>());
                     }
-                    for(int j = 0; j < 6; j++)
+                    for (int j = 0; j < 6; j++)
                     {
                         for (int k = 0; k < 19; k++)
                         {
-                            if (pointToKeyArray[j,k] == i)
+                            if (pointToKeyArray[j, k] == i)
                             {
                                 keyToPointsList[i].Add(new Point(k, j));
                             }
@@ -54,10 +50,10 @@ namespace LedDashboardCore
         }
 
         private static List<List<Point>> keyToPointsList;
-        
+
         // hardcoded array that maps 2D points to key indices (from the indexKeyMap)
         // used to show properly positioned leds. Positioning may vary for each keyboard model. That should be something to keep in mind.
-        private static int[,] pointToKeyArray = new int[6, 19] 
+        private static int[,] pointToKeyArray = new int[6, 19]
         {
             {0,-1,1,2,3,4,-1,5,6,7,8,-1,9,10,11,12,13,14,15 },
             {16,17,18,19,20,21,22,23,24,25,26,26,27,28,29,29,30,31,32 },

@@ -1,10 +1,7 @@
 using Games.LeagueOfLegends.ChampionModules.Common;
 using Games.LeagueOfLegends.Model;
 using LedDashboardCore;
-using System;
-using System.Collections.Generic;
 using System.Threading.Tasks;
-using System.Windows.Forms;
 
 namespace Games.LeagueOfLegends.ChampionModules
 {

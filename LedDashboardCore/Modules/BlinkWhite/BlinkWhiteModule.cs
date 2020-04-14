@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -45,7 +42,7 @@ namespace LedDashboardCore.Modules.BlinkWhite
                 }
                 else
                 {
-                    foreach(Led l in this.leds)
+                    foreach (Led l in this.leds)
                     {
                         l.Color(new HSVColor(0.2f, 1f, 1f));
                     }

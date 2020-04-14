@@ -1,16 +1,10 @@
 ﻿using Games.LeagueOfLegends.ChampionModules.Common;
 using Games.LeagueOfLegends.Model;
 using LedDashboardCore;
-using LedDashboardCore.Modules.BasicAnimation;
 using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
-using System.IO;
-using System.Linq;
 using System.Net;
-using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
@@ -400,7 +394,7 @@ namespace Games.LeagueOfLegends
                 else
                     SelectedAbility = AbilityKey.None;
             });
-            
+
         }
         private void RecastAbility(AbilityKey key)
         {
@@ -412,7 +406,7 @@ namespace Games.LeagueOfLegends
                     SelectedAbility = AbilityKey.None;
                 StartCooldownTimer(key);
             }
-            
+
         }
 
         /// <summary>
@@ -467,7 +461,7 @@ namespace Games.LeagueOfLegends
         {
             // TODO: Refactor this into tracking cooldowns accurately, 
             // if this method is called twice (needed for Xerath or others that have different cooldowns on different circumstances), it won't work properly
-            Task.Run(async () => 
+            Task.Run(async () =>
             {
                 AbilitiesOnCooldown[ability] = true;
                 int cd = overrideTime > 0 ? overrideTime : GetCooldownForAbility(ability);
