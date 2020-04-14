@@ -6,7 +6,7 @@ using LedDashboardCore;
 
 namespace Games.LeagueOfLegends
 {
-    abstract class ItemModule : GameElementModule
+    public abstract class ItemModule : GameElementModule
     {
         protected const string ITEM_ANIMATION_PATH = @"Animations/LeagueOfLegends/Items/";
 

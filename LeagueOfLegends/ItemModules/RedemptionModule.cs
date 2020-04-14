@@ -12,7 +12,7 @@ using LedDashboardCore;
 namespace Games.LeagueOfLegends.ItemModules
 {
     [Item(ITEM_ID)]
-    class RedemptionModule : ItemModule
+    public sealed class RedemptionModule : ItemModule
     {
         public const int ITEM_ID = 3107;
         public const string ITEM_NAME = "Redemption";

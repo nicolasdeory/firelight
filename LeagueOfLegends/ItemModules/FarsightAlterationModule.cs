@@ -11,7 +11,7 @@ using LedDashboardCore;
 namespace Games.LeagueOfLegends.ItemModules
 {
     [Item(ITEM_ID)]
-    class FarsightAlterationModule : ItemModule
+    public sealed class FarsightAlterationModule : ItemModule
     {
         public const int ITEM_ID = 3363;
         public const string ITEM_NAME = "FarsightAlteration";

@@ -1,19 +1,12 @@
 ﻿using Games.LeagueOfLegends.ChampionModules.Common;
 using Games.LeagueOfLegends.Model;
-using LedDashboardCore.Modules.BasicAnimation;
-using LedDashboardCore.Modules.Common;
-using Games.LeagueOfLegends.ChampionModules.Common;
-using Games.LeagueOfLegends.Model;
 using LedDashboardCore;
-using System.Collections.Generic;
 using System.Threading.Tasks;
-using System.Windows.Forms;
 
 namespace Games.LeagueOfLegends.ChampionModules
 {
-
     [Champion(CHAMPION_NAME)]
-    class VelKozModule : ChampionModule
+    public sealed class VelKozModule : ChampionModule
     {
         public const string CHAMPION_NAME = "Velkoz";
 
@@ -24,7 +17,7 @@ namespace Games.LeagueOfLegends.ChampionModules
         bool qCastInProgress = false;
         bool rCastInProgress = false; // this is used to make the animation for Vel'Koz's R to take preference over other animations
 
-        public VelKozModule(int ledCount, GameState gameState, LightingMode preferredLightMode, AbilityCastPreference preferredCastMode) 
+        public VelKozModule(int ledCount, GameState gameState, LightingMode preferredLightMode, AbilityCastPreference preferredCastMode)
             : base(ledCount, CHAMPION_NAME, gameState, preferredLightMode, preferredCastMode, true)
         {
             // Initialization for the champion module occurs here.
@@ -52,7 +45,7 @@ namespace Games.LeagueOfLegends.ChampionModules
 
             // After 1.15s, if user didn't press Q again already, the Q split animation plays.
             // TODO: Q runs a bit slow.
-            
+
             await Task.Delay(1150);
             if (!rCastInProgress && qCastInProgress)
             {

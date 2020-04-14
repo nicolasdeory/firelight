@@ -11,7 +11,7 @@ using LedDashboardCore;
 namespace Games.LeagueOfLegends.ItemModules
 {
     [Item(ITEM_ID)]
-    class HeraldEyeModule : ItemModule
+    public sealed class HeraldEyeModule : ItemModule
     {
         public const int ITEM_ID = 3513;
         public const string ITEM_NAME = "HeraldEye";

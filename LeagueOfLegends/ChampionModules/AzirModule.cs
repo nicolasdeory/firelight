@@ -9,9 +9,8 @@ using System.Windows.Forms;
 namespace Games.LeagueOfLegends.ChampionModules
 {
     [Champion(CHAMPION_NAME)]
-    class AzirModule : ChampionModule
+    public sealed class AzirModule : ChampionModule
     {
-
         // Change to whatever champion you want to implement
         public const string CHAMPION_NAME = "Azir";
 

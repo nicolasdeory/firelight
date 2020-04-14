@@ -11,7 +11,7 @@ using LedDashboardCore;
 namespace Games.LeagueOfLegends.ItemModules
 {
     [Item(ITEM_ID)]
-    class WardingTotemModule : ItemModule
+    public sealed class WardingTotemModule : ItemModule
     {
         public const int ITEM_ID = 3340;
         public const string ITEM_NAME = "WardingTotem";

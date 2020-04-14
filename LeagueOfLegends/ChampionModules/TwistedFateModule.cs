@@ -8,7 +8,7 @@ using System.Windows.Forms;
 namespace Games.LeagueOfLegends.ChampionModules
 {
     [Champion(CHAMPION_NAME)]
-    class TwistedFateModule : ChampionModule
+    public sealed class TwistedFateModule : ChampionModule
     {
         public const string CHAMPION_NAME = "TwistedFate";
         // Variables

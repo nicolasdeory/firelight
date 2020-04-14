@@ -11,7 +11,7 @@ using LedDashboardCore;
 namespace Games.LeagueOfLegends.ItemModules
 {
     [Item(ITEM_ID)]
-    class OracleLensModule : ItemModule
+    public sealed class OracleLensModule : ItemModule
     {
         public const int ITEM_ID = 3364;
         public const string ITEM_NAME = "OracleLens";

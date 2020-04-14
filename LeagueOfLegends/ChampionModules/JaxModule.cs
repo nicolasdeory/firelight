@@ -8,9 +8,8 @@ using System.Windows.Forms;
 namespace Games.LeagueOfLegends.ChampionModules
 {
     [Champion(CHAMPION_NAME)]
-    class JaxModule : ChampionModule
+    public sealed class JaxModule : ChampionModule
     {
-
         public const string CHAMPION_NAME = "Jax";
         // Variables
 
