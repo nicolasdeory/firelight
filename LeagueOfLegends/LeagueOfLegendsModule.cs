@@ -16,15 +16,12 @@ using System.Threading;
 using System.Threading.Tasks;
 
 namespace Games.LeagueOfLegends
-
-    // TODO: Refactor this into a separate project
 {
+    // TODO: Refactor this into a separate project
     public class LeagueOfLegendsModule : LEDModule
     {
-
-        // Static members
-
-        public static GameState CurrentGameState { get; set; }
+        private static List<Type> ChampionControllers = GetChampionControllers();
+        private static List<Type> ItemControllers = GetItemControllers();
 
         // Constants
 
@@ -34,9 +31,6 @@ namespace Games.LeagueOfLegends
         HSVColor NoManaColor = new HSVColor(0.52f, 0.66f, 1f);
 
         HSVColor KillColor = new HSVColor(0.06f, 0.96f, 1f);
-
-        List<Type> ChampionControllers = GetChampionControllers();
-        List<Type> ItemControllers = GetItemControllers();
 
         // Variables
 
@@ -79,17 +73,23 @@ namespace Games.LeagueOfLegends
             AbilityCastPreference castMode = AbilityCastPreference.Normal;
             if (options.ContainsKey("castMode"))
             {
-                if (options["castMode"] == "quick") castMode = AbilityCastPreference.Quick;
-                else if (options["castMode"] == "quickindicator") castMode = AbilityCastPreference.QuickWithIndicator;
+                castMode = GetCastPreference(options["castMode"]);
             }
             if (preferLightMode == LightingMode.Keyboard)
             {
-                return new LeagueOfLegendsModule(88, preferLightMode, castMode);
+                ledCount = 88;
             }
-            else
+            return new LeagueOfLegendsModule(ledCount, preferLightMode, castMode);
+        }
+
+        private static AbilityCastPreference GetCastPreference(string castMode)
+        {
+            return castMode switch
             {
-                return new LeagueOfLegendsModule(ledCount, preferLightMode, castMode);
-            }
+                "quick" => AbilityCastPreference.Quick,
+                "quickindicator" => AbilityCastPreference.QuickWithIndicator,
+                _ => AbilityCastPreference.Normal,
+            };
         }
 
         /// <summary>
@@ -99,7 +99,6 @@ namespace Games.LeagueOfLegends
 
         private LeagueOfLegendsModule(int ledCount, LightingMode mode, AbilityCastPreference castMode)
         {
-
             // League of Legends integration Initialization
 
             // Init Item Attributes
@@ -121,8 +120,6 @@ namespace Games.LeagueOfLegends
 
             PlayLoadingAnimation();
             WaitForGameInitialization();
-
-
         }
 
         // plays it indefinitely
@@ -131,35 +128,28 @@ namespace Games.LeagueOfLegends
             animationModule.AlternateBetweenTwoColors(HSVColor.Black, LoadingColor, -1, 1.5f);
         }
 
-        private void WaitForGameInitialization()
+        private async Task WaitForGameInitialization()
         {
-            Task.Run(async () =>
+            while (true)
             {
-                while (true)
+                if (masterCancelToken.IsCancellationRequested)
+                    return;
+                try
                 {
-                    if (masterCancelToken.IsCancellationRequested) return;
-                    try
+                    if (await WebRequestUtil.IsLive("https://127.0.0.1:2999/liveclientdata/allgamedata"))
                     {
-                        if (await WebRequestUtil.IsLive("https://127.0.0.1:2999/liveclientdata/allgamedata"))
-                        {
-                            break;
-                        }
-                        else
-                        {
-                            await Task.Delay(1000);
-                            continue;
-                        }
+                        break;
                     }
-                    catch (WebException e)
-                    {
-                        await Task.Delay(1000);
-                        continue;
-                    }
-
                 }
-                await OnGameInitialized();
-            });
+                catch (WebException e)
+                {
+                    // TODO: Account for League client disconnects, game ended, etc. without crashing the whole program
+                    //throw new InvalidOperationException("Couldn't connect with the game client", e);
+                }
 
+                await Task.Delay(1000);
+            }
+            await OnGameInitialized();
         }
 
         private async Task OnGameInitialized() // TODO: Handle summoner spells
@@ -194,20 +184,22 @@ namespace Games.LeagueOfLegends
             }
             CurrentLEDSource = championModule;
 
-            // Sets up a task to always check for updated player info
-            _ = Task.Run(async () =>
-            {
-                while (true)
-                {
-                    if (masterCancelToken.IsCancellationRequested) return;
-                    await QueryPlayerInfo();
-                    await Task.Delay(150);
-                }
-            });
+            // Initialize endless player info checking check
+            UpdatePlayerInfo();
 
             // start frame timer
-            _ = Task.Run(FrameTimer);
+            FrameTimer();
+        }
 
+        private async void UpdatePlayerInfo()
+        {
+            while (true)
+            {
+                if (masterCancelToken.IsCancellationRequested)
+                    return;
+                await QueryPlayerInfo();
+                await Task.Delay(150);
+            }
         }
 
         /// <summary>
@@ -225,7 +217,7 @@ namespace Games.LeagueOfLegends
                 Console.WriteLine("InvalidOperationException: Game client disconnected");
                 throw new InvalidOperationException("Couldn't connect with the game client", e);
             }
-            
+
             var gameData = JsonConvert.DeserializeObject<dynamic>(json);
             gameState.GameEvents = (gameData.events.Events as JArray).ToObject<List<Event>>();
             // Get active player info
@@ -236,13 +228,11 @@ namespace Games.LeagueOfLegends
             // Update active player based on player champion data
             gameState.ActivePlayer.IsDead = gameState.PlayerChampion.IsDead;
             // Update champion LED module information
-            if (championModule != null) championModule.UpdateGameState(gameState);
+            championModule?.UpdateGameState(gameState);
             // Update player ability cooldowns
             gameState.PlayerAbilityCooldowns = championModule?.AbilitiesOnCooldown;
-            // Set current game state
-            CurrentGameState = gameState; // This call is possibly not needed because the reference is always the same
             // Get player items
-
+            //gameState.PlayerItemCooldowns = new bool[7];
             foreach (Item item in gameState.PlayerChampion.Items)
             {
                 SetModuleForItem(item);
@@ -250,7 +240,6 @@ namespace Games.LeagueOfLegends
 
             // Process game events
             ProcessGameEvents(firstTime);
-
         }
 
         private void SetModuleForItem(Item item)
@@ -292,7 +281,8 @@ namespace Games.LeagueOfLegends
         {
             while (true)
             {
-                if (masterCancelToken.IsCancellationRequested) return;
+                if (masterCancelToken.IsCancellationRequested)
+                    return;
                 if (msSinceLastExternalFrameReceived >= msAnimationTimerThreshold)
                 {
                     if (!CheckIfDead())
@@ -300,7 +290,6 @@ namespace Games.LeagueOfLegends
                         HUDModule.DoFrame(this.leds, this.lightingMode, this.gameState);
                         NewFrameReady?.Invoke(this, this.leds, this.lightingMode);
                     }
-
                 }
                 await Task.Delay(30);
                 msSinceLastExternalFrameReceived += 30;
@@ -329,11 +318,12 @@ namespace Games.LeagueOfLegends
         /// <param name="data">LED data</param>
         private void OnNewFrameReceived(object s, Led[] data, LightingMode mode)
         {
-            if ((s is ChampionModule && CurrentLEDSource is ItemModule && !((ItemModule)CurrentLEDSource).IsPriorityItem)) // Champion modules take priority over item casts... for the moment
+            if ((s is ChampionModule && CurrentLEDSource is ItemModule item && !item.IsPriorityItem)) // Champion modules take priority over item casts... for the moment
             {
                 CurrentLEDSource = (LEDModule)s;
             }
-            if (s != CurrentLEDSource) return; // If it's from a different source that what we're listening too, ignore it
+            if (s != CurrentLEDSource)
+                return; // If it's from a different source that what we're listening to, ignore it
             NewFrameReady?.Invoke(this, data, mode);
             msSinceLastExternalFrameReceived = 0;
         }
@@ -346,15 +336,14 @@ namespace Games.LeagueOfLegends
             if (firstTime)
             {
                 if (gameState.GameEvents.Count > 0)
-                    currentGameTimestamp = gameState.GameEvents[gameState.GameEvents.Count - 1].EventTime;
-                else
-                    currentGameTimestamp = 0;
+                    currentGameTimestamp = gameState.GameEvents.Last().EventTime;
 
                 return;
             }
             foreach (Event ev in gameState.GameEvents)
             {
-                if (ev.EventTime <= currentGameTimestamp) continue;
+                if (ev.EventTime <= currentGameTimestamp)
+                    continue;
                 currentGameTimestamp = ev.EventTime;
                 switch (ev.EventName)
                 {
@@ -385,7 +374,6 @@ namespace Games.LeagueOfLegends
             }
             else
             {
-
                 if (wasDeadLastFrame)
                 {
                     leds.SetAllToBlack();
@@ -418,32 +406,15 @@ namespace Games.LeagueOfLegends
             }
         }
 
-        
-        private static List<Type> GetChampionControllers()
+        private static List<Type> GetControllers<T>()
+            where T : Attribute
         {
-            List<Type> ls = new List<Type>();
-            foreach (Type type in Assembly.GetExecutingAssembly().GetTypes())
-            {
-                if (type.GetCustomAttributes(typeof(ChampionAttribute), true).Length > 0)
-                {
-                    ls.Add(type);
-                }
-            }
-            return ls;
+            // TODO: This is a generally useful function that uses reflection, must be abstracted elsewhere
+            return Assembly.GetExecutingAssembly().GetTypes().Where(t => t.GetCustomAttributes(typeof(T), true).Length > 0).ToList();
         }
 
-        private static List<Type> GetItemControllers()
-        {
-            List<Type> ls = new List<Type>();
-            foreach (Type type in Assembly.GetExecutingAssembly().GetTypes())
-            {
-                if (type.GetCustomAttributes(typeof(ItemAttribute), true).Length > 0)
-                {
-                    ls.Add(type);
-                }
-            }
-            return ls;
-        }
+        private static List<Type> GetChampionControllers() => GetControllers<ChampionAttribute>();
+        private static List<Type> GetItemControllers() => GetControllers<ItemAttribute>();
 
         private void OnItemActivated(object s, EventArgs e)
         {
