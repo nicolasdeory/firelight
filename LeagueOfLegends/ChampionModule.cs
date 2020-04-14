@@ -38,12 +38,9 @@ namespace Games.LeagueOfLegends
 
         protected override string ModuleTypeName => "Champion";
 
-        public string Name;
-        
         protected ChampionAttributes ChampionInfo;
-        protected LightingMode LightingMode; // Preferred lighting mode. If set to keyboard, it should try to provide animations that look cooler on keyboards.
 
-        protected Dictionary<AbilityKey,AbilityCastMode> AbilityCastModes;
+        protected Dictionary<AbilityKey, AbilityCastMode> AbilityCastModes;
 
         private AbilityKey SelectedAbility = AbilityKey.None; // Currently selected ability (for example, if you pressed Q but you haven't yet clicked LMB to cast the ability)
         private char lastPressedKey = '\0';
@@ -82,12 +79,6 @@ namespace Games.LeagueOfLegends
         protected ChampionModule(int ledCount, string champName, GameState gameState, LightingMode preferredLightingMode, AbilityCastPreference preferredCastMode, bool preloadAllAnimations = false) // TODO: Pass gamestate instead of active player
             : base(ledCount, champName, gameState, preferredLightingMode, preferredCastMode, preloadAllAnimations)
         {
-            Name = champName;
-            GameState = gameState;
-            LightingMode = preferredLightingMode;
-            PreferredCastMode = preferredCastMode;
-            Animator = AnimationModule.Create(ledCount);
-
             AbilityCastModes = new Dictionary<AbilityKey, AbilityCastMode>
             {
                 [AbilityKey.Q] = GetQCastMode(),

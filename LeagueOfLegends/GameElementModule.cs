@@ -37,14 +37,12 @@ namespace Games.LeagueOfLegends
         protected LightingMode LightingMode; // Preferred lighting mode. If set to keyboard, it should try to provide animations that look cooler on keyboards.
 
         protected AbilityCastPreference PreferredCastMode; // User defined setting, preferred cast mode.
-        protected Dictionary<AbilityKey, AbilityCastMode> AbilityCastModes;
 
-        private AbilityKey SelectedAbility = AbilityKey.None; // Currently selected ability (for example, if you pressed Q but you haven't yet clicked LMB to cast the ability)
         private char lastPressedKey = '\0';
 
         // TODO: Handle champions with cooldown resets?
 
-        protected GameElementModule(int ledCount, string name, GameState gameState, LightingMode preferredLightingMode, AbilityCastPreference preferredCastMode, bool preloadAllAnimations = false) // TODO: Pass gamestate instead of active player
+        protected GameElementModule(int ledCount, string name, GameState gameState, LightingMode preferredLightingMode, AbilityCastPreference preferredCastMode, bool preloadAllAnimations = false)
         {
             Name = name;
             GameState = gameState;
