@@ -18,7 +18,7 @@ using System.Threading.Tasks;
 namespace Games.LeagueOfLegends
 {
     // TODO: Refactor this into a separate project
-    public class LeagueOfLegendsModule : LEDModule
+    public class LeagueOfLegendsModule : BaseGameModule
     {
         private static List<Type> ChampionControllers = GetChampionControllers();
         private static List<Type> ItemControllers = GetItemControllers();
@@ -34,14 +34,7 @@ namespace Games.LeagueOfLegends
 
         // Variables
 
-        Led[] leds;
-
-        AbilityCastPreference preferredCastMode;
-
-        GameState gameState = new GameState();
-
         ChampionModule championModule;
-        AnimationModule animationModule;
 
         ItemModule[] ItemModules = new ItemModule[7];
 
@@ -55,14 +48,6 @@ namespace Games.LeagueOfLegends
         bool wasDeadLastFrame = false;
 
         // Events
-
-        public event LEDModule.FrameReadyHandler NewFrameReady;
-
-        /// <summary>
-        /// The preferred lighting mode (when possible, use this one) For example, if keyboard is preferred, 
-        /// use animations optimized for keyboards rather than for LED strips.
-        /// </summary>
-        LightingMode lightingMode;
 
         /// <summary>
         /// Creates a new <see cref="LeagueOfLegendsModule"/> instance.
@@ -92,12 +77,8 @@ namespace Games.LeagueOfLegends
             };
         }
 
-        /// <summary>
-        /// The current module that is sending information to the LED strip.
-        /// </summary>
-        LEDModule CurrentLEDSource;
-
         private LeagueOfLegendsModule(int ledCount, LightingMode mode, AbilityCastPreference castMode)
+            : base(ledCount, new GameState(), mode, castMode)
         {
             // League of Legends integration Initialization
 
@@ -105,18 +86,7 @@ namespace Games.LeagueOfLegends
             ItemUtils.Init();
             ItemCooldownController.Init();
 
-            this.preferredCastMode = castMode;
-
-            // LED Initialization
-            lightingMode = mode;
-            this.leds = new Led[ledCount];
-            for (int i = 0; i < ledCount; i++)
-                leds[i] = new Led();
-
-            // Load animation module
-            animationModule = AnimationModule.Create(this.leds.Length);
-            animationModule.NewFrameReady += OnNewFrameReceived;
-            CurrentLEDSource = animationModule;
+            AddAnimatorEvent();
 
             PlayLoadingAnimation();
             WaitForGameInitialization();
@@ -125,7 +95,7 @@ namespace Games.LeagueOfLegends
         // plays it indefinitely
         private void PlayLoadingAnimation()
         {
-            animationModule.AlternateBetweenTwoColors(HSVColor.Black, LoadingColor, -1, 1.5f);
+            Animator.AlternateBetweenTwoColors(HSVColor.Black, LoadingColor, -1, 1.5f);
         }
 
         private async Task WaitForGameInitialization()
@@ -154,13 +124,13 @@ namespace Games.LeagueOfLegends
 
         private async Task OnGameInitialized() // TODO: Handle summoner spells
         {
-            animationModule.StopCurrentAnimation(); // stops the current anim
+            Animator.StopCurrentAnimation(); // stops the current anim
 
             // Queries the game information
             await QueryPlayerInfo(true);
 
             // Set trinket initial cooldowns
-            double avgChampLevel = gameState.AverageChampionLevel;
+            double avgChampLevel = GameState.AverageChampionLevel;
             // note: this assumes the program is run BEFORE the game starts, or else it won't be very accurate.
             ItemCooldownController.SetCooldown(OracleLensModule.ITEM_ID, OracleLensModule.GetCooldownDuration(avgChampLevel)); 
             ItemCooldownController.SetCooldown(FarsightAlterationModule.ITEM_ID, FarsightAlterationModule.GetCooldownDuration(avgChampLevel));
@@ -168,7 +138,7 @@ namespace Games.LeagueOfLegends
             // Load champion module. Different modules will be loaded depending on the champion.
             // If there is no suitable module for the selected champion, just the health bar will be displayed.
 
-            string champName = gameState.PlayerChampion.RawChampionName.ToLower();
+            string champName = GameState.PlayerChampion.RawChampionName.ToLower();
 
             Type champType = ChampionControllers.FirstOrDefault(
                                 x => champName.ToLower()
@@ -177,9 +147,9 @@ namespace Games.LeagueOfLegends
             if (champType != null)
             {
                 championModule = champType.GetMethod("Create")
-                                    .Invoke(null, new object[] { this.leds.Length, this.gameState, this.lightingMode, this.preferredCastMode }) 
+                                    .Invoke(null, new object[] { Leds.Length, GameState, LightingMode, PreferredCastMode }) 
                                     as ChampionModule;
-                championModule.NewFrameReady += OnNewFrameReceived;
+                championModule.NewFrameReady += NewFrameReadyHandler;
                 championModule.TriedToCastOutOfMana += OnAbilityCastNoMana;
             }
             CurrentLEDSource = championModule;
@@ -219,21 +189,21 @@ namespace Games.LeagueOfLegends
             }
 
             var gameData = JsonConvert.DeserializeObject<dynamic>(json);
-            gameState.GameEvents = (gameData.events.Events as JArray).ToObject<List<Event>>();
+            GameState.GameEvents = (gameData.events.Events as JArray).ToObject<List<Event>>();
             // Get active player info
-            gameState.ActivePlayer = ActivePlayer.FromData(gameData.activePlayer);
+            GameState.ActivePlayer = ActivePlayer.FromData(gameData.activePlayer);
             // Get player champion info (IsDead, Items, etc)
-            gameState.Champions = (gameData.allPlayers as JArray).ToObject<List<Champion>>();
-            gameState.PlayerChampion = gameState.Champions.Find(x => x.SummonerName == gameState.ActivePlayer.SummonerName);
+            GameState.Champions = (gameData.allPlayers as JArray).ToObject<List<Champion>>();
+            GameState.PlayerChampion = GameState.Champions.Find(x => x.SummonerName == GameState.ActivePlayer.SummonerName);
             // Update active player based on player champion data
-            gameState.ActivePlayer.IsDead = gameState.PlayerChampion.IsDead;
+            GameState.ActivePlayer.IsDead = GameState.PlayerChampion.IsDead;
             // Update champion LED module information
-            championModule?.UpdateGameState(gameState);
+            championModule?.UpdateGameState(GameState);
             // Update player ability cooldowns
-            gameState.PlayerAbilityCooldowns = championModule?.AbilitiesOnCooldown;
+            GameState.PlayerAbilityCooldowns = championModule?.AbilitiesOnCooldown;
             // Get player items
-            //gameState.PlayerItemCooldowns = new bool[7];
-            foreach (Item item in gameState.PlayerChampion.Items)
+            //GameState.PlayerItemCooldowns = new bool[7];
+            foreach (Item item in GameState.PlayerChampion.Items)
             {
                 SetModuleForItem(item);
             }
@@ -254,10 +224,10 @@ namespace Games.LeagueOfLegends
                 {
                     ItemModules[item.Slot]?.Dispose();
                     ItemModules[item.Slot] = itemType.GetMethod("Create")
-                                        .Invoke(null, new object[] { this.leds.Length, this.gameState, item.Slot, this.lightingMode, this.preferredCastMode })
+                                        .Invoke(null, new object[] { Leds.Length, GameState, item.Slot, LightingMode, PreferredCastMode })
                                         as ItemModule;
                     ItemModules[item.Slot].RequestActivation += OnItemActivated;
-                    ItemModules[item.Slot].NewFrameReady += OnNewFrameReceived;
+                    ItemModules[item.Slot].NewFrameReady += NewFrameReadyHandler;
                     ItemCooldownController.AssignItemIdToSlot(item.Slot, item.ItemID);
                     if (item.ItemID == WardingTotemModule.ITEM_ID)
                     {
@@ -265,7 +235,7 @@ namespace Games.LeagueOfLegends
                     }
                     // TODO: Show an item buy animation here?
                 }
-                ItemModules[item.Slot].UpdateGameState(gameState);
+                ItemModules[item.Slot].UpdateGameState(GameState);
             }
             else
             {
@@ -287,8 +257,8 @@ namespace Games.LeagueOfLegends
                 {
                     if (!CheckIfDead())
                     {
-                        HUDModule.DoFrame(this.leds, this.lightingMode, this.gameState);
-                        NewFrameReady?.Invoke(this, this.leds, this.lightingMode);
+                        HUDModule.DoFrame(Leds, LightingMode, GameState);
+                        InvokeNewFrameReady(this, Leds, LightingMode);
                     }
                 }
                 await Task.Delay(30);
@@ -316,7 +286,7 @@ namespace Games.LeagueOfLegends
         /// </summary>
         /// <param name="s">Module that sent the message</param>
         /// <param name="data">LED data</param>
-        private void OnNewFrameReceived(object s, Led[] data, LightingMode mode)
+        protected override void NewFrameReadyHandler(object s, Led[] ls, LightingMode mode)
         {
             if ((s is ChampionModule && CurrentLEDSource is ItemModule item && !item.IsPriorityItem)) // Champion modules take priority over item casts... for the moment
             {
@@ -324,7 +294,7 @@ namespace Games.LeagueOfLegends
             }
             if (s != CurrentLEDSource)
                 return; // If it's from a different source that what we're listening to, ignore it
-            NewFrameReady?.Invoke(this, data, mode);
+            InvokeNewFrameReady(this, ls, mode);
             msSinceLastExternalFrameReceived = 0;
         }
 
@@ -335,12 +305,12 @@ namespace Games.LeagueOfLegends
         {
             if (firstTime)
             {
-                if (gameState.GameEvents.Count > 0)
-                    currentGameTimestamp = gameState.GameEvents.Last().EventTime;
+                if (GameState.GameEvents.Count > 0)
+                    currentGameTimestamp = GameState.GameEvents.Last().EventTime;
 
                 return;
             }
-            foreach (Event ev in gameState.GameEvents)
+            foreach (Event ev in GameState.GameEvents)
             {
                 if (ev.EventTime <= currentGameTimestamp)
                     continue;
@@ -362,21 +332,21 @@ namespace Games.LeagueOfLegends
         /// <returns></returns>
         private bool CheckIfDead()
         {
-            if (gameState.PlayerChampion.IsDead)
+            if (GameState.PlayerChampion.IsDead)
             {
-                for (int i = 0; i < leds.Length; i++)
+                for (int i = 0; i < Leds.Length; i++)
                 {
-                    leds[i].Color(DeadColor);
+                    Leds[i].Color(DeadColor);
                 }
                 wasDeadLastFrame = true;
-                NewFrameReady?.Invoke(this, this.leds, LightingMode.Line);
+                InvokeNewFrameReady(this, this.Leds, LightingMode.Line);
                 return true;
             }
             else
             {
                 if (wasDeadLastFrame)
                 {
-                    leds.SetAllToBlack();
+                    Leds.SetAllToBlack();
                     wasDeadLastFrame = false;
                 }
                 return false;
@@ -385,12 +355,12 @@ namespace Games.LeagueOfLegends
 
         private void OnChampionKill(Event ev)
         {
-            if (ev.KillerName == gameState.ActivePlayer.SummonerName)
+            if (ev.KillerName == GameState.ActivePlayer.SummonerName)
             {
-                CurrentLEDSource = animationModule;
+                CurrentLEDSource = Animator;
                 if (customKillAnimation != null)
                 {
-                    animationModule.RunAnimationOnce(customKillAnimation, false, 0.1f).ContinueWith((t) =>
+                    Animator.RunAnimationOnce(customKillAnimation, false, 0.1f).ContinueWith((t) =>
                     {
                         CurrentLEDSource = championModule;
                         customKillAnimation = null;
@@ -398,7 +368,7 @@ namespace Games.LeagueOfLegends
                 }
                 else
                 {
-                    animationModule.ColorBurst(KillColor, 0.01f).ContinueWith((t) =>
+                    Animator.ColorBurst(KillColor, 0.01f).ContinueWith((t) =>
                     {
                         CurrentLEDSource = championModule;
                     });
@@ -426,17 +396,17 @@ namespace Games.LeagueOfLegends
         /// </summary>
         private void OnAbilityCastNoMana()
         {
-            CurrentLEDSource = animationModule;
-            animationModule.ColorBurst(NoManaColor, 0.3f).ContinueWith((t) =>
+            CurrentLEDSource = Animator;
+            Animator.ColorBurst(NoManaColor, 0.3f).ContinueWith((t) =>
             {
                 CurrentLEDSource = championModule;
             });
         }
 
-        public void Dispose()
+        public override void Dispose()
         {
             masterCancelToken.Cancel();
-            animationModule.StopCurrentAnimation();
+            Animator.StopCurrentAnimation();
             championModule?.Dispose();
             for (int i = 0; i < ItemModules.Length; i++)
             {

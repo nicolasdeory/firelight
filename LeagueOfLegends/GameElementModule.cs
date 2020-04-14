@@ -16,10 +16,8 @@ using System.Windows.Forms;
 
 namespace Games.LeagueOfLegends
 {
-    abstract class GameElementModule : LEDModule
+    public abstract class GameElementModule : BaseGameModule
     {
-        public event LEDModule.FrameReadyHandler NewFrameReady;
-
         protected delegate void GameStateUpdatedHandler(GameState newState);
         /// <summary>
         /// Raised when the player info was updated.
@@ -31,24 +29,14 @@ namespace Games.LeagueOfLegends
         protected abstract string ModuleTypeName { get; }
         protected string ModuleAnimationPath => $"Animations/{ModuleTypeName}s/";
 
-        protected AnimationModule Animator; // Animator module that will be useful to display animations
-
-        protected GameState GameState;
-        protected LightingMode LightingMode; // Preferred lighting mode. If set to keyboard, it should try to provide animations that look cooler on keyboards.
-
-        protected AbilityCastPreference PreferredCastMode; // User defined setting, preferred cast mode.
-
         private char lastPressedKey = '\0';
 
         // TODO: Handle champions with cooldown resets?
 
         protected GameElementModule(int ledCount, string name, GameState gameState, LightingMode preferredLightingMode, AbilityCastPreference preferredCastMode, bool preloadAllAnimations = false)
+            : base(ledCount, gameState, preferredLightingMode, preferredCastMode)
         {
             Name = name;
-            GameState = gameState;
-            LightingMode = preferredLightingMode;
-            PreferredCastMode = preferredCastMode;
-            Animator = AnimationModule.Create(ledCount);
 
             if (preloadAllAnimations)
                 PreloadAllAnimations();
@@ -71,7 +59,6 @@ namespace Games.LeagueOfLegends
             {
                 Debug.WriteLine("No animations found for " + Name);
             }
-            
         }
 
         protected async Task RunAnimationOnce(string animationName, bool keepTail = false, float fadeOutAfterRate = 0, float timeScale = 1)
@@ -83,9 +70,9 @@ namespace Games.LeagueOfLegends
             Animator.RunAnimationInLoop(GetAnimationPath(animationName), loopDuration, fadeOutAfterRate, timeScale);
         }
 
-        protected void AddAnimatorEvent()
+        protected override void NewFrameReadyHandler(object s, Led[] ls, LightingMode mode)
         {
-            Animator.NewFrameReady += (_, ls, mode) => DispatchNewFrame(ls, mode);
+            DispatchNewFrame(ls, mode);
         }
 
         /// <summary>
@@ -93,7 +80,7 @@ namespace Games.LeagueOfLegends
         /// </summary>
         protected void DispatchNewFrame(Led[] ls, LightingMode mode)
         {
-            NewFrameReady?.Invoke(this, ls, mode);
+            InvokeNewFrameReady(this, ls, mode);
         }
 
         protected void AddInputHandlers()
@@ -128,7 +115,7 @@ namespace Games.LeagueOfLegends
             GameStateUpdated?.Invoke(newState);
         }
 
-        public virtual void Dispose()
+        public override void Dispose()
         {
             Animator?.Dispose();
             KeyboardHookService.Instance.OnMouseClicked -= OnMouseClick;
