@@ -31,11 +31,11 @@ namespace Games.LeagueOfLegends.ChampionModules
         /// <param name="preferredCastMode">Preferred ability cast mode (Normal, Quick Cast, Quick Cast with Indicator)</param>
         public static AhriModule Create(int ledCount, GameState gameState, LightingMode preferredLightMode, AbilityCastPreference preferredCastMode = AbilityCastPreference.Normal)
         {
-            return new AhriModule(ledCount, gameState, CHAMPION_NAME, preferredLightMode, preferredCastMode);
+            return new AhriModule(ledCount, gameState, preferredLightMode, preferredCastMode);
         }
 
-        private AhriModule(int ledCount, GameState gameState, string championName, LightingMode preferredLightMode, AbilityCastPreference preferredCastMode)
-            : base(ledCount, championName, gameState, preferredLightMode, preferredCastMode, true)
+        private AhriModule(int ledCount, GameState gameState, LightingMode preferredLightMode, AbilityCastPreference preferredCastMode)
+            : base(ledCount, CHAMPION_NAME, gameState, preferredLightMode, preferredCastMode, true)
         {
             // Initialization for the champion module occurs here.
         }

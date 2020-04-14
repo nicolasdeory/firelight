@@ -31,12 +31,12 @@ namespace Games.LeagueOfLegends.ChampionModules
         /// <param name="preferredCastMode">Preferred ability cast mode (Normal, Quick Cast, Quick Cast with Indicator)</param>
         public static UdyrModule Create(int ledCount, GameState gameState, LightingMode preferredLightMode, AbilityCastPreference preferredCastMode = AbilityCastPreference.Normal)
         {
-            return new UdyrModule(ledCount, gameState, CHAMPION_NAME, preferredLightMode, preferredCastMode);
+            return new UdyrModule(ledCount, gameState, preferredLightMode, preferredCastMode);
         }
 
 
-        private UdyrModule(int ledCount, GameState gameState, string championName, LightingMode preferredLightMode, AbilityCastPreference preferredCastMode)
-            : base(ledCount, championName, gameState, preferredLightMode, preferredCastMode)
+        private UdyrModule(int ledCount, GameState gameState, LightingMode preferredLightMode, AbilityCastPreference preferredCastMode)
+            : base(ledCount, CHAMPION_NAME, gameState, preferredLightMode, preferredCastMode)
         {
             // Initialization for the champion module occurs here.
         }

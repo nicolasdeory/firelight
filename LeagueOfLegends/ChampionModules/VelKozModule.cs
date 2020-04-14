@@ -34,12 +34,12 @@ namespace Games.LeagueOfLegends.ChampionModules
         /// <param name="preferredCastMode">Preferred ability cast mode (Normal, Quick Cast, Quick Cast with Indicator)</param>
         public static VelKozModule Create(int ledCount, GameState gameState, LightingMode preferredLightMode, AbilityCastPreference preferredCastMode = AbilityCastPreference.Normal)
         {
-            return new VelKozModule(ledCount, gameState, CHAMPION_NAME, preferredLightMode, preferredCastMode);
+            return new VelKozModule(ledCount, gameState, preferredLightMode, preferredCastMode);
         }
 
 
-        private VelKozModule(int ledCount, GameState gameState, string championName, LightingMode preferredLightMode, AbilityCastPreference preferredCastMode) 
-            : base(ledCount, championName, gameState, preferredLightMode, preferredCastMode, true)
+        private VelKozModule(int ledCount, GameState gameState, LightingMode preferredLightMode, AbilityCastPreference preferredCastMode) 
+            : base(ledCount, CHAMPION_NAME, gameState, preferredLightMode, preferredCastMode, true)
         {
             // Initialization for the champion module occurs here.
         }
