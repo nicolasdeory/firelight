@@ -90,9 +90,6 @@ namespace Games.LeagueOfLegends
             LoadChampionInformation(champName);
 
             ChampionInfoLoaded += OnChampionInfoLoaded;
-
-            if (preloadAllAnimations)
-                PreloadAllAnimations();
         }
 
         /// <summary>

@@ -38,79 +38,23 @@ namespace Games.LeagueOfLegends.ChampionModules
                             : base(ledCount, championName, gameState, preferredLightMode, preferredCastMode, true)
         {
             // Initialization for the champion module occurs here.
-
-            // Set preferred cast mode. It's a player choice (Quick cast, Quick cast with indicator, or Normal cast)
-            /*PreferredCastMode = preferredCastMode;
-
-            // Set cast modes for abilities.
-            // For Vel'Koz, for example:
-            // Q -> Normal ability, but it can be recast within 1.15s
-            // W -> Normal ability
-            // E -> Normal ability
-            // R -> Instant ability, it is cast the moment the key is pressed, but it can be recast within 2.3s
-            Dictionary<AbilityKey, AbilityCastMode> abilityCastModes = new Dictionary<AbilityKey, AbilityCastMode>()
-            {
-                [AbilityKey.Q] = AbilityCastMode.PointAndClick(),
-                [AbilityKey.W] = AbilityCastMode.Instant(),
-                [AbilityKey.E] = AbilityCastMode.Instant(recastTime: 3000),
-                [AbilityKey.R] = AbilityCastMode.Instant(),
-            };
-            AbilityCastModes = abilityCastModes;
-
-            ChampionInfoLoaded += OnChampionInfoLoaded;*/
         }
 
         protected override AbilityCastMode GetQCastMode() => AbilityCastMode.PointAndClick();
         protected override AbilityCastMode GetWCastMode() => AbilityCastMode.Instant();
-        protected override AbilityCastMode GetECastMode() => AbilityCastMode.Instant(recastTime: 3000);
+        protected override AbilityCastMode GetECastMode() => AbilityCastMode.Instant(3000);
         protected override AbilityCastMode GetRCastMode() => AbilityCastMode.Instant();
-
-      /*  /// <summary>
-        /// Called when the champion info has been retrieved.
-        /// </summary>
-        private void OnChampionInfoLoaded(ChampionAttributes champInfo)
-        {
-            animator.NewFrameReady += (_, ls, mode) => DispatchNewFrame(ls, mode);
-            AbilityCast += OnAbilityCast;
-            AbilityRecast += OnAbilityRecast;
-        }*/
-
-       /* /// <summary>
-        /// Called when an ability is cast.
-        /// </summary>
-        private void OnAbilityCast(object s, AbilityKey key)
-        {
-            if (key == AbilityKey.Q)
-            {
-                OnCastQ();
-            }
-            if (key == AbilityKey.W)
-            {
-                OnCastW();
-            }
-            if (key == AbilityKey.E)
-            {
-                OnCastE();
-            }
-            if (key == AbilityKey.R)
-            {
-                OnCastR();
-            }
-        }*/
 
         protected override async Task OnCastQ()
         {
-            RunAnimationOnce("q_cast", timeScale: 1.7f);
+            await RunAnimationOnce("q_cast", timeScale: 1.7f);
         }
-
         protected override async Task OnCastW()
         {
             RunAnimationInLoop("w_cast_loop", 500);
             await Task.Delay(500);
             RunAnimationOnce("w_cast_end");
-
         }
-
         protected override async Task OnCastE()
         {
             castingE = true;
@@ -125,7 +69,6 @@ namespace Games.LeagueOfLegends.ChampionModules
                 canRecastE = false;
             }
         }
-
         protected override async Task OnCastR()
         {
             Animator.ColorBurst(RColor, 0.1f);
@@ -140,23 +83,5 @@ namespace Games.LeagueOfLegends.ChampionModules
                 RunAnimationOnce("e_recast_end");
             }
         }
-        
-        /*/// <summary>
-        /// Called when an ability is casted again (few champions have abilities that can be recast, only those with special abilities such as Vel'Koz or Zoes Q)
-        /// </summary>
-        private void OnAbilityRecast(object s, AbilityKey key)
-        {
-            if (key == AbilityKey.E && canRecastE)
-            {
-                Task.Run(async () =>
-                {
-                    castingE = false;
-                    await Task.Delay(200);
-                    _ = animator.RunAnimationOnce(ANIMATION_PATH + "Jax/e_recast_end.txt");
-                });
-                
-            }
-        }*/
-
     }
 }

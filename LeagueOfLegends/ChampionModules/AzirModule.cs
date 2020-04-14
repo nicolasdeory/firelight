@@ -37,35 +37,6 @@ namespace Games.LeagueOfLegends.ChampionModules
                             : base(ledCount, championName, gameState, preferredLightMode, preferredCastMode, true)
         {
             // Initialization for the champion module occurs here.
-
-            // Set preferred cast mode. It's a player choice (Quick cast, Quick cast with indicator, or Normal cast)
-           /* PreferredCastMode = preferredCastMode;
-
-            // Set cast modes for abilities.
-            // For Vel'Koz, for example:
-            // Q -> Normal ability, but it can be recast within 1.15s
-            // W -> Normal ability
-            // E -> Normal ability
-            // R -> Instant ability, it is cast the moment the key is pressed, but it can be recast within 2.3s
-            Dictionary<AbilityKey, AbilityCastMode> abilityCastModes = new Dictionary<AbilityKey, AbilityCastMode>()
-            {
-                [AbilityKey.Q] = AbilityCastMode.PointAndClick(),
-                [AbilityKey.W] = AbilityCastMode.Normal(),
-                [AbilityKey.E] = AbilityCastMode.Instant(),
-                [AbilityKey.R] = AbilityCastMode.Normal(),
-            };
-            AbilityCastModes = abilityCastModes;*/
-
-            // Preload all the animations you'll want to use. MAKE SURE that each animation file
-            // has its Build Action set to "Content" and "Copy to Output Directory" is set to "Always".
-
-           /* animator.PreloadAnimation(ANIMATION_PATH + "Azir/q_cast.txt");
-            animator.PreloadAnimation(ANIMATION_PATH + "Azir/w_cast.txt");
-            animator.PreloadAnimation(ANIMATION_PATH + "Azir/e_cast.txt");
-            animator.PreloadAnimation(ANIMATION_PATH + "Azir/r_cast.txt");*/
-
-
-           // ChampionInfoLoaded += OnChampionInfoLoaded;
         }
 
         protected override AbilityCastMode GetQCastMode() => AbilityCastMode.PointAndClick();
@@ -73,64 +44,21 @@ namespace Games.LeagueOfLegends.ChampionModules
         protected override AbilityCastMode GetECastMode() => AbilityCastMode.Instant();
         protected override AbilityCastMode GetRCastMode() => AbilityCastMode.Normal();
 
-        /* /// <summary>
-         /// Called when the champion info has been retrieved.
-         /// </summary>
-         private void OnChampionInfoLoaded(ChampionAttributes champInfo)
-         {
-             animator.NewFrameReady += (_, ls, mode) => DispatchNewFrame(ls, mode);
-             AbilityCast += OnAbilityCast;
-             AbilityRecast += OnAbilityRecast;
-         }*/
-
-
-
-        /* /// <summary>
-         /// Called when an ability is cast.
-         /// </summary>
-         private void OnAbilityCast(object s, AbilityKey key)
-         {
-             if (key == AbilityKey.Q)
-             {
-                 OnCastQ();
-             }
-             if (key == AbilityKey.W)
-             {
-                 OnCastW();
-             }
-             if (key == AbilityKey.E)
-             {
-                 OnCastE();
-             }
-             if (key == AbilityKey.R)
-             {
-                 OnCastR();
-             }
-         }*/
-
         protected override async Task OnCastQ()
         {
-                RunAnimationOnce("q_cast", timeScale: 1.5f);
+            await RunAnimationOnce("q_cast", timeScale: 1.5f);
         }
-
         protected override async Task OnCastW()
         {
-                RunAnimationOnce("w_cast", timeScale: 0.5f);
+            await RunAnimationOnce("w_cast", timeScale: 0.5f);
         }
-
         protected override async Task OnCastE()
         {
-                RunAnimationOnce("e_cast", timeScale: 1.6f);
+            await RunAnimationOnce("e_cast", timeScale: 1.6f);
         }
-
         protected override async Task OnCastR()
         {
-            RunAnimationOnce("r_cast", timeScale: 0.3f);
+            await RunAnimationOnce("r_cast", timeScale: 0.3f);
         }
-        
-       /* private void OnAbilityRecast(object sender, AbilityKey e)
-        {
-
-        }*/
     }
 }
