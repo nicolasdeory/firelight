@@ -30,11 +30,11 @@ namespace Games.LeagueOfLegends.ItemModules
         /// <param name="preferredCastMode">Preferred ability cast mode (Normal, Quick Cast, Quick Cast with Indicator)</param>
         public static FarsightAlterationModule Create(int ledCount, GameState gameState, int itemSlot, LightingMode preferredLightMode, AbilityCastPreference preferredCastMode = AbilityCastPreference.Normal)
         {
-            return new FarsightAlterationModule(ledCount, gameState, ITEM_ID, itemSlot, preferredLightMode, preferredCastMode);
+            return new FarsightAlterationModule(ledCount, gameState, itemSlot, preferredLightMode, preferredCastMode);
         }
 
-        private FarsightAlterationModule(int ledCount, GameState gameState, int itemID, int itemSlot, LightingMode preferredLightMode, AbilityCastPreference preferredCastMode)
-            : base(ledCount, itemID, ITEM_NAME, itemSlot, gameState, preferredLightMode, preferredCastMode, true)
+        private FarsightAlterationModule(int ledCount, GameState gameState, int itemSlot, LightingMode preferredLightMode, AbilityCastPreference preferredCastMode)
+            : base(ledCount, ITEM_ID, ITEM_NAME, itemSlot, gameState, preferredLightMode, preferredCastMode, true)
         {
             // Initialization for the item module occurs here.
         }
