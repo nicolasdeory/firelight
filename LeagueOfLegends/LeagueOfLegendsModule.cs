@@ -140,14 +140,11 @@ namespace Games.LeagueOfLegends
 
             string champName = GameState.PlayerChampion.RawChampionName.ToLower();
 
-            Type champType = ChampionControllers.FirstOrDefault(
-                                x => champName.ToLower()
-                                .Contains((x.GetCustomAttribute(typeof(ChampionAttribute)) as ChampionAttribute)
-                                             .ChampionName.ToLower())); // find champion module
+            Type champType = ChampionControllers.FirstOrDefault(x => champName == x.GetCustomAttribute<ChampionAttribute>().ChampionName.ToLower());
             if (champType != null)
             {
-                championModule = champType.GetMethod("Create")
-                                    .Invoke(null, new object[] { Leds.Length, GameState, LightingMode, PreferredCastMode }) 
+                championModule = champType.GetConstructors().First()
+                                    .Invoke(new object[] { Leds.Length, GameState, LightingMode, PreferredCastMode }) 
                                     as ChampionModule;
                 championModule.NewFrameReady += NewFrameReadyHandler;
                 championModule.TriedToCastOutOfMana += OnAbilityCastNoMana;
@@ -216,15 +213,14 @@ namespace Games.LeagueOfLegends
         {
             ItemAttributes attrs = ItemUtils.GetItemAttributes(item.ItemID);
             // decide and create item module accordingly.
-            Type itemType = ItemControllers.FirstOrDefault(
-                            x => item.ItemID == (x.GetCustomAttribute(typeof(ItemAttribute)) as ItemAttribute).ItemID);
+            Type itemType = ItemControllers.FirstOrDefault(x => item.ItemID == x.GetCustomAttribute<ItemAttribute>().ItemID);
             if (itemType != null)
             {
                 if (ItemModules[item.Slot] == null || !(ItemModules[item.Slot].GetType().IsAssignableFrom(itemType)))
                 {
                     ItemModules[item.Slot]?.Dispose();
-                    ItemModules[item.Slot] = itemType.GetMethod("Create")
-                                        .Invoke(null, new object[] { Leds.Length, GameState, item.Slot, LightingMode, PreferredCastMode })
+                    ItemModules[item.Slot] = itemType.GetConstructors().First()
+                                        .Invoke(new object[] { Leds.Length, GameState, item.Slot, LightingMode, PreferredCastMode })
                                         as ItemModule;
                     ItemModules[item.Slot].RequestActivation += OnItemActivated;
                     ItemModules[item.Slot].NewFrameReady += NewFrameReadyHandler;

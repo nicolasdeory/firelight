@@ -21,21 +21,7 @@ namespace Games.LeagueOfLegends.ChampionModules
         static HSVColor EColor = new HSVColor(0.08f, 1, 0.64f);
         static HSVColor RColor = new HSVColor(0.54f, 1, 1);
 
-
-        /// <summary>
-        /// Creates a new champion instance.
-        /// </summary>
-        /// <param name="ledCount">Number of LEDs in the strip</param>
-        /// <param name="gameState">Game state data</param>
-        /// <param name="preferredLightMode">Preferred light mode</param>
-        /// <param name="preferredCastMode">Preferred ability cast mode (Normal, Quick Cast, Quick Cast with Indicator)</param>
-        public static UdyrModule Create(int ledCount, GameState gameState, LightingMode preferredLightMode, AbilityCastPreference preferredCastMode = AbilityCastPreference.Normal)
-        {
-            return new UdyrModule(ledCount, gameState, preferredLightMode, preferredCastMode);
-        }
-
-
-        private UdyrModule(int ledCount, GameState gameState, LightingMode preferredLightMode, AbilityCastPreference preferredCastMode)
+        public UdyrModule(int ledCount, GameState gameState, LightingMode preferredLightMode, AbilityCastPreference preferredCastMode)
             : base(ledCount, CHAMPION_NAME, gameState, preferredLightMode, preferredCastMode)
         {
             // Initialization for the champion module occurs here.

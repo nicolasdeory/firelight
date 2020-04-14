@@ -19,21 +19,7 @@ namespace Games.LeagueOfLegends.ChampionModules
 
         // Champion-specific Variables
 
-
-        /// <summary>
-        /// Creates a new champion instance.
-        /// </summary>
-        /// <param name="ledCount">Number of LEDs in the strip</param>
-        /// <param name="gameState">Game state data</param>
-        /// <param name="preferredLightMode">Preferred light mode</param>
-        /// <param name="preferredCastMode">Preferred ability cast mode (Normal, Quick Cast, Quick Cast with Indicator)</param>
-        public static AzirModule Create(int ledCount, GameState gameState, LightingMode preferredLightMode, AbilityCastPreference preferredCastMode = AbilityCastPreference.Normal)
-        {
-            return new AzirModule(ledCount, gameState, preferredLightMode, preferredCastMode);
-        }
-
-
-        private AzirModule(int ledCount, GameState gameState, LightingMode preferredLightMode, AbilityCastPreference preferredCastMode)
+        public AzirModule(int ledCount, GameState gameState, LightingMode preferredLightMode, AbilityCastPreference preferredCastMode)
             : base(ledCount, CHAMPION_NAME, gameState, preferredLightMode, preferredCastMode, true)
         {
             // Initialization for the champion module occurs here.

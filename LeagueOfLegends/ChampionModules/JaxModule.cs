@@ -20,21 +20,7 @@ namespace Games.LeagueOfLegends.ChampionModules
         bool castingE;
         bool canRecastE;
 
-
-        /// <summary>
-        /// Creates a new champion instance.
-        /// </summary>
-        /// <param name="ledCount">Number of LEDs in the strip</param>
-        /// <param name="gameState">Game state data</param>
-        /// <param name="preferredLightMode">Preferred light mode</param>
-        /// <param name="preferredCastMode">Preferred ability cast mode (Normal, Quick Cast, Quick Cast with Indicator)</param>
-        public static JaxModule Create(int ledCount, GameState gameState, LightingMode preferredLightMode, AbilityCastPreference preferredCastMode = AbilityCastPreference.Normal)
-        {
-            return new JaxModule(ledCount, gameState, preferredLightMode, preferredCastMode);
-        }
-
-
-        private JaxModule(int ledCount, GameState gameState, LightingMode preferredLightMode, AbilityCastPreference preferredCastMode)
+        public JaxModule(int ledCount, GameState gameState, LightingMode preferredLightMode, AbilityCastPreference preferredCastMode)
             : base(ledCount, CHAMPION_NAME, gameState, preferredLightMode, preferredCastMode, true)
         {
             // Initialization for the champion module occurs here.

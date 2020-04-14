@@ -24,19 +24,7 @@ namespace Games.LeagueOfLegends.ItemModules
 
         private int cooldownPerCharge = 0;
 
-        /// <summary>
-        /// Creates a new champion instance.
-        /// </summary>
-        /// <param name="ledCount">Number of LEDs in the strip</param>
-        /// <param name="gameState">Game state data</param>
-        /// <param name="preferredLightMode">Preferred light mode</param>
-        /// <param name="preferredCastMode">Preferred ability cast mode (Normal, Quick Cast, Quick Cast with Indicator)</param>
-        public static WardingTotemModule Create(int ledCount, GameState gameState, int itemSlot, LightingMode preferredLightMode, AbilityCastPreference preferredCastMode = AbilityCastPreference.Normal)
-        {
-            return new WardingTotemModule(ledCount, gameState, itemSlot, preferredLightMode, preferredCastMode);
-        }
-
-        private WardingTotemModule(int ledCount, GameState gameState, int itemSlot, LightingMode preferredLightMode, AbilityCastPreference preferredCastMode)
+        public WardingTotemModule(int ledCount, GameState gameState, int itemSlot, LightingMode preferredLightMode, AbilityCastPreference preferredCastMode)
             : base(ledCount, ITEM_ID, ITEM_NAME, itemSlot, gameState, preferredLightMode, preferredCastMode, true)
         {
             // Initialization for the item module occurs here.

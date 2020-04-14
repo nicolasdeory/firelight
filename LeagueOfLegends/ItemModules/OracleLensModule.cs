@@ -21,19 +21,7 @@ namespace Games.LeagueOfLegends.ItemModules
 
         // Cooldown
 
-        /// <summary>
-        /// Creates a new champion instance.
-        /// </summary>
-        /// <param name="ledCount">Number of LEDs in the strip</param>
-        /// <param name="gameState">Game state data</param>
-        /// <param name="preferredLightMode">Preferred light mode</param>
-        /// <param name="preferredCastMode">Preferred ability cast mode (Normal, Quick Cast, Quick Cast with Indicator)</param>
-        public static OracleLensModule Create(int ledCount, GameState gameState, int itemSlot, LightingMode preferredLightMode, AbilityCastPreference preferredCastMode = AbilityCastPreference.Normal)
-        {
-            return new OracleLensModule(ledCount, gameState, itemSlot, preferredLightMode, preferredCastMode);
-        }
-
-        private OracleLensModule(int ledCount, GameState gameState, int itemSlot, LightingMode preferredLightMode, AbilityCastPreference preferredCastMode)
+        public OracleLensModule(int ledCount, GameState gameState, int itemSlot, LightingMode preferredLightMode, AbilityCastPreference preferredCastMode)
             : base(ledCount, ITEM_ID, ITEM_NAME, itemSlot, gameState, preferredLightMode, preferredCastMode, true)
         {
             // Initialization for the item module occurs here.

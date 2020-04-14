@@ -17,29 +17,10 @@ namespace Games.LeagueOfLegends.ChampionModules
         HSVColor RColor = new HSVColor(0.81f, 0.43f, 1);
         HSVColor RColor2 = new HSVColor(0.91f, 0.87f, 1);
 
-        /// <summary>
-        /// Creates a new champion instance.
-        /// </summary>
-        /// <param name="ledCount">Number of LEDs in the strip</param>
-        /// <param name="gameState">Game state data</param>
-        /// <param name="preferredLightMode">Preferred light mode</param>
-        /// <param name="preferredCastMode">Preferred ability cast mode (Normal, Quick Cast, Quick Cast with Indicator)</param>
-        public static TwistedFateModule Create(int ledCount, GameState gameState, LightingMode preferredLightMode, AbilityCastPreference preferredCastMode = AbilityCastPreference.Normal)
-        {
-            return new TwistedFateModule(ledCount, gameState, preferredLightMode, preferredCastMode);
-        }
-
-
-        private TwistedFateModule(int ledCount, GameState gameState, LightingMode preferredLightMode, AbilityCastPreference preferredCastMode)
-            : base(ledCount, CHAMPION_NAME, gameState, preferredLightMode, preferredCastMode)
+        public TwistedFateModule(int ledCount, GameState gameState, LightingMode preferredLightMode, AbilityCastPreference preferredCastMode)
+            : base(ledCount, CHAMPION_NAME, gameState, preferredLightMode, preferredCastMode, true)
         {
             // Initialization for the champion module occurs here.
-
-            // Preload all the animations you'll want to use. MAKE SURE that each animation file
-            // has its Build Action set to "Content" and "Copy to Output Directory" is set to "Always".
-           /* PreloadAnimation("q_cast.txt");
-            PreloadAnimation("w_loop.txt");
-            PreloadAnimation("r_cast.txt");*/
         }
 
         protected override AbilityCastMode GetQCastMode() => AbilityCastMode.Normal();
