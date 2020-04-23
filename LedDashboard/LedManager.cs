@@ -3,6 +3,7 @@ using LedDashboardCore;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Threading.Tasks;
 
 namespace LedDashboard
 {
@@ -12,10 +13,10 @@ namespace LedDashboard
         /// <summary>
         /// Array that contains LED color data for the LED strip.
         /// </summary>
-        private Led[] leds;
+        private LEDData leds;
         private int ledCount;
 
-        public delegate void UpdateDisplayHandler(Led[] leds, LightingMode mode);
+        public delegate void UpdateDisplayHandler(Led[] leds);
 
         /// <summary>
         /// Raised when the LED display is updated.
@@ -26,6 +27,8 @@ namespace LedDashboard
         LightController lightController;
 
         private Dictionary<string, Dictionary<string, string>> ModuleOptions = new Dictionary<string, Dictionary<string, string>>();
+
+        Queue<LEDFrame> FrameQueue = new Queue<LEDFrame>();
 
         LEDModule CurrentLEDModule
         {
@@ -111,9 +114,9 @@ namespace LedDashboard
         /// </summary>
         /// <param name="s">Module that sent the update command</param>
         /// <param name="ls">Array containing values for each LED in the strip</param>
-        public void UpdateLEDDisplay(object s, Led[] ls, LightingMode mode)
+        public void UpdateLEDDisplay(LEDFrame frame)
         {
-            if (updatingDisplay)
+            /*if (updatingDisplay)
             {
                 Debug.WriteLine("SEVERE: UpdateLEDDisplay was called at the same time as an ongoing one");
                 return;
@@ -126,7 +129,23 @@ namespace LedDashboard
             }
             DisplayUpdated?.Invoke(this.leds, mode);
             SendData(mode);
-            updatingDisplay = false;
+            updatingDisplay = false;*/
+            if (frame.Priority) FrameQueue.Clear();
+            FrameQueue.Enqueue(frame);
+        }
+
+        private async Task UpdateLoop()
+        {
+            while (true)
+            {
+                if (FrameQueue.Count > 0)
+                {
+                    LEDFrame next = FrameQueue.Dequeue();
+                    this.leds = next.Leds;
+                    DisplayUpdated?.Invoke(this.leds);
+                }
+                await Task.Delay(30); // 33 fps
+            }
         }
 
 
@@ -169,7 +188,7 @@ namespace LedDashboard
         /// </summary>
         public void SendData(LightingMode mode)
         {
-            lightController.SendData(this.leds.Length, this.leds.ToByteArray(this.reverseOrder), mode);
+            lightController.SendData(this.leds.Strip.Length, this.leds.Strip.ToByteArray(this.reverseOrder), mode);
         }
 
         public void SetModuleOption(string moduleId, string option, string value)
