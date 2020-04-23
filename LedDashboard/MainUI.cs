@@ -97,7 +97,7 @@ namespace LedDashboard
         /// <summary>
         /// Update the virtual LED strip with the given LED color data.
         /// </summary>
-        public void UpdateUI(Led[] leds, LightingMode mode)
+        public void UpdateUI(LEDData leds)
         {
             if (updatingUI) return;
             updatingUI = true;

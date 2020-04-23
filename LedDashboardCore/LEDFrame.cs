@@ -19,5 +19,13 @@ namespace LedDashboardCore
             this.Priority = priority;
         }
 
+        public static LEDFrame Empty 
+        { 
+            get
+            {
+                return new LEDFrame(null, LEDData.Empty);
+            } 
+        }
+
     }
 }

@@ -16,6 +16,14 @@ namespace LedDashboardCore
         public Led[] Mouse { get; } // 1 ?
         public Led[] Strip { get; } // 170
 
+        public static LEDData Empty
+        {
+            get
+            {
+                return new LEDData(new Led[88], KeyboardMode.NoNumpad, new Led[1], new Led[170]);
+            }
+        }
+
         public LEDData(Led[] keyboard, KeyboardMode keyboardMode, Led[] mouse, Led[] strip)
         {
             if (keyboard != null && keyboard.Length != 88)

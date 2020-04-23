@@ -16,7 +16,7 @@ namespace LedDashboard
         private LEDData leds;
         private int ledCount;
 
-        public delegate void UpdateDisplayHandler(Led[] leds);
+        public delegate void UpdateDisplayHandler(LEDData leds);
 
         /// <summary>
         /// Raised when the LED display is updated.
@@ -66,7 +66,7 @@ namespace LedDashboard
             ProcessListenerService.Start();
             ProcessListenerService.Register("League of Legends"); // Listen when league of legends is opened
 
-            UpdateLEDDisplay(this, this.leds, preferredMode);
+            UpdateLEDDisplay(LEDFrame.Empty);
 
         }
 
@@ -76,11 +76,11 @@ namespace LedDashboard
         {
             this.preferredMode = preferredMode;
             this.ledCount = preferredMode == LightingMode.Keyboard ? 88 : ledCount;
-            this.leds = new Led[this.ledCount];
+            /*this.leds = new Led[this.ledCount];
             for (int i = 0; i < this.leds.Length; i++)
             {
                 this.leds[i] = new Led();
-            }
+            }*/
             this.reverseOrder = reverseOrder;
         }
 
