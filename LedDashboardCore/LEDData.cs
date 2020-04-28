@@ -6,13 +6,15 @@ namespace LedDashboardCore
 {
     public class LEDData
     {
-        const int NUMLEDS_KEYBOARD = 109;
-        const int NUMLEDS_STRIP = 170;
-        const int NUMLEDS_MOUSE = 16;
-        const int NUMLEDS_MOUSEPAD = 16;
-        const int NUMLEDS_HEADSET = 2;
-        const int NUMLEDS_KEYPAD = 20;
-        const int NUMLEDS_GENERAL = 5;
+        public const int NUMLEDS_KEYBOARD = 109;
+        public const int NUMLEDS_STRIP = 170;
+        public const int NUMLEDS_MOUSE = 16;
+        public const int NUMLEDS_MOUSEPAD = 16;
+        public const int NUMLEDS_HEADSET = 2;
+        public const int NUMLEDS_KEYPAD = 20;
+        public const int NUMLEDS_GENERAL = 5;
+
+
 
         private Led[] keyboard;
         public Led[] Keyboard
@@ -119,20 +121,57 @@ namespace LedDashboardCore
             }
         }
 
-        public static LEDData Empty { get; } = new LEDData()
-        {
-            Keyboard = new Led[NUMLEDS_KEYBOARD],
-            Mouse = new Led[NUMLEDS_MOUSE],
-            Strip = new Led[NUMLEDS_STRIP],
-            Mousepad = new Led[NUMLEDS_MOUSEPAD],
-            Headset = new Led[NUMLEDS_HEADSET],
-            Keypad = new Led[NUMLEDS_KEYPAD],
-            General = new Led[NUMLEDS_GENERAL]
-        };
-
-        public LEDData()
-        {
-            
+        public static LEDData Empty { 
+            get
+            { 
+               return new LEDData()
+               {
+                   Keyboard = new Led[NUMLEDS_KEYBOARD],
+                   Mouse = new Led[NUMLEDS_MOUSE],
+                   Strip = new Led[NUMLEDS_STRIP],
+                   Mousepad = new Led[NUMLEDS_MOUSEPAD],
+                   Headset = new Led[NUMLEDS_HEADSET],
+                   Keypad = new Led[NUMLEDS_KEYPAD],
+                   General = new Led[NUMLEDS_GENERAL]
+               };
+            }
         }
+
+        public List<Led[]> GetArraysForZones(LightZone zones)
+        {
+            List<Led[]> list = new List<Led[]>();
+            if (zones.HasFlag(LightZone.Keyboard))
+            {
+                list.Add(Keyboard);
+            }
+            if (zones.HasFlag(LightZone.Strip))
+            {
+                list.Add(Strip);
+            }
+            if (zones.HasFlag(LightZone.Mouse))
+            {
+                list.Add(Mouse);
+            }
+            if (zones.HasFlag(LightZone.Mousepad))
+            {
+                list.Add(Mousepad);
+            }
+            if (zones.HasFlag(LightZone.Headset))
+            {
+                list.Add(Headset);
+            }
+            if (zones.HasFlag(LightZone.Keypad))
+            {
+                list.Add(Keypad);
+            }
+            if (zones.HasFlag(LightZone.General))
+            {
+                list.Add(General);
+            }
+            return list;
+        }
+
+
+        private LEDData() { }
     }
 }

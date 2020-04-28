@@ -8,6 +8,8 @@ namespace LedDashboardCore.Modules.BasicAnimation
 {
     public class AnimationModule : LEDModule
     {
+        const int FPS = 33;
+
         public event LEDModule.FrameReadyHandler NewFrameReady;
 
         Dictionary<string, Animation> LoadedAnimations = new Dictionary<string, Animation>();
@@ -162,10 +164,41 @@ namespace LedDashboardCore.Modules.BasicAnimation
         /// <param name="fadeoutRate">The burst fade-out rate.</param>
         /// <param name="destinationColor">The color to progressively fade to after the color burst (black by default)</param>
         /// <returns></returns>
-        public Task ColorBurst(HSVColor color, float fadeoutRate = 0.15f, HSVColor destinationColor = default)
+        public Task ColorBurst(HSVColor color, LightZone zones, float fadeoutRate = 0.15f, HSVColor destinationColor = default)
         {
-            CleanCancellationToken();
-            //isAnimationRunning = true;
+            LEDData data = LEDData.Empty;
+
+            // Set all to color
+            ApplyColorToZones(data, zones, color);
+
+            SendFrame(new LEDFrame(this, data, zones, true));
+
+            // Fade to Black
+
+            if (fadeoutRate > 0)
+            {
+                if (destinationColor.Equals(HSVColor.Black))
+                {
+                    FadeOutToBlack(data, zones, fadeoutRate);
+                }
+                else
+                {
+                    FadeOutToColor(fadeoutRate, destinationColor, token);
+                }
+            }
+            else
+            {
+                data = LEDData.Empty;
+                if (!destinationColor.Equals(HSVColor.Black))
+                {
+                    ApplyColorToZones(data, zones, destinationColor);
+                }
+                SendFrame(new LEDFrame(this, data, zones));
+            }
+
+
+            // CleanCancellationToken();
+
             return TaskRunner.RunAsync(Task.Run(async () =>
             {
                 CancellationToken token = currentlyRunningAnim.Token;
@@ -173,6 +206,7 @@ namespace LedDashboardCore.Modules.BasicAnimation
                 {
                     l.Color(color);
                 }
+                NewFrameReady.Invoke(new LEDFrame(this, new LEDData()))
                 NewFrameReady.Invoke(this, this.leds, LightingMode.Line);
                 if (fadeoutRate > 0)
                 {
@@ -199,6 +233,24 @@ namespace LedDashboardCore.Modules.BasicAnimation
                 }
             }));
         }
+
+        private void ApplyColorToZones(LEDData frameData, LightZone zones, HSVColor color)
+        {
+            List<Led[]> colArrays = frameData.GetArraysForZones(zones);
+            foreach(Led[] arr in colArrays)
+            {
+                foreach(Led l in arr)
+                {
+                    l.Color(color);
+                }
+            }    
+        }
+
+        private void SendFrame(LEDFrame frame)
+        {
+            NewFrameReady.Invoke(frame);
+        }
+
 
         private Animation LoadAnimation(string animPath)
         {
@@ -296,25 +348,31 @@ namespace LedDashboardCore.Modules.BasicAnimation
         }
 
 
-        private async Task FadeOutToBlack(float rate, CancellationToken cancelToken, LightingMode mode)
+        private void FadeOutToBlack(LEDData frameData, LightZone zones, float fadeoutDuration)
         {
-            int msCounter = 0;
-            int fadeoutTime = (int)(GetFadeToBlackTime(rate) * 1000);
-            while (msCounter < fadeoutTime)
-            {
-                this.leds.FadeToBlackAllLeds(rate);
-                if (cancelToken.IsCancellationRequested)
-                {
-                    this.leds.SetAllToBlack();
-                    NewFrameReady.Invoke(this, this.leds, mode);
-                    throw new TaskCanceledException();
-                }
 
-                NewFrameReady.Invoke(this, this.leds, mode);
-                await Task.Delay(30);
-                msCounter += 30;
+            int frames = (int)Math.Round(fadeoutDuration * FPS);
+            List<Led[]> frameLightArrays = frameData.GetArraysForZones(zones);
+
+            for (int i = 0; i < frames; i++)
+            {
+                float fadeout = (float)Utils.Scale(i, 0, frames, 0, 1);
+                LEDData newFrame = LEDData.Empty;               
+                List<Led[]> newFrameLightArrays = newFrame.GetArraysForZones(zones);
+
+                for (int j = 0; j < frameLightArrays.Count; j++)
+                {
+                    Led[] arrCurrent = frameLightArrays[j];
+                    Led[] arrNew = newFrameLightArrays[j];
+                    for (int k = 0; k < arrCurrent.Length; k++)
+                    {
+                        Led l = arrCurrent[k];
+                        HSVColor fadedColor = l.color.FadeToBlackBy(fadeout);
+                        arrNew[k].Color(fadedColor);
+                    }
+                }
+                SendFrame(new LEDFrame(this, newFrame, zones));
             }
-            this.leds.SetAllToBlack();
 
         }
 

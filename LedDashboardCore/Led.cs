@@ -21,26 +21,9 @@ namespace LedDashboardCore
 
         public void FadeToColorBy(HSVColor c, float factor)
         {
-            color.h = FadeHSVProperty(color.h, c.h, factor);
-            color.s = FadeHSVProperty(color.s, c.s, factor);
-            color.v = FadeHSVProperty(color.v, c.v, factor);
-        }
-
-        private static float FadeHSVProperty(float a, float b, float factor)
-        {
-            if (a < b)
-            {
-                a += (b - a) * factor;
-            }
-            else
-            {
-                a -= (a - b) * factor;
-            }
-            if (Math.Abs(a - b) <= 0.025f)
-            {
-                a = b;
-            }
-            return a;
+            color.h = Utils.FadeProperty(color.h, c.h, factor);
+            color.s = Utils.FadeProperty(color.s, c.s, factor);
+            color.v = Utils.FadeProperty(color.v, c.v, factor);
         }
 
         public void SetBlack()

@@ -5,6 +5,13 @@
     /// </summary>
     public enum LightZone
     {
-        Keyboard, Strip, Mouse, Mousepad, Headset, Keypad, General
+        None = 0,
+        Keyboard = 1, 
+        Strip = 2, 
+        Mouse = 4, 
+        Mousepad = 8, 
+        Headset = 16, 
+        Keypad = 32, 
+        General = 64
     }
 }

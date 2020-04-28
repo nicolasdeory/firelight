@@ -8,14 +8,14 @@ namespace LedDashboardCore
     {
         public object Sender { get; }
         public LEDData Leds { get; }
-        //public LightZone Zone { get; }
+        public LightZone Zones { get; }
         public bool Priority { get; }
 
-        public LEDFrame(object sender, LEDData ledData, bool priority = false)
+        public LEDFrame(object sender, LEDData ledData, LightZone zones, bool priority = false)
         {
             this.Sender = sender;
             this.Leds = ledData;
-            //this.Zone = zone;
+            this.Zones = zones;
             this.Priority = priority;
         }
 
@@ -23,7 +23,7 @@ namespace LedDashboardCore
         { 
             get
             {
-                return new LEDFrame(null, LEDData.Empty);
+                return new LEDFrame(null, LEDData.Empty, LightZone.None);
             } 
         }
 

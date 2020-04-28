@@ -90,6 +90,27 @@
             return hsvCol;
         }
 
+        public static HSVColor FadeToBlackBy(this HSVColor c, float factor)
+        {
+            HSVColor c1 = new HSVColor(c.h, c.s, c.v);
+            c1.v *= 1 - factor;
+            if (c1.v <= 0.025f)
+            {
+                c1.v = 0;
+            }
+            return c1;
+        }
+
+        public static HSVColor FadeToColorBy(this HSVColor c, HSVColor color, float factor)
+        {
+            HSVColor c1 = new HSVColor(c.h, c.s, c.v);
+            c1.h = Utils.FadeProperty(c1.h, color.h, factor);
+            c1.s = Utils.FadeProperty(c1.s, color.s, factor);
+            c1.v = Utils.FadeProperty(c1.v, color.v, factor);
+            return c1;
+        }
+
+
         public static void SetAllToColor(this Led[] leds, HSVColor col)
         {
             foreach (var led in leds)

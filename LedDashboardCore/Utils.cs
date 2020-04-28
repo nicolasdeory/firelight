@@ -1,4 +1,5 @@
-﻿using System.Text;
+﻿using System;
+using System.Text;
 
 namespace LedDashboardCore
 {
@@ -25,6 +26,24 @@ namespace LedDashboardCore
             val = val > max ? max : val;
             return val;
         }
+
+        public static float FadeProperty(float a, float b, float factor)
+        {
+            if (a < b)
+            {
+                a += (b - a) * factor;
+            }
+            else
+            {
+                a -= (a - b) * factor;
+            }
+            if (Math.Abs(a - b) <= 0.025f)
+            {
+                a = b;
+            }
+            return a;
+        }
+
 
     }
 }
