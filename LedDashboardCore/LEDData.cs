@@ -4,44 +4,135 @@ using System.Text;
 
 namespace LedDashboardCore
 {
-    public enum KeyboardMode
-    {
-        NoNumpad, Numpad
-    }
-
     public class LEDData
     {
-        public KeyboardMode KeyboardLEDMode { get; }
-        public Led[] Keyboard { get; } // 88 or 88 + numpad
-        public Led[] Mouse { get; } // 1 ?
-        public Led[] Strip { get; } // 170
+        const int NUMLEDS_KEYBOARD = 109;
+        const int NUMLEDS_STRIP = 170;
+        const int NUMLEDS_MOUSE = 16;
+        const int NUMLEDS_MOUSEPAD = 16;
+        const int NUMLEDS_HEADSET = 2;
+        const int NUMLEDS_KEYPAD = 20;
+        const int NUMLEDS_GENERAL = 5;
 
-        public static LEDData Empty
+        private Led[] keyboard;
+        public Led[] Keyboard
         {
             get
             {
-                return new LEDData(new Led[88], KeyboardMode.NoNumpad, new Led[1], new Led[170]);
+                return keyboard;
+            }
+            set
+            {
+                if (value.Length != NUMLEDS_KEYBOARD)
+                    throw new ArgumentException("Keyboard LED array length must be " + NUMLEDS_KEYBOARD);
+                keyboard = value;
             }
         }
 
-        public LEDData(Led[] keyboard, KeyboardMode keyboardMode, Led[] mouse, Led[] strip)
+        private Led[] strip;
+        public Led[] Strip
         {
-            if (keyboard != null && keyboard.Length != 88)
+            get
             {
-                throw new ArgumentException("Keyboard LED array length must be 88");
+                return strip;
             }
-            this.Keyboard = keyboard;
-            this.KeyboardLEDMode = keyboardMode;
-            if (mouse != null && mouse.Length != 1)
+            set
             {
-                throw new ArgumentException("Mouse LED array length must be 1");
+                if (value.Length != NUMLEDS_STRIP)
+                    throw new ArgumentException("Strip LED array length must be " + NUMLEDS_STRIP);
+                strip = value;
             }
-            this.Mouse = mouse;
-            if (strip != null && strip.Length != 170)
+        }
+
+        private Led[] mouse;
+        public Led[] Mouse
+        {
+            get
             {
-                throw new ArgumentException("Mouse LED array length must be 170");
+                return mouse;
             }
-            this.Strip = Strip;
+            set
+            {
+                if (value.Length != NUMLEDS_MOUSE)
+                    throw new ArgumentException("Mouse LED array length must be " + NUMLEDS_MOUSE);
+                mouse = value;
+            }
+        }
+
+        private Led[] mousepad;
+        public Led[] Mousepad
+        {
+            get
+            {
+                return mousepad;
+            }
+            set
+            {
+                if (value.Length != NUMLEDS_MOUSEPAD)
+                    throw new ArgumentException("Mousepad LED array length must be " + NUMLEDS_MOUSEPAD);
+                mousepad = value;
+            }
+        }
+
+        private Led[] headset;
+        public Led[] Headset
+        {
+            get
+            {
+                return headset;
+            }
+            set
+            {
+                if (value.Length != NUMLEDS_HEADSET)
+                    throw new ArgumentException("Headset LED array length must be " + NUMLEDS_HEADSET);
+                headset = value;
+            }
+        }
+
+        private Led[] keypad;
+        public Led[] Keypad
+        {
+            get
+            {
+                return keypad;
+            }
+            set
+            {
+                if (value.Length != NUMLEDS_KEYPAD)
+                    throw new ArgumentException("Keypad LED array length must be " + NUMLEDS_KEYPAD);
+                keypad = value;
+            }
+        }
+
+        private Led[] general;
+        public Led[] General
+        {
+            get
+            {
+                return general;
+            }
+            set
+            {
+                if (value.Length != NUMLEDS_GENERAL)
+                    throw new ArgumentException("General LED array length must be " + NUMLEDS_GENERAL);
+                general = value;
+            }
+        }
+
+        public static LEDData Empty { get; } = new LEDData()
+        {
+            Keyboard = new Led[NUMLEDS_KEYBOARD],
+            Mouse = new Led[NUMLEDS_MOUSE],
+            Strip = new Led[NUMLEDS_STRIP],
+            Mousepad = new Led[NUMLEDS_MOUSEPAD],
+            Headset = new Led[NUMLEDS_HEADSET],
+            Keypad = new Led[NUMLEDS_KEYPAD],
+            General = new Led[NUMLEDS_GENERAL]
+        };
+
+        public LEDData()
+        {
+            
         }
     }
 }
