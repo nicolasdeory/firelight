@@ -151,11 +151,11 @@ namespace LedDashboardCore.Modules.BasicAnimation
             //isAnimationRunning = false;
         }
 
-        public void AlternateBetweenTwoColors(HSVColor col1, HSVColor col2, float duration = 2000, float fadeRate = 0.15f) // -1 duration for indefinite
+       /* public void AlternateBetweenTwoColors(HSVColor col1, HSVColor col2, float duration = 2000, float fadeRate = 0.15f) // -1 duration for indefinite
         {
             CleanCancellationToken();
             TaskRunner.RunAsync(Task.Run(() => FadeBetweenTwoColors(fadeRate, col1, col2, duration, currentlyRunningAnim.Token)));
-        }
+        }*/
 
         /// <summary>
         /// Creates a color burst, starting at the given color and progressively fading to black.
@@ -164,7 +164,7 @@ namespace LedDashboardCore.Modules.BasicAnimation
         /// <param name="fadeoutRate">The burst fade-out rate.</param>
         /// <param name="destinationColor">The color to progressively fade to after the color burst (black by default)</param>
         /// <returns></returns>
-        public Task ColorBurst(HSVColor color, LightZone zones, float fadeoutRate = 0.15f, HSVColor destinationColor = default)
+        public void ColorBurst(HSVColor color, LightZone zones, float fadeoutRate = 0.15f, HSVColor destinationColor = default)
         {
             LEDData data = LEDData.Empty;
 
@@ -183,7 +183,7 @@ namespace LedDashboardCore.Modules.BasicAnimation
                 }
                 else
                 {
-                    FadeOutToColor(fadeoutRate, destinationColor, token);
+                    FadeOutToColor(data, zones, fadeoutRate, destinationColor);
                 }
             }
             else
@@ -195,43 +195,6 @@ namespace LedDashboardCore.Modules.BasicAnimation
                 }
                 SendFrame(new LEDFrame(this, data, zones));
             }
-
-
-            // CleanCancellationToken();
-
-            return TaskRunner.RunAsync(Task.Run(async () =>
-            {
-                CancellationToken token = currentlyRunningAnim.Token;
-                foreach (Led l in this.leds)
-                {
-                    l.Color(color);
-                }
-                NewFrameReady.Invoke(new LEDFrame(this, new LEDData()))
-                NewFrameReady.Invoke(this, this.leds, LightingMode.Line);
-                if (fadeoutRate > 0)
-                {
-                    if (destinationColor.Equals(HSVColor.Black))
-                    {
-                        await FadeOutToBlack(fadeoutRate, token, LightingMode.Line);
-                    }
-                    else
-                    {
-                        await FadeOutToColor(fadeoutRate, destinationColor, token);
-                    }
-                }
-                else
-                {
-                    if (!destinationColor.Equals(HSVColor.Black))
-                    {
-                        this.leds.SetAllToColor(destinationColor);
-                    }
-                    else
-                    {
-                        this.leds.SetAllToBlack();
-                    }
-                    NewFrameReady.Invoke(this, this.leds, LightingMode.Line);
-                }
-            }));
         }
 
         private void ApplyColorToZones(LEDData frameData, LightZone zones, HSVColor color)
@@ -388,7 +351,7 @@ namespace LedDashboardCore.Modules.BasicAnimation
             }
         }
 
-        private void FadeBetweenTwoColors(LightZone zones, float rate, HSVColor col1, HSVColor col2, float duration)
+        public void FadeBetweenTwoColors(LightZone zones, HSVColor col1, HSVColor col2, float rate = 0.15f, float duration = 2000)
         {
             int frames = (int)Math.Round(duration * FPS);
 
