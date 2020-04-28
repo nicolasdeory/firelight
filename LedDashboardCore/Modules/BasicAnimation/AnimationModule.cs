@@ -353,6 +353,7 @@ namespace LedDashboardCore.Modules.BasicAnimation
             FadeOutToColor(frameData, zones, fadeoutDuration, HSVColor.Black);
         }
 
+        // fadeoutDuration in seconds
         private void FadeOutToColor(LEDData frameData, LightZone zones, float fadeoutDuration, HSVColor color)
         {
             int frames = (int)Math.Round(fadeoutDuration * FPS);
@@ -387,21 +388,26 @@ namespace LedDashboardCore.Modules.BasicAnimation
             }
         }
 
-        // Set duration to -1 for indefinite
-        private async Task FadeBetweenTwoColors(float rate, HSVColor col1, HSVColor col2, float duration, CancellationToken cancelToken)
+        private void FadeBetweenTwoColors(LightZone zones, float rate, HSVColor col1, HSVColor col2, float duration)
         {
-            int msCounter = 0;
-            while ((duration >= 0 && msCounter < duration) || duration < 0)
+            int frames = (int)Math.Round(duration * FPS);
+
+            for (int i = 0; i < frames; i++)
             {
-                float sin = (float)Math.Sin((msCounter / 1000f) * rate);
-                this.leds.SetAllToColor(HSVColor.Lerp(col1, col2, sin));
-                if (cancelToken.IsCancellationRequested)
+                float currentTime = i / FPS;
+                float sin = (float)Math.Sin(currentTime * rate);
+                HSVColor color = HSVColor.Lerp(col1, col2, sin);
+                LEDData newFrame = LEDData.Empty;
+                List<Led[]> newFrameLightArrays = newFrame.GetArraysForZones(zones);
+
+                foreach (Led[] arr in newFrameLightArrays)
                 {
-                    throw new TaskCanceledException();
+                    foreach (Led l in arr)
+                    {
+                        l.Color(color);
+                    }
                 }
-                NewFrameReady.Invoke(this, this.leds, LightingMode.Line);
-                await Task.Delay(30);
-                msCounter += 30;
+                SendFrame(new LEDFrame(this, newFrame, zones));
             }
         }
 
