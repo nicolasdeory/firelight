@@ -135,27 +135,23 @@ namespace LedDashboardCore.Modules.BasicAnimation
         /// </summary>
         public void StopCurrentAnimation()
         {
-            if (currentlyRunningAnim == null)
-                return;
+            /* if (currentlyRunningAnim == null)
+                 return;
 
-            currentlyRunningAnim.Cancel();
-            this.leds.SetAllToBlack();
-            NewFrameReady.Invoke(this, this.leds, LightingMode.Line);
-            TaskRunner.RunAsync(Task.Run(async () =>
-            {
-                // wait a bit for the current frame
-                await Task.Delay(50);
-                NewFrameReady.Invoke(this, this.leds, LightingMode.Line);
-            }));
+             currentlyRunningAnim.Cancel();
+             this.leds.SetAllToBlack();
+             NewFrameReady.Invoke(this, this.leds, LightingMode.Line);
+             TaskRunner.RunAsync(Task.Run(async () =>
+             {
+                 // wait a bit for the current frame
+                 await Task.Delay(50);
+                 NewFrameReady.Invoke(this, this.leds, LightingMode.Line);
+             }));
 
-            //isAnimationRunning = false;
+             //isAnimationRunning = false;*/
+            LEDData black = LEDData.Empty;
+            SendFrame(new LEDFrame(this,black, LightZone.None, true));
         }
-
-       /* public void AlternateBetweenTwoColors(HSVColor col1, HSVColor col2, float duration = 2000, float fadeRate = 0.15f) // -1 duration for indefinite
-        {
-            CleanCancellationToken();
-            TaskRunner.RunAsync(Task.Run(() => FadeBetweenTwoColors(fadeRate, col1, col2, duration, currentlyRunningAnim.Token)));
-        }*/
 
         /// <summary>
         /// Creates a color burst, starting at the given color and progressively fading to black.
