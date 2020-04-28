@@ -350,14 +350,18 @@ namespace LedDashboardCore.Modules.BasicAnimation
 
         private void FadeOutToBlack(LEDData frameData, LightZone zones, float fadeoutDuration)
         {
+            FadeOutToColor(frameData, zones, fadeoutDuration, HSVColor.Black);
+        }
 
+        private void FadeOutToColor(LEDData frameData, LightZone zones, float fadeoutDuration, HSVColor color)
+        {
             int frames = (int)Math.Round(fadeoutDuration * FPS);
             List<Led[]> frameLightArrays = frameData.GetArraysForZones(zones);
 
             for (int i = 0; i < frames; i++)
             {
                 float fadeout = (float)Utils.Scale(i, 0, frames, 0, 1);
-                LEDData newFrame = LEDData.Empty;               
+                LEDData newFrame = LEDData.Empty;
                 List<Led[]> newFrameLightArrays = newFrame.GetArraysForZones(zones);
 
                 for (int j = 0; j < frameLightArrays.Count; j++)
@@ -367,32 +371,20 @@ namespace LedDashboardCore.Modules.BasicAnimation
                     for (int k = 0; k < arrCurrent.Length; k++)
                     {
                         Led l = arrCurrent[k];
-                        HSVColor fadedColor = l.color.FadeToBlackBy(fadeout);
+                        HSVColor fadedColor;
+                        if (color.Equals(HSVColor.Black))
+                        {
+                            fadedColor = l.color.FadeToBlackBy(fadeout);
+                        }
+                        else
+                        {
+                            fadedColor = l.color.FadeToColorBy(color, fadeout);
+                        }
                         arrNew[k].Color(fadedColor);
                     }
                 }
                 SendFrame(new LEDFrame(this, newFrame, zones));
             }
-
-        }
-
-        private async Task FadeOutToColor(float rate, HSVColor color, CancellationToken cancelToken)
-        {
-            int msCounter = 0;
-            int fadeoutTime = (int)(GetFadeToBlackTime(rate) * 1000);
-            while (msCounter < fadeoutTime) // TODO: calculate animation duration (rn its 1s) 
-            {
-                this.leds.FadeToColorAllLeds(color, rate);
-                if (cancelToken.IsCancellationRequested)
-                {
-                    throw new TaskCanceledException();
-                }
-                NewFrameReady.Invoke(this, this.leds, LightingMode.Line);
-                await Task.Delay(30);
-                msCounter += 30;
-            }
-            this.leds.SetAllToColor(color);
-            NewFrameReady.Invoke(this, this.leds, LightingMode.Line);
         }
 
         // Set duration to -1 for indefinite
