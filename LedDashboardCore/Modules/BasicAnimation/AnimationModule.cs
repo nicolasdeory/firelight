@@ -108,9 +108,9 @@ namespace LedDashboardCore.Modules.BasicAnimation
             currentlyRunningAnim = new CancellationTokenSource();
         }
 
-        public Task HoldColor(HSVColor col, int durationMS)
+        public void HoldColor(LightZone zones, HSVColor color, float duration)
         {
-            CleanCancellationToken();
+            /*CleanCancellationToken();
             //isAnimationRunning = true;
             return TaskRunner.RunAsync(Task.Run(async () =>
             {
@@ -127,7 +127,14 @@ namespace LedDashboardCore.Modules.BasicAnimation
                     await Task.Delay(50);
                     msCounter += 50;
                 }
-            }));
+            }));*/
+            int frames = (int)Math.Round(duration * FPS);
+            for (int i = 0; i < frames; i++)
+            {
+                LEDData data = LEDData.Empty;
+                ApplyColorToZones(data, zones, color);
+                SendFrame(this, data, zones);
+            }
         }
 
         /// <summary>
@@ -150,7 +157,7 @@ namespace LedDashboardCore.Modules.BasicAnimation
 
              //isAnimationRunning = false;*/
             LEDData black = LEDData.Empty;
-            SendFrame(new LEDFrame(this,black, LightZone.None, true));
+            SendFrame(this,black, LightZone.None, true);
         }
 
         /// <summary>
@@ -167,7 +174,7 @@ namespace LedDashboardCore.Modules.BasicAnimation
             // Set all to color
             ApplyColorToZones(data, zones, color);
 
-            SendFrame(new LEDFrame(this, data, zones, true));
+            SendFrame(this, data, zones, true);
 
             // Fade to Black
 
@@ -189,7 +196,7 @@ namespace LedDashboardCore.Modules.BasicAnimation
                 {
                     ApplyColorToZones(data, zones, destinationColor);
                 }
-                SendFrame(new LEDFrame(this, data, zones));
+                SendFrame(this, data, zones);
             }
         }
 
@@ -205,9 +212,9 @@ namespace LedDashboardCore.Modules.BasicAnimation
             }    
         }
 
-        private void SendFrame(LEDFrame frame)
+        private void SendFrame(object sender, LEDData data, LightZone zones, bool priority = false)
         {
-            NewFrameReady.Invoke(frame);
+            NewFrameReady.Invoke(new LEDFrame(sender, data, zones, priority));
         }
 
 
@@ -343,11 +350,11 @@ namespace LedDashboardCore.Modules.BasicAnimation
                         arrNew[k].Color(fadedColor);
                     }
                 }
-                SendFrame(new LEDFrame(this, newFrame, zones));
+                SendFrame(this, newFrame, zones);
             }
         }
 
-        public void FadeBetweenTwoColors(LightZone zones, HSVColor col1, HSVColor col2, float rate = 0.15f, float duration = 2000)
+        public void FadeBetweenTwoColors(LightZone zones, HSVColor col1, HSVColor col2, float rate = 0.15f, float duration = 2)
         {
             int frames = (int)Math.Round(duration * FPS);
 
@@ -366,7 +373,7 @@ namespace LedDashboardCore.Modules.BasicAnimation
                         l.Color(color);
                     }
                 }
-                SendFrame(new LEDFrame(this, newFrame, zones));
+                SendFrame(this, newFrame, zones);
             }
         }
 
