@@ -1,4 +1,5 @@
-﻿using System;
+﻿using LedDashboardCore.Modules.BasicAnimation;
+using System;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -12,17 +13,17 @@ namespace LedDashboardCore.Modules.BlinkWhite
 
         CancellationTokenSource masterCancelToken = new CancellationTokenSource();
 
-        public static LEDModule Create(int ledCount)
+        LightZone allZones = LightZone.Keyboard | LightZone.Strip | LightZone.Mouse | LightZone.Mousepad | LightZone.Headset | LightZone.Keypad | LightZone.General;
+
+        AnimationModule animation = AnimationModule.Create();
+
+        public static LEDModule Create()
         {
-            return new BlinkWhiteModule(ledCount);
+            return new BlinkWhiteModule();
         }
 
-        private BlinkWhiteModule(int ledCount)
+        private BlinkWhiteModule()
         {
-            this.leds = new Led[ledCount];
-            for (int i = 0; i < ledCount; i++)
-                leds[i] = new Led();
-
             Task.Run(() => Blinker(500));
         }
         public async Task Blinker(int intervalMS)
@@ -34,21 +35,14 @@ namespace LedDashboardCore.Modules.BlinkWhite
                     return;
                 if (on)
                 {
-                    foreach (Led l in this.leds)
-                    {
-                        l.Color(HSVColor.Black);
-                    }
+                    animation.HoldColor(allZones, HSVColor.Black, 0.5f, true);
                     on = false;
                 }
                 else
                 {
-                    foreach (Led l in this.leds)
-                    {
-                        l.Color(new HSVColor(0.2f, 1f, 1f));
-                    }
+                    animation.HoldColor(allZones, new HSVColor(0.2f, 1f, 1f), 0.5f, true);
                     on = true;
                 }
-                NewFrameReady.Invoke(this, this.leds, LightingMode.Line);
                 await Task.Delay(intervalMS);
             }
         }

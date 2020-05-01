@@ -18,12 +18,12 @@ namespace LedDashboardCore.Modules.BasicAnimation
         /// Creates a new <see cref="AnimationModule"/> instance.
         /// </summary>
         /// <param name="ledCount">Number of leds in the LED strip</param>
-        public static AnimationModule Create(int ledCount)
+        public static AnimationModule Create()
         {
-            return new AnimationModule(ledCount);
+            return new AnimationModule();
         }
 
-        private AnimationModule(int ledCount)
+        private AnimationModule()
         {
 
         }
@@ -108,14 +108,14 @@ namespace LedDashboardCore.Modules.BasicAnimation
             }
         }
 
-        public void HoldColor(LightZone zones, HSVColor color, float duration)
+        public void HoldColor(LightZone zones, HSVColor color, float duration, bool priority = false)
         {
             int frames = (int)Math.Round(duration * FPS);
             for (int i = 0; i < frames; i++)
             {
                 LEDData data = LEDData.Empty;
                 ApplyColorToZones(data, zones, color);
-                SendFrame(this, data, zones);
+                SendFrame(this, data, zones, priority);
             }
         }
 
