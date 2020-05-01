@@ -14,7 +14,8 @@ namespace LedDashboardCore
         public const int NUMLEDS_KEYPAD = 20;
         public const int NUMLEDS_GENERAL = 5;
 
-
+        public static int[] LEDCounts { get; } = new int[]
+        { NUMLEDS_KEYBOARD, NUMLEDS_STRIP, NUMLEDS_MOUSE, NUMLEDS_MOUSEPAD, NUMLEDS_HEADSET, NUMLEDS_KEYPAD, NUMLEDS_GENERAL };
 
         private Led[] keyboard;
         public Led[] Keyboard

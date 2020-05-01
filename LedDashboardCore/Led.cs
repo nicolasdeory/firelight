@@ -10,6 +10,11 @@ namespace LedDashboardCore
             color = new HSVColor(0, 0, 0);
         }
 
+        public Led(HSVColor color)
+        {
+            this.color = color;
+        }
+
         public void FadeToBlackBy(float factor)
         {
             color.v *= 1 - factor;

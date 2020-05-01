@@ -4,26 +4,17 @@ namespace LedDashboardCore.Modules.Common
 {
     public class Animation
     {
-        private List<HSVColor[]> frames;
-        public int FrameLength => frames[0].Length;
-        public int FrameCount => frames.Count;
+        private LEDColorData[] frames;
+        public int FrameCount => frames.Length;
 
-        public Animation(List<HSVColor[]> anim)
+        public Animation(LEDColorData[] anim)
         {
             frames = anim;
         }
 
-        public HSVColor[] this[int index]
+        public LEDColorData this[int index]
         {
             get => frames[index];
-        }
-
-        public LightingMode AnimationMode
-        {
-            get
-            {
-                return frames[0].Length == 88 ? LightingMode.Keyboard : LightingMode.Line; // if there is the number of elements in the array that matches a keyboard frame 
-            }
         }
     }
 }
