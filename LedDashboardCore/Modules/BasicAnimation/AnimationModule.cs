@@ -52,29 +52,55 @@ namespace LedDashboardCore.Modules.BasicAnimation
         /// </summary>
         /// <param name="animPath">The animation path</param>
         /// <param name="keepTail">If set true, when the animation ends LEDs won't be set to black</param>
-        public Task RunAnimationOnce(string animPath, bool keepTail = false, float fadeOutAfterRate = 0, float timeScale = 1)
+        public void RunAnimationOnce(string animPath, LightZone zones, bool keepTail = false, float fadeoutDuration = 0, float timeScale = 1)
         {
-            CleanCancellationToken();
-            Animation anim = LoadAnimation(animPath);
-            CancellationToken token = currentlyRunningAnim.Token;
-            //isAnimationRunning = true;
-            return TaskRunner.RunAsync(Task.Run(() => PlayOnce(anim, token, timeScale)).ContinueWith(async (t) =>
+            LEDColorData[] anim = LoadAnimation(animPath).Frames;
+            float time = 0;
+            LEDData data = null;
+            while (time < anim.Length)
             {
-                if (t.IsCanceled) return; // don't continue if task was cancelled
-                if (!keepTail)
-                {
-                    if (fadeOutAfterRate > 0)
-                    {
-                        await FadeOutToBlack(fadeOutAfterRate, token, anim.AnimationMode);
-                    }
-                    else
-                    {
-                        this.leds.SetAllToBlack();
-                        NewFrameReady.Invoke(this, this.leds, LightingMode.Line);
-                    }
+                int i = (int)time;
+                data = LEDData.FromColors(anim[i]);
+                if (i == 0)
+                    SendFrame(this, data, zones, true);
+                else
+                    SendFrame(this, data, zones);
+                time += 1 * timeScale;
+            }
+            if (!keepTail)
+            {
+                if (fadeoutDuration > 0)
+                { 
+                    // data is last frame
+                    FadeOutToBlack(data, zones, fadeoutDuration);
                 }
-                //isAnimationRunning = false;
-            }));
+                else
+                {
+                    LEDData black = LEDData.Empty;
+                    SendFrame(this, black, zones);
+                }
+            }
+            /* CleanCancellationToken();
+             Animation anim = LoadAnimation(animPath);
+             CancellationToken token = currentlyRunningAnim.Token;
+             //isAnimationRunning = true;
+             return TaskRunner.RunAsync(Task.Run(() => PlayOnce(anim, token, timeScale)).ContinueWith(async (t) =>
+             {
+                 if (t.IsCanceled) return; // don't continue if task was cancelled
+                 if (!keepTail)
+                 {
+                     if (fadeOutAfterRate > 0)
+                     {
+                         await FadeOutToBlack(fadeOutAfterRate, token, anim.AnimationMode);
+                     }
+                     else
+                     {
+                         this.leds.SetAllToBlack();
+                         NewFrameReady.Invoke(this, this.leds, LightingMode.Line);
+                     }
+                 }
+                 //isAnimationRunning = false;
+             }));*/
         }
 
         /// <summary>

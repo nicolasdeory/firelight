@@ -4,17 +4,17 @@ namespace LedDashboardCore.Modules.Common
 {
     public class Animation
     {
-        private LEDColorData[] frames;
-        public int FrameCount => frames.Length;
+        public LEDColorData[] Frames { get; private set; }
+        public int FrameCount => Frames.Length;
 
         public Animation(LEDColorData[] anim)
         {
-            frames = anim;
+            Frames = anim;
         }
 
         public LEDColorData this[int index]
         {
-            get => frames[index];
+            get => Frames[index];
         }
     }
 }

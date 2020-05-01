@@ -138,6 +138,42 @@ namespace LedDashboardCore
             }
         }
 
+        public static LEDData FromColors(LEDColorData colorData)
+        {
+            LEDData data = LEDData.Empty;
+            for (int i = 0; i < NUMLEDS_KEYBOARD; i++)
+            {
+                data.Keyboard[i].Color(colorData.Keyboard[i]);
+            }
+            for (int i = 0; i < NUMLEDS_STRIP; i++)
+            {
+                data.Strip[i].Color(colorData.Strip[i]);
+            }
+            for (int i = 0; i < NUMLEDS_MOUSE; i++)
+            {
+                data.Mouse[i].Color(colorData.Mouse[i]);
+            }
+            for (int i = 0; i < NUMLEDS_MOUSEPAD; i++)
+            {
+                data.Mousepad[i].Color(colorData.Mousepad[i]);
+            }
+            for (int i = 0; i < NUMLEDS_HEADSET; i++)
+            {
+                data.Headset[i].Color(colorData.Headset[i]);
+            }
+            for (int i = 0; i < NUMLEDS_KEYPAD; i++)
+            {
+                data.Keypad[i].Color(colorData.Keypad[i]);
+            }
+            for (int i = 0; i < NUMLEDS_GENERAL; i++)
+            {
+                data.General[i].Color(colorData.General[i]);
+            }
+
+            return data;
+
+        }
+
         public List<Led[]> GetArraysForZones(LightZone zones)
         {
             List<Led[]> list = new List<Led[]>();
