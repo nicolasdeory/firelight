@@ -66,6 +66,9 @@ namespace LedDashboardCore
             }
         }
 
-
+        public Led Clone()
+        {
+            return new Led(this.color);
+        }
     }
 }

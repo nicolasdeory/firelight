@@ -1,4 +1,6 @@
-﻿namespace LedDashboardCore
+﻿using System.Linq;
+
+namespace LedDashboardCore
 {
     public static class UtilsLED
     {
@@ -79,6 +81,12 @@
         public static Led GetLedIn2D(this Led[] leds, int x, int y, int rowSize = 21)
         {
             return leds[y * rowSize + x];
+        }
+
+
+        public static Led[] CloneLeds(this Led[] leds)
+        {
+            return leds.Select(l => l.Clone()).ToArray();
         }
 
         public static HSVColor ValueToHSV(int numLeds, int led, double val)
