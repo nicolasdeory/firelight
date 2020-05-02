@@ -34,16 +34,13 @@ namespace Games.LeagueOfLegends.ItemModules
         {
             // Play relevant animations here
             wasCast = true;
-            Task.Run(async () =>
-            {
-                RunAnimationOnce("anim_1", true);
-                await Task.Delay(1200);
-                RunAnimationOnce("anim_2", true);
-                await Task.Delay(1200);
-                RunAnimationOnce("anim_3", true);
-                await Task.Delay(1600);
-                RunAnimationOnce("anim_4", false, 0.08f);
-            });
+            RunAnimationOnce("anim_1", LightZone.Keyboard);
+            Animator.HoldLastFrame(LightZone.Keyboard, 1.2f);
+            RunAnimationOnce("anim_2", LightZone.Keyboard);
+            Animator.HoldLastFrame(LightZone.Keyboard, 1.2f);
+            RunAnimationOnce("anim_3", LightZone.Keyboard);
+            Animator.HoldLastFrame(LightZone.Keyboard, 1.6f);
+            RunAnimationOnce("anim_4", LightZone.Keyboard, 3f);
         }
 
         protected override void OnGameStateUpdated(GameState state) // TODO: Handle when player buys a different trinket and cooldown gets transferred over
@@ -59,10 +56,10 @@ namespace Games.LeagueOfLegends.ItemModules
                     {
                         if (wasCast)
                             return;
-                        await Animator.HoldColor(PurpleColor, 300);
+                        Animator.HoldColor(PurpleColor, LightZone.All, 0.3f);
                         if (wasCast)
                             return;
-                        Animator.StopCurrentAnimation();
+                        Animator.HoldColor(HSVColor.Black, LightZone.All, 0.3f);
                         await Task.Delay(300);
                     }
                 });

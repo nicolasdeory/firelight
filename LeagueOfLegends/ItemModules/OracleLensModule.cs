@@ -23,12 +23,12 @@ namespace Games.LeagueOfLegends.ItemModules
         }
 
         protected override AbilityCastMode GetItemCastMode() => AbilityCastMode.Instant();
-
+        
         protected override void OnItemActivated(object s, EventArgs e)
         {
             if (ItemCooldownController.IsOnCooldown(ITEM_ID)) return; // If the item is on cooldown, nothing to do here.
             // Play relevant animations here
-            RunAnimationInLoop("activation", 8500);
+            RunAnimationInLoop("activation", LightZone.Keyboard, 8.5f);
 
             double avgChampLevel = GameState.AverageChampionLevel;
             ItemCooldownController.SetCooldown(ITEM_ID, GetCooldownDuration(avgChampLevel));
