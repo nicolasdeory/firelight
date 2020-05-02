@@ -52,7 +52,7 @@ namespace Games.LeagueOfLegends.ChampionModules
                 }
                 StartCooldownTimer(AbilityKey.R, finalCooldown);
                 CancelRecast(AbilityKey.R);
-                RunAnimationOnce("q_retract", timeScale: 0.6f);
+                RunAnimationOnce("q_retract", LightZone.Desk, timeScale: 0.6f);
                 chargesRemaining = 0;
             }
         }
@@ -68,35 +68,35 @@ namespace Games.LeagueOfLegends.ChampionModules
         protected override async Task OnCastQ()
         {
             castingQ = true;
-            RunAnimationOnce("q_charge", true, timeScale: 0.3f);
+            RunAnimationOnce("q_charge", LightZone.Desk, timeScale: 0.3f);
             if (castingQ) // we need to check again after playing last anim
-                await Animator.HoldColor(BlueExplodeColor, 1500);
+                Animator.HoldColor(BlueExplodeColor, LightZone.Desk, 1.5f);
             if (castingQ)
             {
-                RunAnimationOnce("q_retract", timeScale: 0.6f);
+                RunAnimationOnce("q_retract", LightZone.Desk, timeScale: 0.6f);
                 castingQ = false;
             }
         }
         protected override async Task OnCastW()
         {
             await Task.Delay(100);
-            RunAnimationInLoop("w_cast", 1000, timeScale: 1f);
-            await Task.Delay(1000);
-            Animator.ColorBurst(HSVColor.White);
+            RunAnimationOnce("w_cast", LightZone.Desk, 1000, timeScale: 1f);
+            //await Task.Delay(1000);
+            Animator.ColorBurst(HSVColor.White, LightZone.Desk);
         }
         protected override async Task OnCastE()
         {
             await Task.Delay(100);
-            RunAnimationOnce("e_cast", timeScale: 0.5f);
+            RunAnimationOnce("e_cast", LightZone.Keyboard, timeScale: 0.5f);
         }
         protected override async Task OnCastR()
         {
-            RunAnimationOnce("r_open", true, timeScale: 0.23f);
+            RunAnimationOnce("r_open", LightZone.All, timeScale: 0.23f);
             StartRTimer();
             await Task.Delay(500);
             if (chargesRemaining == 3)
             {
-                Animator.HoldColor(HSVColor.White, 10000);
+                Animator.HoldColor(HSVColor.White, LightZone.All, 10000);
             }
         }
 
@@ -116,9 +116,9 @@ namespace Games.LeagueOfLegends.ChampionModules
         protected override async Task OnRecastQ()
         {
             castingQ = false;
-            RunAnimationOnce("q_retract", timeScale: 0.6f);
+            RunAnimationOnce("q_retract", LightZone.Desk, timeScale: 0.6f);
             await Task.Delay(300);
-            Animator.ColorBurst(BlueExplodeColor);
+            Animator.ColorBurst(BlueExplodeColor, LightZone.Desk, 0.8f);
         }
         protected override async Task OnRecastR()
         {
@@ -128,21 +128,21 @@ namespace Games.LeagueOfLegends.ChampionModules
             }
 
             chargesRemaining--;
-            RunAnimationOnce("r_launch", true, timeScale: 0.4f);
+            RunAnimationOnce("r_launch", LightZone.All, timeScale: 0.4f);
             await Task.Delay(700);
 
             if (chargesRemaining > 0)
             {
                 int previousCharges = chargesRemaining;
-                await Animator.ColorBurst(BlueExplodeColor, 0.15f, HSVColor.White);
+                Animator.ColorBurst(BlueExplodeColor, LightZone.All, 0.8f, HSVColor.White);
                 if (previousCharges == chargesRemaining)
                 {
-                    Animator.HoldColor(HSVColor.White, rTimeRemaining);
+                    Animator.HoldColor(HSVColor.White, LightZone.All, rTimeRemaining);
                 }
             }
             else if (chargesRemaining == 0)
             {
-                await Animator.ColorBurst(BlueExplodeColor, 0.10f);
+                Animator.ColorBurst(BlueExplodeColor, LightZone.All, 1.2f);
             }
         }
     }
