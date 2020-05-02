@@ -13,6 +13,7 @@
         Headset = 16, 
         Keypad = 32, 
         General = 64,
-        All = 0|1|2|4|8|16|32|64
+        All = Keyboard | Strip | Mouse | Mousepad | Headset | Keypad | General,
+        Desk = Keyboard | Mouse | Mousepad | Keypad
     }
 }
