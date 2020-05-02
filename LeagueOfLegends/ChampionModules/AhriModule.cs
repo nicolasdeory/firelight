@@ -30,24 +30,24 @@ namespace Games.LeagueOfLegends.ChampionModules
 
         protected override async Task OnCastQ()
         {
-            RunAnimationOnce("q_start", true);
-            await Task.Delay(1000);
-            RunAnimationOnce("q_end", true);
+            RunAnimationOnce("q_start", LightZone.Keyboard);
+            Animator.HoldLastFrame(LightZone.Keyboard, 1f);
+            RunAnimationOnce("q_end", LightZone.Keyboard);
         }
         protected override async Task OnCastW()
         {
-            RunAnimationOnce("w_cast", false, 0.08f);
+            RunAnimationOnce("w_cast", LightZone.Keyboard, 3f);
         }
         protected override async Task OnCastE()
         {
             await Task.Delay(100);
-            RunAnimationOnce("e_cast");
+            RunAnimationOnce("e_cast", LightZone.Keyboard);
         }
         protected override async Task OnCastR()
         {
             // Trigger the start animation.
 
-            RunAnimationOnce("r_right");
+            RunAnimationOnce("r_right", LightZone.Keyboard);
 
             // The R cast is in progress.
             rCastInProgress = 1;
@@ -59,19 +59,22 @@ namespace Games.LeagueOfLegends.ChampionModules
 
         protected override async Task OnRecastR()
         {
-            await ProcessRCasts();
+            ProcessRCasts();
             rCastInProgress++;
             rCastInProgress %= 3;
         }
 
-        private Task ProcessRCasts()
+        private void ProcessRCasts()
         {
-            return rCastInProgress switch
+            switch (rCastInProgress)
             {
-                1 => RunAnimationOnce("r_left"),
-                2 => RunAnimationOnce("r_right"),
-                _ => Task.FromResult(false),
-            };
+                case 1:
+                    RunAnimationOnce("r_left", LightZone.Keyboard);
+                    break;
+                case 2:
+                    RunAnimationOnce("r_right", LightZone.Keyboard);
+                    break;
+            }
         }
     }
 }
