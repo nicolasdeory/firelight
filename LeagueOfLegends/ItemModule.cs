@@ -48,8 +48,8 @@ namespace Games.LeagueOfLegends
 
         public int ItemID { get; protected set; }
 
-        protected ItemModule(int ledCount, int itemID, string name, int itemSlot, GameState state, LightingMode preferredMode, AbilityCastPreference preferredCastMode, bool preloadAllAnimations = false)
-            : base(ledCount, name, state, preferredMode, preferredCastMode, preloadAllAnimations)
+        protected ItemModule(int itemID, string name, int itemSlot, GameState state, AbilityCastPreference preferredCastMode, bool preloadAllAnimations = false)
+            : base(name, state, preferredCastMode, preloadAllAnimations)
         {
             ItemAttributes = ItemUtils.GetItemAttributes(itemID);
             this.ItemID = itemID;

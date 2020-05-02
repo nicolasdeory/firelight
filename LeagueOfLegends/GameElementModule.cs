@@ -25,8 +25,8 @@ namespace Games.LeagueOfLegends
 
         // TODO: Handle champions with cooldown resets?
 
-        protected GameElementModule(int ledCount, string name, GameState gameState, LightingMode preferredLightingMode, AbilityCastPreference preferredCastMode, bool preloadAllAnimations = false)
-            : base(ledCount, gameState, preferredLightingMode, preferredCastMode)
+        protected GameElementModule(string name, GameState gameState, AbilityCastPreference preferredCastMode, bool preloadAllAnimations = false)
+            : base(gameState, preferredCastMode)
         {
             Name = name;
 

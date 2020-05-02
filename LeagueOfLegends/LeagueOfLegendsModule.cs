@@ -44,24 +44,22 @@ namespace Games.LeagueOfLegends
         string customKillAnimation = null; // can be changed by champion module
         bool wasDeadLastFrame = false;
 
+        HUDModule hudModule = new HUDModule();
+
         // Events
 
         /// <summary>
         /// Creates a new <see cref="LeagueOfLegendsModule"/> instance.
         /// </summary>
         /// <param name="ledCount">Number of LEDs in the strip</param>
-        public static LeagueOfLegendsModule Create(LightingMode preferLightMode, int ledCount, Dictionary<string, string> options)
+        public static LeagueOfLegendsModule Create(Dictionary<string, string> options)
         {
             AbilityCastPreference castMode = AbilityCastPreference.Normal;
             if (options.ContainsKey("castMode"))
             {
                 castMode = GetCastPreference(options["castMode"]);
             }
-            if (preferLightMode == LightingMode.Keyboard)
-            {
-                ledCount = 88;
-            }
-            return new LeagueOfLegendsModule(ledCount, preferLightMode, castMode);
+            return new LeagueOfLegendsModule(castMode);
         }
 
         private static AbilityCastPreference GetCastPreference(string castMode)
@@ -74,8 +72,8 @@ namespace Games.LeagueOfLegends
             };
         }
 
-        private LeagueOfLegendsModule(int ledCount, LightingMode mode, AbilityCastPreference castMode)
-            : base(ledCount, new GameState(), mode, castMode)
+        private LeagueOfLegendsModule(AbilityCastPreference castMode)
+            : base(new GameState(), castMode)
         {
             // League of Legends integration Initialization
 
@@ -141,7 +139,7 @@ namespace Games.LeagueOfLegends
             if (champType != null)
             {
                 championModule = champType.GetConstructors().First()
-                                    .Invoke(new object[] { Leds.Length, GameState, LightingMode, PreferredCastMode })
+                                    .Invoke(new object[] { GameState, PreferredCastMode })
                                     as ChampionModule;
                 championModule.NewFrameReady += NewFrameReadyHandler;
                 championModule.TriedToCastOutOfMana += OnAbilityCastNoMana;
@@ -152,7 +150,7 @@ namespace Games.LeagueOfLegends
             UpdatePlayerInfo();
 
             // start frame timer
-            FrameTimer();
+            _ = FrameTimer();
         }
 
         private async void UpdatePlayerInfo()
@@ -217,7 +215,7 @@ namespace Games.LeagueOfLegends
                 {
                     ItemModules[item.Slot]?.Dispose();
                     ItemModules[item.Slot] = itemType.GetConstructors().First()
-                                        .Invoke(new object[] { Leds.Length, GameState, item.Slot, LightingMode, PreferredCastMode })
+                                        .Invoke(new object[] { GameState, item.Slot, PreferredCastMode })
                                         as ItemModule;
                     ItemModules[item.Slot].RequestActivation += OnItemActivated;
                     ItemModules[item.Slot].NewFrameReady += NewFrameReadyHandler;
@@ -250,8 +248,8 @@ namespace Games.LeagueOfLegends
                 {
                     if (!CheckIfDead())
                     {
-                        HUDModule.DoFrame(Leds, LightingMode, GameState);
-                        InvokeNewFrameReady(this, Leds, LightingMode);
+                        LEDFrame frame = hudModule.DoFrame(GameState);
+                        InvokeNewFrameReady(frame);
                     }
                 }
                 await Task.Delay(30);
@@ -328,22 +326,17 @@ namespace Games.LeagueOfLegends
         {
             if (GameState.PlayerChampion.IsDead)
             {
-                for (int i = 0; i < Leds.Length; i++)
-                {
-                    Leds[i].Color(DeadColor);
-                }
                 Animator.HoldColor(LightZone.All, DeadColor, 1f, true);
                 wasDeadLastFrame = true;
-                //InvokeNewFrameReady(this, this.Leds, LightingMode.Line);
                 return true;
             }
             else
             {
-                if (wasDeadLastFrame)
+                /*if (wasDeadLastFrame) // Not needed, because hold color is only 1 second
                 {
-                    Leds.SetAllToBlack();
+                    InvokeNewFrameReady(LEDFrame.CreateEmpty(this));
                     wasDeadLastFrame = false;
-                }
+                }*/
                 return false;
             }
         }

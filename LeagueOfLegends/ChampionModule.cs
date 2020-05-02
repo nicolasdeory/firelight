@@ -70,8 +70,8 @@ namespace Games.LeagueOfLegends
 
         // TODO: Handle champions with cooldown resets?
 
-        protected ChampionModule(int ledCount, string champName, GameState gameState, LightingMode preferredLightingMode, AbilityCastPreference preferredCastMode, bool preloadAllAnimations = false) // TODO: Pass gamestate instead of active player
-            : base(ledCount, champName, gameState, preferredLightingMode, preferredCastMode, preloadAllAnimations)
+        protected ChampionModule(string champName, GameState gameState, AbilityCastPreference preferredCastMode, bool preloadAllAnimations = false) // TODO: Pass gamestate instead of active player
+            : base(champName, gameState, preferredCastMode, preloadAllAnimations)
         {
             AbilityCastModes = new Dictionary<AbilityKey, AbilityCastMode>
             {

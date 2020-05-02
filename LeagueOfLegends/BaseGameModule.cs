@@ -23,7 +23,6 @@ namespace Games.LeagueOfLegends
         /// The preferred lighting mode (when possible, use this one) For example, if keyboard is preferred, 
         /// use animations optimized for keyboards rather than for LED strips.
         /// </summary>
-        protected LightingMode LightingMode;
         protected AbilityCastPreference PreferredCastMode;
 
         /// <summary>
@@ -31,7 +30,7 @@ namespace Games.LeagueOfLegends
         /// </summary>
         protected LEDModule CurrentLEDSource;
 
-        protected BaseGameModule(int ledCount, GameState gameState, LightingMode mode, AbilityCastPreference castMode)
+        protected BaseGameModule(GameState gameState, AbilityCastPreference castMode)
         {
             PreferredCastMode = castMode;
 

@@ -17,8 +17,8 @@ namespace Games.LeagueOfLegends.ChampionModules
 
         int rCastInProgress = 0;
 
-        public AhriModule(int ledCount, GameState gameState, LightingMode preferredLightMode, AbilityCastPreference preferredCastMode)
-            : base(ledCount, CHAMPION_NAME, gameState, preferredLightMode, preferredCastMode, true)
+        public AhriModule(GameState gameState, AbilityCastPreference preferredCastMode)
+            : base(CHAMPION_NAME, gameState, preferredCastMode, true)
         {
             // Initialization for the champion module occurs here.
         }
