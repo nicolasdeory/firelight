@@ -28,40 +28,38 @@ namespace Games.LeagueOfLegends.ChampionModules
 
         protected override async Task OnCastQ()
         {
-            if (LightingMode == LightingMode.Keyboard)
-            {
-                // only for keyboard, for line mode it's too distracting
-                await Task.Delay(100);
-                RunAnimationOnce("q_cast", timeScale: 0.4f);
-            }
+            // only for keyboard, for line mode it's too distracting
+            await Task.Delay(100);
+            RunAnimationOnce("q_cast", LightZone.Keyboard, timeScale: 0.4f);
         }
         protected override async Task OnCastW()
         {
-            RunAnimationInLoop("w_loop", 5500, 0.1f, 0.08f);
+            RunAnimationInLoop("w_loop", LightZone.Keyboard, 5.5f, 2f, 0.08f);
         }
         protected override async Task OnCastR()
         {
-            await Animator.ColorBurst(RColor, 0.05f, RColor2);
+            Animator.ColorBurst(RColor, LightZone.Desk, 7f, RColor2);
         }
 
         protected override async Task OnRecastW()
         {
-            Animator.StopCurrentAnimation();
-            Animator.ColorBurst(new HSVColor(0, 0, 1));
+            //Animator.StopCurrentAnimation(); // it shouldn't be needed
+            Animator.ColorBurst(new HSVColor(0, 0, 1), LightZone.Desk);
         }
         protected override async Task OnRecastR()
         {
-            if (LightingMode == LightingMode.Keyboard)
-            {
-                RunAnimationOnce("r_cast", fadeOutAfterRate: 0.1f, timeScale: 0.22f);
-                await Task.Delay(300);
-                Animator.ColorBurst(new HSVColor(0, 0, 1), 0.08f);
-            }
-            else
-            {
-                RunAnimationOnce("r_cast_line", true, timeScale: 0.3f);
-                await Animator.ColorBurst(new HSVColor(0, 0, 1));
-            }
+            RunAnimationOnce("r_cast", LightZone.Keyboard, fadeoutAfterDuration: 3f, timeScale: 0.22f);
+            /* if (LightingMode == LightingMode.Keyboard)
+             {
+                 RunAnimationOnce("r_cast", fadeOutAfterRate: 0.1f, timeScale: 0.22f);
+                 await Task.Delay(300);
+                 Animator.ColorBurst(new HSVColor(0, 0, 1), 0.08f);
+             }
+             else
+             {
+                 RunAnimationOnce("r_cast_line", true, timeScale: 0.3f);
+                 await Animator.ColorBurst(new HSVColor(0, 0, 1));
+             }*/
         }
     }
 }
