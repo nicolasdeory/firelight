@@ -65,7 +65,9 @@ namespace LedDashboardCore.Modules.Common
             catch (Exception e)
             {
                 Debug.WriteLine(e.StackTrace);
-                throw new ArgumentException("File does not exist.", e);
+                Debug.WriteLine("Error loading animation: File does not exist.");
+                return Animation.Empty;
+                //throw new ArgumentException("File does not exist.", e);
             }
 
             string[] lines = text.Split('\n');
@@ -75,7 +77,9 @@ namespace LedDashboardCore.Modules.Common
 
             if (version != 2)
             {
-                throw new FileFormatException("Error parsing: Unsupported animation format version");
+                Debug.WriteLine("Error parsing: Unsupported animation format version");
+                return Animation.Empty;
+                //throw new FileFormatException("Error parsing: Unsupported animation format version");
             }
             List<string> animLines = new List<string>();
             for(int i = 0; i < lines.Length - 1; i++)
