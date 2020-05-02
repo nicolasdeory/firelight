@@ -287,7 +287,7 @@ namespace Games.LeagueOfLegends
             {
                 CurrentLEDSource = (LEDModule)frame.LastSender;
             }
-            if (frame.LastSender != CurrentLEDSource)
+            if (frame.LastSender != Animator && frame.LastSender != CurrentLEDSource)
                 return; // If it's from a different source that what we're listening to, ignore it
             InvokeNewFrameReady(frame);
             msSinceLastExternalFrameReceived = 0;

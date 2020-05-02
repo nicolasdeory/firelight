@@ -52,12 +52,15 @@ namespace Games.LeagueOfLegends
             0,1
         };
 
+        private LEDData lastFrame;
+
         public LEDFrame DoFrame(GameState gameState)
         {
             LEDData data = LEDData.Empty;
-            HealthBar(data, gameState);
+            HealthBar(data, lastFrame, gameState);
             WardView(data, gameState);
             GoldView(data, gameState);
+            lastFrame = data;
             return new LEDFrame(this, data, LightZone.All);
         }
 
@@ -116,8 +119,12 @@ namespace Games.LeagueOfLegends
         }
 
         private static List<int> alreadyTouchedLeds = new List<int>(); // fixes a weird flickering bug
-        private static void HealthBar(LEDData data, GameState gameState)
+        private static void HealthBar(LEDData data, LEDData lastFrame, GameState gameState)
         {
+            if (lastFrame != null)
+            {
+                data.Keyboard = lastFrame.Keyboard;
+            }
             float maxHealth = gameState.ActivePlayer.Stats.MaxHealth;
             float currentHealth = gameState.ActivePlayer.Stats.CurrentHealth;
             float healthPercentage = currentHealth / maxHealth;
