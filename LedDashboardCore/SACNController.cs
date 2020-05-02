@@ -8,15 +8,17 @@ namespace LedDashboardCore
 {
     public class SACNController : LightController, IDisposable
     {
-        public static SACNController Create()
+        public static SACNController Create(bool reverseOrder)
         {
-            return new SACNController();
+            return new SACNController(reverseOrder);
         }
 
-        static SACNSender sender;
+        SACNSender sender;
+        bool reverseOrder;
 
-        static SACNController()
+        private SACNController(bool reverseOrder)
         {
+            this.reverseOrder = reverseOrder;
             // If the method throws no exceptions, consider directly initializing the sender variable
             try
             {
@@ -28,12 +30,18 @@ namespace LedDashboardCore
             }
         }
 
-        public void SendData(int ledCount, byte[] data, LightingMode mode) // todo: when on keyboard mode, ledCount still has to be correct for the strip!
+      /*  public void SendData(int ledCount, byte[] data, LightingMode mode)
         {
             Task.Run(() => sender.Send(1, SanitizeDataArray(ledCount, data, mode)));
+        }*/
+
+        public void SendData(LEDData data)
+        {
+            //sender.Send(1, SanitizeDataArray(ledCount, data, mode))
+            sender.Send(1, data.Strip.ToByteArray(this.reverseOrder));
         }
 
-        private byte[] SanitizeDataArray(int ledCount, byte[] data, LightingMode mode)
+        /*private byte[] SanitizeDataArray(int ledCount, byte[] data, LightingMode mode)
         {
             switch (mode)
             {
@@ -54,9 +62,9 @@ namespace LedDashboardCore
                     Console.Error.WriteLine("SACN: Invalid lighting mode");
                     throw new ArgumentException("Invalid lighting mode");
             }
-        }
+        }*/
 
-        public static Led[] GetKeyboardToLedStripArray(byte[] data)
+        /*public static Led[] GetKeyboardToLedStripArray(byte[] data)
         {
             int ledStripLength = 170; // TODO: hardcoded number, standard led strip length?
             Led[] ls = new Led[ledStripLength];
@@ -83,10 +91,9 @@ namespace LedDashboardCore
         private static int GetNearestXForLed(int led)
         {
             return (int)Utils.Scale(led, 0, 170, 0, 19);
-        }
+        }*/
 
         public void Dispose() { }
-
         public bool Enabled { get; set; }
     }
 }

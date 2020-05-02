@@ -108,84 +108,103 @@ namespace LedDashboardCore
 
         }
 
-        public void SendData(int ledCount, byte[] colorArray, LightingMode mode)
+        public void SendData(LEDData data)
         {
+            byte[] colorArray = data.Keyboard.ToByteArray();
+
             if (!enabled) return;
             List<Point> points = new List<Point>();
-            if (mode == LightingMode.Line)
+            int black = ChromaAnimationAPI.GetRGB(0, 0, 0);
+            foreach (Keyboard.RZKEY key in numPadKeys)
             {
-                for (int i = 0; i < ledCount; i++)
-                {
-                    Color c = Color.FromArgb(colorArray[i * 3], colorArray[i * 3 + 1], colorArray[i * 3 + 2]);
-                    int x = (int)Utils.Scale(i, 0, ledCount, 0, 22);// TODO: Handle keyboards without numpads
-                    points.Clear();
-                    for (int j = 0; j < 6; j++)
-                        points.Add(new Point(x, j));
-                    try
-                    {
-                        foreach (var point in points)
-                        {
-                            ChromaAnimationAPI.Set2DColor(baseKeyboardAnim, 0, point.Y, point.X, ChromaAnimationAPI.GetRGB(c.R, c.G, c.B));
-                        }
-                        // keyboardFrame.SetKeys(points, c);
-                    }
-                    catch
-                    {
-                        Debug.WriteLine("Error sending data to Chroma keyboard. Perhaps it doesn't have a keypad");
-                    }
-
-                }
+                ChromaAnimationAPI.SetKeyColor(baseKeyboardAnim, 0, (int)key, black);
             }
-            else if (mode == LightingMode.Point)
+            for (int i = 0; i < 88; i++)
             {
-                for (int i = 0; i < KEYBOARD_LED_COUNT; i++)
-                {
-                    int col = ChromaAnimationAPI.GetRGB(colorArray[0], colorArray[1], colorArray[2]);
-                    ChromaAnimationAPI.Set1DColor(baseKeyboardAnim, 0, i, col);
-                }
-                /*points.Clear();
-                for (int i = 0; i < 22; i++)
-                {
-                    for (int j = 0; j < 6; j++)
-                    {
-                        points.Add(new Point(i, j));
-                    }
-                }
-                try
-                {
-                    keyboardFrame.SetKeys(points, Color.FromArgb(colorArray[0], colorArray[1], colorArray[2]));
-                } catch (Exception) // TODO: Handle keyboards without numpads
-                {
-                    Debug.WriteLine("Error sending data to Chroma keyboard. Perhaps it doesn't have a keypad");
-                }*/
-
+                int color = ChromaAnimationAPI.GetRGB(colorArray[i * 3], colorArray[i * 3 + 1], colorArray[i * 3 + 2]);
+                ChromaAnimationAPI.SetKeyColor(baseKeyboardAnim, 0, (int)indexKeyMap[i], color);
             }
-            else if (mode == LightingMode.Keyboard)
-            {
-                int black = ChromaAnimationAPI.GetRGB(0, 0, 0);
-                foreach (Keyboard.RZKEY key in numPadKeys)
-                {
-                    ChromaAnimationAPI.SetKeyColor(baseKeyboardAnim, 0, (int)key, black);
-                    //keyboardFrame.SetKey(key, Color.Black); // set numpad keys to black
-                }
-                for (int i = 0; i < 88; i++)
-                {
-                    //Color c = Color.FromArgb();
-                    int color = ChromaAnimationAPI.GetRGB(colorArray[i * 3], colorArray[i * 3 + 1], colorArray[i * 3 + 2]);
-                    ChromaAnimationAPI.SetKeyColor(baseKeyboardAnim, 0, (int)indexKeyMap[i], color);
-                    //keyboardFrame.SetKey(indexKeyMap[i], c);
-                }
-
-            }
-            else
-            {
-                Console.Error.WriteLine("RazerChroma: Invalid lighting mode");
-                throw new ArgumentException("Invalid lighting mode");
-            }
-
-            // keyboardFrame.Update();
             ChromaAnimationAPI.PreviewFrame(baseKeyboardAnim, 0);
         }
+
+        /* public void SendData(int ledCount, byte[] colorArray, LightingMode mode)
+         {
+             if (!enabled) return;
+             List<Point> points = new List<Point>();
+             if (mode == LightingMode.Line)
+             {
+                 for (int i = 0; i < ledCount; i++)
+                 {
+                     Color c = Color.FromArgb(colorArray[i * 3], colorArray[i * 3 + 1], colorArray[i * 3 + 2]);
+                     int x = (int)Utils.Scale(i, 0, ledCount, 0, 22);// TODO: Handle keyboards without numpads
+                     points.Clear();
+                     for (int j = 0; j < 6; j++)
+                         points.Add(new Point(x, j));
+                     try
+                     {
+                         foreach (var point in points)
+                         {
+                             ChromaAnimationAPI.Set2DColor(baseKeyboardAnim, 0, point.Y, point.X, ChromaAnimationAPI.GetRGB(c.R, c.G, c.B));
+                         }
+                         // keyboardFrame.SetKeys(points, c);
+                     }
+                     catch
+                     {
+                         Debug.WriteLine("Error sending data to Chroma keyboard. Perhaps it doesn't have a keypad");
+                     }
+
+                 }
+             }
+             else if (mode == LightingMode.Point)
+             {
+                 for (int i = 0; i < KEYBOARD_LED_COUNT; i++)
+                 {
+                     int col = ChromaAnimationAPI.GetRGB(colorArray[0], colorArray[1], colorArray[2]);
+                     ChromaAnimationAPI.Set1DColor(baseKeyboardAnim, 0, i, col);
+                 }
+                 /*points.Clear();
+                 for (int i = 0; i < 22; i++)
+                 {
+                     for (int j = 0; j < 6; j++)
+                     {
+                         points.Add(new Point(i, j));
+                     }
+                 }
+                 try
+                 {
+                     keyboardFrame.SetKeys(points, Color.FromArgb(colorArray[0], colorArray[1], colorArray[2]));
+                 } catch (Exception) // TODO: Handle keyboards without numpads
+                 {
+                     Debug.WriteLine("Error sending data to Chroma keyboard. Perhaps it doesn't have a keypad");
+                 }
+
+             }
+             else if (mode == LightingMode.Keyboard)
+             {
+                 int black = ChromaAnimationAPI.GetRGB(0, 0, 0);
+                 foreach (Keyboard.RZKEY key in numPadKeys)
+                 {
+                     ChromaAnimationAPI.SetKeyColor(baseKeyboardAnim, 0, (int)key, black);
+                     //keyboardFrame.SetKey(key, Color.Black); // set numpad keys to black
+                 }
+                 for (int i = 0; i < 88; i++)
+                 {
+                     //Color c = Color.FromArgb();
+                     int color = ChromaAnimationAPI.GetRGB(colorArray[i * 3], colorArray[i * 3 + 1], colorArray[i * 3 + 2]);
+                     ChromaAnimationAPI.SetKeyColor(baseKeyboardAnim, 0, (int)indexKeyMap[i], color);
+                     //keyboardFrame.SetKey(indexKeyMap[i], c);
+                 }
+
+             }
+             else
+             {
+                 Console.Error.WriteLine("RazerChroma: Invalid lighting mode");
+                 throw new ArgumentException("Invalid lighting mode");
+             }
+
+             // keyboardFrame.Update();
+             ChromaAnimationAPI.PreviewFrame(baseKeyboardAnim, 0);
+         }*/
 
         bool enabled = true;
 

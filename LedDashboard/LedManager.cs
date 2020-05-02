@@ -13,7 +13,7 @@ namespace LedDashboard
         /// <summary>
         /// Array that contains LED color data for the LED strip.
         /// </summary>
-        private LEDData leds;
+        //private LEDData leds;
         private int ledCount;
 
         public delegate void UpdateDisplayHandler(LEDData leds);
@@ -24,7 +24,7 @@ namespace LedDashboard
         public event UpdateDisplayHandler DisplayUpdated;
 
         bool reverseOrder;
-        LightController lightController;
+        List<LightController> lightControllers;
 
         private Dictionary<string, Dictionary<string, string>> ModuleOptions = new Dictionary<string, Dictionary<string, string>>();
 
@@ -55,10 +55,7 @@ namespace LedDashboard
         /// </summary>
         public LedManager() // by default starts in keyboard mode
         {
-
-            lightController = RazerChromaController.Create();
-
-            InitLeds(LightingMode.Keyboard);
+            InitLeds();
 
             KeyboardHookService.Init();
 
@@ -67,16 +64,16 @@ namespace LedDashboard
             ProcessListenerService.Register("League of Legends"); // Listen when league of legends is opened
 
             UpdateLEDDisplay(LEDFrame.Empty);
+            Task.Run(UpdateLoop);
 
         }
 
         /// <param name="ledCount">Number of lights in the LED strip</param>
         /// <param name="reverseOrder">Set to true if you want the lights to be reverse in order (i.e. Color for LED 0 will be applied to the last LED in the strip)</param>
-        private void InitLeds(LightingMode preferredMode, int ledCount = 0, bool reverseOrder = false)
+        private void InitLeds(bool reverseOrder = false)
         {
-            this.preferredMode = preferredMode;
-            this.ledCount = preferredMode == LightingMode.Keyboard ? 88 : ledCount;
-            this.reverseOrder = reverseOrder;
+            lightControllers.Add(RazerChromaController.Create());
+            lightControllers.Add(SACNController.Create(reverseOrder));
         }
 
         private void OnProcessChanged(string name)
@@ -99,11 +96,11 @@ namespace LedDashboard
             if (this.enabled != enable)
             {
                 this.enabled = enable;
-                lightController.Enabled = enable;
+                lightControllers.ForEach(c => c.Enabled = enable);
             }
         }
 
-        bool updatingDisplay = false;
+        //bool updatingDisplay = false;
         /// <summary>
         /// Updates the LED display
         /// </summary>
@@ -142,16 +139,20 @@ namespace LedDashboard
                 if (FrameQueue.Count > 0)
                 {
                     LEDFrame next = FrameQueue.Dequeue();
-                    this.leds = next.Leds;
-                    DisplayUpdated?.Invoke(this.leds);
+                    //this.leds = next.Leds;
+                    SendLedData(next.Leds);
                 }
                 await Task.Delay(30); // 33 fps
             }
         }
 
+        private void SendLedData(LEDData leds)
+        {
+            DisplayUpdated?.Invoke(leds);
+        }
 
 
-        /// <summary>
+        /*/// <summary>
         /// Sets the light controller to be used
         /// </summary>
         public void SetController(LightControllerType type, int ledCount = 0, bool reverseOrder = false)
@@ -168,29 +169,29 @@ namespace LedDashboard
                 this.preferredMode = LightingMode.Keyboard;
             }
             RestartManager(this.preferredMode, ledCount, reverseOrder);
-        }
+        }*/
 
-        private void RestartManager(LightingMode preferredMode, int ledCount, bool reverseOrder) // TODO: Keep game state (i.e. league of legends cooldowns etc)
+        private void RestartManager(bool reverseOrder) // TODO: Keep game state (i.e. league of legends cooldowns etc)
         {
-            InitLeds(this.preferredMode, ledCount, reverseOrder);
+            InitLeds(reverseOrder);
             CurrentLEDModule = null; // restart the whole service (force module reload)
             ProcessListenerService.Restart();
         }
 
         private void RestartManager()
         {
-            InitLeds(this.preferredMode, this.ledCount, this.reverseOrder);
+            InitLeds(this.reverseOrder);
             CurrentLEDModule = null;
             ProcessListenerService.Restart();
         }
 
-        /// <summary>
+        /*/// <summary>
         /// Sends LED data to a wireless LED strip using the E1.31 sACN protocol.
         /// </summary>
         public void SendData(LightingMode mode)
         {
             lightController.SendData(this.leds.Strip.Length, this.leds.Strip.ToByteArray(this.reverseOrder), mode);
-        }
+        }*/
 
         public void SetModuleOption(string moduleId, string option, string value)
         {
