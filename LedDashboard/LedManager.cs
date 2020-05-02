@@ -63,7 +63,7 @@ namespace LedDashboard
             ProcessListenerService.Start();
             ProcessListenerService.Register("League of Legends"); // Listen when league of legends is opened
 
-            UpdateLEDDisplay(LEDFrame.Empty);
+            UpdateLEDDisplay(LEDFrame.CreateEmpty(this));
             Task.Run(UpdateLoop);
 
         }

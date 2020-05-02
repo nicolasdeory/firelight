@@ -92,7 +92,7 @@ namespace Games.LeagueOfLegends
         // plays it indefinitely
         private void PlayLoadingAnimation()
         {
-            Animator.AlternateBetweenTwoColors(HSVColor.Black, LoadingColor, -1, 1.5f);
+            Animator.FadeBetweenTwoColors(LightZone.All, HSVColor.Black, LoadingColor, -1, 1.5f);
         }
 
         private async Task WaitForGameInitialization()
@@ -279,15 +279,16 @@ namespace Games.LeagueOfLegends
         /// </summary>
         /// <param name="s">Module that sent the message</param>
         /// <param name="data">LED data</param>
-        protected override void NewFrameReadyHandler(object s, Led[] ls, LightingMode mode)
+        protected override void NewFrameReadyHandler(LEDFrame frame)
         {
-            if ((s is ChampionModule && CurrentLEDSource is ItemModule item && !item.IsPriorityItem)) // Champion modules take priority over item casts... for the moment
+            // TODO: Make sure frame Sender is ChampionModule and NOT animationModule
+            if ((frame.Sender is ChampionModule && CurrentLEDSource is ItemModule item && !item.IsPriorityItem)) // Champion modules take priority over item casts... for the moment
             {
-                CurrentLEDSource = (LEDModule)s;
+                CurrentLEDSource = (LEDModule)frame.Sender;
             }
-            if (s != CurrentLEDSource)
+            if (frame.Sender != CurrentLEDSource)
                 return; // If it's from a different source that what we're listening to, ignore it
-            InvokeNewFrameReady(this, ls, mode);
+            InvokeNewFrameReady(frame);
             msSinceLastExternalFrameReceived = 0;
         }
 
@@ -331,8 +332,9 @@ namespace Games.LeagueOfLegends
                 {
                     Leds[i].Color(DeadColor);
                 }
+                Animator.HoldColor(LightZone.All, DeadColor, 1f, true);
                 wasDeadLastFrame = true;
-                InvokeNewFrameReady(this, this.Leds, LightingMode.Line);
+                //InvokeNewFrameReady(this, this.Leds, LightingMode.Line);
                 return true;
             }
             else

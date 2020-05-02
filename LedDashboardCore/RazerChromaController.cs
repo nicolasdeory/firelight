@@ -110,6 +110,7 @@ namespace LedDashboardCore
 
         public void SendData(LEDData data)
         {
+            // TODO: SEND NOT ONLY TO KEYBOARD BUT TO EVERYTHING
             byte[] colorArray = data.Keyboard.ToByteArray();
 
             if (!enabled) return;

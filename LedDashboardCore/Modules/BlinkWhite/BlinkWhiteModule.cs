@@ -13,8 +13,6 @@ namespace LedDashboardCore.Modules.BlinkWhite
 
         CancellationTokenSource masterCancelToken = new CancellationTokenSource();
 
-        LightZone allZones = LightZone.Keyboard | LightZone.Strip | LightZone.Mouse | LightZone.Mousepad | LightZone.Headset | LightZone.Keypad | LightZone.General;
-
         AnimationModule animation = AnimationModule.Create();
 
         public static LEDModule Create()
@@ -35,12 +33,12 @@ namespace LedDashboardCore.Modules.BlinkWhite
                     return;
                 if (on)
                 {
-                    animation.HoldColor(allZones, HSVColor.Black, 0.5f, true);
+                    animation.HoldColor(LightZone.All, HSVColor.Black, 0.5f, true);
                     on = false;
                 }
                 else
                 {
-                    animation.HoldColor(allZones, new HSVColor(0.2f, 1f, 1f), 0.5f, true);
+                    animation.HoldColor(LightZone.All, new HSVColor(0.2f, 1f, 1f), 0.5f, true);
                     on = true;
                 }
                 await Task.Delay(intervalMS);

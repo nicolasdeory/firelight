@@ -55,9 +55,9 @@ namespace LedDashboardCore.Modules.BasicAnimation
                 int i = (int)time;
                 data = LEDData.FromColors(anim[i]);
                 if (i == 0)
-                    SendFrame(this, data, zones, true);
+                    SendFrame(data, zones, true);
                 else
-                    SendFrame(this, data, zones);
+                    SendFrame(data, zones);
                 time += 1 * timeScale;
             }
             if (!keepTail)
@@ -70,7 +70,7 @@ namespace LedDashboardCore.Modules.BasicAnimation
                 else
                 {
                     LEDData black = LEDData.Empty;
-                    SendFrame(this, black, zones);
+                    SendFrame(black, zones);
                 }
             }
         }
@@ -91,9 +91,9 @@ namespace LedDashboardCore.Modules.BasicAnimation
                 int i = ((int)time) % anim.Length;
                 data = LEDData.FromColors(anim[i]);
                 if (i == 0)
-                    SendFrame(this, data, zones, true);
+                    SendFrame(data, zones, true);
                 else
-                    SendFrame(this, data, zones);
+                    SendFrame(data, zones);
                 time += 1 * timeScale;
             }
             if (fadeoutDuration > 0)
@@ -104,7 +104,7 @@ namespace LedDashboardCore.Modules.BasicAnimation
             else
             {
                 LEDData black = LEDData.Empty;
-                SendFrame(this, black, zones);
+                SendFrame(black, zones);
             }
         }
 
@@ -115,7 +115,7 @@ namespace LedDashboardCore.Modules.BasicAnimation
             {
                 LEDData data = LEDData.Empty;
                 ApplyColorToZones(data, zones, color);
-                SendFrame(this, data, zones, priority);
+                SendFrame(data, zones, priority);
             }
         }
 
@@ -125,7 +125,7 @@ namespace LedDashboardCore.Modules.BasicAnimation
         public void StopCurrentAnimation()
         {
             LEDData black = LEDData.Empty;
-            SendFrame(this,black, LightZone.None, true);
+            SendFrame(black, LightZone.None, true);
         }
 
         /// <summary>
@@ -142,7 +142,7 @@ namespace LedDashboardCore.Modules.BasicAnimation
             // Set all to color
             ApplyColorToZones(data, zones, color);
 
-            SendFrame(this, data, zones, true);
+            SendFrame(data, zones, true);
 
             // Fade to Black
 
@@ -164,7 +164,7 @@ namespace LedDashboardCore.Modules.BasicAnimation
                 {
                     ApplyColorToZones(data, zones, destinationColor);
                 }
-                SendFrame(this, data, zones);
+                SendFrame(data, zones);
             }
         }
 
@@ -180,9 +180,9 @@ namespace LedDashboardCore.Modules.BasicAnimation
             }    
         }
 
-        private void SendFrame(object sender, LEDData data, LightZone zones, bool priority = false)
+        private void SendFrame(LEDData data, LightZone zones, bool priority = false)
         {
-            NewFrameReady.Invoke(new LEDFrame(sender, data, zones, priority));
+            NewFrameReady.Invoke(new LEDFrame(this, data, zones, priority));
         }
 
 
@@ -231,7 +231,7 @@ namespace LedDashboardCore.Modules.BasicAnimation
                         arrNew[k].Color(fadedColor);
                     }
                 }
-                SendFrame(this, newFrame, zones);
+                SendFrame(newFrame, zones);
             }
         }
 
@@ -254,7 +254,7 @@ namespace LedDashboardCore.Modules.BasicAnimation
                         l.Color(color);
                     }
                 }
-                SendFrame(this, newFrame, zones);
+                SendFrame(newFrame, zones);
             }
         }
        

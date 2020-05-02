@@ -52,11 +52,12 @@ namespace Games.LeagueOfLegends
         {
             Animator.NewFrameReady += NewFrameReadyHandler;
         }
-        protected abstract void NewFrameReadyHandler(object s, Led[] ls, LightingMode mode);
+        protected abstract void NewFrameReadyHandler(LEDFrame frame);
 
-        protected void InvokeNewFrameReady(object s, Led[] ls, LightingMode mode)
+        protected void InvokeNewFrameReady(LEDFrame frame)
         {
-            NewFrameReady?.Invoke(s, ls, mode);
+            frame.SenderChain.Add(this);
+            NewFrameReady?.Invoke(frame);
         }
 
         public abstract void Dispose();
