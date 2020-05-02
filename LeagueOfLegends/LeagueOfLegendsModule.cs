@@ -84,13 +84,14 @@ namespace Games.LeagueOfLegends
             AddAnimatorEvent();
 
             PlayLoadingAnimation();
-            WaitForGameInitialization();
+            _ = WaitForGameInitialization();
         }
 
         // plays it indefinitely
         private void PlayLoadingAnimation()
         {
-            Animator.FadeBetweenTwoColors(LightZone.All, HSVColor.Black, LoadingColor, -1, 1.5f);
+            Animator.StopCurrentAnimation();
+            Animator.FadeBetweenTwoColors(LightZone.All, HSVColor.Black, LoadingColor, 1.5f, 2f);
         }
 
         private async Task WaitForGameInitialization()
@@ -113,6 +114,7 @@ namespace Games.LeagueOfLegends
                 }
 
                 await Task.Delay(1000);
+                PlayLoadingAnimation();
             }
             await OnGameInitialized();
         }
@@ -174,10 +176,11 @@ namespace Games.LeagueOfLegends
             {
                 json = await WebRequestUtil.GetResponse("https://127.0.0.1:2999/liveclientdata/allgamedata");
             }
-            catch (WebException e)
+            catch (WebException)
             {
                 Console.WriteLine("InvalidOperationException: Game client disconnected");
-                throw new InvalidOperationException("Couldn't connect with the game client", e);
+                return;
+                //throw new InvalidOperationException("Couldn't connect with the game client", e);
             }
 
             var gameData = JsonConvert.DeserializeObject<dynamic>(json);

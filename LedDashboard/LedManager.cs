@@ -10,13 +10,8 @@ namespace LedDashboard
 
     class LedManager
     {
-        /// <summary>
-        /// Array that contains LED color data for the LED strip.
-        /// </summary>
-        //private LEDData leds;
-        private int ledCount;
 
-        public delegate void UpdateDisplayHandler(LEDData leds);
+        public delegate void UpdateDisplayHandler(LEDFrame frame);
 
         /// <summary>
         /// Raised when the LED display is updated.
@@ -24,7 +19,7 @@ namespace LedDashboard
         public event UpdateDisplayHandler DisplayUpdated;
 
         bool reverseOrder;
-        List<LightController> lightControllers;
+        List<LightController> lightControllers = new List<LightController>();
 
         private Dictionary<string, Dictionary<string, string>> ModuleOptions = new Dictionary<string, Dictionary<string, string>>();
 
@@ -111,6 +106,7 @@ namespace LedDashboard
             CheckFrame(frame);
             if (frame.Priority) FrameQueue.Clear();
             FrameQueue.Enqueue(frame);
+            Debug.WriteLine("Frame received. Queue=" + FrameQueue.Count);
         }
 
         private void CheckFrame(LEDFrame frame)
@@ -140,15 +136,16 @@ namespace LedDashboard
                 {
                     LEDFrame next = FrameQueue.Dequeue();
                     //this.leds = next.Leds;
-                    SendLedData(next.Leds);
+                    SendLedData(next);
                 }
                 await Task.Delay(30); // 33 fps
             }
         }
 
-        private void SendLedData(LEDData leds)
+        private void SendLedData(LEDFrame frame)
         {
-            DisplayUpdated?.Invoke(leds);
+            lightControllers.ForEach(controller => controller.SendData(frame));
+            DisplayUpdated?.Invoke(frame);
         }
 
 

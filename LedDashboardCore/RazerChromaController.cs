@@ -108,8 +108,11 @@ namespace LedDashboardCore
 
         }
 
-        public void SendData(LEDData data)
+        public void SendData(LEDFrame frame)
         {
+            if (!frame.Zones.HasFlag(LightZone.Keyboard))
+                return;
+            LEDData data = frame.Leds;
             // TODO: SEND NOT ONLY TO KEYBOARD BUT TO EVERYTHING
             byte[] colorArray = data.Keyboard.ToByteArray();
 

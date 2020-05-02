@@ -7,6 +7,6 @@ namespace LedDashboardCore
         public bool Enabled { get; set; }
 
         //public void SendData(int ledCount, byte[] data, LightingMode mode);
-        public void SendData(LEDData data);
+        public void SendData(LEDFrame data);
     }
 }

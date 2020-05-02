@@ -127,15 +127,25 @@ namespace LedDashboardCore
             { 
                return new LEDData()
                {
-                   Keyboard = new Led[NUMLEDS_KEYBOARD],
-                   Mouse = new Led[NUMLEDS_MOUSE],
-                   Strip = new Led[NUMLEDS_STRIP],
-                   Mousepad = new Led[NUMLEDS_MOUSEPAD],
-                   Headset = new Led[NUMLEDS_HEADSET],
-                   Keypad = new Led[NUMLEDS_KEYPAD],
-                   General = new Led[NUMLEDS_GENERAL]
+                   Keyboard = CreateLedArray(NUMLEDS_KEYBOARD),
+                   Mouse = CreateLedArray(NUMLEDS_MOUSE),
+                   Strip = CreateLedArray(NUMLEDS_STRIP),
+                   Mousepad = CreateLedArray(NUMLEDS_MOUSEPAD),
+                   Headset = CreateLedArray(NUMLEDS_HEADSET),
+                   Keypad = CreateLedArray(NUMLEDS_KEYPAD),
+                   General = CreateLedArray(NUMLEDS_GENERAL)
                };
             }
+        }
+
+        private static Led[] CreateLedArray(int ledCount)
+        {
+            Led[] arr = new Led[ledCount];
+            for (int i = 0; i < ledCount; i++)
+            {
+                arr[i] = new Led();
+            }
+            return arr;
         }
 
         public static LEDData FromColors(LEDColorData colorData)

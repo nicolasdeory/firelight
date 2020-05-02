@@ -35,8 +35,11 @@ namespace LedDashboardCore
             Task.Run(() => sender.Send(1, SanitizeDataArray(ledCount, data, mode)));
         }*/
 
-        public void SendData(LEDData data)
+        public void SendData(LEDFrame frame)
         {
+            if (!frame.Zones.HasFlag(LightZone.Strip))
+                return;
+            LEDData data = frame.Leds;
             //sender.Send(1, SanitizeDataArray(ledCount, data, mode))
             sender.Send(1, data.Strip.ToByteArray(this.reverseOrder));
         }
