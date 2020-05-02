@@ -33,12 +33,12 @@ namespace LedDashboardCore.Modules.BlinkWhite
                     return;
                 if (on)
                 {
-                    animation.HoldColor(LightZone.All, HSVColor.Black, 0.5f, true);
+                    animation.HoldColor(HSVColor.Black, LightZone.All, 0.5f, true);
                     on = false;
                 }
                 else
                 {
-                    animation.HoldColor(LightZone.All, new HSVColor(0.2f, 1f, 1f), 0.5f, true);
+                    animation.HoldColor(new HSVColor(0.2f, 1f, 1f), LightZone.All, 0.5f, true);
                     on = true;
                 }
                 await Task.Delay(intervalMS);

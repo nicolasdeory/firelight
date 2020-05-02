@@ -107,7 +107,7 @@ namespace LedDashboardCore.Modules.BasicAnimation
             }
         }
 
-        public void HoldColor(LightZone zones, HSVColor color, float duration, bool priority = false)
+        public void HoldColor(HSVColor color, LightZone zones, float duration, bool priority = false)
         {
             int frames = (int)Math.Round(duration * FPS);
             for (int i = 0; i < frames; i++)
