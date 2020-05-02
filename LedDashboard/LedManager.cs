@@ -76,11 +76,6 @@ namespace LedDashboard
         {
             this.preferredMode = preferredMode;
             this.ledCount = preferredMode == LightingMode.Keyboard ? 88 : ledCount;
-            /*this.leds = new Led[this.ledCount];
-            for (int i = 0; i < this.leds.Length; i++)
-            {
-                this.leds[i] = new Led();
-            }*/
             this.reverseOrder = reverseOrder;
         }
 
@@ -116,22 +111,28 @@ namespace LedDashboard
         /// <param name="ls">Array containing values for each LED in the strip</param>
         public void UpdateLEDDisplay(LEDFrame frame)
         {
-            /*if (updatingDisplay)
-            {
-                Debug.WriteLine("SEVERE: UpdateLEDDisplay was called at the same time as an ongoing one");
-                return;
-            }
-            updatingDisplay = true;
-            this.leds = ls;
-            if (mode == LightingMode.Keyboard && ls.Length != 88)
-            {
-                Debug.WriteLine("SEVERE: Tried to send a keyboard frame but LED array had incorrect length");
-            }
-            DisplayUpdated?.Invoke(this.leds, mode);
-            SendData(mode);
-            updatingDisplay = false;*/
+            CheckFrame(frame);
             if (frame.Priority) FrameQueue.Clear();
             FrameQueue.Enqueue(frame);
+        }
+
+        private void CheckFrame(LEDFrame frame)
+        {
+            LEDData data = frame.Leds;
+            if (data.Keyboard.Length != LEDData.NUMLEDS_KEYBOARD)
+                throw new ArgumentException("Keyboard frame does not match expected length");
+            if (data.Strip.Length != LEDData.NUMLEDS_STRIP)
+                throw new ArgumentException("Strip frame does not match expected length");
+            if (data.Mouse.Length != LEDData.NUMLEDS_MOUSE)
+                throw new ArgumentException("Mouse frame does not match expected length");
+            if (data.Mousepad.Length != LEDData.NUMLEDS_MOUSEPAD)
+                throw new ArgumentException("Mousepad frame does not match expected length");
+            if (data.Headset.Length != LEDData.NUMLEDS_HEADSET)
+                throw new ArgumentException("Headset frame does not match expected length");
+            if (data.Keypad.Length != LEDData.NUMLEDS_KEYPAD)
+                throw new ArgumentException("Keypad frame does not match expected length");
+            if (data.General.Length != LEDData.NUMLEDS_GENERAL)
+                throw new ArgumentException("General frame does not match expected length");
         }
 
         private async Task UpdateLoop()
