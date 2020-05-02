@@ -18,8 +18,8 @@ namespace Games.LeagueOfLegends.ItemModules
 
         // Cooldown
 
-        public RedemptionModule(int ledCount, GameState gameState, int itemSlot, LightingMode preferredLightMode, AbilityCastPreference preferredCastMode)
-            : base(ledCount, ITEM_ID, ITEM_NAME, itemSlot, gameState, preferredLightMode, preferredCastMode, true)
+        public RedemptionModule(GameState gameState, int itemSlot, AbilityCastPreference preferredCastMode)
+            : base(ITEM_ID, ITEM_NAME, itemSlot, gameState, preferredCastMode, true)
         {
             // Initialization for the item module occurs here.
 
@@ -48,11 +48,8 @@ namespace Games.LeagueOfLegends.ItemModules
             if (!ItemCooldownController.IsOnCooldown(ITEM_ID))
             {
                 // Play relevant animations here
-                Task.Run(async () =>
-                {
-                    RunAnimationOnce("start", true, timeScale: 0.08f);
-                    RunAnimationOnce("impact", false, 0.05f);
-                });
+                RunAnimationOnce("start", LightZone.Keyboard, timeScale: 0.08f);
+                RunAnimationOnce("impact", LightZone.Keyboard, 0.05f);
 
                 ItemCooldownController.SetCooldown(ITEM_ID, CooldownDuration);
             }

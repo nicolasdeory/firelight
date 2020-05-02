@@ -15,8 +15,8 @@ namespace Games.LeagueOfLegends.ChampionModules
         HSVColor RColor = new HSVColor(0.81f, 0.43f, 1);
         HSVColor RColor2 = new HSVColor(0.91f, 0.87f, 1);
 
-        public TwistedFateModule(int ledCount, GameState gameState, LightingMode preferredLightMode, AbilityCastPreference preferredCastMode)
-            : base(ledCount, CHAMPION_NAME, gameState, preferredLightMode, preferredCastMode, true)
+        public TwistedFateModule(GameState gameState, AbilityCastPreference preferredCastMode)
+            : base(CHAMPION_NAME, gameState, preferredCastMode, true)
         {
             // Initialization for the champion module occurs here.
         }

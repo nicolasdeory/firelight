@@ -18,8 +18,8 @@ namespace Games.LeagueOfLegends.ChampionModules
         static HSVColor EColor = new HSVColor(0.08f, 1, 0.64f);
         static HSVColor RColor = new HSVColor(0.54f, 1, 1);
 
-        public UdyrModule(int ledCount, GameState gameState, LightingMode preferredLightMode, AbilityCastPreference preferredCastMode)
-            : base(ledCount, CHAMPION_NAME, gameState, preferredLightMode, preferredCastMode)
+        public UdyrModule(GameState gameState, AbilityCastPreference preferredCastMode)
+            : base(CHAMPION_NAME, gameState, preferredCastMode)
         {
             // Initialization for the champion module occurs here.
         }

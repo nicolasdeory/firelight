@@ -21,8 +21,8 @@ namespace Games.LeagueOfLegends.ChampionModules
 
         public int MaxRCasts => GameState.ActivePlayer.Abilities.R_Level + 2;
 
-        public XerathModule(int ledCount, GameState gameState, LightingMode preferredLightMode, AbilityCastPreference preferredCastMode)
-            : base(ledCount, CHAMPION_NAME, gameState, preferredLightMode, preferredCastMode, true)
+        public XerathModule(GameState gameState, AbilityCastPreference preferredCastMode)
+            : base(CHAMPION_NAME, gameState, preferredCastMode, true)
         {
             // Initialization for the champion module occurs here.
         }

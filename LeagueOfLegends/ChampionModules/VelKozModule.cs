@@ -17,8 +17,8 @@ namespace Games.LeagueOfLegends.ChampionModules
         bool qCastInProgress = false;
         bool rCastInProgress = false; // this is used to make the animation for Vel'Koz's R to take preference over other animations
 
-        public VelKozModule(int ledCount, GameState gameState, LightingMode preferredLightMode, AbilityCastPreference preferredCastMode)
-            : base(ledCount, CHAMPION_NAME, gameState, preferredLightMode, preferredCastMode, true)
+        public VelKozModule(GameState gameState, AbilityCastPreference preferredCastMode)
+            : base(CHAMPION_NAME, gameState, preferredCastMode, true)
         {
             // Initialization for the champion module occurs here.
         }

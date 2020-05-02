@@ -14,8 +14,8 @@ namespace Games.LeagueOfLegends.ChampionModules
         // Champion-specific Variables
 
 
-        public EzrealModule(int ledCount, GameState gameState, LightingMode preferredLightMode, AbilityCastPreference preferredCastMode)
-            : base(ledCount, CHAMPION_NAME, gameState, preferredLightMode, preferredCastMode, true)
+        public EzrealModule(GameState gameState, AbilityCastPreference preferredCastMode)
+            : base(CHAMPION_NAME, gameState, preferredCastMode, true)
         {
             // Initialization for the champion module occurs here.
         }
