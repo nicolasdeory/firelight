@@ -10,6 +10,8 @@ namespace LedDashboardCore
         public LEDData Leds { get; }
         public LightZone Zones { get; }
         public bool Priority { get; }
+        
+        public object LastSender { get { return SenderChain[SenderChain.Count - 1]; } }
 
         public LEDFrame(object sender, LEDData ledData, LightZone zones, bool priority = false)
         {

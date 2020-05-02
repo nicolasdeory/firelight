@@ -36,13 +36,13 @@ namespace Games.LeagueOfLegends.ItemModules
             wasCast = true;
             Task.Run(async () =>
             {
-                await RunAnimationOnce("anim_1", true);
+                RunAnimationOnce("anim_1", true);
                 await Task.Delay(1200);
-                await RunAnimationOnce("anim_2", true);
+                RunAnimationOnce("anim_2", true);
                 await Task.Delay(1200);
-                await RunAnimationOnce("anim_3", true);
+                RunAnimationOnce("anim_3", true);
                 await Task.Delay(1600);
-                await RunAnimationOnce("anim_4", false, 0.08f);
+                RunAnimationOnce("anim_4", false, 0.08f);
             });
         }
 

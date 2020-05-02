@@ -101,7 +101,9 @@ namespace LedDashboard
         {
             if (updatingUI) return;
             updatingUI = true;
-            Task.Run(() => // HACK This is done asynchronously but it's still very slow. 10ms to draw stuff...
+            updatingUI = false; // TODO: implement UI
+
+            /*Task.Run(() => // HACK This is done asynchronously but it's still very slow. 10ms to draw stuff...
             {
                 if (currentLightingMode == LightingMode.Keyboard)
                 {
@@ -169,25 +171,25 @@ namespace LedDashboard
                 }
 
                 updatingUI = false;
-            });
+            });*/
         }
 
         public void UseRazerChromaClicked(object s, EventArgs e)
         {
-            ledManager.SetController(LightControllerType.RazerChroma);
+            /*ledManager.SetController(LightControllerType.RazerChroma);
             chromabtn.Enabled = false;
             ledstripbtn.Enabled = true;
             currentLightingMode = LightingMode.Keyboard;
-            canvas.Clear(Color.White);
+            canvas.Clear(Color.White);*/
         }
 
         public void UseLEDStripClicked(object s, EventArgs e)
         {
-            ledManager.SetController(LightControllerType.LED_Strip, 170, true); // This is for my LED strip atm (170 leds, in reverse order)
+            /*ledManager.SetController(LightControllerType.LED_Strip, 170, true); // This is for my LED strip atm (170 leds, in reverse order)
             chromabtn.Enabled = true;
             ledstripbtn.Enabled = false;
             currentLightingMode = LightingMode.Line;
-            canvas.Clear(Color.White); // TODO: Delay between changing lighting modes. It causes crashes if it's switched too fast.
+            canvas.Clear(Color.White); // TODO: Delay between changing lighting modes. It causes crashes if it's switched too fast.*/
         }
 
         private List<KeyboardKey> LoadKeyboardLayout()

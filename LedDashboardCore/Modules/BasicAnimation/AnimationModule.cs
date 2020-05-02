@@ -14,6 +14,8 @@ namespace LedDashboardCore.Modules.BasicAnimation
 
         Dictionary<string, Animation> LoadedAnimations = new Dictionary<string, Animation>();
 
+        LEDData lastFrame;
+
         /// <summary>
         /// Creates a new <see cref="AnimationModule"/> instance.
         /// </summary>
@@ -45,7 +47,7 @@ namespace LedDashboardCore.Modules.BasicAnimation
         /// </summary>
         /// <param name="animPath">The animation path</param>
         /// <param name="keepTail">If set true, when the animation ends LEDs won't be set to black</param>
-        public void RunAnimationOnce(string animPath, LightZone zones, bool keepTail = false, float fadeoutDuration = 0, float timeScale = 1)
+        public void RunAnimationOnce(string animPath, LightZone zones, float fadeoutDuration = 0, float timeScale = 1)
         {
             LEDColorData[] anim = LoadAnimation(animPath).Frames;
             float time = 0;
@@ -60,18 +62,15 @@ namespace LedDashboardCore.Modules.BasicAnimation
                     SendFrame(data, zones);
                 time += 1 * timeScale;
             }
-            if (!keepTail)
+            if (fadeoutDuration > 0)
             {
-                if (fadeoutDuration > 0)
-                { 
-                    // data is last frame
-                    FadeOutToBlack(data, zones, fadeoutDuration);
-                }
-                else
-                {
-                    LEDData black = LEDData.Empty;
-                    SendFrame(black, zones);
-                }
+                // data is last frame
+                FadeOutToBlack(data, zones, fadeoutDuration);
+            }
+            else
+            {
+                LEDData black = LEDData.Empty;
+                SendFrame(black, zones);
             }
         }
 
@@ -83,7 +82,7 @@ namespace LedDashboardCore.Modules.BasicAnimation
         {
             LEDColorData[] anim = LoadAnimation(animPath).Frames;
             float animDuration = anim.Length * 0.03f;
-            float loopRatio = (int) (loopDuration / animDuration);
+            float loopRatio = (int)(loopDuration / animDuration);
             float time = 0;
             LEDData data = null;
             while (time < anim.Length * loopRatio)
@@ -132,10 +131,10 @@ namespace LedDashboardCore.Modules.BasicAnimation
         /// Creates a color burst, starting at the given color and progressively fading to black.
         /// </summary>
         /// <param name="color">The burst color.</param>
-        /// <param name="fadeoutRate">The burst fade-out rate.</param>
+        /// <param name="fadeoutDuration">The burst fade-out duration.</param>
         /// <param name="destinationColor">The color to progressively fade to after the color burst (black by default)</param>
         /// <returns></returns>
-        public void ColorBurst(HSVColor color, LightZone zones, float fadeoutRate = 0.15f, HSVColor destinationColor = default)
+        public void ColorBurst(HSVColor color, LightZone zones, float fadeoutDuration = 0.15f, HSVColor destinationColor = default)
         {
             LEDData data = LEDData.Empty;
 
@@ -146,15 +145,15 @@ namespace LedDashboardCore.Modules.BasicAnimation
 
             // Fade to Black
 
-            if (fadeoutRate > 0)
+            if (fadeoutDuration > 0)
             {
                 if (destinationColor.Equals(HSVColor.Black))
                 {
-                    FadeOutToBlack(data, zones, fadeoutRate);
+                    FadeOutToBlack(data, zones, fadeoutDuration);
                 }
                 else
                 {
-                    FadeOutToColor(data, zones, fadeoutRate, destinationColor);
+                    FadeOutToColor(data, zones, fadeoutDuration, destinationColor);
                 }
             }
             else
@@ -171,17 +170,18 @@ namespace LedDashboardCore.Modules.BasicAnimation
         private void ApplyColorToZones(LEDData frameData, LightZone zones, HSVColor color)
         {
             List<Led[]> colArrays = frameData.GetArraysForZones(zones);
-            foreach(Led[] arr in colArrays)
+            foreach (Led[] arr in colArrays)
             {
-                foreach(Led l in arr)
+                foreach (Led l in arr)
                 {
                     l.Color(color);
                 }
-            }    
+            }
         }
 
         private void SendFrame(LEDData data, LightZone zones, bool priority = false)
         {
+            lastFrame = data;
             NewFrameReady.Invoke(new LEDFrame(this, data, zones, priority));
         }
 
@@ -235,6 +235,15 @@ namespace LedDashboardCore.Modules.BasicAnimation
             }
         }
 
+        public void HoldLastFrame(LightZone zones, float duration)
+        {
+            int frames = (int)Math.Round(duration * FPS);
+            for (int i = 0; i < frames; i++)
+            {
+                SendFrame(lastFrame, zones);
+            }
+        }
+
         public void FadeBetweenTwoColors(LightZone zones, HSVColor col1, HSVColor col2, float rate = 0.15f, float duration = 2)
         {
             int frames = (int)Math.Round(duration * FPS);
@@ -257,7 +266,7 @@ namespace LedDashboardCore.Modules.BasicAnimation
                 SendFrame(newFrame, zones);
             }
         }
-       
+
         public void Dispose() { }
     }
 }

@@ -282,11 +282,11 @@ namespace Games.LeagueOfLegends
         protected override void NewFrameReadyHandler(LEDFrame frame)
         {
             // TODO: Make sure frame Sender is ChampionModule and NOT animationModule
-            if ((frame.Sender is ChampionModule && CurrentLEDSource is ItemModule item && !item.IsPriorityItem)) // Champion modules take priority over item casts... for the moment
+            if ((frame.LastSender is ChampionModule && CurrentLEDSource is ItemModule item && !item.IsPriorityItem)) // Champion modules take priority over item casts... for the moment
             {
-                CurrentLEDSource = (LEDModule)frame.Sender;
+                CurrentLEDSource = (LEDModule)frame.LastSender;
             }
-            if (frame.Sender != CurrentLEDSource)
+            if (frame.LastSender != CurrentLEDSource)
                 return; // If it's from a different source that what we're listening to, ignore it
             InvokeNewFrameReady(frame);
             msSinceLastExternalFrameReceived = 0;
@@ -355,18 +355,14 @@ namespace Games.LeagueOfLegends
                 CurrentLEDSource = Animator;
                 if (customKillAnimation != null)
                 {
-                    Animator.RunAnimationOnce(customKillAnimation, false, 0.1f).ContinueWith((t) =>
-                    {
-                        CurrentLEDSource = championModule;
-                        customKillAnimation = null;
-                    });
+                    Animator.RunAnimationOnce(customKillAnimation, LightZone.All, 0.1f);
+                    CurrentLEDSource = championModule;
+                    customKillAnimation = null;
                 }
                 else
                 {
-                    Animator.ColorBurst(KillColor, 0.01f).ContinueWith((t) =>
-                    {
-                        CurrentLEDSource = championModule;
-                    });
+                    Animator.ColorBurst(KillColor, LightZone.All, 0.01f);
+                    CurrentLEDSource = championModule;
                 }
             }
         }
@@ -392,10 +388,8 @@ namespace Games.LeagueOfLegends
         private void OnAbilityCastNoMana()
         {
             CurrentLEDSource = Animator;
-            Animator.ColorBurst(NoManaColor, 0.3f).ContinueWith((t) =>
-            {
-                CurrentLEDSource = championModule;
-            });
+            Animator.ColorBurst(NoManaColor, LightZone.Desk, 0.3f);
+            CurrentLEDSource = championModule;
         }
 
         public override void Dispose()

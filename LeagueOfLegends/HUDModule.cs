@@ -47,33 +47,36 @@ namespace Games.LeagueOfLegends
             KeyUtils.PointToKey(new Point(18,5)),
         };
 
-        public static void DoFrame(Led[] leds, LightingMode lightMode, GameState gameState)
+        static readonly List<int> goldMouseLights = new List<int>()
         {
-            HealthBar(leds, lightMode, gameState);
-            WardView(leds, lightMode, gameState);
-            GoldView(leds, lightMode, gameState);
+            0,1
+        };
+
+        public LEDFrame DoFrame(GameState gameState)
+        {
+            LEDData data = LEDData.Empty;
+            HealthBar(data, gameState);
+            WardView(data, gameState);
+            GoldView(data, gameState);
+            return new LEDFrame(this, data, LightZone.All);
         }
 
-        private static void GoldView(Led[] leds, LightingMode lightMode, GameState gameState)
+        private void GoldView(LEDData data, GameState gameState)
         {
-            if (lightMode == LightingMode.Keyboard)
+            HSVColor col = HSVColor.Black;
+            if (gameState.ActivePlayer.CurrentGold >= GoldNotificationThreshold)
             {
-                HSVColor col = HSVColor.Black;
-                if (gameState.ActivePlayer.CurrentGold >= GoldNotificationThreshold)
-                {
-                    col = GoldColor;
-                }
-                foreach (int k in goldKeys)
-                {
-                    leds[k].Color(col);
-                }
+                col = GoldColor;
             }
-
+            foreach (int k in goldKeys)
+            {
+                data.Keyboard[k].Color(col);
+            }
         }
 
-        private static void WardView(Led[] leds, LightingMode lightMode, GameState gameState)
+        private static void WardView(LEDData data, GameState gameState)
         {
-            if (lightMode != LightingMode.Keyboard) return; // TODO: Implement some sort of notification for LED strip perhaps
+            //if (lightMode != LightingMode.Keyboard) return; // TODO: Implement some sort of notification for LED strip perhaps
 
             Item trinket = gameState.PlayerChampion.Items.FirstOrDefault(x => x.Slot == 6);
             if (trinket == null)
@@ -81,7 +84,7 @@ namespace Games.LeagueOfLegends
                 // if there is no trinket, set to black
                 foreach (int k in trinketKeys)
                 {
-                    leds[k].SetBlack();
+                    data.Keyboard[k].SetBlack();
                 }
             }
             else
@@ -106,77 +109,75 @@ namespace Games.LeagueOfLegends
                 // TODO: HANDLE HERALD EYE
                 foreach (int k in trinketKeys)
                 {
-                    leds[k].Color(col);
+                    data.Keyboard[k].Color(col);
                 }
             }
 
         }
 
         private static List<int> alreadyTouchedLeds = new List<int>(); // fixes a weird flickering bug
-        private static void HealthBar(Led[] leds, LightingMode lightMode, GameState gameState)
+        private static void HealthBar(LEDData data, GameState gameState)
         {
             float maxHealth = gameState.ActivePlayer.Stats.MaxHealth;
             float currentHealth = gameState.ActivePlayer.Stats.CurrentHealth;
             float healthPercentage = currentHealth / maxHealth;
             alreadyTouchedLeds.Clear();
-            if (lightMode == LightingMode.Keyboard)
+
+            // KEYBOARD LIGHTING
+            int greenHPLeds = Math.Max((int)Utils.Scale(healthPercentage, 0, 1, 0, 16), 1); // at least one led active when player is alive
+            for (int i = 0; i < 16; i++)
             {
-                int greenHPLeds = Math.Max((int)Utils.Scale(healthPercentage, 0, 1, 0, 16), 1); // at least one led active when player is alive
-                for (int i = 0; i < 16; i++)
+                List<int> listLedsToTurnOn = new List<int>(6); // light the whole column
+                for (int j = 0; j < 6; j++)
                 {
-                    List<int> ledsToTurnOn = new List<int>(6); // light the whole column
-                    for (int j = 0; j < 6; j++)
-                    {
-                        ledsToTurnOn.Add(KeyUtils.PointToKey(new Point(i, j)));
-                    }
-
-                    if (i < greenHPLeds)
-                    {
-                        foreach (int idx in ledsToTurnOn.Where(x => x != -1))
-                        {
-                            if (alreadyTouchedLeds.Contains(idx))
-                                continue;
-                            leds[idx].MixNewColor(HealthColor, true, 0.2f);
-                        }
-                    }
-                    else
-                    {
-                        foreach (int idx in ledsToTurnOn.Where(x => x != -1))
-                        {
-                            if (alreadyTouchedLeds.Contains(idx))
-                                continue;
-                            if (leds[idx].color.AlmostEqual(HealthColor))
-                            {
-                                leds[idx].Color(HurtColor);
-                            }
-                            else
-                            {
-                                leds[idx].FadeToBlackBy(0.08f);
-                            }
-
-                        }
-                    }
-                    alreadyTouchedLeds.AddRange(ledsToTurnOn);
-
+                    listLedsToTurnOn.Add(KeyUtils.PointToKey(new Point(i, j)));
                 }
-            }
-            else
-            {
-                int ledsToTurnOn = Math.Max((int)(healthPercentage * leds.Length), 1);
-                for (int i = 0; i < leds.Length; i++)
+
+                if (i < greenHPLeds)
                 {
-                    if (i < ledsToTurnOn)
-                        leds[i].MixNewColor(HealthColor, true, 0.2f);
-                    else
+                    foreach (int idx in listLedsToTurnOn.Where(x => x != -1))
                     {
-                        if (leds[i].color.AlmostEqual(HealthColor))
+                        if (alreadyTouchedLeds.Contains(idx))
+                            continue;
+                        data.Keyboard[idx].MixNewColor(HealthColor, true, 0.2f);
+                    }
+                }
+                else
+                {
+                    foreach (int idx in listLedsToTurnOn.Where(x => x != -1))
+                    {
+                        if (alreadyTouchedLeds.Contains(idx))
+                            continue;
+                        if (data.Keyboard[idx].color.AlmostEqual(HealthColor))
                         {
-                            leds[i].Color(HurtColor);
+                            data.Keyboard[idx].Color(HurtColor);
                         }
                         else
                         {
-                            leds[i].FadeToBlackBy(0.05f);
+                            data.Keyboard[idx].FadeToBlackBy(0.08f);
                         }
+
+                    }
+                }
+                alreadyTouchedLeds.AddRange(listLedsToTurnOn);
+
+            }
+
+            // LED STRIP LIGHTING
+            int ledsToTurnOn = Math.Max((int)(healthPercentage * LEDData.NUMLEDS_STRIP), 1);
+            for (int i = 0; i < LEDData.NUMLEDS_STRIP; i++)
+            {
+                if (i < ledsToTurnOn)
+                    data.Strip[i].MixNewColor(HealthColor, true, 0.2f);
+                else
+                {
+                    if (data.Strip[i].color.AlmostEqual(HealthColor))
+                    {
+                        data.Strip[i].Color(HurtColor);
+                    }
+                    else
+                    {
+                        data.Strip[i].FadeToBlackBy(0.05f);
                     }
                 }
             }

@@ -68,7 +68,7 @@ namespace Games.LeagueOfLegends.ChampionModules
         protected override async Task OnCastQ()
         {
             castingQ = true;
-            await RunAnimationOnce("q_charge", true, timeScale: 0.3f);
+            RunAnimationOnce("q_charge", true, timeScale: 0.3f);
             if (castingQ) // we need to check again after playing last anim
                 await Animator.HoldColor(BlueExplodeColor, 1500);
             if (castingQ)
@@ -116,7 +116,7 @@ namespace Games.LeagueOfLegends.ChampionModules
         protected override async Task OnRecastQ()
         {
             castingQ = false;
-            await RunAnimationOnce("q_retract", timeScale: 0.6f);
+            RunAnimationOnce("q_retract", timeScale: 0.6f);
             await Task.Delay(300);
             Animator.ColorBurst(BlueExplodeColor);
         }

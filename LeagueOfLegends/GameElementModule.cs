@@ -53,26 +53,22 @@ namespace Games.LeagueOfLegends
             }
         }
 
-        protected async Task RunAnimationOnce(string animationName, bool keepTail = false, float fadeOutAfterRate = 0, float timeScale = 1)
+        protected void RunAnimationOnce(string animationName, LightZone zones, float fadeoutAfterDuration = 0, float timeScale = 1)
         {
-            await Animator.RunAnimationOnce(GetAnimationPath(animationName), keepTail, fadeOutAfterRate, timeScale);
+            Animator.RunAnimationOnce(GetAnimationPath(animationName), zones, fadeoutAfterDuration, timeScale);
         }
-        protected void RunAnimationInLoop(string animationName, int loopDuration, float fadeOutAfterRate = 0, float timeScale = 1)
+        protected void RunAnimationInLoop(string animationName, LightZone zones, float loopDuration, float fadeoutAfterDuration = 0, float timeScale = 1)
         {
-            Animator.RunAnimationInLoop(GetAnimationPath(animationName), loopDuration, fadeOutAfterRate, timeScale);
-        }
-
-        protected override void NewFrameReadyHandler(object s, Led[] ls, LightingMode mode)
-        {
-            DispatchNewFrame(ls, mode);
+            Animator.RunAnimationInLoop(GetAnimationPath(animationName), zones, loopDuration, fadeoutAfterDuration, timeScale);
         }
 
         /// <summary>
         /// Dispatches a frame with the given LED data, raising the NewFrameReady event.
         /// </summary>
-        protected void DispatchNewFrame(Led[] ls, LightingMode mode)
+        protected override void NewFrameReadyHandler(LEDFrame frame)
         {
-            InvokeNewFrameReady(this, ls, mode);
+            //frame.SenderChain.Add(this);
+            InvokeNewFrameReady(frame);
         }
 
         protected void AddInputHandlers()

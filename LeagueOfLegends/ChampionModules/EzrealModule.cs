@@ -28,23 +28,23 @@ namespace Games.LeagueOfLegends.ChampionModules
         protected override async Task OnCastQ()
         {
             await Task.Delay(150);
-            await RunAnimationOnce("q_cast", timeScale: 0.8f);
+            RunAnimationOnce("q_cast", timeScale: 0.8f);
         }
         protected override async Task OnCastW()
         {
             await Task.Delay(150);
-            await RunAnimationOnce("w_cast");
+            RunAnimationOnce("w_cast");
         }
         protected override async Task OnCastE()
         {
             await Task.Delay(250);
-            await RunAnimationOnce("e_cast", false, 0.15f);
+            RunAnimationOnce("e_cast", false, 0.15f);
         }
         protected override async Task OnCastR()
         {
-            await RunAnimationOnce("r_channel", true);
+            RunAnimationOnce("r_channel", true);
             await Task.Delay(700);
-            await RunAnimationOnce("r_launch", timeScale: 0.7f);
+            RunAnimationOnce("r_launch", timeScale: 0.7f);
         }
     }
 }

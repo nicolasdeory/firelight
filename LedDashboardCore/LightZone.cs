@@ -14,6 +14,7 @@
         Keypad = 32, 
         General = 64,
         All = Keyboard | Strip | Mouse | Mousepad | Headset | Keypad | General,
-        Desk = Keyboard | Mouse | Mousepad | Keypad
+        Desk = Keyboard | Mouse | Mousepad | Keypad,
+        MouseKey = Keyboard | Mouse
     }
 }

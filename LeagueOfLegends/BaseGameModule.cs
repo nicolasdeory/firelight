@@ -9,7 +9,7 @@ namespace Games.LeagueOfLegends
     {
         // Variables
 
-        protected readonly Led[] Leds;
+        //protected readonly Led[] Leds;
 
         protected GameState GameState;
 
@@ -36,15 +36,8 @@ namespace Games.LeagueOfLegends
             PreferredCastMode = castMode;
 
             GameState = gameState;
-
-            // LED Initialization
-            LightingMode = mode;
-            Leds = new Led[ledCount];
-            for (int i = 0; i < ledCount; i++)
-                Leds[i] = new Led();
-
             // Load animation module
-            Animator = AnimationModule.Create(ledCount);
+            Animator = AnimationModule.Create();
             CurrentLEDSource = Animator;
         }
 
@@ -56,7 +49,7 @@ namespace Games.LeagueOfLegends
 
         protected void InvokeNewFrameReady(LEDFrame frame)
         {
-            frame.SenderChain.Add(this);
+            //frame.SenderChain.Add(this);
             NewFrameReady?.Invoke(frame);
         }
 

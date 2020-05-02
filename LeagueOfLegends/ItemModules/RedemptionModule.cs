@@ -50,7 +50,7 @@ namespace Games.LeagueOfLegends.ItemModules
                 // Play relevant animations here
                 Task.Run(async () =>
                 {
-                    await RunAnimationOnce("start", true, timeScale: 0.08f);
+                    RunAnimationOnce("start", true, timeScale: 0.08f);
                     RunAnimationOnce("impact", false, 0.05f);
                 });
 

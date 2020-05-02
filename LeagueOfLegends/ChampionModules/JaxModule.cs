@@ -30,31 +30,32 @@ namespace Games.LeagueOfLegends.ChampionModules
 
         protected override async Task OnCastQ()
         {
-            await RunAnimationOnce("q_cast", timeScale: 1.7f);
+            RunAnimationOnce("q_cast", LightZone.Desk, timeScale: 1.7f);
         }
         protected override async Task OnCastW()
         {
-            RunAnimationInLoop("w_cast_loop", 500);
-            await Task.Delay(500);
-            RunAnimationOnce("w_cast_end");
+            RunAnimationInLoop("w_cast_loop", LightZone.Desk, 0.5f);
+            //await Task.Delay(500);
+            Animator.HoldLastFrame(LightZone.Desk, 0.5f);
+            RunAnimationOnce("w_cast_end", LightZone.Desk);
         }
         protected override async Task OnCastE()
         {
             castingE = true;
-            RunAnimationInLoop("e_cast_loop", 2000, 0.15f);
-            await Task.Delay(1000);
+            RunAnimationInLoop("e_cast_loop", LightZone.MouseKey, 2f, 1f);
+            Animator.HoldLastFrame(LightZone.MouseKey, 1f);
             canRecastE = true;
-            await Task.Delay(1000);
+            Animator.HoldLastFrame(LightZone.MouseKey, 1f);
             if (castingE)
             {
-                RunAnimationOnce("e_recast_end");
+                RunAnimationOnce("e_recast_end", LightZone.MouseKey);
                 castingE = false;
                 canRecastE = false;
             }
         }
         protected override async Task OnCastR()
         {
-            Animator.ColorBurst(RColor, 0.1f);
+            Animator.ColorBurst(RColor, LightZone.Desk, 2f);
         }
 
         protected override async Task OnRecastE()
@@ -63,7 +64,7 @@ namespace Games.LeagueOfLegends.ChampionModules
             {
                 castingE = false;
                 await Task.Delay(200);
-                RunAnimationOnce("e_recast_end");
+                RunAnimationOnce("e_recast_end", LightZone.MouseKey);
             }
         }
     }

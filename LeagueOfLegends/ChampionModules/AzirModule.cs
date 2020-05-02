@@ -28,19 +28,19 @@ namespace Games.LeagueOfLegends.ChampionModules
 
         protected override async Task OnCastQ()
         {
-            await RunAnimationOnce("q_cast", timeScale: 1.5f);
+            RunAnimationOnce("q_cast", timeScale: 1.5f);
         }
         protected override async Task OnCastW()
         {
-            await RunAnimationOnce("w_cast", timeScale: 0.5f);
+            RunAnimationOnce("w_cast", timeScale: 0.5f);
         }
         protected override async Task OnCastE()
         {
-            await RunAnimationOnce("e_cast", timeScale: 1.6f);
+            RunAnimationOnce("e_cast", timeScale: 1.6f);
         }
         protected override async Task OnCastR()
         {
-            await RunAnimationOnce("r_cast", timeScale: 0.3f);
+            RunAnimationOnce("r_cast", timeScale: 0.3f);
         }
     }
 }
