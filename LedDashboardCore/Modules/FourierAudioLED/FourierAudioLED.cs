@@ -28,10 +28,10 @@ namespace LedDashboardCore.Modules.FourierAudioLED
 
         public event LEDModule.FrameReadyHandler NewFrameReady;
 
-        public static LEDModule Create(int ledCount)
+        public static LEDModule Create()
         {
             FourierAudioLED module = new FourierAudioLED();
-            module.Initialize(ledCount);
+            module.Initialize(170);
             return module;
         }
         public void Initialize(int ledCount)
@@ -104,7 +104,9 @@ namespace LedDashboardCore.Modules.FourierAudioLED
         void OnNewAudioData()
         {
             DoFrame();
-            NewFrameReady?.Invoke(this, this.leds, LightingMode.Line);
+            LEDData data = LEDData.Empty;
+            data.Strip = this.leds.CloneLeds();
+            NewFrameReady?.Invoke(new LEDFrame(this, data, LightZone.Strip, true));
             newAudioAvailable = true;
         }
 
