@@ -16,8 +16,8 @@ namespace Games.LeagueOfLegends.ItemModules
 
         // Cooldown
 
-        public FarsightAlterationModule(int ledCount, GameState gameState, int itemSlot, LightingMode preferredLightMode, AbilityCastPreference preferredCastMode)
-            : base(ledCount, ITEM_ID, ITEM_NAME, itemSlot, gameState, preferredLightMode, preferredCastMode, true)
+        public FarsightAlterationModule(int ledCount, GameState gameState, int itemSlot, AbilityCastPreference preferredCastMode)
+            : base(ITEM_ID, ITEM_NAME, itemSlot, gameState, preferredCastMode, true)
         {
             // Initialization for the item module occurs here.
         }
@@ -27,7 +27,7 @@ namespace Games.LeagueOfLegends.ItemModules
         protected override void OnItemActivated(object s, EventArgs e)
         {
             // Play relevant animations here
-            RunAnimationOnce("activation", false, 0.05f);
+            RunAnimationOnce("activation", LightZone.Keyboard, 3f);
 
             double avgChampLevel = GameState.AverageChampionLevel;
             ItemCooldownController.SetCooldown(ITEM_ID, GetCooldownDuration(avgChampLevel));

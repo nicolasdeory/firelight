@@ -19,8 +19,8 @@ namespace Games.LeagueOfLegends.ItemModules
 
         private int cooldownPerCharge = 0;
 
-        public WardingTotemModule(int ledCount, GameState gameState, int itemSlot, LightingMode preferredLightMode, AbilityCastPreference preferredCastMode)
-            : base(ledCount, ITEM_ID, ITEM_NAME, itemSlot, gameState, preferredLightMode, preferredCastMode, true)
+        public WardingTotemModule(GameState gameState, int itemSlot, AbilityCastPreference preferredCastMode)
+            : base(ITEM_ID, ITEM_NAME, itemSlot, gameState, preferredCastMode, true)
         {
             // Initialization for the item module occurs here.
 
