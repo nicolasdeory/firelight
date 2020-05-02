@@ -37,7 +37,7 @@ namespace Games.LeagueOfLegends.ChampionModules
             await Task.Delay(100);
             if (!rCastInProgress)
             {
-                RunAnimationOnce("q_start", true, 0.9f);
+                RunAnimationOnce("q_start", LightZone.Desk, timeScale: 0.9f);
             }
 
             // The Q cast is in progress.
@@ -46,20 +46,20 @@ namespace Games.LeagueOfLegends.ChampionModules
             // After 1.15s, if user didn't press Q again already, the Q split animation plays.
             // TODO: Q runs a bit slow.
 
-            await Task.Delay(1150);
+            Animator.HoldLastFrame(LightZone.Desk, 1.15f);
             if (!rCastInProgress && qCastInProgress)
             {
-                RunAnimationOnce("q_recast", true, 0);
+                RunAnimationOnce("q_recast", LightZone.Desk);
             }
             qCastInProgress = false;
         }
         protected override async Task OnCastW()
         {
-            RunAnimationOnce("w_cast", true, 0.85f);
-            await Task.Delay(1800);
+            RunAnimationOnce("w_cast", LightZone.Desk, 1.5f);
+            Animator.HoldLastFrame(LightZone.Desk, 1.8f);
             if (!rCastInProgress)
             {
-                RunAnimationOnce("w_close", false, 0.15f);
+                Animator.ColorBurst(HSVColor.FromRGB(229, 115, 255), LightZone.Desk, 0.8f);
             }
         }
         protected override async Task OnCastE()
@@ -67,13 +67,13 @@ namespace Games.LeagueOfLegends.ChampionModules
             await Task.Delay(1000);
             if (!rCastInProgress)
             {
-                Animator.ColorBurst(HSVColor.FromRGB(229, 115, 255), 0.15f);
+                Animator.ColorBurst(HSVColor.FromRGB(229, 115, 255), LightZone.Desk, 0.8f);
             }
         }
         protected override async Task OnCastR()
         {
             Animator.StopCurrentAnimation();
-            RunAnimationInLoop("r_loop", 2300, 0.15f);
+            RunAnimationInLoop("r_loop", LightZone.Desk, 2.3f, 2f);
             rCastInProgress = true;
 
             await Task.Delay(2300);
@@ -87,7 +87,7 @@ namespace Games.LeagueOfLegends.ChampionModules
                 // Would there ever be a Q recast while R is being cast?
                 if (!rCastInProgress)
                 {
-                    RunAnimationOnce("q_recast");
+                    RunAnimationOnce("q_recast", LightZone.Desk);
                 }
             }
             qCastInProgress = false;
