@@ -31,19 +31,19 @@ namespace Games.LeagueOfLegends.ChampionModules
 
         protected override async Task OnCastQ()
         {
-            Animator.ColorBurst(QColor);
+            Animator.ColorBurst(QColor, LightZone.Desk);
         }
         protected override async Task OnCastW()
         {
-            Animator.ColorBurst(WColor);
+            Animator.ColorBurst(WColor, LightZone.Desk);
         }
         protected override async Task OnCastE()
         {
-            Animator.ColorBurst(EColor);
+            Animator.ColorBurst(EColor, LightZone.Desk);
         }
         protected override async Task OnCastR()
         {
-            Animator.ColorBurst(RColor);
+            Animator.ColorBurst(RColor, LightZone.Desk);
         }
     }
 }

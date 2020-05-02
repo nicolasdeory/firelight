@@ -326,7 +326,7 @@ namespace Games.LeagueOfLegends
         {
             if (GameState.PlayerChampion.IsDead)
             {
-                Animator.HoldColor(LightZone.All, DeadColor, 1f, true);
+                Animator.HoldColor(DeadColor, LightZone.All, 1f, true);
                 wasDeadLastFrame = true;
                 return true;
             }
