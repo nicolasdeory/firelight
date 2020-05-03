@@ -55,7 +55,7 @@ namespace Games.LeagueOfLegends.ChampionModules
         }
         protected override async Task OnCastW()
         {
-            RunAnimationOnce("w_cast", LightZone.Desk, 1.5f);
+            RunAnimationOnce("w_cast", LightZone.Desk);
             Animator.HoldLastFrame(LightZone.Desk, 1.8f);
             if (!rCastInProgress)
             {

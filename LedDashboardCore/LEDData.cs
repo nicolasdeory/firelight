@@ -218,7 +218,19 @@ namespace LedDashboardCore
             return list;
         }
 
-
+        public LEDData Clone()
+        {
+            return new LEDData()
+            {
+                Keyboard = this.Keyboard.CloneLeds(),
+                Strip = this.Strip.CloneLeds(),
+                Mouse = this.Mouse.CloneLeds(),
+                Mousepad = this.Mousepad.CloneLeds(),
+                Headset = this.Headset.CloneLeds(),
+                Keypad = this.Keypad.CloneLeds(),
+                General = this.General.CloneLeds(),
+            };
+        }
         private LEDData() { }
     }
 }

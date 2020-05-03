@@ -113,19 +113,19 @@ namespace LedDashboard
         {
             LEDData data = frame.Leds;
             if (data.Keyboard.Length != LEDData.NUMLEDS_KEYBOARD)
-                throw new ArgumentException("Keyboard frame does not match expected length");
+                Debug.WriteLine("SEVERE: Keyboard frame does not match expected length");
             if (data.Strip.Length != LEDData.NUMLEDS_STRIP)
-                throw new ArgumentException("Strip frame does not match expected length");
+                Debug.WriteLine("SEVERE: Strip frame does not match expected length");
             if (data.Mouse.Length != LEDData.NUMLEDS_MOUSE)
-                throw new ArgumentException("Mouse frame does not match expected length");
+                Debug.WriteLine("SEVERE: Mouse frame does not match expected length");
             if (data.Mousepad.Length != LEDData.NUMLEDS_MOUSEPAD)
-                throw new ArgumentException("Mousepad frame does not match expected length");
+                Debug.WriteLine("SEVERE: Mousepad frame does not match expected length");
             if (data.Headset.Length != LEDData.NUMLEDS_HEADSET)
-                throw new ArgumentException("Headset frame does not match expected length");
+                Debug.WriteLine("SEVERE: Headset frame does not match expected length");
             if (data.Keypad.Length != LEDData.NUMLEDS_KEYPAD)
-                throw new ArgumentException("Keypad frame does not match expected length");
+                Debug.WriteLine("SEVERE: Keypad frame does not match expected length");
             if (data.General.Length != LEDData.NUMLEDS_GENERAL)
-                throw new ArgumentException("General frame does not match expected length");
+                Debug.WriteLine("SEVERE: General frame does not match expected length");
         }
 
         private async Task UpdateLoop()

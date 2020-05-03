@@ -48,7 +48,7 @@ namespace LedDashboardCore.Modules.BasicAnimation
         /// </summary>
         /// <param name="animPath">The animation path</param>
         /// <param name="keepTail">If set true, when the animation ends LEDs won't be set to black</param>
-        public void RunAnimationOnce(string animPath, LightZone zones, float fadeoutDuration = 0, bool priority = false, float timeScale = 1)
+        public void RunAnimationOnce(string animPath, LightZone zones, float fadeoutDuration = 0, bool priority = true, float timeScale = 1)
         {
             LEDColorData[] anim = LoadAnimation(animPath).Frames;
             float time = 0;
@@ -57,7 +57,7 @@ namespace LedDashboardCore.Modules.BasicAnimation
             {
                 int i = (int)time;
                 data = LEDData.FromColors(anim[i]);
-                if (i == 0)
+                if (time == 0)
                     SendFrame(data, zones, priority);
                 else
                     SendFrame(data, zones);
@@ -70,8 +70,8 @@ namespace LedDashboardCore.Modules.BasicAnimation
             }
             else
             {
-                LEDData black = LEDData.Empty;
-                SendFrame(black, zones);
+                /*LEDData black = LEDData.Empty;
+                SendFrame(black, zones);*/
             }
         }
 
@@ -105,8 +105,8 @@ namespace LedDashboardCore.Modules.BasicAnimation
             }
             else
             {
-                LEDData black = LEDData.Empty;
-                SendFrame(black, zones);
+                /*LEDData black = LEDData.Empty;
+                SendFrame(black, zones);*/
             }
         }
 
@@ -243,7 +243,7 @@ namespace LedDashboardCore.Modules.BasicAnimation
             int frames = (int)Math.Round(duration * FPS);
             for (int i = 0; i < frames; i++)
             {
-                SendFrame(lastFrame, zones);
+                SendFrame(lastFrame.Clone(), zones);
             }
         }
 
