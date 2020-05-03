@@ -34,11 +34,11 @@ namespace Games.LeagueOfLegends.ChampionModules
         }
         protected override async Task OnCastW()
         {
-            RunAnimationInLoop("w_loop", LightZone.Keyboard, 5.5f, 2f, 0.08f);
+            RunAnimationInLoop("w_loop", LightZone.Keyboard, 5.5f, 2f, timeScale: 0.08f);
         }
         protected override async Task OnCastR()
         {
-            Animator.ColorBurst(RColor, LightZone.Desk, 7f, RColor2);
+            Animator.ColorBurst(RColor, LightZone.Desk, 7f, destinationColor: RColor2);
         }
 
         protected override async Task OnRecastW()

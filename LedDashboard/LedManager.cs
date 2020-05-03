@@ -106,7 +106,7 @@ namespace LedDashboard
             CheckFrame(frame);
             if (frame.Priority) FrameQueue.Clear();
             FrameQueue.Enqueue(frame);
-            Debug.WriteLine("Frame received. " + frame.LastSender.GetType().Name + " Queue=" + FrameQueue.Count);
+            //Debug.WriteLine("Frame received. " + frame.LastSender.GetType().Name + " Queue=" + FrameQueue.Count);
         }
 
         private void CheckFrame(LEDFrame frame)
@@ -139,6 +139,7 @@ namespace LedDashboard
                     SendLedData(next);
                 }
                 await Task.Delay(30); // 33 fps
+               // await Task.Delay(15);
             }
         }
 

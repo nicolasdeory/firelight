@@ -134,7 +134,7 @@ namespace Games.LeagueOfLegends.ChampionModules
             if (chargesRemaining > 0)
             {
                 int previousCharges = chargesRemaining;
-                Animator.ColorBurst(BlueExplodeColor, LightZone.All, 0.8f, HSVColor.White);
+                Animator.ColorBurst(BlueExplodeColor, LightZone.All, 0.8f, destinationColor: HSVColor.White);
                 if (previousCharges == chargesRemaining)
                 {
                     Animator.HoldColor(HSVColor.White, LightZone.All, rTimeRemaining);

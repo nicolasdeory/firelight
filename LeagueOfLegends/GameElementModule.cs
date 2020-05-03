@@ -53,13 +53,13 @@ namespace Games.LeagueOfLegends
             }
         }
 
-        protected void RunAnimationOnce(string animationName, LightZone zones, float fadeoutAfterDuration = 0, float timeScale = 1)
+        protected void RunAnimationOnce(string animationName, LightZone zones, float fadeoutAfterDuration = 0, bool priority = true, float timeScale = 1)
         {
-            Animator.RunAnimationOnce(GetAnimationPath(animationName), zones, fadeoutAfterDuration, timeScale);
+            Animator.RunAnimationOnce(GetAnimationPath(animationName), zones, fadeoutAfterDuration, priority, timeScale);
         }
-        protected void RunAnimationInLoop(string animationName, LightZone zones, float loopDuration, float fadeoutAfterDuration = 0, float timeScale = 1)
+        protected void RunAnimationInLoop(string animationName, LightZone zones, float loopDuration, float fadeoutAfterDuration = 0, bool priority = true, float timeScale = 1)
         {
-            Animator.RunAnimationInLoop(GetAnimationPath(animationName), zones, loopDuration, fadeoutAfterDuration, timeScale);
+            Animator.RunAnimationInLoop(GetAnimationPath(animationName), zones, loopDuration, fadeoutAfterDuration, priority, timeScale);
         }
 
         /// <summary>

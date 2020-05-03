@@ -48,7 +48,7 @@ namespace Games.LeagueOfLegends
 
         protected void InvokeNewFrameReady(LEDFrame frame)
         {
-            //frame.SenderChain.Add(this);
+            frame.SenderChain.Add(this);
             NewFrameReady?.Invoke(frame);
         }
 

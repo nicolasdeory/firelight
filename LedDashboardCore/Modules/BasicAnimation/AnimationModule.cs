@@ -47,7 +47,7 @@ namespace LedDashboardCore.Modules.BasicAnimation
         /// </summary>
         /// <param name="animPath">The animation path</param>
         /// <param name="keepTail">If set true, when the animation ends LEDs won't be set to black</param>
-        public void RunAnimationOnce(string animPath, LightZone zones, float fadeoutDuration = 0, float timeScale = 1)
+        public void RunAnimationOnce(string animPath, LightZone zones, float fadeoutDuration = 0, bool priority = false, float timeScale = 1)
         {
             LEDColorData[] anim = LoadAnimation(animPath).Frames;
             float time = 0;
@@ -57,7 +57,7 @@ namespace LedDashboardCore.Modules.BasicAnimation
                 int i = (int)time;
                 data = LEDData.FromColors(anim[i]);
                 if (i == 0)
-                    SendFrame(data, zones, true);
+                    SendFrame(data, zones, priority);
                 else
                     SendFrame(data, zones);
                 time += 1 * timeScale;
@@ -78,7 +78,7 @@ namespace LedDashboardCore.Modules.BasicAnimation
         /// Plays the specified animation once for <paramref name="loopDuration"/> seconds.
         /// </summary>
         /// <param name="fadeOutAfterRate">Optionally fade out the last animation frame progressively.</param>
-        public void RunAnimationInLoop(string animPath, LightZone zones, float loopDuration, float fadeoutDuration = 0, float timeScale = 1)
+        public void RunAnimationInLoop(string animPath, LightZone zones, float loopDuration, float fadeoutDuration = 0, bool priority = true, float timeScale = 1)
         {
             LEDColorData[] anim = LoadAnimation(animPath).Frames;
             float animDuration = anim.Length * 0.03f;
@@ -89,8 +89,10 @@ namespace LedDashboardCore.Modules.BasicAnimation
             {
                 int i = ((int)time) % anim.Length;
                 data = LEDData.FromColors(anim[i]);
-                if (i == 0)
-                    SendFrame(data, zones, true);
+                if (time == 0)
+                {
+                    SendFrame(data, zones, priority);
+                }    
                 else
                     SendFrame(data, zones);
                 time += 1 * timeScale;
@@ -134,14 +136,14 @@ namespace LedDashboardCore.Modules.BasicAnimation
         /// <param name="fadeoutDuration">The burst fade-out duration.</param>
         /// <param name="destinationColor">The color to progressively fade to after the color burst (black by default)</param>
         /// <returns></returns>
-        public void ColorBurst(HSVColor color, LightZone zones, float fadeoutDuration = 0.15f, HSVColor destinationColor = default)
+        public void ColorBurst(HSVColor color, LightZone zones, float fadeoutDuration = 0.15f, bool priority = true, HSVColor destinationColor = default)
         {
             LEDData data = LEDData.Empty;
 
             // Set all to color
             ApplyColorToZones(data, zones, color);
 
-            SendFrame(data, zones, true);
+            SendFrame(data, zones, priority);
 
             // Fade to Black
 

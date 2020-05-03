@@ -49,7 +49,7 @@ namespace Games.LeagueOfLegends.ChampionModules
             Animator.HoldLastFrame(LightZone.Desk, 1.15f);
             if (!rCastInProgress && qCastInProgress)
             {
-                RunAnimationOnce("q_recast", LightZone.Desk);
+                RunAnimationOnce("q_recast", LightZone.Desk, priority: false);
             }
             qCastInProgress = false;
         }
@@ -59,7 +59,7 @@ namespace Games.LeagueOfLegends.ChampionModules
             Animator.HoldLastFrame(LightZone.Desk, 1.8f);
             if (!rCastInProgress)
             {
-                Animator.ColorBurst(HSVColor.FromRGB(229, 115, 255), LightZone.Desk, 0.8f);
+                Animator.ColorBurst(HSVColor.FromRGB(229, 115, 255), LightZone.Desk, 0.8f, false);
             }
         }
         protected override async Task OnCastE()

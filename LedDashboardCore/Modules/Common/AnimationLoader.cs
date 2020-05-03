@@ -82,7 +82,7 @@ namespace LedDashboardCore.Modules.Common
                 //throw new FileFormatException("Error parsing: Unsupported animation format version");
             }
             List<string> animLines = new List<string>();
-            for(int i = 0; i < lines.Length - 1; i++)
+            for(int i = 1; i < lines.Length - 1; i++)
             {
                 animLines.Add(lines[i]);
             }

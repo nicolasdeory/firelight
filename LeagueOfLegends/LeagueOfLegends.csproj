@@ -116,9 +116,6 @@
     <Content Include="Animations\Champions\Velkoz\w_cast.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="Animations\Champions\Velkoz\w_close.txt">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
     <Content Include="Animations\Champions\Xerath\e_cast.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>

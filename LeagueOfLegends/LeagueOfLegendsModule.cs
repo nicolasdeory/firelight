@@ -137,7 +137,7 @@ namespace Games.LeagueOfLegends
 
             string champName = GameState.PlayerChampion.RawChampionName.ToLower();
 
-            Type champType = ChampionControllers.FirstOrDefault(x => champName == x.GetCustomAttribute<ChampionAttribute>().ChampionName.ToLower());
+            Type champType = ChampionControllers.FirstOrDefault(x => champName.Contains(x.GetCustomAttribute<ChampionAttribute>().ChampionName.ToLower()));
             if (champType != null)
             {
                 championModule = champType.GetConstructors().First()
