@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System.Diagnostics;
+using System.Linq;
 
 namespace LedDashboardCore
 {
@@ -102,7 +103,7 @@ namespace LedDashboardCore
         {
             HSVColor c1 = new HSVColor(c.h, c.s, c.v);
             c1.v *= 1 - factor;
-            if (c1.v <= 0.025f)
+            if (c1.v <= 0.05f)
             {
                 c1.v = 0;
             }
