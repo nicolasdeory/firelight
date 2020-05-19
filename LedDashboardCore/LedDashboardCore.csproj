@@ -15,9 +15,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Content Include="C:\Users\Nico\.nuget\packages\accord\3.8.2-alpha\build\Accord.dll.config" Link="Accord.dll.config">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
     <Content Include="ChromaAppInfo.xml" />
     <Content Include="Lib\RazerChroma.Net.dll" />
     <Content Include="Lib\RazerChroma.Net.pdb" />
