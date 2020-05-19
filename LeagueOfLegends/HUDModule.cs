@@ -61,6 +61,7 @@ namespace Games.LeagueOfLegends
             WardView(data, gameState);
             GoldView(data, gameState);
             lastFrame = data;
+            data.Mouse[0].Color(HealthColor);
             return new LEDFrame(this, data, LightZone.All);
         }
 
