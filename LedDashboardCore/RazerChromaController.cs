@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
+using System.Linq;
 using System.Windows.Forms;
 using static ChromaSDK.Keyboard;
 
@@ -54,9 +55,17 @@ namespace LedDashboardCore
         const long RZRESULT_FAILED = 2147500037;
 
         private int baseKeyboardAnim;
+        private int baseMouseAnim;
+        private int baseMousepadAnim;
+        private int baseKeypadAnim;
+        private int baseHeadsetAnim;
+        private int baseGeneralAnim;
+
+
         private static int MAX_KEYBOARD_COLS = ChromaAnimationAPI.GetMaxColumn((int)ChromaAnimationAPI.Device2D.Keyboard);
         private static int MAX_KEYBOARD_ROWS = ChromaAnimationAPI.GetMaxRow((int)ChromaAnimationAPI.Device2D.Keyboard);
         private static int KEYBOARD_LED_COUNT = MAX_KEYBOARD_COLS * MAX_KEYBOARD_ROWS;
+        private static int MOUSE_LED_COUNT = 16;
 
         public static RazerChromaController Create()
         {
@@ -96,6 +105,7 @@ namespace LedDashboardCore
                 MessageBox.Show("Error initializing Razer Chroma controller. Status=" + status + "\n" + errorString);
                 throw new InvalidOperationException("Error initializing Razer Chroma controller. Is Razer Synapse installed?", e);
             }
+
             baseKeyboardAnim = ChromaAnimationAPI.CreateAnimationInMemory((int)ChromaAnimationAPI.DeviceType.DE_2D, (int)ChromaAnimationAPI.Device2D.Keyboard);
             if (baseKeyboardAnim == -1)
             {
@@ -106,29 +116,63 @@ namespace LedDashboardCore
             // is AddFrame needed?
             ChromaAnimationAPI.AddFrame(baseKeyboardAnim, 1, new int[MAX_KEYBOARD_COLS * MAX_KEYBOARD_ROWS], MAX_KEYBOARD_COLS * MAX_KEYBOARD_ROWS);
 
+            baseMouseAnim = ChromaAnimationAPI.CreateAnimationInMemory((int)ChromaAnimationAPI.DeviceType.DE_2D, (int)ChromaAnimationAPI.Device2D.Mouse);
+            if (baseMouseAnim == -1)
+            {
+                MessageBox.Show("Error initializing Razer Chroma controller. CreateAnimationInMemory returned -1. " +
+                                "Check that your mouse is connected and Razer Synapse is installed");
+                throw new InvalidOperationException("CreateAnimationInMemory ChromaSDK returned -1");
+            }
+            // is AddFrame needed?
+            ChromaAnimationAPI.AddFrame(baseMouseAnim, 1, new int[MOUSE_LED_COUNT], MOUSE_LED_COUNT);
+
         }
 
         public void SendData(LEDFrame frame)
         {
-            if (!frame.Zones.HasFlag(LightZone.Keyboard))
-                return;
-            LEDData data = frame.Leds;
-            // TODO: SEND NOT ONLY TO KEYBOARD BUT TO EVERYTHING
-            byte[] colorArray = data.Keyboard.ToByteArray();
-
             if (!enabled) return;
-            List<Point> points = new List<Point>();
-            int black = ChromaAnimationAPI.GetRGB(0, 0, 0);
-            foreach (Keyboard.RZKEY key in numPadKeys)
+            LEDData data = frame.Leds;
+            if (frame.Zones.HasFlag(LightZone.Keyboard))
             {
-                ChromaAnimationAPI.SetKeyColor(baseKeyboardAnim, 0, (int)key, black);
+                // KEYBOARD
+                // TODO: SEND NOT ONLY TO KEYBOARD BUT TO EVERYTHING
+                byte[] colorArray = data.Keyboard.ToByteArray();
+
+                
+                int black = ChromaAnimationAPI.GetRGB(0, 0, 0);
+                foreach (Keyboard.RZKEY key in numPadKeys)
+                {
+                    ChromaAnimationAPI.SetKeyColor(baseKeyboardAnim, 0, (int)key, black);
+                }
+                for (int i = 0; i < 88; i++) // TODO: NUMPAD
+                {
+                    int color = ChromaAnimationAPI.GetRGB(colorArray[i * 3], colorArray[i * 3 + 1], colorArray[i * 3 + 2]);
+                    ChromaAnimationAPI.SetKeyColor(baseKeyboardAnim, 0, (int)indexKeyMap[i], color);
+                }
+                ChromaAnimationAPI.PreviewFrame(baseKeyboardAnim, 0);
             }
-            for (int i = 0; i < 88; i++)
+
+            if (frame.Zones.HasFlag(LightZone.Mouse))
             {
-                int color = ChromaAnimationAPI.GetRGB(colorArray[i * 3], colorArray[i * 3 + 1], colorArray[i * 3 + 2]);
-                ChromaAnimationAPI.SetKeyColor(baseKeyboardAnim, 0, (int)indexKeyMap[i], color);
+                // MOUSE
+                byte[] colorArray = data.Mouse.ToByteArray();
+
+                for (int i = 0; i < 16; i++)
+                {
+                    int color = ChromaAnimationAPI.GetRGB(colorArray[i * 3], colorArray[i * 3 + 1], colorArray[i * 3 + 2]);
+                    ChromaAnimationAPI.Set2DColor(baseMouseAnim, 0, 1, 2, color);
+                    
+                }
+                ChromaAnimationAPI.PreviewFrame(baseMouseAnim, 0);
             }
-            ChromaAnimationAPI.PreviewFrame(baseKeyboardAnim, 0);
+
+            
+
+            
+        
+            // MOUSE
+           // ChromaAnimationAPI.set1d
+        
         }
 
         /* public void SendData(int ledCount, byte[] colorArray, LightingMode mode)
