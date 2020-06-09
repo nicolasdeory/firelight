@@ -72,7 +72,12 @@ namespace LedDashboard
             lightControllers.Add(SACNController.Create(reverseOrder));
         }
 
-        private void OnProcessChanged(string name)
+        private void UninitLeds()
+        {
+            lightControllers.ForEach(lc => lc.Dispose());
+        }
+
+        private void OnProcessChanged(string name, int pid)
         {
             if (name == "League of Legends" && !(CurrentLEDModule is LeagueOfLegendsModule)) // TODO: Account for client disconnections
             {
@@ -106,6 +111,7 @@ namespace LedDashboard
                 blinkModule.NewFrameReady += UpdateLEDDisplay;
                 CurrentLEDModule = blinkModule;
                 await Task.Delay(5000);
+                ProcessListenerService.Start();
                 if (CurrentLEDModule is BlinkWhiteModule)
                     CurrentLEDModule = lastActiveModule;
             }).ContinueWith((t) => Debug.WriteLine(t.Exception.Message + " // " + t.Exception.StackTrace), TaskContinuationOptions.OnlyOnFaulted);
@@ -197,6 +203,7 @@ namespace LedDashboard
 
         private void RestartManager(bool reverseOrder) // TODO: Keep game state (i.e. league of legends cooldowns etc)
         {
+            UninitLeds();
             InitLeds(reverseOrder);
             CurrentLEDModule = null; // restart the whole service (force module reload)
             ProcessListenerService.Restart();
@@ -204,6 +211,7 @@ namespace LedDashboard
 
         private void RestartManager()
         {
+            UninitLeds();
             InitLeds(this.reverseOrder);
             CurrentLEDModule = null;
             ProcessListenerService.Restart();

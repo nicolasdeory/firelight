@@ -75,15 +75,15 @@ namespace Games.LeagueOfLegends
 
         protected void AddInputHandlers()
         {
-            keyboardHook = new KeyboardHook();
-            keyboardHook.OnMouseClicked += OnMouseClick;
-            keyboardHook.OnKeyPressed += OnKeyPress;
-            keyboardHook.OnKeyReleased += OnKeyRelease;
+            //keyboardHook = new KeyboardHook();
+            KeyboardHook.Instance.OnMouseClicked += OnMouseClick;
+            KeyboardHook.Instance.OnKeyPressed += OnKeyPress;
+            KeyboardHook.Instance.OnKeyReleased += OnKeyRelease;
         }
 
         protected abstract void OnMouseClick(object s, MouseEventArgs e);
         protected abstract void OnKeyRelease(object s, KeyEventArgs e);
-        protected abstract void OnKeyPress(object s, KeyPressEventArgs e);
+        protected abstract void OnKeyPress(object s, KeyEventArgs e);
 
         /// <summary>
         /// Processes a key press. When overriden, the base versions of this virtual function must be called first.
@@ -114,6 +114,7 @@ namespace Games.LeagueOfLegends
                 keyboardHook.OnMouseClicked -= OnMouseClick;
                 keyboardHook.OnKeyPressed -= OnKeyPress;
                 keyboardHook.OnKeyReleased -= OnKeyRelease;
+                //keyboardHook.Unhook();
             }
         }
 

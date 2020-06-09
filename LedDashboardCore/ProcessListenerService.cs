@@ -7,7 +7,7 @@ namespace LedDashboardCore
 {
     public class ProcessListenerService
     {
-        public delegate void ProcessChangedHandler(string name);
+        public delegate void ProcessChangedHandler(string name, int pid);
         public static event ProcessChangedHandler ProcessInFocusChanged;
 
         static List<string> listenedProcesses = new List<string>();
@@ -17,6 +17,7 @@ namespace LedDashboardCore
         static CancellationTokenSource cancelToken;
         public static void Start()
         {
+            cancelToken?.Cancel();
             cancelToken = new CancellationTokenSource();
             Task.Run(async () =>
             {
@@ -35,7 +36,7 @@ namespace LedDashboardCore
                         if (process != currentOpenedProcess)
                         {
                             currentOpenedProcess = process;
-                            ProcessInFocusChanged?.Invoke(process);
+                            ProcessInFocusChanged?.Invoke(process, pname[0].Id);
                             processChangedToARegisteredOne = true;
                             break;
                         }
@@ -45,7 +46,7 @@ namespace LedDashboardCore
                     {
                         if (!atLeastARegisteredProcessIsRunning)
                         {
-                            ProcessInFocusChanged?.Invoke(""); // no process is running
+                            ProcessInFocusChanged?.Invoke("", -1); // no process is running
                             currentOpenedProcess = "";
                         }
                         await Task.Delay(2000);
@@ -59,7 +60,7 @@ namespace LedDashboardCore
 
         public static void Stop()
         {
-            cancelToken.Cancel();
+            cancelToken?.Cancel();
             currentOpenedProcess = "";
         }
 

@@ -1,6 +1,7 @@
 ﻿using LedDashboardCore;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Threading.Tasks;
@@ -65,6 +66,13 @@ namespace LedDashboard
             /*plt = new FormsPlot();
             plt.Location = new Point(0, 100);
             plt.Size = new Size(800, 200);*/
+
+            // Input hook test
+            /*KeyboardHook.Instance.OnMouseClicked += (s,e) =>
+            {
+                //MessageBox.Show("HOLA!");
+                Debug.WriteLine("clicked" + e.Button);
+            };*/
 
 
 

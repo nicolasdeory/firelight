@@ -1,0 +1,1 @@
+Place CChromaEditorLibrary64 inside bin folder to build from source

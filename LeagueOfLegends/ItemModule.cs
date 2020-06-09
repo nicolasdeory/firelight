@@ -96,9 +96,9 @@ namespace Games.LeagueOfLegends
             ProcessKeyPress(s, keyChar, true);
         }
 
-        protected override void OnKeyPress(object s, KeyPressEventArgs e)
+        protected override void OnKeyPress(object s, KeyEventArgs e)
         {
-            ProcessKeyPress(s, e.KeyChar);
+            ProcessKeyPress(s, e.KeyCode.ToString().ToLower()[0]);
         }
 
         protected override void ProcessKeyPress(object s, char keyChar, bool keyUp = false)

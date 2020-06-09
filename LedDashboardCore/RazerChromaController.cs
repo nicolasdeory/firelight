@@ -219,7 +219,7 @@ namespace LedDashboardCore
 
         public void SendData(LEDFrame frame) // TODO: Abstract away these details, make parent class
         {
-            if (!enabled) return;
+            if (!enabled || disposed) return;
             LEDData data = frame.Leds;
 
             // KEYBOARD
@@ -364,6 +364,7 @@ namespace LedDashboardCore
 
 
         bool enabled = true;
+        private bool disposed;
 
         public bool Enabled
         {
@@ -388,10 +389,13 @@ namespace LedDashboardCore
             /*   if (api != null) api.Dispose();
                api = null;
                keyboardFrame = null;*/
+            disposed = true;
+            ChromaAnimationAPI.StopAll();
+            ChromaAnimationAPI.CloseAll();
             int res = ChromaAnimationAPI.Uninit();
             if (res != 0)
             {
-                Debug.WriteLine("WARNING: Error disposing chroma api");
+                Debug.WriteLine("WARNING: Error disposing chroma api. Code " + res);
             }
         }
 
