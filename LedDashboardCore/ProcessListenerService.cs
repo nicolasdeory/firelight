@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Diagnostics;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace LedDashboardCore
@@ -13,14 +14,18 @@ namespace LedDashboardCore
 
         static string currentOpenedProcess = "";
 
+        static CancellationTokenSource cancelToken;
         public static void Start()
         {
+            cancelToken = new CancellationTokenSource();
             Task.Run(async () =>
             {
                 bool processChangedToARegisteredOne = false;
                 bool atLeastARegisteredProcessIsRunning = false;
                 for (; ; )
                 {
+                    if (cancelToken.IsCancellationRequested)
+                        return;
                     processChangedToARegisteredOne = false;
                     atLeastARegisteredProcessIsRunning = false;
                     foreach (var process in listenedProcesses)
@@ -49,6 +54,13 @@ namespace LedDashboardCore
                 }
 
             });
+        }
+
+
+        public static void Stop()
+        {
+            cancelToken.Cancel();
+            currentOpenedProcess = "";
         }
 
         public static void Restart()
