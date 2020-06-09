@@ -4,6 +4,7 @@ using LedDashboardCore.Modules.BlinkWhite;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace LedDashboard
@@ -25,6 +26,8 @@ namespace LedDashboard
         private Dictionary<string, Dictionary<string, string>> ModuleOptions = new Dictionary<string, Dictionary<string, string>>();
 
         Queue<LEDFrame> FrameQueue = new Queue<LEDFrame>();
+
+        CancellationTokenSource updateLoopCancelToken = new CancellationTokenSource();
 
         LEDModule CurrentLEDModule
         {
@@ -59,8 +62,7 @@ namespace LedDashboard
             ProcessListenerService.Register("League of Legends"); // Listen when league of legends is opened
 
             UpdateLEDDisplay(LEDFrame.CreateEmpty(this));
-            Task.Run(UpdateLoop)
-                .ContinueWith((t) => Debug.WriteLine(t.Exception.Message + " // " + t.Exception.StackTrace), TaskContinuationOptions.OnlyOnFaulted);
+            Task.Run(UpdateLoop).CatchExceptions();
 
         }
 
@@ -74,6 +76,7 @@ namespace LedDashboard
 
         private void UninitLeds()
         {
+            updateLoopCancelToken.Cancel();
             lightControllers.ForEach(lc => lc.Dispose());
         }
 
@@ -164,11 +167,14 @@ namespace LedDashboard
         {
             while (true)
             {
+                if (updateLoopCancelToken.IsCancellationRequested)
+                    return;
                 if (FrameQueue.Count > 0)
                 {
                     LEDFrame next = FrameQueue.Dequeue();
                     //this.leds = next.Leds;
-                    SendLedData(next);
+                    if (next != null)
+                        SendLedData(next);
                 }
                 await Task.Delay(30); // 33 fps
                                       // await Task.Delay(15);
@@ -201,20 +207,13 @@ namespace LedDashboard
             RestartManager(this.preferredMode, ledCount, reverseOrder);
         }*/
 
-        private void RestartManager(bool reverseOrder) // TODO: Keep game state (i.e. league of legends cooldowns etc)
+        private void RestartManager() // TODO: Keep game state (i.e. league of legends cooldowns etc)
         {
             UninitLeds();
-            InitLeds(reverseOrder);
             CurrentLEDModule = null; // restart the whole service (force module reload)
-            ProcessListenerService.Restart();
-        }
-
-        private void RestartManager()
-        {
-            UninitLeds();
-            InitLeds(this.reverseOrder);
-            CurrentLEDModule = null;
-            ProcessListenerService.Restart();
+            ProcessListenerService.Stop();
+            InitLeds(reverseOrder);
+            ProcessListenerService.Start();
         }
 
         /*/// <summary>
