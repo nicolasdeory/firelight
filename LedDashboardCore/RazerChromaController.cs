@@ -6,6 +6,7 @@ using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
 using static ChromaSDK.Keyboard;
+using static ChromaSDK.Mouse;
 
 namespace LedDashboardCore
 {
@@ -53,6 +54,21 @@ namespace LedDashboardCore
         const long RZRESULT_DLL_INVALID_SIGNATURE = 6033;
         //! General failure.
         const long RZRESULT_FAILED = 2147500037;
+
+        // Mouse LED mapping
+        RZLED2[] MOUSE_LEDS = new RZLED2[]
+        {
+            RZLED2.RZLED2_LOGO, RZLED2.RZLED2_SCROLLWHEEL, // special handling needed to cover bottom and backlight
+            RZLED2.RZLED2_LEFT_SIDE1,RZLED2.RZLED2_LEFT_SIDE2,RZLED2.RZLED2_LEFT_SIDE3,RZLED2.RZLED2_LEFT_SIDE4,RZLED2.RZLED2_LEFT_SIDE5,RZLED2.RZLED2_LEFT_SIDE6,RZLED2.RZLED2_LEFT_SIDE7,
+            RZLED2.RZLED2_RIGHT_SIDE1,RZLED2.RZLED2_RIGHT_SIDE2,RZLED2.RZLED2_RIGHT_SIDE3,RZLED2.RZLED2_LEFT_SIDE4,RZLED2.RZLED2_RIGHT_SIDE5,RZLED2.RZLED2_RIGHT_SIDE6,RZLED2.RZLED2_RIGHT_SIDE7
+        };
+
+        // Bottom part
+        RZLED2[] MOUSE_BOTTOM_LEDS = new RZLED2[]
+        {
+            RZLED2.RZLED2_SCROLLWHEEL, RZLED2.RZLED2_BOTTOM1,RZLED2.RZLED2_BOTTOM2,RZLED2.RZLED2_BOTTOM3,RZLED2.RZLED2_BOTTOM4,RZLED2.RZLED2_BOTTOM5
+        };
+
 
         private int baseKeyboardAnim;
         private int baseMouseAnim;
@@ -156,12 +172,46 @@ namespace LedDashboardCore
             {
                 // MOUSE
                 byte[] colorArray = data.Mouse.ToByteArray();
-
+                
                 for (int i = 0; i < 16; i++)
                 {
                     int color = ChromaAnimationAPI.GetRGB(colorArray[i * 3], colorArray[i * 3 + 1], colorArray[i * 3 + 2]);
-                    ChromaAnimationAPI.Set2DColor(baseMouseAnim, 0, 1, 2, color);
-                    
+
+                    ushort number;
+                    byte upper;
+                    byte lower;
+                    if (i == 0) // logo and bottom leds
+                    {
+                        foreach(RZLED2 led in MOUSE_BOTTOM_LEDS)
+                        {
+                            number = Convert.ToUInt16(RZLED2.RZLED2_LOGO);
+                            upper = (byte)(number >> 8);
+                            lower = (byte)(number & 0xff);
+                            ChromaAnimationAPI.Set2DColor(baseMouseAnim, 0, upper, lower, color);
+
+                        }
+                    }
+                    else if (i == 1) // scrollwheel and backlight
+                    {
+                        number = Convert.ToUInt16(RZLED2.RZLED2_SCROLLWHEEL);
+                        upper = (byte)(number >> 8);
+                        lower = (byte)(number & 0xff);
+                        ChromaAnimationAPI.Set2DColor(baseMouseAnim, 0, upper, lower, color);
+
+                        number = Convert.ToUInt16(RZLED2.RZLED2_BACKLIGHT);
+                        upper = (byte)(number >> 8);
+                        lower = (byte)(number & 0xff);
+                        ChromaAnimationAPI.Set2DColor(baseMouseAnim, 0, upper, lower, color);
+                    }
+                    else
+                    {
+                        number = Convert.ToUInt16(MOUSE_LEDS[i]);
+                        upper = (byte)(number >> 8);
+                        lower = (byte)(number & 0xff);
+                        ChromaAnimationAPI.Set2DColor(baseMouseAnim, 0, upper, lower, color);
+                    }
+                   
+
                 }
                 ChromaAnimationAPI.PreviewFrame(baseMouseAnim, 0);
             }
