@@ -93,7 +93,7 @@ namespace LedDashboardCore.Modules.BasicAnimation
                 if (time == 0)
                 {
                     SendFrame(data, zones, priority);
-                }    
+                }
                 else
                     SendFrame(data, zones);
                 time += 1 * timeScale;
@@ -185,7 +185,14 @@ namespace LedDashboardCore.Modules.BasicAnimation
         private void SendFrame(LEDData data, LightZone zones, bool priority = false)
         {
             lastFrame = data;
-            NewFrameReady.Invoke(new LEDFrame(this, data, zones, priority));
+            if (NewFrameReady == null)
+            {
+                throw new InvalidOperationException("Tried to SendFrame, but no NewFrameReady handler was attached to this AnimationModule.");
+            }
+            else
+            {
+                NewFrameReady?.Invoke(new LEDFrame(this, data, zones, priority));
+            }
         }
 
 

@@ -1,19 +1,18 @@
 ﻿using LedDashboardCore.Modules.BasicAnimation;
 using System;
+using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
 
 namespace LedDashboardCore.Modules.BlinkWhite
 {
-    class BlinkWhiteModule : LEDModule
+    public class BlinkWhiteModule : LEDModule
     {
-        public event LEDModule.FrameReadyHandler NewFrameReady;
-
-        Led[] leds;
-
         CancellationTokenSource masterCancelToken = new CancellationTokenSource();
 
         AnimationModule animation = AnimationModule.Create();
+
+        public event LEDModule.FrameReadyHandler NewFrameReady;
 
         public static LEDModule Create()
         {
@@ -22,8 +21,15 @@ namespace LedDashboardCore.Modules.BlinkWhite
 
         private BlinkWhiteModule()
         {
-            Task.Run(() => Blinker(500));
+            animation.NewFrameReady += FrameReceived;
+            Task.Run(() => Blinker(500)).CatchExceptions();
         }
+
+        private void FrameReceived(LEDFrame frame)
+        {
+            NewFrameReady.Invoke(frame);
+        }
+
         public async Task Blinker(int intervalMS)
         {
             bool on = false;
@@ -47,7 +53,7 @@ namespace LedDashboardCore.Modules.BlinkWhite
 
         public void Dispose()
         {
-            throw new NotImplementedException();
+            masterCancelToken.Cancel();
         }
     }
 }
