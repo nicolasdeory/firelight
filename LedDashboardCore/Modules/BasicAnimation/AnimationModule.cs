@@ -93,7 +93,7 @@ namespace LedDashboardCore.Modules.BasicAnimation
                 if (time == 0)
                 {
                     SendFrame(data, zones, priority);
-                }    
+                }
                 else
                     SendFrame(data, zones);
                 time += 1 * timeScale;

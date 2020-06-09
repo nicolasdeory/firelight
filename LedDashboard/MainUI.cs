@@ -17,7 +17,7 @@ namespace LedDashboard
         Graphics canvas;
         LedManager ledManager;
         //FormsPlot plt;
-        Button chromabtn;
+        Button testLightingBtn;
         Button ledstripbtn;
         ComboBox lolModeSelector;
 
@@ -37,18 +37,18 @@ namespace LedDashboard
             box.BackColor = Color.White;
             canvas = box.CreateGraphics();
 
-            chromabtn = new Button();
-            chromabtn.Text = "Use Razer Chroma";
-            chromabtn.Size = new Size(200, 50);
-            chromabtn.Location = new Point(0, 300);
-            chromabtn.Click += UseRazerChromaClicked;
-            chromabtn.Enabled = false;
+            testLightingBtn = new Button();
+            testLightingBtn.Text = "Test Lighting";
+            testLightingBtn.Size = new Size(200, 50);
+            testLightingBtn.Location = new Point(0, 300);
+            testLightingBtn.Click += TestLightingClicked;
+           // chromabtn.Enabled = false;
 
-            ledstripbtn = new Button();
+            /*ledstripbtn = new Button();
             ledstripbtn.Text = "Use LED Strip";
             ledstripbtn.Size = new Size(200, 50);
             ledstripbtn.Location = new Point(0, 350);
-            ledstripbtn.Click += UseLEDStripClicked;
+            ledstripbtn.Click += UseLEDStripClicked;*/
 
             Label lolModeLabel = new Label();
             lolModeLabel.Text = "League of Legends Ability Cast mode";
@@ -68,7 +68,7 @@ namespace LedDashboard
 
 
 
-            this.Controls.AddRange(new Control[] { box, chromabtn, ledstripbtn, lolModeLabel, lolModeSelector });
+            this.Controls.AddRange(new Control[] { box, testLightingBtn, ledstripbtn, lolModeLabel, lolModeSelector });
 
             Gradient.GeneratePalettes();
 
@@ -174,22 +174,9 @@ namespace LedDashboard
             });*/
         }
 
-        public void UseRazerChromaClicked(object s, EventArgs e)
+        public void TestLightingClicked(object s, EventArgs e)
         {
-            /*ledManager.SetController(LightControllerType.RazerChroma);
-            chromabtn.Enabled = false;
-            ledstripbtn.Enabled = true;
-            currentLightingMode = LightingMode.Keyboard;
-            canvas.Clear(Color.White);*/
-        }
-
-        public void UseLEDStripClicked(object s, EventArgs e)
-        {
-            /*ledManager.SetController(LightControllerType.LED_Strip, 170, true); // This is for my LED strip atm (170 leds, in reverse order)
-            chromabtn.Enabled = true;
-            ledstripbtn.Enabled = false;
-            currentLightingMode = LightingMode.Line;
-            canvas.Clear(Color.White); // TODO: Delay between changing lighting modes. It causes crashes if it's switched too fast.*/
+            ledManager.DoLightingTest();
         }
 
         private List<KeyboardKey> LoadKeyboardLayout()

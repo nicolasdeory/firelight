@@ -1,5 +1,6 @@
 ﻿using Games.LeagueOfLegends;
 using LedDashboardCore;
+using LedDashboardCore.Modules.BlinkWhite;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -34,6 +35,7 @@ namespace LedDashboard
             set
             {
                 SetEnabled(value != null);
+
                 _currentLEDModule?.Dispose();
                 _currentLEDModule = value;
             }
@@ -59,7 +61,8 @@ namespace LedDashboard
             ProcessListenerService.Register("League of Legends"); // Listen when league of legends is opened
 
             UpdateLEDDisplay(LEDFrame.CreateEmpty(this));
-            Task.Run(UpdateLoop);
+            Task.Run(UpdateLoop)
+                .ContinueWith((t) => Debug.WriteLine(t.Exception.Message + " // " + t.Exception.StackTrace), TaskContinuationOptions.OnlyOnFaulted);
 
         }
 
@@ -81,9 +84,34 @@ namespace LedDashboard
             }
             else if (name.Length == 0)
             {
-                CurrentLEDModule = null;
+                if (!(CurrentLEDModule is BlinkWhiteModule)) // if we're not testing
+                    CurrentLEDModule = null;
                 return;
             }
+        }
+
+        /// <summary>
+        /// Briefly tests the lighting and returns it to the previously active module after a few seconds
+        /// </summary>
+        public void DoLightingTest()
+        {
+
+            if (CurrentLEDModule is BlinkWhiteModule)
+                return;
+
+            Task.Run(async () =>
+            {
+                ProcessListenerService.Stop();
+                await Task.Delay(100);
+                LEDModule lastActiveModule = CurrentLEDModule;
+                LEDModule blinkModule = BlinkWhiteModule.Create();
+                blinkModule.NewFrameReady += UpdateLEDDisplay;
+                CurrentLEDModule = blinkModule;
+                await Task.Delay(5000);
+                if (CurrentLEDModule is BlinkWhiteModule)
+                    CurrentLEDModule = lastActiveModule;
+            }).ContinueWith((t) => Debug.WriteLine(t.Exception.Message + " // " + t.Exception.StackTrace), TaskContinuationOptions.OnlyOnFaulted);
+
         }
 
         private void SetEnabled(bool enable) // If set to false, deattach from razer chroma
@@ -139,7 +167,7 @@ namespace LedDashboard
                     SendLedData(next);
                 }
                 await Task.Delay(30); // 33 fps
-               // await Task.Delay(15);
+                                      // await Task.Delay(15);
             }
         }
 
