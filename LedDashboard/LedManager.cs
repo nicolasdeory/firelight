@@ -54,8 +54,6 @@ namespace LedDashboard
         {
             InitLeds();
 
-            KeyboardHookService.Init();
-
             ProcessListenerService.ProcessInFocusChanged += OnProcessChanged;
             ProcessListenerService.Start();
             ProcessListenerService.Register("League of Legends"); // Listen when league of legends is opened

@@ -23,6 +23,8 @@ namespace Games.LeagueOfLegends
 
         private char lastPressedKey = '\0';
 
+        private KeyboardHook keyboardHook;
+
         // TODO: Handle champions with cooldown resets?
 
         protected GameElementModule(string name, GameState gameState, AbilityCastPreference preferredCastMode, bool preloadAllAnimations = false)
@@ -73,9 +75,10 @@ namespace Games.LeagueOfLegends
 
         protected void AddInputHandlers()
         {
-            KeyboardHookService.Instance.OnMouseClicked += OnMouseClick;
-            KeyboardHookService.Instance.OnKeyPressed += OnKeyPress;
-            KeyboardHookService.Instance.OnKeyReleased += OnKeyRelease;
+            keyboardHook = new KeyboardHook();
+            keyboardHook.OnMouseClicked += OnMouseClick;
+            keyboardHook.OnKeyPressed += OnKeyPress;
+            keyboardHook.OnKeyReleased += OnKeyRelease;
         }
 
         protected abstract void OnMouseClick(object s, MouseEventArgs e);
@@ -106,9 +109,12 @@ namespace Games.LeagueOfLegends
         public override void Dispose()
         {
             Animator?.Dispose();
-            KeyboardHookService.Instance.OnMouseClicked -= OnMouseClick;
-            KeyboardHookService.Instance.OnKeyPressed -= OnKeyPress;
-            KeyboardHookService.Instance.OnKeyReleased -= OnKeyRelease;
+            if (keyboardHook != null)
+            {
+                keyboardHook.OnMouseClicked -= OnMouseClick;
+                keyboardHook.OnKeyPressed -= OnKeyPress;
+                keyboardHook.OnKeyReleased -= OnKeyRelease;
+            }
         }
 
         public void StopAnimations()

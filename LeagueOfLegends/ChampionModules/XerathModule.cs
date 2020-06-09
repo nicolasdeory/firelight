@@ -32,16 +32,7 @@ namespace Games.LeagueOfLegends.ChampionModules
         protected override AbilityCastMode GetECastMode() => AbilityCastMode.Normal();
         protected override AbilityCastMode GetRCastMode() => AbilityCastMode.Instant(10000, 3, AbilityCastMode.Instant());
 
-        /// <summary>
-        /// Called when the champion info has been retrieved.
-        /// </summary>
-        protected override void OnChampionInfoLoaded(ChampionAttributes champInfo)
-        {
-            base.OnChampionInfoLoaded(champInfo);
-            KeyboardHookService.Instance.OnMouseClicked += MouseClicked;
-        }
-
-        private void MouseClicked(object sender, MouseEventArgs e)
+        protected override void OnMouseClick(object s, MouseEventArgs e)
         {
             if (e.Button == MouseButtons.Right && chargesRemaining > 0)
             {

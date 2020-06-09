@@ -3,14 +3,8 @@ using System.Windows.Forms;
 
 namespace LedDashboardCore
 {
-    public class KeyboardHookService
+    public class KeyboardHook
     {
-        public static KeyboardHookService Instance { get; private set; }
-
-        static KeyboardHookService()
-        {
-            Instance = new KeyboardHookService();
-        }
 
         private IKeyboardMouseEvents m_GlobalHook;
 
@@ -32,12 +26,7 @@ namespace LedDashboardCore
 
         //public event KeyEventHandler OnKeyDown; // this shouldn't be needed
 
-        public static void Init()
-        {
-            Instance = new KeyboardHookService();
-        }
-
-        private KeyboardHookService()
+        public KeyboardHook()
         {
             m_GlobalHook = Hook.GlobalEvents();
 
