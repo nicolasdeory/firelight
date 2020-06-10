@@ -185,5 +185,24 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
   </ItemGroup>
+          /// Pull Request Integrations
 
+<ItemGroup>
+    <None Update="Animations\Champions\Lux\e_cast.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Animations\Champions\Lux\q_cast.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Animations\Champions\Lux\w_cast.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Animations\Champions\Lux\R_channel.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+<None Update="Animations\Champions\Lux\R_cast.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+  
 </Project>
