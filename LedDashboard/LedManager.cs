@@ -1,21 +1,19 @@
-﻿
-using LedDashboard.Modules.BlinkWhite;
-using LedDashboard.Modules.LeagueOfLegends;
+﻿using Games.LeagueOfLegends;
+using LedDashboardCore;
+using LedDashboardCore.Modules.BlinkWhite;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace LedDashboard
 {
 
     class LedManager
     {
-        /// <summary>
-        /// Array that contains LED color data for the LED strip.
-        /// </summary>
-        private Led[] leds;
-        private int ledCount;
 
-        public delegate void UpdateDisplayHandler(Led[] leds, LightingMode mode);
+        public delegate void UpdateDisplayHandler(LEDFrame frame);
 
         /// <summary>
         /// Raised when the LED display is updated.
@@ -23,9 +21,13 @@ namespace LedDashboard
         public event UpdateDisplayHandler DisplayUpdated;
 
         bool reverseOrder;
-        LightController lightController;
+        List<LightController> lightControllers = new List<LightController>();
 
         private Dictionary<string, Dictionary<string, string>> ModuleOptions = new Dictionary<string, Dictionary<string, string>>();
+
+        Queue<LEDFrame> FrameQueue = new Queue<LEDFrame>();
+
+        CancellationTokenSource updateLoopCancelToken = new CancellationTokenSource();
 
         LEDModule CurrentLEDModule
         {
@@ -36,6 +38,7 @@ namespace LedDashboard
             set
             {
                 SetEnabled(value != null);
+
                 _currentLEDModule?.Dispose();
                 _currentLEDModule = value;
             }
@@ -46,53 +49,76 @@ namespace LedDashboard
 
         LightingMode preferredMode;
 
-        
+
         /// <summary>
         /// Starts the LED Manager in keyboard mode by default. Use <seealso cref="SetController"/> to further customize settings, especially for LED strips
         /// </summary>
         public LedManager() // by default starts in keyboard mode
         {
-            
-            lightController = RazerChromaController.Create();
-
-            InitLeds(LightingMode.Keyboard);
-
-            KeyboardHookService.Init();
+            InitLeds();
 
             ProcessListenerService.ProcessInFocusChanged += OnProcessChanged;
             ProcessListenerService.Start();
             ProcessListenerService.Register("League of Legends"); // Listen when league of legends is opened
 
-            UpdateLEDDisplay(this, this.leds, preferredMode);
+            UpdateLEDDisplay(LEDFrame.CreateEmpty(this));
+            Task.Run(UpdateLoop).CatchExceptions();
 
         }
 
         /// <param name="ledCount">Number of lights in the LED strip</param>
         /// <param name="reverseOrder">Set to true if you want the lights to be reverse in order (i.e. Color for LED 0 will be applied to the last LED in the strip)</param>
-        private void InitLeds(LightingMode preferredMode, int ledCount = 0, bool reverseOrder = false)
+        private void InitLeds(bool reverseOrder = false)
         {
-            this.preferredMode = preferredMode;
-            this.ledCount = preferredMode == LightingMode.Keyboard ? 88 : ledCount;
-            this.leds = new Led[this.ledCount];
-            for (int i = 0; i < this.leds.Length; i++)
-            {
-                this.leds[i] = new Led();
-            }
-            this.reverseOrder = reverseOrder;
+            lightControllers.Add(RazerChromaController.Create());
+            lightControllers.Add(SACNController.Create(reverseOrder));
         }
 
-        private void OnProcessChanged(string name)
+        private void UninitLeds()
+        {
+            updateLoopCancelToken.Cancel();
+            lightControllers.ForEach(lc => lc.Dispose());
+        }
+
+        private void OnProcessChanged(string name, int pid)
         {
             if (name == "League of Legends" && !(CurrentLEDModule is LeagueOfLegendsModule)) // TODO: Account for client disconnections
             {
-                LEDModule lolModule = LeagueOfLegendsModule.Create(preferredMode, ledCount, ModuleOptions.ContainsKey("lol") ? ModuleOptions["lol"] : new Dictionary<string, string>());
+                LEDModule lolModule = LeagueOfLegendsModule.Create(ModuleOptions.ContainsKey("lol") ? ModuleOptions["lol"] : new Dictionary<string, string>());
                 lolModule.NewFrameReady += UpdateLEDDisplay;
                 CurrentLEDModule = lolModule;
-            } else if (name.Length == 0)
+            }
+            else if (name.Length == 0)
             {
-                CurrentLEDModule = null;
+                if (!(CurrentLEDModule is BlinkWhiteModule)) // if we're not testing
+                    CurrentLEDModule = null;
                 return;
             }
+        }
+
+        /// <summary>
+        /// Briefly tests the lighting and returns it to the previously active module after a few seconds
+        /// </summary>
+        public void DoLightingTest()
+        {
+
+            if (CurrentLEDModule is BlinkWhiteModule)
+                return;
+
+            Task.Run(async () =>
+            {
+                ProcessListenerService.Stop();
+                await Task.Delay(100);
+                LEDModule lastActiveModule = CurrentLEDModule;
+                LEDModule blinkModule = BlinkWhiteModule.Create();
+                blinkModule.NewFrameReady += UpdateLEDDisplay;
+                CurrentLEDModule = blinkModule;
+                await Task.Delay(5000);
+                ProcessListenerService.Start();
+                if (CurrentLEDModule is BlinkWhiteModule)
+                    CurrentLEDModule = lastActiveModule;
+            }).ContinueWith((t) => Debug.WriteLine(t.Exception.Message + " // " + t.Exception.StackTrace), TaskContinuationOptions.OnlyOnFaulted);
+
         }
 
         private void SetEnabled(bool enable) // If set to false, deattach from razer chroma
@@ -100,33 +126,69 @@ namespace LedDashboard
             if (this.enabled != enable)
             {
                 this.enabled = enable;
-                lightController.Enabled = enable;
+                lightControllers.ForEach(c => c.Enabled = enable);
             }
         }
 
-        bool updatingDisplay = false;
+        //bool updatingDisplay = false;
         /// <summary>
         /// Updates the LED display
         /// </summary>
         /// <param name="s">Module that sent the update command</param>
         /// <param name="ls">Array containing values for each LED in the strip</param>
-        public void UpdateLEDDisplay(object s, Led[] ls, LightingMode mode)
+        public void UpdateLEDDisplay(LEDFrame frame)
         {
-            if (updatingDisplay)
-            {
-                Console.WriteLine("SEVERE: UpdateLEDDisplay was called at the same time as an ongoing one");
-                return;
-            }
-            updatingDisplay = true;
-            this.leds = ls;
-            DisplayUpdated?.Invoke(this.leds, mode);
-            SendData(mode);
-            updatingDisplay = false;
+            CheckFrame(frame);
+            if (frame.Priority) FrameQueue.Clear();
+            FrameQueue.Enqueue(frame);
+            //Debug.WriteLine("Frame received. " + frame.LastSender.GetType().Name + " Queue=" + FrameQueue.Count);
         }
 
-        
-        
-        /// <summary>
+        private void CheckFrame(LEDFrame frame)
+        {
+            LEDData data = frame.Leds;
+            if (data.Keyboard.Length != LEDData.NUMLEDS_KEYBOARD)
+                Debug.WriteLine("SEVERE: Keyboard frame does not match expected length");
+            if (data.Strip.Length != LEDData.NUMLEDS_STRIP)
+                Debug.WriteLine("SEVERE: Strip frame does not match expected length");
+            if (data.Mouse.Length != LEDData.NUMLEDS_MOUSE)
+                Debug.WriteLine("SEVERE: Mouse frame does not match expected length");
+            if (data.Mousepad.Length != LEDData.NUMLEDS_MOUSEPAD)
+                Debug.WriteLine("SEVERE: Mousepad frame does not match expected length");
+            if (data.Headset.Length != LEDData.NUMLEDS_HEADSET)
+                Debug.WriteLine("SEVERE: Headset frame does not match expected length");
+            if (data.Keypad.Length != LEDData.NUMLEDS_KEYPAD)
+                Debug.WriteLine("SEVERE: Keypad frame does not match expected length");
+            if (data.General.Length != LEDData.NUMLEDS_GENERAL)
+                Debug.WriteLine("SEVERE: General frame does not match expected length");
+        }
+
+        private async Task UpdateLoop()
+        {
+            while (true)
+            {
+                if (updateLoopCancelToken.IsCancellationRequested)
+                    return;
+                if (FrameQueue.Count > 0)
+                {
+                    LEDFrame next = FrameQueue.Dequeue();
+                    //this.leds = next.Leds;
+                    if (next != null)
+                        SendLedData(next);
+                }
+                await Task.Delay(30); // 33 fps
+                                      // await Task.Delay(15);
+            }
+        }
+
+        private void SendLedData(LEDFrame frame)
+        {
+            lightControllers.ForEach(controller => controller.SendData(frame));
+            DisplayUpdated?.Invoke(frame);
+        }
+
+
+        /*/// <summary>
         /// Sets the light controller to be used
         /// </summary>
         public void SetController(LightControllerType type, int ledCount = 0, bool reverseOrder = false)
@@ -136,35 +198,31 @@ namespace LedDashboard
             {
                 lightController = SACNController.Create();
                 this.preferredMode = LightingMode.Line;
-            } else if (type == LightControllerType.RazerChroma)
+            }
+            else if (type == LightControllerType.RazerChroma)
             {
                 lightController = RazerChromaController.Create();
                 this.preferredMode = LightingMode.Keyboard;
             }
             RestartManager(this.preferredMode, ledCount, reverseOrder);
-        }
+        }*/
 
-        private void RestartManager(LightingMode preferredMode, int ledCount, bool reverseOrder) // TODO: Keep game state (i.e. league of legends cooldowns etc)
+        private void RestartManager() // TODO: Keep game state (i.e. league of legends cooldowns etc)
         {
-            InitLeds(this.preferredMode, ledCount, reverseOrder);
+            UninitLeds();
             CurrentLEDModule = null; // restart the whole service (force module reload)
-            ProcessListenerService.Restart();
+            ProcessListenerService.Stop();
+            InitLeds(reverseOrder);
+            ProcessListenerService.Start();
         }
 
-        private void RestartManager()
-        {
-            InitLeds(this.preferredMode, this.ledCount, this.reverseOrder);
-            CurrentLEDModule = null;
-            ProcessListenerService.Restart();
-        }
-
-        /// <summary>
+        /*/// <summary>
         /// Sends LED data to a wireless LED strip using the E1.31 sACN protocol.
         /// </summary>
         public void SendData(LightingMode mode)
         {
-            lightController.SendData(this.leds.Length, this.leds.ToByteArray(this.reverseOrder), mode);
-        }
+            lightController.SendData(this.leds.Strip.Length, this.leds.Strip.ToByteArray(this.reverseOrder), mode);
+        }*/
 
         public void SetModuleOption(string moduleId, string option, string value)
         {
@@ -172,15 +230,16 @@ namespace LedDashboard
             {
                 ModuleOptions.Add(moduleId, new Dictionary<string, string>());
             }
-            if(ModuleOptions[moduleId].ContainsKey(option))
+            if (ModuleOptions[moduleId].ContainsKey(option))
             {
                 ModuleOptions[moduleId][option] = value;
-            } else
+            }
+            else
             {
                 ModuleOptions[moduleId].Add(option, value);
             }
             RestartManager();
-            
+
         }
 
     }

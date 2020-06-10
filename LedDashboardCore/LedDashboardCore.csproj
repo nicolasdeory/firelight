@@ -1,0 +1,53 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.WindowsDesktop">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <LangVersion>latest</LangVersion>
+    <UseWindowsForms>true</UseWindowsForms>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="ChromaAppInfo.xml" />
+    <None Remove="Lib\RazerChroma.Net.dll" />
+    <None Remove="Lib\RazerChroma.Net.pdb" />
+    <None Remove="Lib\RazerChromaFrameEngine.dll" />
+    <None Remove="Lib\RazerChromaFrameEngine.pdb" />
+    <None Remove="Resources\keyboardLayout.json" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="ChromaAppInfo.xml" />
+    <Content Include="Lib\RazerChroma.Net.dll" />
+    <Content Include="Lib\RazerChroma.Net.pdb" />
+    <Content Include="Lib\RazerChromaFrameEngine.dll" />
+    <Content Include="Lib\RazerChromaFrameEngine.pdb" />
+    <Content Include="Resources\keyboardLayout.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Accord.Math" Version="3.8.0" />
+    <PackageReference Include="ar1st0crat.SciColorMaps.Portable" Version="1.0.2" />
+    <PackageReference Include="kadmium-sacn-core" Version="0.0.11" />
+    <PackageReference Include="NAudio" Version="1.10.0" />
+    <PackageReference Include="Winook" Version="0.2.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\ChromaSDK\ChromaSDK.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="Gma.System.MouseKeyHook">
+      <HintPath>Lib\Gma.System.MouseKeyHook.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="Lib\CChromaEditorLibrary64.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
+</Project>
