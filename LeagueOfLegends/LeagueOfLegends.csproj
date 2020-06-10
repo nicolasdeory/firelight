@@ -186,4 +186,19 @@
     </None>
   </ItemGroup>
 
+  
+  <ItemGroup>
+    <None Update="Animations\Champions\Yasuo\e_cast.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Animations\Champions\Yasuo\q_cast.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Animations\Champions\Yasuo\w_cast.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Animations\Champions\Yasuo\r_cast.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
 </Project>
