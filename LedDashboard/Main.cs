@@ -1,4 +1,5 @@
-﻿using System;
+﻿using LedDashboardCore;
+using System;
 using System.Windows.Forms;
 
 namespace LedDashboard
@@ -8,7 +9,7 @@ namespace LedDashboard
         [STAThread]
         static void Main(string[] args)
         {
-
+            KeyboardHook.Init();
             Application.EnableVisualStyles();
             Application.Run(new MainUI());
         }
