@@ -203,6 +203,9 @@ namespace LedDashboardCore
             baseKeypadAnim = CreateAnimation(ChromaAnimationAPI.DeviceType.DE_2D, (int)ChromaAnimationAPI.Device2D.Keypad);
 
             baseGeneralAnim = CreateAnimation(ChromaAnimationAPI.DeviceType.DE_1D, (int)ChromaAnimationAPI.Device1D.ChromaLink);
+
+
+            disposed = false;
         }
 
         private int CreateAnimation(ChromaAnimationAPI.DeviceType deviceType, int device)
