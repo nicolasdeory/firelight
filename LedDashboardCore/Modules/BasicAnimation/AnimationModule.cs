@@ -256,6 +256,7 @@ namespace LedDashboardCore.Modules.BasicAnimation
 
         public void FadeBetweenTwoColors(LightZone zones, HSVColor col1, HSVColor col2, float rate = 0.15f, float duration = 2)
         {
+            // TODO: Broken
             int frames = (int)Math.Round(duration * FPS);
 
             for (int i = 0; i < frames; i++)

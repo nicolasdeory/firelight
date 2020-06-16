@@ -1,19 +1,13 @@
-﻿using Games.LeagueOfLegends.ChampionModules.Common;
-using Games.LeagueOfLegends.Model;
-using LedDashboardCore;
+﻿using LedDashboardCore;
 using LedDashboardCore.Modules.BasicAnimation;
 
-namespace Games.LeagueOfLegends
+namespace Games.RocketLeague
 {
-    public abstract class BaseGameModule : LEDModule
+    public abstract class BaseRLModule : LEDModule
     {
-        // TODO: Abstract into "baseModule" without gamestate
-
         // Variables
 
         //protected readonly Led[] Leds;
-
-        protected GameState GameState;
 
         protected AnimationModule Animator;
 
@@ -22,21 +16,12 @@ namespace Games.LeagueOfLegends
         public event LEDModule.FrameReadyHandler NewFrameReady;
 
         /// <summary>
-        /// The preferred lighting mode (when possible, use this one) For example, if keyboard is preferred, 
-        /// use animations optimized for keyboards rather than for LED strips.
-        /// </summary>
-        protected AbilityCastPreference PreferredCastMode;
-
-        /// <summary>
         /// The current module that is sending information to the LED strip.
         /// </summary>
         protected LEDModule CurrentLEDSource;
 
-        protected BaseGameModule(GameState gameState, AbilityCastPreference castMode)
+        protected BaseRLModule()
         {
-            PreferredCastMode = castMode;
-
-            GameState = gameState;
             // Load animation module
             Animator = AnimationModule.Create();
             CurrentLEDSource = Animator;

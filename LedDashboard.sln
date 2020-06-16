@@ -11,6 +11,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LeagueOfLegends", "LeagueOf
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LedDashboardCore", "LedDashboardCore\LedDashboardCore.csproj", "{552F632D-3C3B-432F-B2DD-E6D225013534}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RocketLeague", "RocketLeague\RocketLeague.csproj", "{B36757F6-ECC4-409E-BBB6-DFE1DC55C083}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -51,6 +53,14 @@ Global
 		{552F632D-3C3B-432F-B2DD-E6D225013534}.Release|Any CPU.Build.0 = Release|Any CPU
 		{552F632D-3C3B-432F-B2DD-E6D225013534}.Release|x64.ActiveCfg = Release|Any CPU
 		{552F632D-3C3B-432F-B2DD-E6D225013534}.Release|x64.Build.0 = Release|Any CPU
+		{B36757F6-ECC4-409E-BBB6-DFE1DC55C083}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B36757F6-ECC4-409E-BBB6-DFE1DC55C083}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B36757F6-ECC4-409E-BBB6-DFE1DC55C083}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{B36757F6-ECC4-409E-BBB6-DFE1DC55C083}.Debug|x64.Build.0 = Debug|Any CPU
+		{B36757F6-ECC4-409E-BBB6-DFE1DC55C083}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B36757F6-ECC4-409E-BBB6-DFE1DC55C083}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B36757F6-ECC4-409E-BBB6-DFE1DC55C083}.Release|x64.ActiveCfg = Release|Any CPU
+		{B36757F6-ECC4-409E-BBB6-DFE1DC55C083}.Release|x64.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
