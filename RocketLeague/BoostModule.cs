@@ -27,7 +27,7 @@ namespace Games.RocketLeague
             // Set the cropping region
             // It might change depending on the resolution. Right now it works for 1920x1080
             // ROCKET LEAGUE @ 1920x1080: left 290, top 290, width 220, height 240
-            Rectangle cropRect = new Rectangle(290, 290, 220, 240);
+            Rectangle cropRect = new Rectangle(1920 - 290, 1080 - 290, 220, 240);
 
             // Get the screen frame
             using (Bitmap frame = ScreenCaptureModule.GetNextFrame())
@@ -62,6 +62,7 @@ namespace Games.RocketLeague
             {
                 try
                 {
+                    double[] luminosities;
                     using (MemoryStream memStream = new MemoryStream())
                     {
                         // Load, resize, set the format and quality and save an image.
@@ -70,12 +71,14 @@ namespace Games.RocketLeague
                             .Filter(MatrixFilters.GreyScale)
                             .Contrast(80).Save(memStream);
 
-                        Bitmap bpls = (Bitmap)Bitmap.FromStream(memStream);
-                        double[] luminosities = GetPixelInfo(bpls);
+                        using (Bitmap bpls = (Bitmap)Bitmap.FromStream(memStream))
+                        {
+                            luminosities = GetPixelInfo(bpls);
+                        }
                         b.Dispose();
-
-                        return GetLEDFrameFromLuminosities(luminosities);
                     }
+                    return GetLEDFrameFromLuminosities(luminosities);
+
 
                 }
                 catch (Exception e)
@@ -147,7 +150,32 @@ namespace Games.RocketLeague
             // TODO: Detect when it's not a valid frame so lights dont go crazy
 
             alreadyTouchedLeds.Clear();
-            int keyboardBoostLeds = (int)Utils.Scale(lastLuminositySpot / 20.0, 0, 1, 0, 17);
+            //double lastLuminositySpotNormal = lastLuminositySpot / 20.0;
+            //Debug.WriteLine(lastLuminositySpot);
+            double boostCurve = 0;
+            if (lastLuminositySpot == 10)
+                boostCurve = 1;
+            else if (lastLuminositySpot >= 18)
+                boostCurve = 0.9;
+            else if (lastLuminositySpot >= 16)
+                boostCurve = 0.8;
+            else if (lastLuminositySpot >= 14)
+                boostCurve = 0.7;
+            else if (lastLuminositySpot >= 12)
+                boostCurve = 0.6;
+            else if (lastLuminositySpot >= 10)
+                boostCurve = 0.5;
+            else if (lastLuminositySpot >= 8)
+                boostCurve = 0.4;
+            else if (lastLuminositySpot >= 6)
+                boostCurve = 0.3;
+            else if (lastLuminositySpot >= 4)
+                boostCurve = 0.2;
+            else if (lastLuminositySpot >= 2)
+                boostCurve = 0.1;
+            else if (lastLuminositySpot == 0)
+                boostCurve = 0;
+            int keyboardBoostLeds = (int)Utils.Scale(boostCurve, 0, 1, 0, 18); // ease in
 
             // KEYBOARD
 

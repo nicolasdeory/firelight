@@ -35,7 +35,7 @@
 
   <ItemGroup>
     <Reference Include="DesktopDuplication">
-      <HintPath>DesktopDuplication.dll</HintPath>
+      <HintPath>..\LedDashboard\DesktopDuplication.dll</HintPath>
     </Reference>
     <Reference Include="Gma.System.MouseKeyHook">
       <HintPath>Lib\Gma.System.MouseKeyHook.dll</HintPath>

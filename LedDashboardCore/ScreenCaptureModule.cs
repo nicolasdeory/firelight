@@ -1,9 +1,11 @@
 ﻿using DesktopDuplication;
+using SharpDX.Diagnostics;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
 using System.Text;
+using System.Threading;
 using System.Windows.Forms;
 
 namespace LedDashboardCore
@@ -14,6 +16,7 @@ namespace LedDashboardCore
         static DesktopDuplicator desktopDuplicator;
         private static void Initialize()
         {
+            //SharpDX.Configuration.EnableObjectTracking = true;
             // DesktopDuplication
             try
             {
@@ -47,8 +50,12 @@ namespace LedDashboardCore
             }
             catch (Exception)
             {
+                //Thread.Sleep(200);
+                desktopDuplicator.Dispose();
                 desktopDuplicator = new DesktopDuplicator(0);
-                Debug.WriteLine("Exception in DesktopDuplication API occurred");
+                Debug.WriteLine("Exception in DesktopDuplication API occurred"); // TODO: Enormous memory leak here sometimes
+                //Debug.WriteLine(ObjectTracker.ReportActiveObjects());
+               // throw;
             }
             return null;
         }

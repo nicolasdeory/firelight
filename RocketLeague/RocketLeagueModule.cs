@@ -20,8 +20,6 @@ namespace Games.RocketLeague
     public class RocketLeagueModule : BaseRLModule
     {
 
-        private DesktopDuplicator desktopDuplicator;
-
         // Constants
 
         public static HSVColor LoadingColor { get; } = new HSVColor(0.09f, 0.8f, 1f);
