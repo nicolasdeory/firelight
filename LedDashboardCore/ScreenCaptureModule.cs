@@ -50,12 +50,10 @@ namespace LedDashboardCore
             }
             catch (Exception)
             {
-                //Thread.Sleep(200);
+
                 desktopDuplicator.Dispose();
                 desktopDuplicator = new DesktopDuplicator(0);
-                Debug.WriteLine("Exception in DesktopDuplication API occurred"); // TODO: Enormous memory leak here sometimes
-                //Debug.WriteLine(ObjectTracker.ReportActiveObjects());
-               // throw;
+                Debug.WriteLine("Exception in DesktopDuplication API occurred. User probably switched windows");
             }
             return null;
         }

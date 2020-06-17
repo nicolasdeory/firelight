@@ -102,7 +102,7 @@ namespace Games.RocketLeague
             double radius = 30;
             double step = 0.01f;
 
-            double[] luminosities = new double[20]; // 5 increments
+            double[] luminosities = new double[30]; // x increments
 
             // arc
             double start = Math.PI / 2;
@@ -118,7 +118,7 @@ namespace Games.RocketLeague
 
                 double fractionOfCircumference = Math.Max(0, Utils.Scale(i, start, end, 0, 1));
 
-                int index = (int)Math.Floor(fractionOfCircumference * 20);
+                int index = (int)Math.Floor(fractionOfCircumference * 30);
 
                 double brightness = b.GetPixel(realX, realY).R / 255.0;
                 luminosities[index] += brightness;
@@ -152,8 +152,8 @@ namespace Games.RocketLeague
             alreadyTouchedLeds.Clear();
             //double lastLuminositySpotNormal = lastLuminositySpot / 20.0;
             //Debug.WriteLine(lastLuminositySpot);
-            double boostCurve = 0;
-            if (lastLuminositySpot == 10)
+            double boostCurve = lastLuminositySpot / 30.0;
+           /* if (lastLuminositySpot == 10)
                 boostCurve = 1;
             else if (lastLuminositySpot >= 18)
                 boostCurve = 0.9;
@@ -174,7 +174,7 @@ namespace Games.RocketLeague
             else if (lastLuminositySpot >= 2)
                 boostCurve = 0.1;
             else if (lastLuminositySpot == 0)
-                boostCurve = 0;
+                boostCurve = 0;*/
             int keyboardBoostLeds = (int)Utils.Scale(boostCurve, 0, 1, 0, 18); // ease in
 
             // KEYBOARD
@@ -219,7 +219,7 @@ namespace Games.RocketLeague
 
             // MOUSEPAD
 
-            int ledStripBoostLeds = (int)Utils.Scale(lastLuminositySpot / 20.0, 0, 1, 0, 17);
+            int ledStripBoostLeds = (int)Utils.Scale(lastLuminositySpot / 25.0, 0, 1, 0, 17);
             for (int i = 0; i < LEDData.NUMLEDS_MOUSEPAD; i++)
             {
                 if (i < ledStripBoostLeds)
