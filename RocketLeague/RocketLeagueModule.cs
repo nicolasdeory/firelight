@@ -143,71 +143,8 @@ namespace Games.RocketLeague
                         Bitmap bpls = (Bitmap)Bitmap.FromStream(memStream);
                         double[] luminosities = GetPixelInfo(bpls);
                         b.Dispose();
-                        LEDFrame frame = LEDFrame.Empty;
-                        LEDData data = frame.Leds;
 
-                        double minLuminosity = 10000000;
-                        
-                        for (int i = 0; i < luminosities.Length; i++)
-                        {
-                            if (luminosities[i] < minLuminosity)
-                                minLuminosity = luminosities[i];
-                        }
-
-                        int lastLuminositySpot = 0;
-                        for (int i = 0; i < luminosities.Length; i++)
-                        {
-                            if (luminosities[i] > minLuminosity && luminosities[i] > LUMINOSITY_THRESHOLD)
-                                lastLuminositySpot = i;
-                        }
-                       // Debug.WriteLine(lastLuminositySpot);
-                        // TODO: Detect when it's not a valid frame so lights dont go crazy
-
-                        alreadyTouchedLeds.Clear();
-
-                        // if (lastLuminositySpot > 0) // so first led isn't always lit
-                        //{
-                        int boostLeds = (int)Utils.Scale(lastLuminositySpot / 20.0, 0, 1, 0, 17);
-
-                            for (int i = 0; i < 16; i++)
-                            {
-                                List<int> listLedsToTurnOn = new List<int>(6); // light the whole column
-                                for (int j = 0; j < 6; j++)
-                                {
-                                    listLedsToTurnOn.Add(KeyUtils.PointToKey(new Point(i, j)));
-                                }
-
-                                if (i < boostLeds)
-                                {
-                                    foreach (int idx in listLedsToTurnOn.Where(x => x != -1))
-                                    {
-                                        if (alreadyTouchedLeds.Contains(idx))
-                                            continue;
-                                        data.Keyboard[idx].Color(BoostColor);
-                                    }
-                                }
-                                else
-                                {
-                                    foreach (int idx in listLedsToTurnOn.Where(x => x != -1))
-                                    {
-                                        if (alreadyTouchedLeds.Contains(idx))
-                                            continue;
-                                        if (data.Keyboard[idx].color.AlmostEqual(BoostColor))
-                                        {
-                                            data.Keyboard[idx].Color(BoostColor);
-                                        }
-                                        else
-                                        {
-                                            data.Keyboard[idx].FadeToBlackBy(0.08f);
-                                        }
-
-                                    }
-                                }
-                                alreadyTouchedLeds.AddRange(listLedsToTurnOn);
-
-                            }
-                      //  }
-                        return new LEDFrame(this, data, LightZone.Desk);
+                        return GetLEDFrameFromLuminosities(luminosities);
                     }
 
                 }
@@ -219,6 +156,94 @@ namespace Games.RocketLeague
                 }
 
             }
+        }
+
+        private LEDFrame GetLEDFrameFromLuminosities(double[] luminosities)
+        {
+            LEDFrame frame = LEDFrame.Empty;
+            LEDData data = frame.Leds;
+
+            double minLuminosity = 10000000;
+
+            for (int i = 0; i < luminosities.Length; i++)
+            {
+                if (luminosities[i] < minLuminosity)
+                    minLuminosity = luminosities[i];
+            }
+
+            int lastLuminositySpot = 0;
+            for (int i = 0; i < luminosities.Length; i++)
+            {
+                if (luminosities[i] > minLuminosity && luminosities[i] > LUMINOSITY_THRESHOLD)
+                    lastLuminositySpot = i;
+            }
+
+            // TODO: Detect when it's not a valid frame so lights dont go crazy
+
+            alreadyTouchedLeds.Clear();
+            int keyboardBoostLeds = (int)Utils.Scale(lastLuminositySpot / 20.0, 0, 1, 0, 17);
+
+            // KEYBOARD
+
+            for (int i = 0; i < 16; i++)
+            {
+                List<int> listLedsToTurnOn = new List<int>(6); // light the whole column
+                for (int j = 0; j < 6; j++)
+                {
+                    listLedsToTurnOn.Add(KeyUtils.PointToKey(new Point(i, j)));
+                }
+
+                if (i < keyboardBoostLeds)
+                {
+                    foreach (int idx in listLedsToTurnOn.Where(x => x != -1))
+                    {
+                        if (alreadyTouchedLeds.Contains(idx))
+                            continue;
+                        data.Keyboard[idx].Color(BoostColor);
+                    }
+                }
+                else
+                {
+                    foreach (int idx in listLedsToTurnOn.Where(x => x != -1))
+                    {
+                        if (alreadyTouchedLeds.Contains(idx))
+                            continue;
+                        if (data.Keyboard[idx].color.AlmostEqual(BoostColor))
+                        {
+                            data.Keyboard[idx].Color(BoostColor);
+                        }
+                        else
+                        {
+                            data.Keyboard[idx].FadeToBlackBy(0.08f);
+                        }
+
+                    }
+                }
+                alreadyTouchedLeds.AddRange(listLedsToTurnOn);
+
+            }
+
+            // MOUSEPAD
+
+            int ledStripBoostLeds = (int)Utils.Scale(lastLuminositySpot / 20.0, 0, 1, 0, 17);
+            for (int i = 0; i < LEDData.NUMLEDS_MOUSEPAD; i++)
+            {
+                if (i < ledStripBoostLeds)
+                    data.Mousepad[i].Color(BoostColor);
+                else
+                {
+                    if (data.Mousepad[i].color.AlmostEqual(BoostColor))
+                    {
+                        data.Mousepad[i].Color(BoostColor);
+                    }
+                    else
+                    {
+                        data.Mousepad[i].FadeToBlackBy(0.05f);
+                    }
+                }
+            }
+
+            return new LEDFrame(this, data, LightZone.Desk);
         }
 
         /// <summary>

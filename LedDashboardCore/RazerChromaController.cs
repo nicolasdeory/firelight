@@ -320,7 +320,7 @@ namespace LedDashboardCore
             for (int i = 0; i < 16; i++)
             {
                 int color = ChromaAnimationAPI.GetRGB(colorArray[i * 3], colorArray[i * 3 + 1], colorArray[i * 3 + 2]);
-                ChromaAnimationAPI.Set1DColor(baseMousepadAnim, 0, i, color);
+                ChromaAnimationAPI.Set1DColor(baseMousepadAnim, 0, 16-i, color); // inverted order
             }
             ChromaAnimationAPI.PreviewFrame(baseMousepadAnim, 0);
         }
