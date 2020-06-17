@@ -1,4 +1,5 @@
 ﻿using Games.LeagueOfLegends;
+using Games.RocketLeague;
 using LedDashboardCore;
 using LedDashboardCore.Modules.BlinkWhite;
 using System;
@@ -60,6 +61,7 @@ namespace LedDashboard
             ProcessListenerService.ProcessInFocusChanged += OnProcessChanged;
             ProcessListenerService.Start();
             ProcessListenerService.Register("League of Legends"); // Listen when league of legends is opened
+            ProcessListenerService.Register("RocketLeague");
 
             UpdateLEDDisplay(LEDFrame.CreateEmpty(this));
             Task.Run(UpdateLoop).CatchExceptions();
@@ -88,6 +90,12 @@ namespace LedDashboard
                 lolModule.NewFrameReady += UpdateLEDDisplay;
                 CurrentLEDModule = lolModule;
             }
+            else if (name == "RocketLeague" && !(CurrentLEDModule is RocketLeagueModule)) // TODO: Account for client disconnections
+            {
+                LEDModule rlModule = RocketLeagueModule.Create(ModuleOptions.ContainsKey("rocketleague") ? ModuleOptions["rocketleague"] : new Dictionary<string, string>());
+                rlModule.NewFrameReady += UpdateLEDDisplay;
+                CurrentLEDModule = rlModule;
+            }
             else if (name.Length == 0)
             {
                 if (!(CurrentLEDModule is BlinkWhiteModule)) // if we're not testing
@@ -102,11 +110,14 @@ namespace LedDashboard
         public void DoLightingTest()
         {
 
+            // TODO: Broken, doesn't return to previous module
+
             if (CurrentLEDModule is BlinkWhiteModule)
                 return;
 
             Task.Run(async () =>
             {
+                Debug.WriteLine("Testing lights");
                 ProcessListenerService.Stop();
                 await Task.Delay(100);
                 LEDModule lastActiveModule = CurrentLEDModule;

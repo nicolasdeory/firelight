@@ -5,7 +5,26 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="ImageProcessor" Version="2.9.0" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\LedDashboardCore\LedDashboardCore.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="DesktopDuplication">
+      <HintPath>..\LedDashboardCore\DesktopDuplication.dll</HintPath>
+    </Reference>
+    <Reference Include="SharpDX">
+      <HintPath>..\LedDashboardCore\SharpDX.dll</HintPath>
+    </Reference>
+    <Reference Include="SharpDX.Direct3D11">
+      <HintPath>..\LedDashboardCore\SharpDX.Direct3D11.dll</HintPath>
+    </Reference>
+    <Reference Include="SharpDX.DXGI">
+      <HintPath>..\LedDashboardCore\SharpDX.DXGI.dll</HintPath>
+    </Reference>
   </ItemGroup>
 
 </Project>

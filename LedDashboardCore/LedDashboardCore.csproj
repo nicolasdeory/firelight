@@ -8,19 +8,14 @@
 
   <ItemGroup>
     <None Remove="ChromaAppInfo.xml" />
-    <None Remove="Lib\RazerChroma.Net.dll" />
-    <None Remove="Lib\RazerChroma.Net.pdb" />
-    <None Remove="Lib\RazerChromaFrameEngine.dll" />
-    <None Remove="Lib\RazerChromaFrameEngine.pdb" />
+    <None Remove="RazerChroma.Net.dll" />
     <None Remove="Resources\keyboardLayout.json" />
   </ItemGroup>
 
   <ItemGroup>
     <Content Include="ChromaAppInfo.xml" />
-    <Content Include="Lib\RazerChroma.Net.dll" />
-    <Content Include="Lib\RazerChroma.Net.pdb" />
-    <Content Include="Lib\RazerChromaFrameEngine.dll" />
-    <Content Include="Lib\RazerChromaFrameEngine.pdb" />
+    <Content Include="RazerChroma.Net.dll" />
+    <Content Include="RazerChromaFrameEngine.dll" />
     <Content Include="Resources\keyboardLayout.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
@@ -45,7 +40,19 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Update="Lib\CChromaEditorLibrary64.dll">
+    <None Update="CChromaEditorLibrary64.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="DesktopDuplication.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="SharpDX.Direct3D11.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="SharpDX.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="SharpDX.DXGI.dll">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
   </ItemGroup>
