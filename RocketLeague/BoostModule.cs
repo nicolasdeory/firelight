@@ -17,7 +17,7 @@ namespace Games.RocketLeague
 
         public static HSVColor BoostColor { get; } = new HSVColor(0.12f, 1f, 1f);
 
-        const double LUMINOSITY_THRESHOLD = 10; // TODO: Maybe add more precision, but this is delicate, the threshold should be adjusted as well.
+        double[] LUMINOSITY_THRESHOLDS = new double[] { 5, 6, 7, 8, 7, 10, 8, 7, 10, 8, 10, 10, 10, 10, 12, 9, 12, 10, 9, 10, 11, 9, 13, 10, 10, 11, 12, 13 };
 
         /// <summary>
         /// Gets the LEDFrame for the boost view
@@ -102,7 +102,7 @@ namespace Games.RocketLeague
             double radius = 30;
             double step = 0.01f;
 
-            double[] luminosities = new double[30]; // x increments
+            double[] luminosities = new double[28]; // x increments
 
             // arc
             double start = Math.PI / 2;
@@ -118,7 +118,7 @@ namespace Games.RocketLeague
 
                 double fractionOfCircumference = Math.Max(0, Utils.Scale(i, start, end, 0, 1));
 
-                int index = (int)Math.Floor(fractionOfCircumference * 30);
+                int index = (int)Math.Floor(fractionOfCircumference * 28);
 
                 double brightness = b.GetPixel(realX, realY).R / 255.0;
                 luminosities[index] += brightness;
@@ -133,48 +133,30 @@ namespace Games.RocketLeague
             LEDData data = frame.Leds;
 
             double minLuminosity = 10000000;
-
             for (int i = 0; i < luminosities.Length; i++)
             {
                 if (luminosities[i] < minLuminosity)
                     minLuminosity = luminosities[i];
             }
-
-            int lastLuminositySpot = 0;
+            double luminosityMax = luminosities.Max();
+            double[] luminositiesNormalized = new double[30];
             for (int i = 0; i < luminosities.Length; i++)
             {
-                if (luminosities[i] > minLuminosity && luminosities[i] > LUMINOSITY_THRESHOLD)
+                luminositiesNormalized[i] = luminosities[i] / luminosityMax;
+            }
+            Debug.WriteLine(String.Join(",", luminosities));
+            int lastLuminositySpot = 0;
+            for (int i = 0; i < LUMINOSITY_THRESHOLDS.Length; i++)
+            {
+                if (luminosities[i] > LUMINOSITY_THRESHOLDS[i])
                     lastLuminositySpot = i;
             }
-
             // TODO: Detect when it's not a valid frame so lights dont go crazy
 
             alreadyTouchedLeds.Clear();
             //double lastLuminositySpotNormal = lastLuminositySpot / 20.0;
             //Debug.WriteLine(lastLuminositySpot);
-            double boostCurve = lastLuminositySpot / 30.0;
-           /* if (lastLuminositySpot == 10)
-                boostCurve = 1;
-            else if (lastLuminositySpot >= 18)
-                boostCurve = 0.9;
-            else if (lastLuminositySpot >= 16)
-                boostCurve = 0.8;
-            else if (lastLuminositySpot >= 14)
-                boostCurve = 0.7;
-            else if (lastLuminositySpot >= 12)
-                boostCurve = 0.6;
-            else if (lastLuminositySpot >= 10)
-                boostCurve = 0.5;
-            else if (lastLuminositySpot >= 8)
-                boostCurve = 0.4;
-            else if (lastLuminositySpot >= 6)
-                boostCurve = 0.3;
-            else if (lastLuminositySpot >= 4)
-                boostCurve = 0.2;
-            else if (lastLuminositySpot >= 2)
-                boostCurve = 0.1;
-            else if (lastLuminositySpot == 0)
-                boostCurve = 0;*/
+            double boostCurve = lastLuminositySpot / (double)(LUMINOSITY_THRESHOLDS.Length - 1);
             int keyboardBoostLeds = (int)Utils.Scale(boostCurve, 0, 1, 0, 18); // ease in
 
             // KEYBOARD
@@ -219,7 +201,7 @@ namespace Games.RocketLeague
 
             // MOUSEPAD
 
-            int ledStripBoostLeds = (int)Utils.Scale(lastLuminositySpot / 25.0, 0, 1, 0, 17);
+            int ledStripBoostLeds = (int)Utils.Scale(boostCurve, 0, 1, 0, 17);
             for (int i = 0; i < LEDData.NUMLEDS_MOUSEPAD; i++)
             {
                 if (i < ledStripBoostLeds)
