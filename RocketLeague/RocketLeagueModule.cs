@@ -58,16 +58,6 @@ namespace Games.RocketLeague
         {
             // Rocket League module initialization
 
-            // DesktopDuplication
-            try
-            {
-                desktopDuplicator = new DesktopDuplicator(0);
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.ToString());
-            }
-
             AddAnimatorEvent();
 
             //PlayLoadingAnimation();
@@ -86,40 +76,30 @@ namespace Games.RocketLeague
         /// </summary>
         private LEDFrame QueryBoostInfo()
         {
-            Bitmap lastFrame = null;
-            DesktopFrame frame = null;
-            try
+            // Set the cropping region
+            // It might change depending on the resolution. Right now it works for 1920x1080
+            // ROCKET LEAGUE @ 1920x1080: left 290, top 290, width 220, height 240
+            Rectangle cropRect = new Rectangle(290, 290, 220, 240);
+
+            // Get the screen frame
+            using (Bitmap frame = ScreenCaptureModule.GetNextFrame())
             {
-                frame = desktopDuplicator.GetLatestFrame();
-                if (frame != null && frame.DesktopImage != lastFrame)
+                // Resize the bitmap
+                Bitmap target = new Bitmap(64, 64);
+
+                // int left = cropRect.X;
+                //int top = cropRect.Y;
+                using (Graphics g = Graphics.FromImage(target))
                 {
-                    Bitmap frameBitmap = frame.DesktopImage;
-                    Bitmap target = new Bitmap(64, 64);
-                    // crop area, it might change depending on the resolution. Right now it works for 1920x1080
-                    int left = 290;
-                    int top = 290;
-                    int padRight = 70;
-                    int padBottom = 50;
-                    using (Graphics g = Graphics.FromImage(target))
-                    {
-                        int diffWidth = frameBitmap.Width - left;
-                        int diffheight = frameBitmap.Height - top;
-                        g.DrawImage(frameBitmap, new Rectangle(0, 0, target.Width, target.Height),
-                                         new Rectangle(diffWidth, diffheight, left - padRight, top - padBottom),
-                                         GraphicsUnit.Pixel);
-                    }
-
-                    return ProcessFrame(target);
-
+                    // int diffWidth = frameBitmap.Width - left;
+                    // int diffheight = frameBitmap.Height - top;
+                    g.DrawImage(frame, new Rectangle(0, 0, target.Width, target.Height),
+                                     cropRect,
+                                     GraphicsUnit.Pixel);
                 }
-            }
-            catch (Exception ex)
-            {
-                desktopDuplicator = new DesktopDuplicator(0);
-                Debug.WriteLine("Exception in DesktopDuplication API occurred");
-                //throw;
-            }
-            return null;
+
+                return ProcessFrame(target);
+            }            
         }
 
 

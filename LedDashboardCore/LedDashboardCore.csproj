@@ -34,8 +34,20 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Reference Include="DesktopDuplication">
+      <HintPath>DesktopDuplication.dll</HintPath>
+    </Reference>
     <Reference Include="Gma.System.MouseKeyHook">
       <HintPath>Lib\Gma.System.MouseKeyHook.dll</HintPath>
+    </Reference>
+    <Reference Include="SharpDX">
+      <HintPath>SharpDX.dll</HintPath>
+    </Reference>
+    <Reference Include="SharpDX.Direct3D11">
+      <HintPath>SharpDX.Direct3D11.dll</HintPath>
+    </Reference>
+    <Reference Include="SharpDX.DXGI">
+      <HintPath>SharpDX.DXGI.dll</HintPath>
     </Reference>
   </ItemGroup>
 
