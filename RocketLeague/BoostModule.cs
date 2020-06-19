@@ -22,7 +22,7 @@ namespace Games.RocketLeague
         /// <summary>
         /// Gets the LEDFrame for the boost view
         /// </summary>
-        public LEDFrame DoFrame()
+        public LEDFrame DoFrame(Bitmap screenFrame)
         {
             // Set the cropping region
             // It might change depending on the resolution. Right now it works for 1920x1080
@@ -30,27 +30,24 @@ namespace Games.RocketLeague
             Rectangle cropRect = new Rectangle(1920 - 290, 1080 - 290, 220, 240);
 
             // Get the screen frame
-            using (Bitmap frame = ScreenCaptureModule.GetNextFrame())
+            if (screenFrame == null)
+                return null;
+
+            // Resize the bitmap
+            Bitmap target = new Bitmap(64, 64);
+
+            // int left = cropRect.X;
+            //int top = cropRect.Y;
+            using (Graphics g = Graphics.FromImage(target))
             {
-                if (frame == null)
-                    return null;
-
-                // Resize the bitmap
-                Bitmap target = new Bitmap(64, 64);
-
-                // int left = cropRect.X;
-                //int top = cropRect.Y;
-                using (Graphics g = Graphics.FromImage(target))
-                {
-                    // int diffWidth = frameBitmap.Width - left;
-                    // int diffheight = frameBitmap.Height - top;
-                    g.DrawImage(frame, new Rectangle(0, 0, target.Width, target.Height),
-                                     cropRect,
-                                     GraphicsUnit.Pixel);
-                }
-
-                return ProcessFrame(target);
+                // int diffWidth = frameBitmap.Width - left;
+                // int diffheight = frameBitmap.Height - top;
+                g.DrawImage(screenFrame, new Rectangle(0, 0, target.Width, target.Height),
+                                 cropRect,
+                                 GraphicsUnit.Pixel);
             }
+
+            return ProcessFrame(target);
         }
 
         private static List<int> alreadyTouchedLeds = new List<int>(); // fixes a weird flickering bug

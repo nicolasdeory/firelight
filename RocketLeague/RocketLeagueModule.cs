@@ -76,12 +76,21 @@ namespace Games.RocketLeague
                     return;
                 if (msSinceLastExternalFrameReceived >= msAnimationTimerThreshold)
                 {
-                    if (!CheckForGoal())
+                    // Get the screen frame
+                    using (Bitmap screenCaptureFrame = ScreenCaptureModule.GetNextFrame())
                     {
-                        LEDFrame frame = boostModule.DoFrame();
-                        if (frame != null)
-                            InvokeNewFrameReady(frame);
+                        if (screenCaptureFrame != null)
+                        {
+                            if (!CheckForGoal(screenCaptureFrame))
+                            {
+                                LEDFrame frame = boostModule.DoFrame(screenCaptureFrame);
+                                if (frame != null)
+                                    InvokeNewFrameReady(frame);
+                            }
+                        }
                     }
+
+                    
                 }
                 await Task.Delay(30);
                 msSinceLastExternalFrameReceived += 30;
@@ -105,7 +114,7 @@ namespace Games.RocketLeague
         /// Checks if a goal has been scored
         /// </summary>
         /// <returns></returns>
-        private bool CheckForGoal()
+        private bool CheckForGoal(Bitmap screenFrame)
         {
             // TODO
             return false;
