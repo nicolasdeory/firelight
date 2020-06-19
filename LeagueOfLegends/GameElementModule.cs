@@ -19,7 +19,7 @@ namespace Games.LeagueOfLegends
         public string Name;
 
         protected abstract string ModuleTypeName { get; }
-        protected string ModuleAnimationPath => $"Animations/{ModuleTypeName}s/";
+        protected string ModuleAnimationPath => $"Animations/LeagueOfLegends/{ModuleTypeName}s/";
 
         private char lastPressedKey = '\0';
 
