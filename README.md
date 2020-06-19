@@ -37,6 +37,9 @@ If you play with one of these champions, you will see animations for their abili
 - Enjoy the lights!
 
 ## How to Run 
+
+ ![](repo/ezgif.com-crop.gif)
+ 
 1.	Once the Download is finished. Locate the file V0.4.1 [Version will change keep that in mind.]
 2.	Extract the File to your Desire location.
 3.	Open the Folder and continue to open folders until you pas win-x64
