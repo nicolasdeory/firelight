@@ -36,6 +36,28 @@ If you play with one of these champions, you will see animations for their abili
 - Load into a LoL game
 - Enjoy the lights!
 
+## How to Run 
+1.	Once the Download is finished. Locate the file V0.4.1 [Version will change keep that in mind.]
+2.	Extract the File to your Desire location.
+3.	Open the Folder and continue to open folders until you pas win-x64
+
+  ![](repo/File%20path.jpg)
+  
+4.	 In this folder scroll down until you find LedDashboard
+
+  ![](repo/LED%20location.png)
+  
+5.	A screen should Pop up like the one Below.
+  
+    ![](repo/prg%20screen.png)
+    
+6. Open LOL and Load into a game! The program should work. 
+ 
+Notice: if you want to confirm it connected to Choma connect it should look like this. 
+
+ ![](repo/razer%20connect.png)
+ It is common to have this with no text or icon show up [This will be updated to provide visual information].
+
 ## Roadmap / Planned Features
 - Animation sets for each champion and active ability item
 - Effects for summoner spells
