@@ -56,6 +56,7 @@ If you play with one of these champions, you will see animations for their abili
 Notice: if you want to confirm it connected to Choma connect it should look like this. 
 
  ![](repo/razer%20connect.png)
+ 
  It is common to have this with no text or icon show up [This will be updated to provide visual information].
 
 ## Roadmap / Planned Features
