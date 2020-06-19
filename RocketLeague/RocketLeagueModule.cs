@@ -37,6 +37,7 @@ namespace Games.RocketLeague
         CancellationTokenSource masterCancelToken = new CancellationTokenSource();
 
         BoostModule boostModule = new BoostModule();
+        GoalModule goalModule = new GoalModule();
 
         /// <summary>
         /// Creates a new <see cref="RocketLeague"/> instance.
@@ -53,6 +54,8 @@ namespace Games.RocketLeague
             // Rocket League module initialization
 
             AddAnimatorEvent();
+
+            goalModule.NewFrameReady += NewFrameReadyHandler;
 
             //PlayLoadingAnimation();
             _ = FrameTimer().CatchExceptions();
@@ -81,7 +84,8 @@ namespace Games.RocketLeague
                     {
                         if (screenCaptureFrame != null)
                         {
-                            if (!CheckForGoal(screenCaptureFrame))
+                            goalModule.DoFrame(screenCaptureFrame);
+                            if (!goalModule.IsPlayingAnimation)
                             {
                                 LEDFrame frame = boostModule.DoFrame(screenCaptureFrame);
                                 if (frame != null)
@@ -104,7 +108,7 @@ namespace Games.RocketLeague
         /// <param name="data">LED data</param>
         protected override void NewFrameReadyHandler(LEDFrame frame)
         {
-             if (frame.LastSender != Animator && frame.LastSender != CurrentLEDSource)
+             /*if (frame.LastSender != Animator && frame.LastSender != CurrentLEDSource)
                  return; // If it's from a different source that what we're listening to, ignore it*/
             InvokeNewFrameReady(frame);
             msSinceLastExternalFrameReceived = 0;

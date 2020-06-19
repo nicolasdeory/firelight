@@ -141,7 +141,7 @@ namespace Games.RocketLeague
             {
                 luminositiesNormalized[i] = luminosities[i] / luminosityMax;
             }
-            Debug.WriteLine(String.Join(",", luminosities));
+           // Debug.WriteLine(String.Join(",", luminosities));
             int lastLuminositySpot = 0;
             for (int i = 0; i < LUMINOSITY_THRESHOLDS.Length; i++)
             {

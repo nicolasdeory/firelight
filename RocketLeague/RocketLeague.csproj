@@ -27,4 +27,10 @@
     </Reference>
   </ItemGroup>
 
+  <ItemGroup>
+    <None Update="Animations\RocketLeague\goal.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
 </Project>
