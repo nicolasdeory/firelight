@@ -87,7 +87,7 @@ namespace Games.RocketLeague
                             goalModule.DoFrame(screenCaptureFrame);
                             if (!goalModule.IsPlayingAnimation)
                             {
-                                LEDFrame frame = boostModule.DoFrame(screenCaptureFrame);
+                                LEDFrame frame = boostModule.DoFrame(screenCaptureFrame); // TODO: Idle animation after goal or when not ingame
                                 if (frame != null)
                                     InvokeNewFrameReady(frame);
                             }

@@ -32,7 +32,8 @@ namespace Games.RocketLeague
 
         // Variables
 
-        Bitmap lastCapture;
+        Bitmap[] lastCaptureRightBuffer = new Bitmap[6];
+        Bitmap[] lastCaptureLeftBuffer = new Bitmap[6];
         AnimationModule animator;
         bool goalOnCooldown;
 
@@ -103,8 +104,8 @@ namespace Games.RocketLeague
 
         private static List<int> alreadyTouchedLeds = new List<int>(); // fixes a weird flickering bug
 
-        
 
+        int ix = 0;
         private void ProcessFrame(Bitmap b, bool leftSide)
         {
             using (ImageFactory imageFactory = new ImageFactory(preserveExifData: true))
@@ -117,7 +118,7 @@ namespace Games.RocketLeague
                         imageFactory
                             .Load(b)
                             .Filter(MatrixFilters.GreyScale)
-                            .Contrast(80)
+                            //.Contrast(80)
                             .Save(memStream);
 
                         b.Dispose();
@@ -129,7 +130,7 @@ namespace Games.RocketLeague
                             for (int j = 0; j < bpls.Height; j++)
                             {
                                 Color c = bpls.GetPixel(i, j);
-                                if (c.R < 252 || c.G < 252 || c.B < 252)
+                                if (c.R < 255 || c.G < 255 || c.B < 255)
                                 {
                                     bpls.SetPixel(i, j, Color.Black);
                                 }
@@ -140,13 +141,14 @@ namespace Games.RocketLeague
                             }
                         }
 
-                        //bpls.Save(fileName);
+                        //bpls.Save($"debugcaptures/img{ix}.png");
+                        //ix++;
                         int differentPixels = 0;
                         int DIFFERENT_THRESHOLD_MIN = 20;
                         int DIFFERENT_THRESHOLD_MAX = 50;
                         try
                         {
-
+                            Bitmap lastCapture = (leftSide ? lastCaptureLeftBuffer : lastCaptureRightBuffer)[0];
                             if (lastCapture != null && bpls.GetHashCode() != lastCapture.GetHashCode())
                             {
                                 for (int i = 0; i < bpls.Width; i++)
@@ -167,15 +169,42 @@ namespace Games.RocketLeague
                         {
 
                         }
-
+                        /*using (Graphics g = Graphics.FromImage(bpls))
+                        {
+                            // Create font and brush.
+                            Font drawFont = new Font("Arial", 16);
+                            SolidBrush drawBrush = new SolidBrush(Color.Red);
+                            g.DrawImage(bpls, new Point(0, 0));
+                            g.DrawString(differentPixels.ToString(), drawFont, drawBrush, 10, 10);
+                        }*/
+                        bpls.Save($"debugcaptures/img{ix}.png");
+                        ix++;
+                        //Debug.WriteLine(differentPixels);
                         if (differentPixels > DIFFERENT_THRESHOLD_MIN && differentPixels < DIFFERENT_THRESHOLD_MAX)
                         {
                             if (!goalOnCooldown)
                                 GoalDetected(leftSide);
                         }
 
-                        lastCapture?.Dispose();
-                        lastCapture = bpls;
+                        if (leftSide)
+                        {
+                            lastCaptureLeftBuffer[0]?.Dispose();
+                            for (int i = 1; i < 6; i++)
+                            {
+                                lastCaptureLeftBuffer[i - 1] = lastCaptureLeftBuffer[i];
+                            }
+                            lastCaptureLeftBuffer[5] = bpls;
+                        } 
+                        else
+                        {
+                            lastCaptureRightBuffer[0]?.Dispose();
+                            for (int i = 1; i < 6; i++)
+                            {
+                                lastCaptureRightBuffer[i - 1] = lastCaptureRightBuffer[i];
+                            }
+                            lastCaptureRightBuffer[5] = bpls;
+                        }
+                        
                     }
 
                 }
@@ -218,7 +247,11 @@ namespace Games.RocketLeague
 
         public void Dispose()
         {
-
+            for (int i = 0; i < 6; i++)
+            {
+                lastCaptureLeftBuffer[i].Dispose();
+                lastCaptureRightBuffer[i].Dispose();
+            }
         }
     }
 }
