@@ -59,9 +59,10 @@ namespace Games.RocketLeague
             // Set the cropping region
             // It might change depending on the resolution. Right now it works for 1920x1080
             // ROCKET LEAGUE @ 1920x1080: left 290, top 290, width 220, height 240
-            // ROCKET LEAGUE GOAL LEFT @ 1920x1080: 1920/2 - 202, 10, 95, 85
-           // Rectangle cropRect = new Rectangle(1920 / 2 + 102, 10, 70, 70); // --- right goal indicator
-            Rectangle cropRect = new Rectangle(1920 / 2 - 172, 15, 70, 70); // ---left goal indicator
+            // ROCKET LEAGUE GOAL LEFT @ 1920x1080: 1920/2 - 202, 10, 70, 70
+            // ROCKET LEAGUE GOAL RIGHT @ 1920x1080: 1920/2 - 172, 15, 70, 70
+            Rectangle rightGoalCropRect = new Rectangle(1920 / 2 + 102, 10, 70, 70); // --- right goal indicator
+            Rectangle leftGoalCropRect = new Rectangle(1920 / 2 - 172, 15, 70, 70); // ---left goal indicator
 
             // TODO: After goal, maybe capture the timer to figure out when kick off has started
             // TODO: Or maybe look at the lower part of the screen to check for black stripes.
@@ -72,18 +73,30 @@ namespace Games.RocketLeague
                 // Resize the bitmap
                 Bitmap target = new Bitmap(64, 64);
 
-                // int left = cropRect.X;
-                //int top = cropRect.Y;
                 using (Graphics g = Graphics.FromImage(target))
                 {
-                    // int diffWidth = frameBitmap.Width - left;
-                    // int diffheight = frameBitmap.Height - top;
                     g.DrawImage(screenFrame, new Rectangle(0, 0, target.Width, target.Height),
-                                     cropRect,
+                                     leftGoalCropRect,
                                      GraphicsUnit.Pixel);
                 }
 
-                ProcessFrame(target);
+                ProcessFrame(target, true);
+
+                if (!goalOnCooldown)
+                {
+                    // If no goal was detected, try again with the right side
+                    target = new Bitmap(64, 64);
+
+                    using (Graphics g = Graphics.FromImage(target))
+                    {
+                        g.DrawImage(screenFrame, new Rectangle(0, 0, target.Width, target.Height),
+                                         rightGoalCropRect,
+                                         GraphicsUnit.Pixel);
+                    }
+
+                    ProcessFrame(target, false);
+                }
+                
             }
             
         }
@@ -92,7 +105,7 @@ namespace Games.RocketLeague
 
         
 
-        private void ProcessFrame(Bitmap b)
+        private void ProcessFrame(Bitmap b, bool leftSide)
         {
             using (ImageFactory imageFactory = new ImageFactory(preserveExifData: true))
             {
@@ -158,7 +171,7 @@ namespace Games.RocketLeague
                         if (differentPixels > DIFFERENT_THRESHOLD_MIN && differentPixels < DIFFERENT_THRESHOLD_MAX)
                         {
                             if (!goalOnCooldown)
-                                GoalDetected();
+                                GoalDetected(leftSide);
                         }
 
                         lastCapture?.Dispose();
@@ -178,9 +191,17 @@ namespace Games.RocketLeague
         /// <summary>
         /// Called when a change in the scoreboard is detected.
         /// </summary>
-        private void GoalDetected()
+        private void GoalDetected(bool leftSide)
         {
-            Debug.WriteLine("GOAL!");
+            if (leftSide)
+            {
+                Debug.WriteLine("GOAL! Left side");
+            }
+            else
+            {
+                Debug.WriteLine("GOAL! Right side");
+            }
+            
             goalOnCooldown = true;
 
             // Play animation

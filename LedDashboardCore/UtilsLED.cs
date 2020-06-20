@@ -1,4 +1,6 @@
-﻿using System.Diagnostics;
+﻿using System;
+using System.Diagnostics;
+using System.Drawing;
 using System.Linq;
 
 namespace LedDashboardCore
@@ -142,6 +144,12 @@ namespace LedDashboardCore
             }
             return leds;
         }
+
+        public static int ColorDifference(this Color c1, Color c2)
+        {
+            return Math.Abs(c1.R - c2.R) + Math.Abs(c1.G - c2.G) + Math.Abs(c1.B - c2.B);
+        }
+
 
         /// <summary>
         /// Returns the LED array as a byte array contaning Red, Green and Blue value bytes for each LED in the strip.

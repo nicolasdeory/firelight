@@ -15,7 +15,7 @@ namespace LedDashboardCore
         static string currentOpenedProcess = "";
 
         static CancellationTokenSource cancelToken;
-        public static void Start()
+        public static void Start() // TODO: Handle two registered processes running at the same time
         {
             cancelToken?.Cancel();
             cancelToken = new CancellationTokenSource();
