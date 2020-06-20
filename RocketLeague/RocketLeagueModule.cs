@@ -27,7 +27,7 @@ namespace Games.RocketLeague
         public static HSVColor DeadColor { get; } = new HSVColor(0f, 0.8f, 0.77f);
         public static HSVColor NoManaColor { get; } = new HSVColor(0.52f, 0.66f, 1f);
 
-        
+
 
         // Variables
 
@@ -84,6 +84,7 @@ namespace Games.RocketLeague
                     {
                         if (screenCaptureFrame != null)
                         {
+                            CheckIfNotIngame(screenCaptureFrame);
                             goalModule.DoFrame(screenCaptureFrame);
                             if (!goalModule.IsPlayingAnimation)
                             {
@@ -94,7 +95,7 @@ namespace Games.RocketLeague
                         }
                     }
 
-                    
+
                 }
                 await Task.Delay(30);
                 msSinceLastExternalFrameReceived += 30;
@@ -108,25 +109,51 @@ namespace Games.RocketLeague
         /// <param name="data">LED data</param>
         protected override void NewFrameReadyHandler(LEDFrame frame)
         {
-             /*if (frame.LastSender != Animator && frame.LastSender != CurrentLEDSource)
-                 return; // If it's from a different source that what we're listening to, ignore it*/
+            /*if (frame.LastSender != Animator && frame.LastSender != CurrentLEDSource)
+                return; // If it's from a different source that what we're listening to, ignore it*/
             InvokeNewFrameReady(frame);
             msSinceLastExternalFrameReceived = 0;
         }
 
-        /// <summary>
-        /// Checks if a goal has been scored
-        /// </summary>
-        /// <returns></returns>
-        private bool CheckForGoal(Bitmap screenFrame)
-        {
-            // TODO
-            return false;
-        }
 
-        private void OnGoal(bool whatTeam)
+        private bool CheckIfNotIngame(Bitmap frame)
         {
-            // TODO
+            using (ImageFactory imageFactory = new ImageFactory(preserveExifData: true))
+            {
+
+                using (MemoryStream memStream = new MemoryStream())
+                {
+                    // Load, resize, set the format and quality and save an image.
+                    imageFactory
+                        .Load(frame)
+                        .Filter(MatrixFilters.GreyScale)
+                        .Save(memStream);
+
+                    Bitmap grayscaleFrame = new Bitmap(memStream); // TODO: Refactor all grayscale images, pass to grayscale once.
+
+                    double luminositySum = 0;
+
+                    for (int i = 0; i < 1920; i++) // TODO: It's hardcoded for 1920x1080!!
+                    {
+                        for (int j = 0; j < 5; j++)
+                        {
+                            Color c = grayscaleFrame.GetPixel(i, 1080 - 1 - j);
+                            luminositySum += c.R; // it's grayscale so it doesn't matter which channel
+                        }
+                    }
+                    double averageLuminosity = luminositySum / (1920.0 * 5 * 255);
+                   // Debug.WriteLine(averageLuminosity);
+                    if (averageLuminosity < 0.06)
+                    {
+                        Debug.WriteLine("You are not in a game. Did you pause?");
+                    }
+                    else
+                    {
+                        //Debug.Write
+                    }
+                    return false;
+                }
+            }
         }
 
         public override void Dispose()
