@@ -101,7 +101,11 @@ namespace LedDashboardCore
             RZKEY.RZKEY_RCTRL,
             RZKEY.RZKEY_LEFT,
             RZKEY.RZKEY_DOWN,
-            RZKEY.RZKEY_RIGHT
+            RZKEY.RZKEY_RIGHT,
+            RZKEY.RZKEY_MACRO1,
+            RZKEY.RZKEY_MACRO2,
+            RZKEY.RZKEY_MACRO3,
+            RZKEY.RZKEY_MACRO4
         };
 
         static RZKEY[] numPadKeys = new RZKEY[]
