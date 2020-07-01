@@ -25,6 +25,7 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="ar1st0crat.SciColorMaps.Portable" Version="1.0.2" />
+    <PackageReference Include="Chromely" Version="5.0.79" />
     <PackageReference Include="kadmium-sacn-core" Version="0.0.11" />
     <PackageReference Include="MouseKeyHook" Version="5.6.0" />
     <PackageReference Include="NAudio" Version="1.10.0" />
@@ -43,6 +44,18 @@
     <ProjectReference Include="..\RocketLeague\RocketLeague.csproj" />
   </ItemGroup>
   <ItemGroup>
+    <None Update="app\assets\icon.ico">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="app\assets\icon.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="app\chromely.html">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="app\lights.html">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Update="CChromaEditorLibrary64.dll">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>

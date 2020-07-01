@@ -1,4 +1,6 @@
-﻿using LedDashboardCore;
+﻿using Chromely.Core;
+using Chromely.Core.Configuration;
+using LedDashboardCore;
 using System;
 using System.Windows.Forms;
 
@@ -9,9 +11,16 @@ namespace LedDashboard
         [STAThread]
         static void Main(string[] args)
         {
-            KeyboardHook.Init();
-            Application.EnableVisualStyles();
-            Application.Run(new MainUI());
+            var config = DefaultConfiguration.CreateForRuntimePlatform();
+            config.WindowOptions.Title = "Firelight";
+            config.WindowOptions.RelativePathToIconFile = "app/assets/icon.ico";
+            config.StartUrl = "local://app/lights.html";
+            AppBuilder
+            .Create()
+            .UseApp<FirelightApp>()
+            .UseConfiguration<IChromelyConfiguration>(config)
+            .Build()
+            .Run(args);
         }
     }
 }
