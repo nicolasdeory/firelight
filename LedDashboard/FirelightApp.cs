@@ -1,5 +1,7 @@
 ﻿using Chromely;
 using Chromely.Core;
+using Chromely.Core.Host;
+using LedDashboard.CustomHandlers;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -11,7 +13,9 @@ namespace LedDashboard
         public override void Configure(IChromelyContainer container)
         {
             base.Configure(container);
-            // other container configuration can be placed here
+
+            // Custom handlers
+            container.RegisterSingleton(typeof(IChromelyNativeHost), typeof(IChromelyNativeHost).Name, typeof(CustomNativeWindow));
         }
     }
 }

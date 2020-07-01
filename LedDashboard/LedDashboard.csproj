@@ -56,6 +56,9 @@
     <None Update="app\lights.html">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Update="app\assets\style\style.css">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Update="CChromaEditorLibrary64.dll">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
@@ -71,5 +74,8 @@
     <None Update="SharpDX.DXGI.dll">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="app\assets\js\" />
   </ItemGroup>
 </Project>
