@@ -92,6 +92,15 @@
     <None Update="app\assets\icon.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Update="app\assets\img\keyboard.svg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="app\assets\js\jquery-3.5.1.min.js">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="app\assets\js\main.js">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Update="app\assets\style\fonts.css">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
@@ -119,8 +128,5 @@
     <None Update="SharpDX.DXGI.dll">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-  </ItemGroup>
-  <ItemGroup>
-    <Folder Include="app\assets\js\" />
   </ItemGroup>
 </Project>

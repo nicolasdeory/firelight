@@ -6,6 +6,8 @@
     <title>Firelight</title>
     <link rel="stylesheet" href="assets/style/fonts.css">
     <link rel="stylesheet" href="assets/style/style.css">
+    <script src="assets/js/jquery-3.5.1.min.js"></script>
+    <script src="assets/js/main.js"></script>
 </head>
 
 <body>
@@ -15,11 +17,475 @@
                 <img src="assets/icon.png" />
                 <span>Firelight</span>
             </div>
-            <div class="tab selected">Lights</div>
-            <div class="tab">Games</div>
-            <div class="tab">Settings</div>
+            <div class="tab selected" id="tab-lights">Lights</div>
+            <div class="tab" id="tab-games">Games</div>
+            <div class="tab" id="tab-settings">Settings</div>
         </div>
     </header>
+    <div class="lights-container">
+        <div class="keyboard-container">
+            <div class="light-title">Keyboard</div>
+            <svg xmlns="http://www.w3.org/2000/svg" width="519" height="158" viewBox="0 0 519 158">
+                <filter id="inset-shadow" width="200%" height="200%">
+                    <!-- Shadow Offset -->
+                    <feOffset dx="0" dy="0" />
+                    <!-- Shadow Blur -->
+                    <feGaussianBlur stdDeviation="3" result="offset-blur" />
+                    <!-- Invert the drop shadow to create an inner shadow -->
+                    <feComposite operator="out" in="SourceGraphic" result="inverse" />
+                    <!-- Color & Opacity -->
+                    <feFlood flood-color="black" flood-opacity=".75" result="color" />
+                    <!-- Clip color inside shadow -->
+                    <feComposite operator="in" in="color" in2="inverse" result="shadow" />
+                    <!-- Shadow Opacity -->
+                    <feComponentTransfer in="shadow" result="shadow">
+                        <feFuncA type="linear" slope="1" />
+                    </feComponentTransfer>
+                    <!-- Put shadow over original object -->
+                    <feComposite operator="over" in="shadow" in2="SourceGraphic"/>
+                </filter>
+                <g id="KEYBOARD_LAYOUT" data-name="KEYBOARD LAYOUT" transform="translate(-156 -216)">
+                    <g id="k0" transform="translate(165 229)" fill="rgba(255,255,255,0.05)" stroke="#646464" stroke-linejoin="round" stroke-width="1">
+                        <rect width="19" height="19" stroke="none" />
+                        <rect x="0.5" y="0.5" width="18" height="18" fill="none" />
+                    </g>
+                    <g id="k1" transform="translate(207 229)" fill="rgba(255,255,255,0.05)" stroke="#646464" stroke-linejoin="round" stroke-width="1">
+                        <rect width="19" height="19" stroke="none" />
+                        <rect x="0.5" y="0.5" width="18" height="18" fill="none" />
+                    </g>
+                    <g id="k2" transform="translate(228 229)" fill="rgba(255,255,255,0.05)" stroke="#646464" stroke-linejoin="round" stroke-width="1">
+                        <rect width="19" height="19" stroke="none" />
+                        <rect x="0.5" y="0.5" width="18" height="18" fill="none" />
+                    </g>
+                    <g id="k3" transform="translate(249 229)" fill="rgba(255,255,255,0.05)" stroke="#646464" stroke-linejoin="round" stroke-width="1">
+                        <rect width="19" height="19" stroke="none" />
+                        <rect x="0.5" y="0.5" width="18" height="18" fill="none" />
+                    </g>
+                    <g id="k4" transform="translate(270 229)" fill="rgba(255,255,255,0.05)" stroke="#646464" stroke-linejoin="round" stroke-width="1">
+                        <rect width="19" height="19" stroke="none" />
+                        <rect x="0.5" y="0.5" width="18" height="18" fill="none" />
+                    </g>
+                    <g id="k5" transform="translate(307 229)" fill="rgba(255,255,255,0.05)" stroke="#646464" stroke-linejoin="round" stroke-width="1">
+                        <rect width="19" height="19" stroke="none" />
+                        <rect x="0.5" y="0.5" width="18" height="18" fill="none" />
+                    </g>
+                    <g id="k6" transform="translate(328 229)" fill="rgba(255,255,255,0.05)" stroke="#646464" stroke-linejoin="round" stroke-width="1">
+                        <rect width="19" height="19" stroke="none" />
+                        <rect x="0.5" y="0.5" width="18" height="18" fill="none" />
+                    </g>
+                    <g id="k7" transform="translate(349 229)" fill="rgba(255,255,255,0.05)" stroke="#646464" stroke-linejoin="round" stroke-width="1">
+                        <rect width="19" height="19" stroke="none" />
+                        <rect x="0.5" y="0.5" width="18" height="18" fill="none" />
+                    </g>
+                    <g id="k8" transform="translate(370 229)" fill="rgba(255,255,255,0.05)" stroke="#646464" stroke-linejoin="round" stroke-width="1">
+                        <rect width="19" height="19" stroke="none" />
+                        <rect x="0.5" y="0.5" width="18" height="18" fill="none" />
+                    </g>
+                    <g id="k9" transform="translate(407 229)" fill="rgba(255,255,255,0.05)" stroke="#646464" stroke-linejoin="round" stroke-width="1">
+                        <rect width="19" height="19" stroke="none" />
+                        <rect x="0.5" y="0.5" width="18" height="18" fill="none" />
+                    </g>
+                    <g id="k10" transform="translate(428 229)" fill="rgba(255,255,255,0.05)" stroke="#646464" stroke-linejoin="round" stroke-width="1">
+                        <rect width="19" height="19" stroke="none" />
+                        <rect x="0.5" y="0.5" width="18" height="18" fill="none" />
+                    </g>
+                    <g id="k11" transform="translate(449 229)" fill="rgba(255,255,255,0.05)" stroke="#646464" stroke-linejoin="round" stroke-width="1">
+                        <rect width="19" height="19" stroke="none" />
+                        <rect x="0.5" y="0.5" width="18" height="18" fill="none" />
+                    </g>
+                    <g id="k12" transform="translate(470 229)" fill="rgba(255,255,255,0.05)" stroke="#646464" stroke-linejoin="round" stroke-width="1">
+                        <rect width="19" height="19" stroke="none" />
+                        <rect x="0.5" y="0.5" width="18" height="18" fill="none" />
+                    </g>
+                    <g id="k13" transform="translate(496 229)" fill="rgba(255,255,255,0.05)" stroke="#646464" stroke-linejoin="round" stroke-width="1">
+                        <rect width="20" height="19" stroke="none" />
+                        <rect x="0.5" y="0.5" width="19" height="18" fill="none" />
+                    </g>
+                    <g id="k14" transform="translate(519 229)" fill="rgba(255,255,255,0.05)" stroke="#646464" stroke-linejoin="round" stroke-width="1">
+                        <rect width="20" height="19" stroke="none" />
+                        <rect x="0.5" y="0.5" width="19" height="18" fill="none" />
+                    </g>
+                    <g id="k15" transform="translate(542 229)" fill="rgba(255,255,255,0.05)" stroke="#646464" stroke-linejoin="round" stroke-width="1">
+                        <rect width="19" height="19" stroke="none" />
+                        <rect x="0.5" y="0.5" width="18" height="18" fill="none" />
+                    </g>
+                    <g id="k30" transform="translate(496 256)" fill="rgba(255,255,255,0.05)" stroke="#646464" stroke-linejoin="round" stroke-width="1">
+                        <rect width="20" height="21" stroke="none" />
+                        <rect x="0.5" y="0.5" width="19" height="20" fill="none" />
+                    </g>
+                    <g id="k31" transform="translate(519 256)" fill="rgba(255,255,255,0.05)" stroke="#646464" stroke-linejoin="round" stroke-width="1">
+                        <rect width="20" height="21" stroke="none" />
+                        <rect x="0.5" y="0.5" width="19" height="20" fill="none" />
+                    </g>
+                    <g id="k32" transform="translate(542 256)" fill="rgba(255,255,255,0.05)" stroke="#646464" stroke-linejoin="round" stroke-width="1">
+                        <rect width="19" height="21" stroke="none" />
+                        <rect x="0.5" y="0.5" width="18" height="20" fill="none" />
+                    </g>
+                    <g id="k47" transform="translate(496 279)" fill="rgba(255,255,255,0.05)" stroke="#646464" stroke-linejoin="round" stroke-width="1">
+                        <rect width="20" height="20" stroke="none" />
+                        <rect x="0.5" y="0.5" width="19" height="19" fill="none" />
+                    </g>
+                    <g id="k48" transform="translate(519 279)" fill="rgba(255,255,255,0.05)" stroke="#646464" stroke-linejoin="round" stroke-width="1">
+                        <rect width="20" height="20" stroke="none" />
+                        <rect x="0.5" y="0.5" width="19" height="19" fill="none" />
+                    </g>
+                    <g id="k49" transform="translate(542 279)" fill="rgba(255,255,255,0.05)" stroke="#646464" stroke-linejoin="round" stroke-width="1">
+                        <rect width="19" height="20" stroke="none" />
+                        <rect x="0.5" y="0.5" width="18" height="19" fill="none" />
+                    </g>
+                    <g id="k85" transform="translate(496 341)" fill="rgba(255,255,255,0.05)" stroke="#646464" stroke-linejoin="round" stroke-width="1">
+                        <rect width="20" height="19" stroke="none" />
+                        <rect x="0.5" y="0.5" width="19" height="18" fill="none" />
+                    </g>
+                    <g id="k86" transform="translate(519 341)" fill="rgba(255,255,255,0.05)" stroke="#646464" stroke-linejoin="round" stroke-width="1">
+                        <rect width="20" height="19" stroke="none" />
+                        <rect x="0.5" y="0.5" width="19" height="18" fill="none" />
+                    </g>
+                    <g id="k87" transform="translate(542 341)" fill="rgba(255,255,255,0.05)" stroke="#646464" stroke-linejoin="round" stroke-width="1">
+                        <rect width="19" height="19" stroke="none" />
+                        <rect x="0.5" y="0.5" width="18" height="18" fill="none" />
+                    </g>
+                    <g id="k76" transform="translate(519 320)" fill="rgba(255,255,255,0.05)" stroke="#646464" stroke-linejoin="round" stroke-width="1">
+                        <rect width="20" height="19" stroke="none" />
+                        <rect x="0.5" y="0.5" width="19" height="18" fill="none" />
+                    </g>
+                    <g id="k92" transform="translate(570 256)" fill="rgba(255,255,255,0.05)" stroke="#646464" stroke-linejoin="round" stroke-width="1">
+                        <rect width="19" height="21" stroke="none" />
+                        <rect x="0.5" y="0.5" width="18" height="20" fill="none" />
+                    </g>
+                    <g id="k93" transform="translate(593 256)" fill="rgba(255,255,255,0.05)" stroke="#646464" stroke-linejoin="round" stroke-width="1">
+                        <rect width="19" height="21" stroke="none" />
+                        <rect x="0.5" y="0.5" width="18" height="20" fill="none" />
+                    </g>
+                    <g id="k94" transform="translate(616 256)" fill="rgba(255,255,255,0.05)" stroke="#646464" stroke-linejoin="round" stroke-width="1">
+                        <rect width="20" height="21" stroke="none" />
+                        <rect x="0.5" y="0.5" width="19" height="20" fill="none" />
+                    </g>
+                    <g id="k96" transform="translate(570 279)" fill="rgba(255,255,255,0.05)" stroke="#646464" stroke-linejoin="round" stroke-width="1">
+                        <rect width="19" height="20" stroke="none" />
+                        <rect x="0.5" y="0.5" width="18" height="19" fill="none" />
+                    </g>
+                    <g id="k97" transform="translate(593 279)" fill="rgba(255,255,255,0.05)" stroke="#646464" stroke-linejoin="round" stroke-width="1">
+                        <rect width="19" height="20" stroke="none" />
+                        <rect x="0.5" y="0.5" width="18" height="19" fill="none" />
+                    </g>
+                    <g id="k98" transform="translate(616 279)" fill="rgba(255,255,255,0.05)" stroke="#646464" stroke-linejoin="round" stroke-width="1">
+                        <rect width="20" height="20" stroke="none" />
+                        <rect x="0.5" y="0.5" width="19" height="19" fill="none" />
+                    </g>
+                    <g id="k100" transform="translate(570 301)" fill="rgba(255,255,255,0.05)" stroke="#646464" stroke-linejoin="round" stroke-width="1">
+                        <rect width="19" height="19" stroke="none" />
+                        <rect x="0.5" y="0.5" width="18" height="18" fill="none" />
+                    </g>
+                    <g id="k101" transform="translate(593 301)" fill="rgba(255,255,255,0.05)" stroke="#646464" stroke-linejoin="round" stroke-width="1">
+                        <rect width="19" height="19" stroke="none" />
+                        <rect x="0.5" y="0.5" width="18" height="18" fill="none" />
+                    </g>
+                    <g id="k102" transform="translate(616 301)" fill="rgba(255,255,255,0.05)" stroke="#646464" stroke-linejoin="round" stroke-width="1">
+                        <rect width="20" height="19" stroke="none" />
+                        <rect x="0.5" y="0.5" width="19" height="18" fill="none" />
+                    </g>
+                    <g id="k103" transform="translate(570 322)" fill="rgba(255,255,255,0.05)" stroke="#646464" stroke-linejoin="round" stroke-width="1">
+                        <rect width="19" height="19" stroke="none" />
+                        <rect x="0.5" y="0.5" width="18" height="18" fill="none" />
+                    </g>
+                    <g id="k104" transform="translate(593 322)" fill="rgba(255,255,255,0.05)" stroke="#646464" stroke-linejoin="round" stroke-width="1">
+                        <rect width="19" height="19" stroke="none" />
+                        <rect x="0.5" y="0.5" width="18" height="18" fill="none" />
+                    </g>
+                    <g id="k105" transform="translate(616 322)" fill="rgba(255,255,255,0.05)" stroke="#646464" stroke-linejoin="round" stroke-width="1">
+                        <rect width="20" height="19" stroke="none" />
+                        <rect x="0.5" y="0.5" width="19" height="18" fill="none" />
+                    </g>
+                    <g id="k95" transform="translate(640 256)" fill="rgba(255,255,255,0.05)" stroke="#646464" stroke-linejoin="round" stroke-width="1">
+                        <rect width="19" height="21" stroke="none" />
+                        <rect x="0.5" y="0.5" width="18" height="20" fill="none" />
+                    </g>
+                    <g id="k99" transform="translate(640 279)" fill="rgba(255,255,255,0.05)" stroke="#646464" stroke-linejoin="round" stroke-width="1">
+                        <rect width="19" height="41" stroke="none" />
+                        <rect x="0.5" y="0.5" width="18" height="40" fill="none" />
+                    </g>
+                    <g id="k106" transform="translate(640 322)" fill="rgba(255,255,255,0.05)" stroke="#646464" stroke-linejoin="round" stroke-width="1">
+                        <rect width="19" height="42" stroke="none" />
+                        <rect x="0.5" y="0.5" width="18" height="41" fill="none" />
+                    </g>
+                    <g id="k108" transform="translate(616 345)" fill="rgba(255,255,255,0.05)" stroke="#646464" stroke-linejoin="round" stroke-width="1">
+                        <rect width="20" height="19" stroke="none" />
+                        <rect x="0.5" y="0.5" width="19" height="18" fill="none" />
+                    </g>
+                    <g id="k107" transform="translate(570 345)" fill="rgba(255,255,255,0.05)" stroke="#646464" stroke-linejoin="round" stroke-width="1">
+                        <rect width="42" height="19" stroke="none" />
+                        <rect x="0.5" y="0.5" width="41" height="18" fill="none" />
+                    </g>
+                    <g id="k16" transform="translate(165 257)" fill="rgba(255,255,255,0.05)" stroke="#646464" stroke-linejoin="round" stroke-width="1">
+                        <rect width="19" height="19" stroke="none" />
+                        <rect x="0.5" y="0.5" width="18" height="18" fill="none" />
+                    </g>
+                    <g id="k17" transform="translate(186 257)" fill="rgba(255,255,255,0.05)" stroke="#646464" stroke-linejoin="round" stroke-width="1">
+                        <rect width="19" height="19" stroke="none" />
+                        <rect x="0.5" y="0.5" width="18" height="18" fill="none" />
+                    </g>
+                    <g id="k18" transform="translate(207 257)" fill="rgba(255,255,255,0.05)" stroke="#646464" stroke-linejoin="round" stroke-width="1">
+                        <rect width="20" height="19" stroke="none" />
+                        <rect x="0.5" y="0.5" width="19" height="18" fill="none" />
+                    </g>
+                    <g id="k19" transform="translate(229 257)" fill="rgba(255,255,255,0.05)" stroke="#646464" stroke-linejoin="round" stroke-width="1">
+                        <rect width="19" height="19" stroke="none" />
+                        <rect x="0.5" y="0.5" width="18" height="18" fill="none" />
+                    </g>
+                    <g id="k20" transform="translate(250 257)" fill="rgba(255,255,255,0.05)" stroke="#646464" stroke-linejoin="round" stroke-width="1">
+                        <rect width="19" height="19" stroke="none" />
+                        <rect x="0.5" y="0.5" width="18" height="18" fill="none" />
+                    </g>
+                    <g id="k21" transform="translate(271 257)" fill="rgba(255,255,255,0.05)" stroke="#646464" stroke-linejoin="round" stroke-width="1">
+                        <rect width="19" height="19" stroke="none" />
+                        <rect x="0.5" y="0.5" width="18" height="18" fill="none" />
+                    </g>
+                    <g id="k22" transform="translate(292 257)" fill="rgba(255,255,255,0.05)" stroke="#646464" stroke-linejoin="round" stroke-width="1">
+                        <rect width="20" height="19" stroke="none" />
+                        <rect x="0.5" y="0.5" width="19" height="18" fill="none" />
+                    </g>
+                    <g id="k23" transform="translate(314 257)" fill="rgba(255,255,255,0.05)" stroke="#646464" stroke-linejoin="round" stroke-width="1">
+                        <rect width="19" height="19" stroke="none" />
+                        <rect x="0.5" y="0.5" width="18" height="18" fill="none" />
+                    </g>
+                    <g id="k24" transform="translate(335 257)" fill="rgba(255,255,255,0.05)" stroke="#646464" stroke-linejoin="round" stroke-width="1">
+                        <rect width="19" height="19" stroke="none" />
+                        <rect x="0.5" y="0.5" width="18" height="18" fill="none" />
+                    </g>
+                    <g id="k25" transform="translate(356 257)" fill="rgba(255,255,255,0.05)" stroke="#646464" stroke-linejoin="round" stroke-width="1">
+                        <rect width="19" height="19" stroke="none" />
+                        <rect x="0.5" y="0.5" width="18" height="18" fill="none" />
+                    </g>
+                    <g id="k26" transform="translate(377 257)" fill="rgba(255,255,255,0.05)" stroke="#646464" stroke-linejoin="round" stroke-width="1">
+                        <rect width="20" height="19" stroke="none" />
+                        <rect x="0.5" y="0.5" width="19" height="18" fill="none" />
+                    </g>
+                    <g id="k27" transform="translate(399 257)" fill="rgba(255,255,255,0.05)" stroke="#646464" stroke-linejoin="round" stroke-width="1">
+                        <rect width="19" height="19" stroke="none" />
+                        <rect x="0.5" y="0.5" width="18" height="18" fill="none" />
+                    </g>
+                    <g id="k28" transform="translate(420 257)" fill="rgba(255,255,255,0.05)" stroke="#646464" stroke-linejoin="round" stroke-width="1">
+                        <rect width="19" height="19" stroke="none" />
+                        <rect x="0.5" y="0.5" width="18" height="18" fill="none" />
+                    </g>
+                    <g id="k29" transform="translate(441 257)" fill="rgba(255,255,255,0.05)" stroke="#646464" stroke-linejoin="round" stroke-width="1">
+                        <rect width="48" height="19" stroke="none" />
+                        <rect x="0.5" y="0.5" width="47" height="18" fill="none" />
+                    </g>
+                    <g id="k33" transform="translate(165 278)" fill="rgba(255,255,255,0.05)" stroke="#646464" stroke-linejoin="round" stroke-width="1">
+                        <rect width="31" height="19" stroke="none" />
+                        <rect x="0.5" y="0.5" width="30" height="18" fill="none" />
+                    </g>
+                    <g id="k34" transform="translate(198 278)" fill="rgba(255,255,255,0.05)" stroke="#646464" stroke-linejoin="round" stroke-width="1">
+                        <rect width="19" height="19" stroke="none" />
+                        <rect x="0.5" y="0.5" width="18" height="18" fill="none" />
+                    </g>
+                    <g id="k35" transform="translate(219 278)" fill="rgba(255,255,255,0.05)" stroke="#646464" stroke-linejoin="round" stroke-width="1">
+                        <rect width="19" height="19" stroke="none" />
+                        <rect x="0.5" y="0.5" width="18" height="18" fill="none" />
+                    </g>
+                    <g id="k36" transform="translate(240 278)" fill="rgba(255,255,255,0.05)" stroke="#646464" stroke-linejoin="round" stroke-width="1">
+                        <rect width="19" height="19" stroke="none" />
+                        <rect x="0.5" y="0.5" width="18" height="18" fill="none" />
+                    </g>
+                    <g id="k37" transform="translate(261 278)" fill="rgba(255,255,255,0.05)" stroke="#646464" stroke-linejoin="round" stroke-width="1">
+                        <rect width="19" height="19" stroke="none" />
+                        <rect x="0.5" y="0.5" width="18" height="18" fill="none" />
+                    </g>
+                    <g id="k38" transform="translate(282 278)" fill="rgba(255,255,255,0.05)" stroke="#646464" stroke-linejoin="round" stroke-width="1">
+                        <rect width="19" height="19" stroke="none" />
+                        <rect x="0.5" y="0.5" width="18" height="18" fill="none" />
+                    </g>
+                    <g id="k39" transform="translate(303 278)" fill="rgba(255,255,255,0.05)" stroke="#646464" stroke-linejoin="round" stroke-width="1">
+                        <rect width="19" height="19" stroke="none" />
+                        <rect x="0.5" y="0.5" width="18" height="18" fill="none" />
+                    </g>
+                    <g id="k40" transform="translate(324 278)" fill="rgba(255,255,255,0.05)" stroke="#646464" stroke-linejoin="round" stroke-width="1">
+                        <rect width="19" height="19" stroke="none" />
+                        <rect x="0.5" y="0.5" width="18" height="18" fill="none" />
+                    </g>
+                    <g id="k41" transform="translate(345 278)" fill="rgba(255,255,255,0.05)" stroke="#646464" stroke-linejoin="round" stroke-width="1">
+                        <rect width="19" height="19" stroke="none" />
+                        <rect x="0.5" y="0.5" width="18" height="18" fill="none" />
+                    </g>
+                    <g id="k42" transform="translate(366 278)" fill="rgba(255,255,255,0.05)" stroke="#646464" stroke-linejoin="round" stroke-width="1">
+                        <rect width="19" height="19" stroke="none" />
+                        <rect x="0.5" y="0.5" width="18" height="18" fill="none" />
+                    </g>
+                    <g id="k43" transform="translate(387 278)" fill="rgba(255,255,255,0.05)" stroke="#646464" stroke-linejoin="round" stroke-width="1">
+                        <rect width="19" height="19" stroke="none" />
+                        <rect x="0.5" y="0.5" width="18" height="18" fill="none" />
+                    </g>
+                    <g id="k44" transform="translate(408 278)" fill="rgba(255,255,255,0.05)" stroke="#646464" stroke-linejoin="round" stroke-width="1">
+                        <rect width="19" height="19" stroke="none" />
+                        <rect x="0.5" y="0.5" width="18" height="18" fill="none" />
+                    </g>
+                    <g id="k45" transform="translate(429 278)" fill="rgba(255,255,255,0.05)" stroke="#646464" stroke-linejoin="round" stroke-width="1">
+                        <rect width="19" height="19" stroke="none" />
+                        <rect x="0.5" y="0.5" width="18" height="18" fill="none" />
+                    </g>
+                    <g id="k46" transform="translate(450 278)" fill="rgba(255,255,255,0.05)" stroke="#646464" stroke-linejoin="round" stroke-width="1">
+                        <rect width="39" height="19" stroke="none" />
+                        <rect x="0.5" y="0.5" width="38" height="18" fill="none" />
+                    </g>
+                    <g id="k50" transform="translate(165 299)" fill="rgba(255,255,255,0.05)" stroke="#646464" stroke-linejoin="round" stroke-width="1">
+                        <rect width="36" height="19" stroke="none" />
+                        <rect x="0.5" y="0.5" width="35" height="18" fill="none" />
+                    </g>
+                    <g id="k51" transform="translate(203 299)" fill="rgba(255,255,255,0.05)" stroke="#646464" stroke-linejoin="round" stroke-width="1">
+                        <rect width="19" height="19" stroke="none" />
+                        <rect x="0.5" y="0.5" width="18" height="18" fill="none" />
+                    </g>
+                    <g id="k52" transform="translate(224 299)" fill="rgba(255,255,255,0.05)" stroke="#646464" stroke-linejoin="round" stroke-width="1">
+                        <rect width="19" height="19" stroke="none" />
+                        <rect x="0.5" y="0.5" width="18" height="18" fill="none" />
+                    </g>
+                    <g id="k53" transform="translate(245 299)" fill="rgba(255,255,255,0.05)" stroke="#646464" stroke-linejoin="round" stroke-width="1">
+                        <rect width="19" height="19" stroke="none" />
+                        <rect x="0.5" y="0.5" width="18" height="18" fill="none" />
+                    </g>
+                    <g id="k54" transform="translate(266 299)" fill="rgba(255,255,255,0.05)" stroke="#646464" stroke-linejoin="round" stroke-width="1">
+                        <rect width="19" height="19" stroke="none" />
+                        <rect x="0.5" y="0.5" width="18" height="18" fill="none" />
+                    </g>
+                    <g id="k55" transform="translate(287 299)" fill="rgba(255,255,255,0.05)" stroke="#646464" stroke-linejoin="round" stroke-width="1">
+                        <rect width="19" height="19" stroke="none" />
+                        <rect x="0.5" y="0.5" width="18" height="18" fill="none" />
+                    </g>
+                    <g id="k56" transform="translate(308 299)" fill="rgba(255,255,255,0.05)" stroke="#646464" stroke-linejoin="round" stroke-width="1">
+                        <rect width="19" height="19" stroke="none" />
+                        <rect x="0.5" y="0.5" width="18" height="18" fill="none" />
+                    </g>
+                    <g id="k57" transform="translate(329 299)" fill="rgba(255,255,255,0.05)" stroke="#646464" stroke-linejoin="round" stroke-width="1">
+                        <rect width="19" height="19" stroke="none" />
+                        <rect x="0.5" y="0.5" width="18" height="18" fill="none" />
+                    </g>
+                    <g id="k58" transform="translate(350 299)" fill="rgba(255,255,255,0.05)" stroke="#646464" stroke-linejoin="round" stroke-width="1">
+                        <rect width="19" height="19" stroke="none" />
+                        <rect x="0.5" y="0.5" width="18" height="18" fill="none" />
+                    </g>
+                    <g id="k59" transform="translate(371 299)" fill="rgba(255,255,255,0.05)" stroke="#646464" stroke-linejoin="round" stroke-width="1">
+                        <rect width="19" height="19" stroke="none" />
+                        <rect x="0.5" y="0.5" width="18" height="18" fill="none" />
+                    </g>
+                    <g id="k60" transform="translate(392 299)" fill="rgba(255,255,255,0.05)" stroke="#646464" stroke-linejoin="round" stroke-width="1">
+                        <rect width="19" height="19" stroke="none" />
+                        <rect x="0.5" y="0.5" width="18" height="18" fill="none" />
+                    </g>
+                    <g id="k61" transform="translate(413 299)" fill="rgba(255,255,255,0.05)" stroke="#646464" stroke-linejoin="round" stroke-width="1">
+                        <rect width="19" height="19" stroke="none" />
+                        <rect x="0.5" y="0.5" width="18" height="18" fill="none" />
+                    </g>
+                    <g id="k46-1" transform="translate(434 299)" fill="rgba(255,255,255,0.05)" stroke="#646464" stroke-linejoin="round" stroke-width="1">
+                        <rect width="55" height="19" stroke="none" />
+                        <rect x="0.5" y="0.5" width="54" height="18" fill="none" />
+                    </g>
+                    <g id="k63" transform="translate(165 320)" fill="rgba(255,255,255,0.05)" stroke="#646464" stroke-linejoin="round" stroke-width="1">
+                        <rect width="50" height="19" stroke="none" />
+                        <rect x="0.5" y="0.5" width="49" height="18" fill="none" />
+                    </g>
+                    <g id="k64" transform="translate(217 320)" fill="rgba(255,255,255,0.05)" stroke="#646464" stroke-linejoin="round" stroke-width="1">
+                        <rect width="19" height="19" stroke="none" />
+                        <rect x="0.5" y="0.5" width="18" height="18" fill="none" />
+                    </g>
+                    <g id="k66" transform="translate(238 320)" fill="rgba(255,255,255,0.05)" stroke="#646464" stroke-linejoin="round" stroke-width="1">
+                        <rect width="19" height="19" stroke="none" />
+                        <rect x="0.5" y="0.5" width="18" height="18" fill="none" />
+                    </g>
+                    <g id="k67" transform="translate(259 320)" fill="rgba(255,255,255,0.05)" stroke="#646464" stroke-linejoin="round" stroke-width="1">
+                        <rect width="19" height="19" stroke="none" />
+                        <rect x="0.5" y="0.5" width="18" height="18" fill="none" />
+                    </g>
+                    <g id="k68" transform="translate(280 320)" fill="rgba(255,255,255,0.05)" stroke="#646464" stroke-linejoin="round" stroke-width="1">
+                        <rect width="19" height="19" stroke="none" />
+                        <rect x="0.5" y="0.5" width="18" height="18" fill="none" />
+                    </g>
+                    <g id="k69" transform="translate(301 320)" fill="rgba(255,255,255,0.05)" stroke="#646464" stroke-linejoin="round" stroke-width="1">
+                        <rect width="19" height="19" stroke="none" />
+                        <rect x="0.5" y="0.5" width="18" height="18" fill="none" />
+                    </g>
+                    <g id="k70" transform="translate(322 320)" fill="rgba(255,255,255,0.05)" stroke="#646464" stroke-linejoin="round" stroke-width="1">
+                        <rect width="19" height="19" stroke="none" />
+                        <rect x="0.5" y="0.5" width="18" height="18" fill="none" />
+                    </g>
+                    <g id="k71" transform="translate(343 320)" fill="rgba(255,255,255,0.05)" stroke="#646464" stroke-linejoin="round" stroke-width="1">
+                        <rect width="19" height="19" stroke="none" />
+                        <rect x="0.5" y="0.5" width="18" height="18" fill="none" />
+                    </g>
+                    <g id="k72" transform="translate(364 320)" fill="rgba(255,255,255,0.05)" stroke="#646464" stroke-linejoin="round" stroke-width="1">
+                        <rect width="19" height="19" stroke="none" />
+                        <rect x="0.5" y="0.5" width="18" height="18" fill="none" />
+                    </g>
+                    <g id="k73" transform="translate(385 320)" fill="rgba(255,255,255,0.05)" stroke="#646464" stroke-linejoin="round" stroke-width="1">
+                        <rect width="19" height="19" stroke="none" />
+                        <rect x="0.5" y="0.5" width="18" height="18" fill="none" />
+                    </g>
+                    <g id="k74" transform="translate(406 320)" fill="rgba(255,255,255,0.05)" stroke="#646464" stroke-linejoin="round" stroke-width="1">
+                        <rect width="19" height="19" stroke="none" />
+                        <rect x="0.5" y="0.5" width="18" height="18" fill="none" />
+                    </g>
+                    <g id="k75" transform="translate(427 320)" fill="rgba(255,255,255,0.05)" stroke="#646464" stroke-linejoin="round" stroke-width="1">
+                        <rect width="62" height="19" stroke="none" />
+                        <rect x="0.5" y="0.5" width="61" height="18" fill="none" />
+                    </g>
+                    <g id="k77" transform="translate(165 341)" fill="rgba(255,255,255,0.05)" stroke="#646464" stroke-linejoin="round" stroke-width="1">
+                        <rect width="31" height="19" stroke="none" />
+                        <rect x="0.5" y="0.5" width="30" height="18" fill="none" />
+                    </g>
+                    <g id="k78" transform="translate(198 341)" fill="rgba(255,255,255,0.05)" stroke="#646464" stroke-linejoin="round" stroke-width="1">
+                        <rect width="19" height="19" stroke="none" />
+                        <rect x="0.5" y="0.5" width="18" height="18" fill="none" />
+                    </g>
+                    <g id="k79" transform="translate(219 341)" fill="rgba(255,255,255,0.05)" stroke="#646464" stroke-linejoin="round" stroke-width="1">
+                        <rect width="31" height="19" stroke="none" />
+                        <rect x="0.5" y="0.5" width="30" height="18" fill="none" />
+                    </g>
+                    <g id="k80" transform="translate(252 341)" fill="rgba(255,255,255,0.05)" stroke="#646464" stroke-linejoin="round" stroke-width="1">
+                        <rect width="129" height="19" stroke="none" />
+                        <rect x="0.5" y="0.5" width="128" height="18" fill="none" />
+                    </g>
+                    <g id="k81" transform="translate(383 341)" fill="rgba(255,255,255,0.05)" stroke="#646464" stroke-linejoin="round" stroke-width="1">
+                        <rect width="31" height="19" stroke="none" />
+                        <rect x="0.5" y="0.5" width="30" height="18" fill="none" />
+                    </g>
+                    <g id="k82" transform="translate(416 341)" fill="rgba(255,255,255,0.05)" stroke="#646464" stroke-linejoin="round" stroke-width="1">
+                        <rect width="19" height="19" stroke="none" />
+                        <rect x="0.5" y="0.5" width="18" height="18" fill="none" />
+                    </g>
+                    <g id="k83" transform="translate(437 341)" fill="rgba(255,255,255,0.05)" stroke="#646464" stroke-linejoin="round" stroke-width="1">
+                        <rect width="19" height="19" stroke="none" />
+                        <rect x="0.5" y="0.5" width="18" height="18" fill="none" />
+                    </g>
+                    <g id="k84" transform="translate(458 341)" fill="rgba(255,255,255,0.05)" stroke="#646464" stroke-linejoin="round" stroke-width="1">
+                        <rect width="31" height="19" stroke="none" />
+                        <rect x="0.5" y="0.5" width="30" height="18" fill="none" />
+                    </g>
+                    <g id="k88" transform="translate(570 229)" fill="rgba(255,255,255,0.05)" stroke="#646464" stroke-width="1">
+                        <circle cx="10" cy="10" r="10" stroke="none" />
+                        <circle cx="10" cy="10" r="9.5" fill="none" />
+                    </g>
+                    <g id="k89" transform="translate(592 229)" fill="rgba(255,255,255,0.05)" stroke="#646464" stroke-width="1">
+                        <circle cx="10" cy="10" r="10" stroke="none" />
+                        <circle cx="10" cy="10" r="9.5" fill="none" />
+                    </g>
+                    <g id="k90" transform="translate(614 229)" fill="rgba(255,255,255,0.05)" stroke="#646464" stroke-width="1">
+                        <circle cx="10" cy="10" r="10" stroke="none" />
+                        <circle cx="10" cy="10" r="9.5" fill="none" />
+                    </g>
+                    <g id="k91" transform="translate(637 223)" fill="rgba(255,255,255,0.05)" stroke="#646464" stroke-width="1">
+                        <circle cx="15" cy="15" r="15" stroke="none" />
+                        <circle cx="15" cy="15" r="14.5" fill="none" />
+                    </g>
+                    <g id="rectangleOutside" transform="translate(156 216)" fill="none" stroke="#707070" stroke-width="1">
+                        <rect width="519" height="158" stroke="none" />
+                        <rect x="0.5" y="0.5" width="518" height="157" fill="none" />
+                    </g>
+                </g>
+            </svg>
+
+        </div>
+    </div>
 </body>
 
 </html>

@@ -13,6 +13,7 @@ body {
     flex-direction: row;
     background-color: #333;
     height: 70px;
+    user-select: none;
     align-items: center;
 }
 
@@ -44,8 +45,11 @@ body {
     justify-content: center;
     align-items: center;
     user-select: none;
+    transition: 0.1s;
+}
+
+.tab:not(.selected) {
     cursor: pointer;
-    transition: 0.2s;
 }
 
 .tab:hover {
@@ -54,5 +58,18 @@ body {
 
 .tab.selected {
     color: #FFE14D;
+    transition: none;
     background-color: #222;
+}
+
+.lights-container {
+    padding: 50px;
+}
+
+.light-title {
+    color: #4A4A4A;
+    text-transform: uppercase;
+    font-size: 14pt;
+    margin-bottom: 15px;
+    letter-spacing: 2px;
 }
