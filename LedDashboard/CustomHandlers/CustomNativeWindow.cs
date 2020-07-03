@@ -15,7 +15,7 @@ namespace LedDashboard.CustomHandlers
         public Point ptMaxTrackSize;
     }
 
-    public class CustomNativeWindow : FramelessWinAPIHost
+    public class CustomNativeWindow : WinAPIHost
     {
         protected override IntPtr WndProc(IntPtr hWnd, uint message, IntPtr wParam, IntPtr lParam)
         {

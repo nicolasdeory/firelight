@@ -17,14 +17,14 @@ namespace LedDashboard
             var config = DefaultConfiguration.CreateForRuntimePlatform();
             config.WindowOptions.Title = "Firelight";
             config.WindowOptions.RelativePathToIconFile = "app/assets/icon.ico";
-            config.WindowOptions.WindowFrameless = true;
-            config.StartUrl = "local://app/lights.html";
+            //config.WindowOptions.WindowFrameless = true;
+            config.StartUrl = "local://app/main.html";
 #if RELEASE
             config.DebuggingMode = false;
 #endif
             config.WindowOptions.Size = new WindowSize(1200, 700);
             config.WindowOptions.StartCentered = true;
-            config.WindowOptions.DisableResizing = true;
+           // config.WindowOptions.DisableResizing = true;
           //  config.WindowOptions.FramelessOption = FramelessOption
 
             // Chromely initialization

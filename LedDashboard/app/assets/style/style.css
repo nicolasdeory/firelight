@@ -1,7 +1,58 @@
 * {
     box-sizing: border-box;
+    font-family: 'Open Sans';
+    color: white;
 }
 body {
     margin: 0;
+    background-color: #222;
+}
+
+.header-container {
+    display: flex;
+    flex-direction: row;
+    background-color: #333;
+    height: 70px;
+    align-items: center;
+}
+
+.logo-container {
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    padding: 20px 40px;
+    height: 100%;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    font-weight: 300;
+    letter-spacing: 5px;
+}
+
+.logo-container img {
+    height: 35px;
+    margin-right: 20px
+}
+
+.tab {
+    padding: 20px 40px;
+    height: 100%;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    user-select: none;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.tab:hover {
+    background-color: #2a2a2a;
+}
+
+.tab.selected {
+    color: #FFE14D;
     background-color: #222;
 }

@@ -44,16 +44,61 @@
     <ProjectReference Include="..\RocketLeague\RocketLeague.csproj" />
   </ItemGroup>
   <ItemGroup>
+    <None Update="app\assets\fonts\opensans-bold-webfont.woff">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="app\assets\fonts\opensans-bold-webfont.woff2">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="app\assets\fonts\opensans-extrabold-webfont.woff">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="app\assets\fonts\opensans-extrabold-webfont.woff2">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="app\assets\fonts\opensans-italic-webfont.woff">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="app\assets\fonts\opensans-italic-webfont.woff2">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="app\assets\fonts\opensans-light-webfont.woff">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="app\assets\fonts\opensans-light-webfont.woff2">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="app\assets\fonts\opensans-regular-webfont.woff">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="app\assets\fonts\opensans-regular-webfont.woff2">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="app\assets\fonts\opensans-semibold-webfont.woff">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="app\assets\fonts\opensans-semibold-webfont.woff2">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="app\assets\fonts\opensans-semibolditalic-webfont.woff">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="app\assets\fonts\opensans-semibolditalic-webfont.woff2">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Update="app\assets\icon.ico">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Update="app\assets\icon.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Update="app\assets\style\fonts.css">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Update="app\chromely.html">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="app\lights.html">
+    <None Update="app\main.html">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Update="app\assets\style\style.css">
