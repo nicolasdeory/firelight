@@ -17,6 +17,7 @@ $(document).ready(() =>
             return;
         $(".tab").removeClass("selected");
         $(this).addClass("selected");
+        window.location.href = "lights.html";
     });
 
     $("#tab-games").click(function ()
@@ -25,6 +26,7 @@ $(document).ready(() =>
             return;
         $(".tab").removeClass("selected");
         $(this).addClass("selected");
+        window.location.href = "games.html";
     });
 
     $("#tab-settings").click(function ()
@@ -33,12 +35,7 @@ $(document).ready(() =>
             return;
         $(".tab").removeClass("selected");
         $(this).addClass("selected");
+        window.location.href = "settings.html";
     });
-
-    let i = 0;
-    setInterval(() => {
-        setKeyboardColor(i % 109, "#fff");
-        i++;
-    }, 500);
 
 });

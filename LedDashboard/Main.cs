@@ -18,7 +18,7 @@ namespace LedDashboard
             config.WindowOptions.Title = "Firelight";
             config.WindowOptions.RelativePathToIconFile = "app/assets/icon.ico";
             //config.WindowOptions.WindowFrameless = true;
-            config.StartUrl = "local://app/main.html";
+            config.StartUrl = "local://app/lights.html";
 #if RELEASE
             config.DebuggingMode = false;
 #endif
