@@ -89,3 +89,26 @@ body {
     margin-right: 90px;
 }
 
+.section-header {
+    background-color: #2B2B2B;
+    width: 100%;
+    height: 120px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    border-bottom: solid 1px #303030;
+    padding: 0 45px;
+    
+}
+
+.section-header h3 {
+    font-weight: bold;
+    margin: 0;
+    font-size: 16pt;
+}
+
+.section-header h4 {
+    margin: 8px 0;
+    font-weight: normal;
+    font-size: 14pt;
+}
