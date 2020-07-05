@@ -64,6 +64,8 @@ body {
 
 .lights-container {
     padding: 50px;
+    display: flex;
+    flex-wrap: wrap;
 }
 
 .light-title {
@@ -73,3 +75,17 @@ body {
     margin-bottom: 15px;
     letter-spacing: 2px;
 }
+
+#ledstrip-container {
+    margin-right: 100vw;
+}
+
+.lighting-container {
+    margin-bottom: 35px;
+    margin-right: 64px;
+}
+
+#keyboard-container {
+    margin-right: 90px;
+}
+
