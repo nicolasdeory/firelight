@@ -3,6 +3,11 @@
     font-family: 'Open Sans';
     color: white;
 }
+
+h1,h2,h3,h4 {
+    font-family: 'Open Sans';
+}
+
 body {
     margin: 0;
     background-color: #222;
@@ -28,6 +33,7 @@ body {
     align-items: center;
     font-weight: 300;
     letter-spacing: 5px;
+    font-size: 16px;
 }
 
 .logo-container img {
@@ -46,6 +52,7 @@ body {
     align-items: center;
     user-select: none;
     transition: 0.1s;
+    font-size: 13pt;
 }
 
 .tab:not(.selected) {
@@ -108,7 +115,55 @@ body {
 }
 
 .section-header h4 {
-    margin: 8px 0;
+    margin: 0;
     font-weight: normal;
     font-size: 14pt;
+}
+
+.sidebar {
+    width: 250px;
+    height: calc(100vh - 190px);
+    position: fixed;
+    bottom: 0;
+    background-color: #343434;
+}
+
+.sidebar-button {
+    width: 100%;
+    height: 60px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-transform: uppercase;
+    font-size: 13pt;
+    font-weight: 600;
+    letter-spacing: 2px;
+    user-select: none;
+    cursor: pointer;
+}
+
+.sidebar-button:hover {
+    background-color: #2a2a2a;
+}
+
+.sidebar-button.selected {
+    background-color: #222;
+    color: #FFE14D;
+}
+
+.sidebar-button.big {
+    height: 120px;
+}
+
+.game-logo {
+    width: 100%;
+    padding: 50px;
+}
+
+.game-logo.bigger {
+    transform: scale(1.1);
+}
+
+.sidebar-button.selected > .game-logo {
+    filter: brightness(1) sepia(1) saturate(10000%) hue-rotate(-20deg);
 }

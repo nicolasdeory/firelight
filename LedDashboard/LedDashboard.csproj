@@ -92,6 +92,12 @@
     <None Update="app\assets\icon.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Update="app\assets\img\gamelogos\leagueoflegends.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="app\assets\img\gamelogos\rocketleague.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Update="app\assets\img\keyboard.svg">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
@@ -101,7 +107,13 @@
     <None Update="app\assets\js\main.js">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Update="app\assets\js\material.min.js">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Update="app\assets\style\fonts.css">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="app\assets\style\material.min.css">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Update="app\chromely.html">
