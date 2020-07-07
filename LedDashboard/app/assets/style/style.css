@@ -202,6 +202,10 @@ body {
     margin-bottom: 20px;
 }
 
+.setting-container {
+    margin-bottom: 20px;
+}
+
 .setting-title {
     display: flex;
     flex-direction: row;
@@ -216,6 +220,14 @@ body {
     -webkit-text-stroke: 0.2px;
     -webkit-text-stroke-color: #fff;
 }
+
+.setting-subtitle {
+    color: #7B7B7B;
+    font-size: 11pt;
+    margin-left: 15px;
+    user-select: none;
+}
+
 
 /* MATERIAL SWITCH */
 
@@ -285,7 +297,7 @@ body {
 
 .setting-section {
     position: relative;
-    margin: 20px 0;
+    margin-bottom: 20px;
 }
 
 .setting-section-header {
