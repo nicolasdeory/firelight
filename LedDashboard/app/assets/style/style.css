@@ -338,10 +338,13 @@ body {
     color: #222;
 }
 
+.multi-choice input[type=radio]:not(:checked) + .mdl-button {
+    box-shadow: none;
+}
+
 .multi-choice input[type=radio] + .mdl-button {
     background-color: rgba(255, 255, 255, 0.12);
     color: rgba(255, 255, 255, 0.25);
-    box-shadow: none;
 }
 
 .multi-choice :first-child .mdl-button {
