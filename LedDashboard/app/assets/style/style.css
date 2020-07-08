@@ -313,3 +313,45 @@ body {
     top: -0.5px;
     left: -33px;
 }
+
+/* RADIO */
+
+.mdl-button {
+    user-select: none;
+}
+
+.multi-choice input {
+    display: none;
+}
+
+.multi-choice {
+    display: flex;
+    flex-direction: row;
+}
+
+.multi-choice :not(:first-child) {
+    margin-left: 0.5px;
+}
+
+.multi-choice input[type=radio]:checked + .mdl-button {
+    background-color: #FFE14D;
+    color: #222;
+}
+
+.multi-choice input[type=radio] + .mdl-button {
+    background-color: rgba(255, 255, 255, 0.12);
+    color: rgba(255, 255, 255, 0.25);
+    box-shadow: none;
+}
+
+.multi-choice :first-child .mdl-button {
+    border-radius: 2px 0 0 2px;
+}
+
+.multi-choice :not(:first-child):not(:last-child) .mdl-button {
+    border-radius: 0;
+}
+
+.multi-choice :last-child .mdl-button {
+    border-radius: 0 2px 2px 0;
+}
