@@ -58,52 +58,235 @@
                 </svg>
             </div>
             <div class="setting-section-header">General Settings</div>
+            <div class="setting-container">
+                <div class="setting-title">
+                    <h3>Reduced animations</h3>
+                    <div class="switch">
+                        <input type="checkbox" id="switch2" class="switch__input" checked>
+                        <label for="switch2" class="switch__label"></label>
+                    </div>
+                </div>
+                <div class="setting-subtitle">Less seizure-inducing animations. Especially useful for reducing LED Strip animations</div>
+            </div>
+            <div class="setting-container">
+                <div class="setting-title">
+                    <h3>Loading animation</h3>
+                    <div class="switch">
+                        <input type="checkbox" id="switch3" class="switch__input" checked>
+                        <label for="switch3" class="switch__label"></label>
+                    </div>
+                </div>
+                <div class="setting-subtitle">Plays a pulsing animation when the game is loading</div>
+            </div>
+            <div class="setting-container">
+                <div class="setting-title">
+                    <h3>Default Cast Mode</h3>
+                    <div class="multi-choice">
+                        <label class="choice-label">
+                            <input type="radio" name="default-cast-mode" checked value="1">
+                            <span class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent">
+                                Normal
+                            </span>
+                        </label>
+                        <label class="choice-label">
+                            <input type="radio" name="default-cast-mode" value="2">
+                            <span class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent">
+                                Quick Cast
+                            </span>
+                        </label>
+                        <label class="choice-label">
+                            <input type="radio" name="default-cast-mode" value="3">
+                            <span class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent">
+                                Smart Cast
+                            </span>
+                        </label>
+                    </div>
+                </div>
+                <div class="setting-subtitle">For all champions by default (unless overridden)</div>
+            </div>
         </div>
-        <div class="setting-container">
-            <div class="setting-title">
-                <h3>Reduced animations</h3>
-                <div class="switch">
-                    <input type="checkbox" id="switch2" class="switch__input" checked>
-                    <label for="switch2" class="switch__label"></label>
+        <div class="setting-section">
+            <div class="chevron">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16.031" height="9.016" viewBox="0 0 16.031 9.016">
+                    <path id="Icon_feather-chevron-down" data-name="Icon feather-chevron-down" d="M9,13.5l6.6,6.6,6.6-6.6" transform="translate(-7.586 -12.086)" fill="none" stroke="#3a3a3a" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" />
+                </svg>
+            </div>
+            <div class="setting-section-header">Item Cast Modes</div>
+            <div class="setting-container">
+                <div class="setting-title">
+                    <h3>Item 1 Cast Mode</h3>
+                    <div class="multi-choice">
+                        <label class="choice-label">
+                            <input type="radio" name="itm1-cast-mode" checked value="1">
+                            <span class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent">
+                                Normal
+                            </span>
+                        </label>
+                        <label class="choice-label">
+                            <input type="radio" name="itm1-cast-mode" value="2">
+                            <span class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent">
+                                Quick Cast
+                            </span>
+                        </label>
+                        <label class="choice-label">
+                            <input type="radio" name="itm1-cast-mode" value="3">
+                            <span class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent">
+                                Smart Cast
+                            </span>
+                        </label>
+                    </div>
                 </div>
             </div>
-            <div class="setting-subtitle">Less seizure-inducing animations. Especially useful for reducing LED Strip animations</div>
-        </div>
-        <div class="setting-container">
-            <div class="setting-title">
-                <h3>Loading animation</h3>
-                <div class="switch">
-                    <input type="checkbox" id="switch3" class="switch__input" checked>
-                    <label for="switch3" class="switch__label"></label>
+            <div class="setting-container">
+                <div class="setting-title">
+                    <h3>Item 2 Cast Mode</h3>
+                    <div class="multi-choice">
+                        <label class="choice-label">
+                            <input type="radio" name="itm2-cast-mode" checked value="1">
+                            <span class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent">
+                                Normal
+                            </span>
+                        </label>
+                        <label class="choice-label">
+                            <input type="radio" name="itm2-cast-mode" value="2">
+                            <span class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent">
+                                Quick Cast
+                            </span>
+                        </label>
+                        <label class="choice-label">
+                            <input type="radio" name="itm2-cast-mode" value="3">
+                            <span class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent">
+                                Smart Cast
+                            </span>
+                        </label>
+                    </div>
                 </div>
             </div>
-            <div class="setting-subtitle">Plays a pulsing animation when the game is loading</div>
-        </div>
-        <div class="setting-container">
-            <div class="setting-title">
-                <h3>Default Cast Mode</h3>
-                <div class="multi-choice">
-                    <label class="choice-label">
-                        <input type="radio" name="default-cast-mode" checked value="1">
-                        <span class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent">
-                            Normal
-                        </span>
-                    </label>
-                    <label class="choice-label">
-                        <input type="radio" name="default-cast-mode" value="2">
-                        <span class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent">
-                            Quick Cast
-                        </span>
-                    </label>
-                    <label class="choice-label">
-                        <input type="radio" name="default-cast-mode" value="3">
-                        <span class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent">
-                            Smart Cast
-                        </span>
-                    </label>
+            <div class="setting-container">
+                <div class="setting-title">
+                    <h3>Item 3 Cast Mode</h3>
+                    <div class="multi-choice">
+                        <label class="choice-label">
+                            <input type="radio" name="itm3-cast-mode" checked value="1">
+                            <span class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent">
+                                Normal
+                            </span>
+                        </label>
+                        <label class="choice-label">
+                            <input type="radio" name="itm3-cast-mode" value="2">
+                            <span class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent">
+                                Quick Cast
+                            </span>
+                        </label>
+                        <label class="choice-label">
+                            <input type="radio" name="itm3-cast-mode" value="3">
+                            <span class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent">
+                                Smart Cast
+                            </span>
+                        </label>
+                    </div>
                 </div>
             </div>
-            <div class="setting-subtitle">For all champions by default (unless overridden)</div>
+            <div class="setting-container">
+                <div class="setting-title">
+                    <h3>Trinket Item Cast Mode</h3>
+                    <div class="multi-choice">
+                        <label class="choice-label">
+                            <input type="radio" name="itm4-cast-mode" checked value="1">
+                            <span class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent">
+                                Normal
+                            </span>
+                        </label>
+                        <label class="choice-label">
+                            <input type="radio" name="itm4-cast-mode" value="2">
+                            <span class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent">
+                                Quick Cast
+                            </span>
+                        </label>
+                        <label class="choice-label">
+                            <input type="radio" name="itm4-cast-mode" value="3">
+                            <span class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent">
+                                Smart Cast
+                            </span>
+                        </label>
+                    </div>
+                </div>
+            </div>
+            <div class="setting-container">
+                <div class="setting-title">
+                    <h3>Item 5 Cast Mode</h3>
+                    <div class="multi-choice">
+                        <label class="choice-label">
+                            <input type="radio" name="itm5-cast-mode" checked value="1">
+                            <span class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent">
+                                Normal
+                            </span>
+                        </label>
+                        <label class="choice-label">
+                            <input type="radio" name="itm5-cast-mode" value="2">
+                            <span class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent">
+                                Quick Cast
+                            </span>
+                        </label>
+                        <label class="choice-label">
+                            <input type="radio" name="itm5-cast-mode" value="3">
+                            <span class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent">
+                                Smart Cast
+                            </span>
+                        </label>
+                    </div>
+                </div>
+            </div>
+            <div class="setting-container">
+                <div class="setting-title">
+                    <h3>Item 6 Cast Mode</h3>
+                    <div class="multi-choice">
+                        <label class="choice-label">
+                            <input type="radio" name="itm6-cast-mode" checked value="1">
+                            <span class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent">
+                                Normal
+                            </span>
+                        </label>
+                        <label class="choice-label">
+                            <input type="radio" name="itm6-cast-mode" value="2">
+                            <span class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent">
+                                Quick Cast
+                            </span>
+                        </label>
+                        <label class="choice-label">
+                            <input type="radio" name="itm6-cast-mode" value="3">
+                            <span class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent">
+                                Smart Cast
+                            </span>
+                        </label>
+                    </div>
+                </div>
+            </div>
+            <div class="setting-container">
+                <div class="setting-title">
+                    <h3>Item 7 Cast Mode</h3>
+                    <div class="multi-choice">
+                        <label class="choice-label">
+                            <input type="radio" name="itm7-cast-mode" checked value="1">
+                            <span class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent">
+                                Normal
+                            </span>
+                        </label>
+                        <label class="choice-label">
+                            <input type="radio" name="itm7-cast-mode" value="2">
+                            <span class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent">
+                                Quick Cast
+                            </span>
+                        </label>
+                        <label class="choice-label">
+                            <input type="radio" name="itm7-cast-mode" value="3">
+                            <span class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent">
+                                Smart Cast
+                            </span>
+                        </label>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 </body>

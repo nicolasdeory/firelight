@@ -175,6 +175,8 @@ body {
 .content {
     padding: 30px 100px 60px 64px;
     margin-left: 250px;
+    overflow-y: scroll;
+    height: calc(100vh - 190px);
 }
 
 .game-title-container {
@@ -297,7 +299,7 @@ body {
 
 .setting-section {
     position: relative;
-    margin-bottom: 20px;
+    margin-bottom: 50px;
 }
 
 .setting-section-header {
@@ -306,6 +308,7 @@ body {
     font-size: 12pt;
     font-weight: normal;
     user-select: none;
+    margin-bottom: 20px;
 }
 
 .setting-section .chevron {
