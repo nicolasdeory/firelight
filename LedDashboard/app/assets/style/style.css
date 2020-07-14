@@ -361,3 +361,62 @@ body {
 .multi-choice :last-child .mdl-button {
     border-radius: 0 2px 2px 0;
 }
+
+.binding-container {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+}
+
+.binding-container > :not(:last-child) {
+    margin-right: 60px;
+}
+
+.binding {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 40px;
+    position: relative;
+}
+
+.binding span {
+    font-weight: 600;
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    text-align: center;
+    width: 100px;
+}
+
+.binding-box {
+    margin-top: 40px;
+    background-color: #2D2D2D;
+    border: solid 2px #646464;
+    border-radius: 20px;
+    padding: 20px;
+    color: #fff;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 18pt;
+    width: 64px;
+    height: 64px;
+}
+
+.setting-section-restore-default {
+    display: flex;
+    flex-direction: row;
+    margin-bottom: 20px;
+}
+
+.setting-section-restore-default .setting-section-header {
+    margin-bottom: 0;
+}
+
+.setting-section-restore-default button {
+    color: #FFE14D;
+    margin-left: 10px;
+    transform: translateY(-8px);
+}
