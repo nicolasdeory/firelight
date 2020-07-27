@@ -38,4 +38,12 @@ $(document).ready(() =>
         window.location.href = "settings.html";
     });
 
+    $("input[type='text']").focus(function () {
+        $(this).parents().eq(1).children().find("path").attr("fill", "#FFE14D");
+    });
+
+    $("input[type='text']").blur(function () {
+        $(this).parents().eq(1).children().find("path").attr("fill", "#767676");
+    });
+
 });

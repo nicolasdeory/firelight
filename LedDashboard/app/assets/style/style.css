@@ -173,10 +173,11 @@ body {
 
 
 .content {
-    padding: 30px 100px 60px 64px;
+    padding: 30px 100px 0px 64px;
     margin-left: 250px;
     overflow-y: scroll;
     height: calc(100vh - 190px);
+    overflow-x: hidden;
 }
 
 .game-title-container {
@@ -302,6 +303,10 @@ body {
     margin-bottom: 50px;
 }
 
+.setting-section:last-child {
+    margin-bottom: 0;
+}
+
 .setting-section-header {
     letter-spacing: 5px;
     text-transform: uppercase;
@@ -309,6 +314,7 @@ body {
     font-weight: normal;
     user-select: none;
     margin-bottom: 20px;
+    height: 100%;
 }
 
 .setting-section .chevron {
@@ -411,12 +417,76 @@ body {
     margin-bottom: 20px;
 }
 
-.setting-section-restore-default .setting-section-header {
+.setting-section-restore-default .setting-section-header, .setting-subheader-container .setting-section-header {
     margin-bottom: 0;
 }
 
-.setting-section-restore-default button {
+.setting-section-restore-default button, .setting-subheader-container button {
     color: #FFE14D;
     margin-left: 10px;
     transform: translateY(-8px);
+}
+
+.search-bar {
+    position: relative;
+    width: 320px;
+    margin-left: 12px;
+    margin-bottom: 1px;
+}
+
+.search-icon {
+    height: 18px;
+    margin-left: 25px;
+    margin-bottom: 1px;
+}
+
+.search-icon path {
+    transition: 0.1s;
+}
+
+.search-bar input {
+    width: 100%;
+    background: none;
+    border: none;
+    font-size: 11pt;
+}
+
+.search-bar input:focus {
+    border: none;
+    outline: none;
+}
+
+.search-underline {
+    height: 2px;
+    width: 100%;
+    position: absolute;
+    bottom: -7px;
+    background-color: #3D3D3D;
+    transition: 0.1s;
+}
+
+.search-bar input:focus ~ .search-underline {
+    background-color: #FFE14D;
+}
+
+.setting-subheader-container {
+    display: flex;
+    flex-direction: row;
+    margin-top: 60px;
+}
+
+.setting-subheader-container .setting-section-header {
+    color: #FFE14D;
+    font-weight: 600;
+    letter-spacing: 2px;
+    font-size: 13pt;
+}
+
+.filled-background {
+    background-color: #262626;
+    position: absolute;
+    left: -100px;
+    right: -100vw;
+    height: 100%;
+    z-index: -50;
 }
