@@ -116,6 +116,9 @@
     <None Update="app\assets\js\jquery-3.5.1.min.js">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Update="app\assets\js\lights.js">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Update="app\assets\js\main.js">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>

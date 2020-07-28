@@ -70,5 +70,10 @@ namespace LedDashboardCore
         {
             return new Led(this.color);
         }
+
+        public override string ToString()
+        {
+            return this.color.ToString();
+        }
     }
 }

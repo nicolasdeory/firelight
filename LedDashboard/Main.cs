@@ -24,8 +24,11 @@ namespace LedDashboard
 #endif
             config.WindowOptions.Size = new WindowSize(1200, 700);
             config.WindowOptions.StartCentered = true;
-           // config.WindowOptions.DisableResizing = true;
-          //  config.WindowOptions.FramelessOption = FramelessOption
+            // config.WindowOptions.DisableResizing = true;
+            //  config.WindowOptions.FramelessOption = FramelessOption
+
+            // Led manager initialization
+            LedManager.Init();
 
             // Chromely initialization
             AppBuilder

@@ -13,6 +13,10 @@ namespace LedDashboard
 
     class LedManager
     {
+        /// <summary>
+        /// Null until it's initialized
+        /// </summary>
+        public static LedManager Instance { get; private set; }
 
         public delegate void UpdateDisplayHandler(LEDFrame frame);
 
@@ -50,6 +54,15 @@ namespace LedDashboard
 
         LightingMode preferredMode;
 
+        public LEDFrame LastDisplayedFrame { get; private set; } = LEDFrame.Empty;
+
+        /// <summary>
+        /// Initializes the LED Manager
+        /// </summary>
+        public static void Init()
+        {
+            Instance = new LedManager();
+        }
 
         /// <summary>
         /// Starts the LED Manager in keyboard mode by default. Use <seealso cref="SetController"/> to further customize settings, especially for LED strips
@@ -65,6 +78,8 @@ namespace LedDashboard
 
             UpdateLEDDisplay(LEDFrame.CreateEmpty(this));
             Task.Run(UpdateLoop).CatchExceptions();
+
+            DoLightingTest();
 
         }
 
@@ -194,6 +209,7 @@ namespace LedDashboard
 
         private void SendLedData(LEDFrame frame)
         {
+            LastDisplayedFrame = frame;
             lightControllers.ForEach(controller => controller.SendData(frame));
             DisplayUpdated?.Invoke(frame);
         }

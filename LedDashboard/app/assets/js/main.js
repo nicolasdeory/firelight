@@ -1,14 +1,4 @@
-﻿function setKeyboardColor(index, hex) {
-    if (index == 46) {
-        $("#k46").attr("fill", hex);
-        $("#k46-1").attr("fill", hex);
-    } else {
-        $("#k" + index).attr("fill", hex);
-    }
-}
-
-
-$(document).ready(() =>
+﻿$(document).ready(() =>
 {
 
     $("#tab-lights").click(function ()

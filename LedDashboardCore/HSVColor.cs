@@ -200,5 +200,6 @@ namespace LedDashboardCore
             hashCode = hashCode * -1521134295 + v.GetHashCode();
             return hashCode;
         }
+
     }
 }
