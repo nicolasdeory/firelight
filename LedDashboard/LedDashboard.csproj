@@ -21,7 +21,9 @@
     <StartupObject />
   </PropertyGroup>
   <ItemGroup>
-    <Content Include="ChromaAppInfo.xml" />
+    <Content Include="ChromaAppInfo.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="ar1st0crat.SciColorMaps.Portable" Version="1.0.2" />

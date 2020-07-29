@@ -1,8 +1,8 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <application>
-    <title>League of Legends Chroma Integration</title>
-    <description>A smart game integration for League of Legends that reacts to game events.</description>
+    <title>Firelight Chroma Integration</title>
+    <description>A smart integration that reacts to games and other events.</description>
     <author name="Nicolas de Ory" contact="https://github.com/nicolasdeory/leagueoflegends-led"/>
-    <device_supported keyboard="1" mouse="0" headset="0" mousepad="0" keypad="0" chromalink="0"/>
+    <device_supported keyboard="1" mouse="1" headset="1" mousepad="1" keypad="1" chromalink="1"/>
 	<category game="1"/>
 </application>
