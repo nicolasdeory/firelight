@@ -16,7 +16,7 @@ namespace LedDashboard.Controllers
             ChromelyResponse resp = new ChromelyResponse(request.Id);
             LEDData data = LedManager.Instance.LastDisplayedFrame.Leds;
             //Debug.WriteLine(string.Join(',',(object[])data.Keyboard));
-            List<HSVColor[]> ledList = new List<HSVColor[]>();
+            List<string[]> ledList = new List<string[]>();
             for (int i = 0; i < 6; i++)
             {
                 Led[] arr;
@@ -47,10 +47,9 @@ namespace LedDashboard.Controllers
                         arr = new Led[0];
                         break;
                 }
-                ledList.Add(arr.Select(x => x.color).ToArray());
+                ledList.Add(arr.Select(x => x.color.ToHex()).ToArray());
             }
             resp.Data = ledList;
-            Debug.WriteLine(resp.ToJson());
             return resp;
         }
     }

@@ -3,6 +3,7 @@ using System.Drawing;
 
 namespace LedDashboardCore
 {
+    [Serializable]
     public struct HSVColor
     {
         public float h;
@@ -59,6 +60,13 @@ namespace LedDashboardCore
             var arr = new byte[3];
             HsvToRgb(this.h, this.s, this.v, out arr[0], out arr[1], out arr[2]);
             return arr;
+        }
+
+        public string ToHex()
+        {
+            var rgb = ToRGB();
+            string hex = rgb[0].ToString("X2") + rgb[1].ToString("X2") + rgb[2].ToString("X2");
+            return hex;
         }
 
         public static HSVColor Lerp(HSVColor c1, HSVColor c2, float t)
