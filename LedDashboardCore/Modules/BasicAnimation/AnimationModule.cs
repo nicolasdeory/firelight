@@ -117,7 +117,11 @@ namespace LedDashboardCore.Modules.BasicAnimation
             {
                 LEDData data = LEDData.Empty;
                 ApplyColorToZones(data, zones, color);
-                SendFrame(data, zones, priority);
+                if (priority && i == 0)
+                    SendFrame(data, zones, true);
+                else
+                    SendFrame(data, zones);
+                
             }
         }
 
