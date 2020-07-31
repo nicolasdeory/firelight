@@ -11,7 +11,6 @@ using static ChromaSDK.Mouse;
 namespace LedDashboardCore
 {
 
-
     public class RazerChromaController : LightController
     {
 
@@ -169,6 +168,7 @@ namespace LedDashboardCore
 
         private void Init()
         {
+            Debug.WriteLine("Initializing RazerChromaController");
             // TODO: Check synapse version. https://chromasdk.io:54236/razer/chromasdk Version must be >= 3.X
             int status = 0;
             try
@@ -226,6 +226,7 @@ namespace LedDashboardCore
 
         public void SendData(LEDFrame frame) // TODO: Abstract away these details, make parent class
         {
+           // Debug.WriteLine("received frame data");
             if (!enabled || disposed) return;
             LEDData data = frame.Leds;
 
@@ -253,12 +254,20 @@ namespace LedDashboardCore
             if (frame.Zones.HasFlag(LightZone.General))
                 SendGeneralData(data);
 
+
+            ChromaAnimationAPI.PreviewFrame(baseKeyboardAnim, 0);
+            ChromaAnimationAPI.PreviewFrame(baseMouseAnim, 0);
+            ChromaAnimationAPI.PreviewFrame(baseMousepadAnim, 0);
+            ChromaAnimationAPI.PreviewFrame(baseHeadsetAnim, 0);
+            ChromaAnimationAPI.PreviewFrame(baseKeypadAnim, 0);
+            ChromaAnimationAPI.PreviewFrame(baseGeneralAnim, 0);
+
+
         }
 
         private void SendKeyboardData(LEDData data)
         {
             byte[] colorArray = data.Keyboard.ToByteArray();
-
             int black = ChromaAnimationAPI.GetRGB(0, 0, 0);
             foreach (Keyboard.RZKEY key in numPadKeys)
             {
@@ -269,7 +278,6 @@ namespace LedDashboardCore
                 int color = ChromaAnimationAPI.GetRGB(colorArray[i * 3], colorArray[i * 3 + 1], colorArray[i * 3 + 2]);
                 ChromaAnimationAPI.SetKeyColor(baseKeyboardAnim, 0, (int)indexKeyMap[i], color);
             }
-            ChromaAnimationAPI.PreviewFrame(baseKeyboardAnim, 0);
         }
 
         private void SendMouseData(LEDData data)
@@ -314,7 +322,6 @@ namespace LedDashboardCore
                     ChromaAnimationAPI.Set2DColor(baseMouseAnim, 0, upper, lower, color);
                 }
             }
-            ChromaAnimationAPI.PreviewFrame(baseMouseAnim, 0);
         }
 
         private void SendMousepadData(LEDData data)
@@ -326,7 +333,6 @@ namespace LedDashboardCore
                 int color = ChromaAnimationAPI.GetRGB(colorArray[i * 3], colorArray[i * 3 + 1], colorArray[i * 3 + 2]);
                 ChromaAnimationAPI.Set1DColor(baseMousepadAnim, 0, 16-i, color); // inverted order
             }
-            ChromaAnimationAPI.PreviewFrame(baseMousepadAnim, 0);
         }
 
         private void SendHeadsetData(LEDData data)
@@ -338,7 +344,6 @@ namespace LedDashboardCore
                 int color = ChromaAnimationAPI.GetRGB(colorArray[i * 3], colorArray[i * 3 + 1], colorArray[i * 3 + 2]);
                 ChromaAnimationAPI.Set1DColor(baseHeadsetAnim, 0, i, color);
             }
-            ChromaAnimationAPI.PreviewFrame(baseHeadsetAnim, 0);
         }
 
         private void SendKeypadData(LEDData data)
@@ -354,7 +359,6 @@ namespace LedDashboardCore
                     ChromaAnimationAPI.Set2DColor(baseKeypadAnim, 0, col, row, color);
                 }
             }
-            ChromaAnimationAPI.PreviewFrame(baseKeypadAnim, 0);
         }
 
         private void SendGeneralData(LEDData data)
@@ -366,7 +370,6 @@ namespace LedDashboardCore
                 int color = ChromaAnimationAPI.GetRGB(colorArray[i * 3], colorArray[i * 3 + 1], colorArray[i * 3 + 2]);
                 ChromaAnimationAPI.Set1DColor(baseGeneralAnim, 0, i, color);
             }
-            ChromaAnimationAPI.PreviewFrame(baseGeneralAnim, 0);
         }
 
 

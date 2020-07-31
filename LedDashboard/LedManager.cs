@@ -5,6 +5,7 @@ using LedDashboardCore.Modules.BlinkWhite;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -34,13 +35,13 @@ namespace LedDashboard
 
         CancellationTokenSource updateLoopCancelToken = new CancellationTokenSource();
 
-        LEDModule CurrentLEDModule
+        public LEDModule CurrentLEDModule
         {
             get
             {
                 return _currentLEDModule;
             }
-            set
+            private set
             {
                 SetEnabled(value != null);
 
@@ -52,7 +53,7 @@ namespace LedDashboard
 
         bool enabled = true;
 
-        LightingMode preferredMode;
+
 
         public LEDFrame LastDisplayedFrame { get; private set; } = LEDFrame.Empty;
 
@@ -67,8 +68,9 @@ namespace LedDashboard
         /// <summary>
         /// Starts the LED Manager in keyboard mode by default. Use <seealso cref="SetController"/> to further customize settings, especially for LED strips
         /// </summary>
-        public LedManager() // by default starts in keyboard mode
+        public LedManager()
         {
+            Debug.WriteLine("Initializing LedManager");
             InitLeds();
 
             ProcessListenerService.ProcessInFocusChanged += OnProcessChanged;
@@ -78,8 +80,8 @@ namespace LedDashboard
 
             UpdateLEDDisplay(LEDFrame.CreateEmpty(this));
             Task.Run(UpdateLoop).CatchExceptions();
-
             DoLightingTest();
+
 
         }
 
@@ -139,11 +141,11 @@ namespace LedDashboard
                 LEDModule blinkModule = BlinkWhiteModule.Create();
                 blinkModule.NewFrameReady += UpdateLEDDisplay;
                 CurrentLEDModule = blinkModule;
-                await Task.Delay(5000);
+                await Task.Delay(11000);
                 ProcessListenerService.Start();
                 if (CurrentLEDModule is BlinkWhiteModule)
                     CurrentLEDModule = lastActiveModule;
-            }).ContinueWith((t) => Debug.WriteLine(t.Exception.Message + " // " + t.Exception.StackTrace), TaskContinuationOptions.OnlyOnFaulted);
+            }).CatchExceptions();
 
         }
 
@@ -156,6 +158,7 @@ namespace LedDashboard
             }
         }
 
+        bool queueClearRequested;
         //bool updatingDisplay = false;
         /// <summary>
         /// Updates the LED display
@@ -165,7 +168,7 @@ namespace LedDashboard
         public void UpdateLEDDisplay(LEDFrame frame)
         {
             CheckFrame(frame);
-            if (frame.Priority) FrameQueue.Clear();
+            if (frame.Priority) queueClearRequested = true;
             FrameQueue.Enqueue(frame);
             //Debug.WriteLine("Frame received. " + frame.LastSender.GetType().Name + " Queue=" + FrameQueue.Count);
         }
@@ -197,10 +200,15 @@ namespace LedDashboard
                     return;
                 if (FrameQueue.Count > 0)
                 {
+                    
                     LEDFrame next = FrameQueue.Dequeue();
-                    //this.leds = next.Leds;
                     if (next != null)
                         SendLedData(next);
+                    if (queueClearRequested)
+                    {
+                        FrameQueue.Clear();
+                        queueClearRequested = false;
+                    }
                 }
                 await Task.Delay(30); // 33 fps
                                       // await Task.Delay(15);
@@ -210,8 +218,17 @@ namespace LedDashboard
         private void SendLedData(LEDFrame frame)
         {
             LastDisplayedFrame = frame;
-            lightControllers.ForEach(controller => controller.SendData(frame));
-            DisplayUpdated?.Invoke(frame);
+          /*  byte[] colorArray = frame.Leds.Keyboard.ToByteArray();
+            if (colorArray.Any(x => x != 0))
+            {
+                Debug.WriteLine("lm not black!");
+            }
+            else
+            {
+                Debug.WriteLine("lm black!");
+            }*/
+           lightControllers.ForEach(controller => controller.SendData(frame));
+           // DisplayUpdated?.Invoke(frame);
         }
 
 

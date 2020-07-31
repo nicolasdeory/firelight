@@ -14,7 +14,11 @@ namespace LedDashboard.Controllers
         public ChromelyResponse GetLights(ChromelyRequest request)
         {
             ChromelyResponse resp = new ChromelyResponse(request.Id);
-            LEDData data = LedManager.Instance.LastDisplayedFrame.Leds;
+            LEDData data;
+            if (LedManager.Instance == null || LedManager.Instance.CurrentLEDModule == null)
+                data = LEDData.Empty;
+            else
+                data = LedManager.Instance.LastDisplayedFrame.Leds;
             //Debug.WriteLine(string.Join(',',(object[])data.Keyboard));
             List<string[]> ledList = new List<string[]>();
             for (int i = 0; i < 6; i++)
@@ -51,6 +55,24 @@ namespace LedDashboard.Controllers
             }
             resp.Data = ledList;
             return resp;
+        }
+
+        bool initialized = false;
+        [HttpGet(Route = "/lights/initialize")]
+        public ChromelyResponse InitLights(ChromelyRequest request)
+        {
+            ChromelyResponse resp = new ChromelyResponse(request.Id);
+            if (!initialized)
+            {
+                initialized = true;
+                LedManager.Init();
+                resp.Data = "initialized";
+            } else
+            {
+                resp.Data = "already initialized";
+            }
+            return resp;
+
         }
     }
 }

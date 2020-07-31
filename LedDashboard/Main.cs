@@ -1,10 +1,6 @@
 ﻿using Chromely.Core;
 using Chromely.Core.Configuration;
-using Chromely.Core.Infrastructure;
-using LedDashboardCore;
 using System;
-using System.Collections.Generic;
-using System.Windows.Forms;
 
 namespace LedDashboard
 {
@@ -26,9 +22,6 @@ namespace LedDashboard
             config.WindowOptions.StartCentered = true;
             // config.WindowOptions.DisableResizing = true;
             //  config.WindowOptions.FramelessOption = FramelessOption
-
-            // Led manager initialization
-            LedManager.Init();
 
             // Chromely initialization
             AppBuilder
