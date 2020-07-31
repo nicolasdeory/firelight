@@ -34,6 +34,7 @@
     <PackageReference Include="NETStandard.Library" Version="2.0.3" />
     <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
     <PackageReference Include="Numpy" Version="3.7.1.10" />
+    <PackageReference Include="PipeMethodCalls" Version="1.0.1" />
     <PackageReference Include="ScottPlot" Version="4.0.1" />
     <PackageReference Include="ScottPlot.WinForms" Version="4.0.1" />
   </ItemGroup>

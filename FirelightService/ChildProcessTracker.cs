@@ -5,7 +5,7 @@ using System.Diagnostics;
 using System.Runtime.InteropServices;
 using System.Text;
 
-namespace LedDashboard
+namespace FirelightService
 {
     /// <summary>
     /// Allows processes to be automatically killed if this parent process unexpectedly quits.

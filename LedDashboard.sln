@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.29326.143
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LedDashboard", "LedDashboard\LedDashboard.csproj", "{AD75C0B1-A782-4A79-888D-A7D2DAFA6B75}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Firelight", "LedDashboard\Firelight.csproj", "{AD75C0B1-A782-4A79-888D-A7D2DAFA6B75}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ChromaSDK", "ChromaSDK\ChromaSDK.csproj", "{74B5CFA3-8F45-4DB8-8DD6-BA8126A4F4BD}"
 EndProject
@@ -11,7 +11,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LeagueOfLegends", "LeagueOf
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LedDashboardCore", "LedDashboardCore\LedDashboardCore.csproj", "{552F632D-3C3B-432F-B2DD-E6D225013534}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RocketLeague", "RocketLeague\RocketLeague.csproj", "{B36757F6-ECC4-409E-BBB6-DFE1DC55C083}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RocketLeague", "RocketLeague\RocketLeague.csproj", "{B36757F6-ECC4-409E-BBB6-DFE1DC55C083}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FirelightService", "FirelightService\FirelightService.csproj", "{CC6BC956-15C9-423E-89FF-C6979B9E33F1}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -61,6 +63,14 @@ Global
 		{B36757F6-ECC4-409E-BBB6-DFE1DC55C083}.Release|Any CPU.Build.0 = Release|Any CPU
 		{B36757F6-ECC4-409E-BBB6-DFE1DC55C083}.Release|x64.ActiveCfg = Release|Any CPU
 		{B36757F6-ECC4-409E-BBB6-DFE1DC55C083}.Release|x64.Build.0 = Release|Any CPU
+		{CC6BC956-15C9-423E-89FF-C6979B9E33F1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CC6BC956-15C9-423E-89FF-C6979B9E33F1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CC6BC956-15C9-423E-89FF-C6979B9E33F1}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{CC6BC956-15C9-423E-89FF-C6979B9E33F1}.Debug|x64.Build.0 = Debug|Any CPU
+		{CC6BC956-15C9-423E-89FF-C6979B9E33F1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CC6BC956-15C9-423E-89FF-C6979B9E33F1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CC6BC956-15C9-423E-89FF-C6979B9E33F1}.Release|x64.ActiveCfg = Release|Any CPU
+		{CC6BC956-15C9-423E-89FF-C6979B9E33F1}.Release|x64.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
