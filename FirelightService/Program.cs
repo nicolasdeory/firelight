@@ -14,12 +14,18 @@ namespace FirelightService
             //Console.WriteLine("Hello World!");
             //Process.Start("LedDashboard.exe");
 
+            Process[] processes = Process.GetProcessesByName("FirelightService");
+            if (processes.Length > 1)
+            {
+                Debug.WriteLine("Service already running!");
+                return;
+            }
+                
+
             NotifyIcon trayIcon = new NotifyIcon();
             trayIcon.Icon = new System.Drawing.Icon("./icon.ico");
             trayIcon.Visible = true;
             trayIcon.Text = "Firelight";
-            trayIcon.BalloonTipTitle = "????????????????????????";
-            trayIcon.BalloonTipText = "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa";
             trayIcon.Click += TrayIcon_Click;
             // icon.ShowBalloonTip(2000);
 
@@ -32,14 +38,11 @@ namespace FirelightService
             menuStrip.Items.Add("Exit Firelight", null, ExitFirelightClicked);
             trayIcon.ContextMenuStrip = menuStrip;
 
-
-            //trayIcon.
-            Application.Run();
-            /*while (true)
+            if (args.Length > 0 && args[0] == "ui")
             {
-                Debug.WriteLine("Hello");
-                Thread.Sleep(1000);
-            }*/
+                OpenFirelightUI();
+            }
+            Application.Run();
         }
 
         private static void ShowFirelightClicked(object sender, EventArgs e)

@@ -1,6 +1,7 @@
 ﻿using Chromely.Core;
 using Chromely.Core.Configuration;
 using System;
+using System.Diagnostics;
 
 namespace LedDashboard
 {
@@ -9,6 +10,15 @@ namespace LedDashboard
         [STAThread]
         static void Main(string[] args)
         {
+
+            Process[] processes = Process.GetProcessesByName("FirelightService");
+            if (processes.Length == 0)
+            {
+                Debug.WriteLine("Service not running, starting");
+                Process.Start("FirelightService.exe", "ui");
+                return;
+            }
+
             // Chromely configuration
             var config = DefaultConfiguration.CreateForRuntimePlatform();
             config.WindowOptions.Title = "Firelight";
@@ -20,8 +30,6 @@ namespace LedDashboard
 #endif
             config.WindowOptions.Size = new WindowSize(1200, 700);
             config.WindowOptions.StartCentered = true;
-            // config.WindowOptions.DisableResizing = true;
-            //  config.WindowOptions.FramelessOption = FramelessOption
 
             // Chromely initialization
             AppBuilder
