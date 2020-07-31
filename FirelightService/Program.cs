@@ -65,9 +65,22 @@ namespace FirelightService
         {
             Process[] processes = Process.GetProcessesByName("Firelight");
             if (processes.Length > 0)
-                return;
-            Process p = Process.Start("Firelight.exe");
-            ChildProcessTracker.AddProcess(p);
+            {
+                IntPtr handle = processes[0].MainWindowHandle;
+                ShowWindow(handle, 9);
+                SetForegroundWindow(handle);
+            }
+            else
+            {
+                Process p = Process.Start("Firelight.exe");
+                ChildProcessTracker.AddProcess(p);
+            }           
         }
+
+        [System.Runtime.InteropServices.DllImport("User32.dll")]
+        private static extern bool SetForegroundWindow(IntPtr handle);
+
+        [System.Runtime.InteropServices.DllImport("user32.dll")]
+        static extern bool ShowWindow(IntPtr hWnd, int nCmdShow);
     }
 }
