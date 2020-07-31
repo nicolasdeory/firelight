@@ -165,7 +165,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\LedDashboardCore\LedDashboardCore.csproj" />
+    <ProjectReference Include="..\LedDashboardCore\FirelightCore.csproj" />
   </ItemGroup>
 
   <ItemGroup>

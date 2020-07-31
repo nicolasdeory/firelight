@@ -9,7 +9,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ChromaSDK", "ChromaSDK\Chro
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LeagueOfLegends", "LeagueOfLegends\LeagueOfLegends.csproj", "{00ED0CBB-F29B-433C-B5C7-B81D31CFDBF1}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LedDashboardCore", "LedDashboardCore\LedDashboardCore.csproj", "{552F632D-3C3B-432F-B2DD-E6D225013534}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FirelightCore", "LedDashboardCore\FirelightCore.csproj", "{552F632D-3C3B-432F-B2DD-E6D225013534}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RocketLeague", "RocketLeague\RocketLeague.csproj", "{B36757F6-ECC4-409E-BBB6-DFE1DC55C083}"
 EndProject
