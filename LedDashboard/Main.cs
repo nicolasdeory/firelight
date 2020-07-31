@@ -3,7 +3,7 @@ using Chromely.Core.Configuration;
 using System;
 using System.Diagnostics;
 
-namespace LedDashboard
+namespace FirelightService
 {
     class LedDashboard
     {

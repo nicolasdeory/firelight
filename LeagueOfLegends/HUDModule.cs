@@ -1,6 +1,6 @@
 ﻿using Games.LeagueOfLegends.ItemModules;
 using Games.LeagueOfLegends.Model;
-using LedDashboardCore;
+using FirelightCore;
 using System;
 using System.Collections.Generic;
 using System.Drawing;

@@ -5,7 +5,7 @@ using System.Drawing;
 using System.IO;
 using System.Text;
 
-namespace LedDashboardCore.Modules.Common
+namespace FirelightCore.Modules.Common
 {
     public class AnimationLoader
     {

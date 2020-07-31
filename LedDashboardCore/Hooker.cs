@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Windows.Input;
 
-namespace LedDashboardCore
+namespace FirelightCore
 {
     enum HookMessageType { MouseDown, KeyDown, KeyUp }
     class HookMessage

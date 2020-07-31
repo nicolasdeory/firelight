@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Linq;
 
-namespace LedDashboardCore.Modules.FourierAudioLED
+namespace FirelightCore.Modules.FourierAudioLED
 {
     class FourierAudioLED : LEDModule
     {

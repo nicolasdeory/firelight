@@ -1,6 +1,6 @@
 using Games.LeagueOfLegends.ChampionModules.Common;
 using Games.LeagueOfLegends.Model;
-using LedDashboardCore;
+using FirelightCore;
 using System.Threading.Tasks;
 
 namespace Games.LeagueOfLegends.ChampionModules

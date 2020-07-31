@@ -1,7 +1,7 @@
 ﻿using NAudio.Wave;
 using System.Diagnostics;
 
-namespace LedDashboardCore
+namespace FirelightCore
 {
     class AudioEngine
     {

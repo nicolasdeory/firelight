@@ -1,7 +1,7 @@
 ﻿using Games.LeagueOfLegends.ChampionModules.Common;
 using Games.LeagueOfLegends.ItemModules;
 using Games.LeagueOfLegends.Model;
-using LedDashboardCore;
+using FirelightCore;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;

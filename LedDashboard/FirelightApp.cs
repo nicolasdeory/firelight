@@ -2,13 +2,13 @@
 using Chromely.Core;
 using Chromely.Core.Host;
 using Chromely.Core.Network;
-using LedDashboard.Controllers;
-using LedDashboard.CustomHandlers;
+using FirelightService.Controllers;
+using FirelightService.CustomHandlers;
 using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace LedDashboard
+namespace FirelightService
 {
     class FirelightApp : ChromelyBasicApp
     {

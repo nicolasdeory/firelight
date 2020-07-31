@@ -5,7 +5,7 @@
 using System;
 using System.Windows.Forms;
 
-namespace LedDashboardCore
+namespace FirelightCore
 {
     /// <summary>
     ///     Provides static methods to convert between Win32 VirtualKeyss

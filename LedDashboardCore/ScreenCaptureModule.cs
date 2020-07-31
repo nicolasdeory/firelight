@@ -8,7 +8,7 @@ using System.Text;
 using System.Threading;
 using System.Windows.Forms;
 
-namespace LedDashboardCore
+namespace FirelightCore
 {
     public static class ScreenCaptureModule
     {

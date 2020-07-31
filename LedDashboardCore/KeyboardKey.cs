@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace LedDashboardCore
+namespace FirelightCore
 {
 
     public class KeyComparer : IComparer<KeyboardKey>

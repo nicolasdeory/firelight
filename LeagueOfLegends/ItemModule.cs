@@ -1,6 +1,6 @@
 ﻿using Games.LeagueOfLegends.ChampionModules.Common;
 using Games.LeagueOfLegends.Model;
-using LedDashboardCore;
+using FirelightCore;
 using System;
 using System.Windows.Forms;
 

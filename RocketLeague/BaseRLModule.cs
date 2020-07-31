@@ -1,5 +1,5 @@
-﻿using LedDashboardCore;
-using LedDashboardCore.Modules.BasicAnimation;
+﻿using FirelightCore;
+using FirelightCore.Modules.BasicAnimation;
 
 namespace Games.RocketLeague
 {

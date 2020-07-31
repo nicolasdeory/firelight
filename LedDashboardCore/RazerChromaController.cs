@@ -8,7 +8,7 @@ using System.Windows.Forms;
 using static ChromaSDK.Keyboard;
 using static ChromaSDK.Mouse;
 
-namespace LedDashboardCore
+namespace FirelightCore
 {
 
     public class RazerChromaController : LightController

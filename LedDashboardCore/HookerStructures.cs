@@ -5,7 +5,7 @@ using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace LedDashboardCore
+namespace FirelightCore
 {
     public delegate int HookProc(int nCode, IntPtr wParam, IntPtr lParam);
 

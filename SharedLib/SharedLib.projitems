@@ -12,6 +12,9 @@
     <None Include="$(MSBuildThisFileDirectory)CChromaEditorLibrary64.dll">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Include="$(MSBuildThisFileDirectory)DesktopDuplication.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Include="$(MSBuildThisFileDirectory)Gma.System.MouseKeyHook.dll">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
@@ -24,5 +27,18 @@
     <None Include="$(MSBuildThisFileDirectory)Readme.txt">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </None>
+    <None Include="$(MSBuildThisFileDirectory)SharpDX.Direct3D11.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="$(MSBuildThisFileDirectory)SharpDX.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="$(MSBuildThisFileDirectory)SharpDX.DXGI.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="$(MSBuildThisFileDirectory)IBackendController.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)IUIController.cs" />
   </ItemGroup>
 </Project>

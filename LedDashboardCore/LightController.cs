@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace LedDashboardCore
+namespace FirelightCore
 {
     public interface LightController : IDisposable
     {

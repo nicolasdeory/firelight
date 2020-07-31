@@ -1,6 +1,6 @@
 ﻿using ImageProcessor;
 using ImageProcessor.Imaging.Filters.Photo;
-using LedDashboardCore;
+using FirelightCore;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;

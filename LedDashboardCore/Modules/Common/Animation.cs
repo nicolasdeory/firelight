@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace LedDashboardCore.Modules.Common
+namespace FirelightCore.Modules.Common
 {
     public class Animation
     {

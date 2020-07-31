@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Drawing;
 
-namespace LedDashboardCore
+namespace FirelightCore
 {
     [Serializable]
     public struct HSVColor

@@ -1,7 +1,7 @@
 ﻿using ImageProcessor;
 using ImageProcessor.Imaging.Filters.Photo;
-using LedDashboardCore;
-using LedDashboardCore.Modules.BasicAnimation;
+using FirelightCore;
+using FirelightCore.Modules.BasicAnimation;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;

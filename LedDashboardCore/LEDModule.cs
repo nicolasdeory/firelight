@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace LedDashboardCore
+namespace FirelightCore
 {
     /// <summary>
     /// Interface that should be used for any class that generates LED data.

@@ -1,4 +1,4 @@
-﻿namespace LedDashboardCore
+﻿namespace FirelightCore
 {
     public enum LightControllerType
     {

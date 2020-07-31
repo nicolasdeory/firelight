@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace LedDashboardCore
+namespace FirelightCore
 {
     class NativeMethods
     {

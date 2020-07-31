@@ -3,7 +3,7 @@ using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
 
-namespace LedDashboardCore
+namespace FirelightCore
 {
     public static class UtilsLED
     {

@@ -1,6 +1,6 @@
 ﻿using SciColorMaps.Portable;
 
-namespace LedDashboardCore
+namespace FirelightCore
 {
     public static class Gradient
     {

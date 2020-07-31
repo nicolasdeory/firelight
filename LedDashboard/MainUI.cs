@@ -1,4 +1,4 @@
-﻿using LedDashboardCore;
+﻿using FirelightCore;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -7,7 +7,7 @@ using System.IO;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace LedDashboard
+namespace FirelightService
 {
 
     // This is a debug UI window that displays the LED strip.

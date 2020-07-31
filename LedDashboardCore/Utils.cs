@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Text;
 
-namespace LedDashboardCore
+namespace FirelightCore
 {
     public static class Utils
     {

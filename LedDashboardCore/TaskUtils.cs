@@ -3,7 +3,7 @@ using System.Diagnostics;
 using System.Net;
 using System.Threading.Tasks;
 
-namespace LedDashboardCore
+namespace FirelightCore
 {
     public enum TaskRunnerLogLevel { Normal = 0, Verbose = 1 }
     public static class TaskUtils

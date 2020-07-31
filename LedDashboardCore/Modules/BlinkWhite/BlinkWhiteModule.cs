@@ -1,10 +1,10 @@
-﻿using LedDashboardCore.Modules.BasicAnimation;
+﻿using FirelightCore.Modules.BasicAnimation;
 using System;
 using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace LedDashboardCore.Modules.BlinkWhite
+namespace FirelightCore.Modules.BlinkWhite
 {
     public class BlinkWhiteModule : LEDModule
     {

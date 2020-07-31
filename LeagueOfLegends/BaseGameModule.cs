@@ -1,7 +1,7 @@
 ﻿using Games.LeagueOfLegends.ChampionModules.Common;
 using Games.LeagueOfLegends.Model;
-using LedDashboardCore;
-using LedDashboardCore.Modules.BasicAnimation;
+using FirelightCore;
+using FirelightCore.Modules.BasicAnimation;
 
 namespace Games.LeagueOfLegends
 {

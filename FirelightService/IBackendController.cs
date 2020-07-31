@@ -6,6 +6,6 @@ namespace FirelightService
 {
     interface IBackendController
     {
-        public List<string> GetLights();
+        public List<string[]> GetLights();
     }
 }

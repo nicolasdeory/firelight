@@ -3,7 +3,7 @@ using System;
 using System.Linq;
 using System.Numerics;
 
-namespace LedDashboardCore.Modules.FourierAudioLED
+namespace FirelightCore.Modules.FourierAudioLED
 {
     class FFTUtil
     {

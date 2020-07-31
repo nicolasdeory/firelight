@@ -167,4 +167,5 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
   </ItemGroup>
+  <Import Project="..\SharedLib\SharedLib.projitems" Label="Shared" />
 </Project>

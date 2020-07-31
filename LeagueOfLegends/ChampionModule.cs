@@ -1,6 +1,6 @@
 ﻿using Games.LeagueOfLegends.ChampionModules.Common;
 using Games.LeagueOfLegends.Model;
-using LedDashboardCore;
+using FirelightCore;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;

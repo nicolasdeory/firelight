@@ -1,11 +1,11 @@
-﻿using LedDashboardCore.Modules.Common;
+﻿using FirelightCore.Modules.Common;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace LedDashboardCore.Modules.BasicAnimation
+namespace FirelightCore.Modules.BasicAnimation
 {
     public class AnimationModule : LEDModule
     {
