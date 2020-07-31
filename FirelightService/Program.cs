@@ -1,4 +1,5 @@
-﻿using System;
+﻿using PipeMethodCalls;
+using System;
 using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
@@ -10,9 +11,6 @@ namespace FirelightService
     {
         static void Main(string[] args)
         {
-            //Process.
-            //Console.WriteLine("Hello World!");
-            //Process.Start("LedDashboard.exe");
 
             Process[] processes = Process.GetProcessesByName("FirelightService");
             if (processes.Length > 1)
@@ -20,29 +18,39 @@ namespace FirelightService
                 Debug.WriteLine("Service already running!");
                 return;
             }
-                
+            if (args.Length > 0 && args[0] == "ui")
+            {
+                // Use -ui argument to open the UI directly
+                OpenFirelightUI();
+            }
 
+            
+            RenderTrayIcon();
+
+            Application.Run();
+        }
+
+        private static async Task StartPipeline()
+        {
+            // The first type parameter is the controller interface that exposes methods to be called
+            // by this client. The second one is the one that exposes methods to be called from another client.
+            var pipeServer = new PipeServerWithCallback<IUIController, IBackendController>("firelightpipe", () => new FirelightBackendController());
+            await pipeServer.WaitForConnectionAsync();
+           // string concatResult = await pipeServer.InvokeAsync(c => c.Concatenate("a", "b"));
+        }
+
+        private static void RenderTrayIcon()
+        {
             NotifyIcon trayIcon = new NotifyIcon();
             trayIcon.Icon = new System.Drawing.Icon("./icon.ico");
             trayIcon.Visible = true;
             trayIcon.Text = "Firelight";
             trayIcon.Click += TrayIcon_Click;
-            // icon.ShowBalloonTip(2000);
-
 
             ContextMenuStrip menuStrip = new ContextMenuStrip();
-            ToolStripDropDownButton testDropdownButton = new ToolStripDropDownButton("Open Firelight", null, null, "Open Firelight");
-            ToolStripButton btn = new ToolStripButton("asdsad");
-            // menuStrip.Items.Add(btn);
             menuStrip.Items.Add("Show Firelight", null, ShowFirelightClicked);
             menuStrip.Items.Add("Exit Firelight", null, ExitFirelightClicked);
             trayIcon.ContextMenuStrip = menuStrip;
-
-            if (args.Length > 0 && args[0] == "ui")
-            {
-                OpenFirelightUI();
-            }
-            Application.Run();
         }
 
         private static void ShowFirelightClicked(object sender, EventArgs e)
@@ -66,6 +74,7 @@ namespace FirelightService
 
         private static void OpenFirelightUI()
         {
+            _ = StartPipeline();
             Process[] processes = Process.GetProcessesByName("Firelight");
             if (processes.Length > 0)
             {
