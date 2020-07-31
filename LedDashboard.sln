@@ -15,7 +15,12 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RocketLeague", "RocketLeagu
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FirelightService", "FirelightService\FirelightService.csproj", "{CC6BC956-15C9-423E-89FF-C6979B9E33F1}"
 EndProject
+Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "SharedLib", "SharedLib\SharedLib.shproj", "{0C2C4DD9-EE7B-4AA6-AEC6-9AE04AD39C8A}"
+EndProject
 Global
+	GlobalSection(SharedMSBuildProjectFiles) = preSolution
+		SharedLib\SharedLib.projitems*{0c2c4dd9-ee7b-4aa6-aec6-9ae04ad39c8a}*SharedItemsImports = 13
+	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
 		Debug|x64 = Debug|x64

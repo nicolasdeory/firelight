@@ -1,13 +1,18 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
     <TargetFramework>netcoreapp3.1</TargetFramework>
     <ApplicationIcon />
     <StartupObject>FirelightService.Program</StartupObject>
+    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+    <LangVersion>8.0</LangVersion>
+    <RuntimeIdentifier>win-x64</RuntimeIdentifier>
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Chromely" Version="5.0.83" />
+    <PackageReference Include="Chromely.CefGlue" Version="5.0.83" />
     <PackageReference Include="PipeMethodCalls" Version="1.0.1" />
   </ItemGroup>
 
@@ -20,5 +25,8 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
   </ItemGroup>
+
+  <Import Project="..\SharedLib\SharedLib.projitems" Label="Shared" />
+
 
 </Project>
