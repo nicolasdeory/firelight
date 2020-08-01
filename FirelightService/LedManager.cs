@@ -12,12 +12,12 @@ using System.Threading.Tasks;
 namespace FirelightService
 {
 
-    class LedManager
+    class LightManager
     {
         /// <summary>
         /// Null until it's initialized
         /// </summary>
-        public static LedManager Instance { get; private set; }
+        public static LightManager Instance { get; private set; }
 
         public delegate void UpdateDisplayHandler(LEDFrame frame);
 
@@ -62,13 +62,13 @@ namespace FirelightService
         /// </summary>
         public static void Init()
         {
-            Instance = new LedManager();
+            Instance = new LightManager();
         }
 
         /// <summary>
         /// Starts the LED Manager in keyboard mode by default. Use <seealso cref="SetController"/> to further customize settings, especially for LED strips
         /// </summary>
-        public LedManager()
+        public LightManager()
         {
             Debug.WriteLine("Initializing LedManager");
             InitLeds();
@@ -141,7 +141,7 @@ namespace FirelightService
                 LEDModule blinkModule = BlinkWhiteModule.Create();
                 blinkModule.NewFrameReady += UpdateLEDDisplay;
                 CurrentLEDModule = blinkModule;
-                await Task.Delay(11000);
+                await Task.Delay(31000);
                 ProcessListenerService.Start();
                 if (CurrentLEDModule is BlinkWhiteModule)
                     CurrentLEDModule = lastActiveModule;

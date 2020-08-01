@@ -4,7 +4,7 @@ using System.Drawing;
 using System.Runtime.InteropServices;
 using static Chromely.Native.WinNativeMethods;
 
-namespace FirelightService.CustomHandlers
+namespace FirelightUI.CustomHandlers
 {
     public struct MINMAXINFO
     {

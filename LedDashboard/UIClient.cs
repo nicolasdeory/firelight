@@ -3,9 +3,9 @@ using Chromely.Core.Configuration;
 using System;
 using System.Diagnostics;
 
-namespace FirelightService
+namespace FirelightUI
 {
-    class LedDashboard
+    class UIClient
     {
         [STAThread]
         static void Main(string[] args)
@@ -30,6 +30,8 @@ namespace FirelightService
 #endif
             config.WindowOptions.Size = new WindowSize(1200, 700);
             config.WindowOptions.StartCentered = true;
+
+            _ = BackendMessageService.InitConnection();
 
             // Chromely initialization
             AppBuilder

@@ -2,7 +2,11 @@
 using PipeMethodCalls;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.IO;
 using System.Text;
+using System.Threading.Tasks;
+using System.Windows.Forms;
 
 namespace FirelightUI
 {
@@ -14,26 +18,35 @@ namespace FirelightUI
 
         static PipeClientWithCallback<IBackendController, IUIController> pipeClient;
 
-        public static bool IsInitialized { get { return pipeClient != null; } }
+        public static bool IsInitialized { get; private set; } = false;
         /// <summary>
         /// Establishes a connection to the backend. Blocks until client is connected.
         /// </summary>
-        public static void InitConnection()
+        public static async Task InitConnection()
         {
             pipeClient = new PipeClientWithCallback<IBackendController, IUIController>("firelightpipe", () => new FirelightUIController());
-            pipeClient.ConnectAsync().Wait(2000);
+            //pipeClient.SetLogger(message => Debug.WriteLine(message));
+
+            await pipeClient.ConnectAsync();
+
+            Debug.WriteLine("Pipe connected");
+            IsInitialized = true;
         }
 
         /// <summary>
         /// Gets the light data.
         /// </summary>
         /// <returns></returns>
-        public static List<string[]> GetLights()
+        public static async Task<List<string[]>> GetLights()
         {
             if (!IsInitialized)
-                throw new InvalidOperationException("Pipe not initialized yet. Call InitConnection() first");
+                //throw new InvalidOperationException("Pipe not initialized yet. Call InitConnection() first");
+                return new List<string[]>();
 
-            return pipeClient.InvokeAsync(x => x.GetLights()).Result;
+            List<string[]> res = null;
+            res = await pipeClient.InvokeAsync(x => x.GetLights());
+
+            return res;
 
         }
     }

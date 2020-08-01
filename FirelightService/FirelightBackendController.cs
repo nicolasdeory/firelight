@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Diagnostics;
 
 namespace FirelightService
 {
@@ -12,10 +13,10 @@ namespace FirelightService
         public List<string[]> GetLights()
         {
             LEDData data;
-            if (LedManager.Instance == null || LedManager.Instance.CurrentLEDModule == null)
+            if (LightManager.Instance == null || LightManager.Instance.CurrentLEDModule == null)
                 data = LEDData.Empty;
             else
-                data = LedManager.Instance.LastDisplayedFrame.Leds;
+                data = LightManager.Instance.LastDisplayedFrame.Leds;
             //Debug.WriteLine(string.Join(',',(object[])data.Keyboard));
             List<string[]> ledList = new List<string[]>();
             for (int i = 0; i < 6; i++)

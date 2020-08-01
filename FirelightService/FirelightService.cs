@@ -7,8 +7,9 @@ using System.Windows.Forms;
 
 namespace FirelightService
 {
-    class Program
+    class FirelightService
     {
+        static PipeServerWithCallback<IUIController, IBackendController> pipeServer;
         static void Main(string[] args)
         {
 
@@ -24,7 +25,7 @@ namespace FirelightService
                 OpenFirelightUI();
             }
 
-            
+            LightManager.Init();
             RenderTrayIcon();
 
             Application.Run();
@@ -34,9 +35,28 @@ namespace FirelightService
         {
             // The first type parameter is the controller interface that exposes methods to be called
             // by this client. The second one is the one that exposes methods to be called from another client.
-            var pipeServer = new PipeServerWithCallback<IUIController, IBackendController>("firelightpipe", () => new FirelightBackendController());
-            await pipeServer.WaitForConnectionAsync();
-           // string concatResult = await pipeServer.InvokeAsync(c => c.Concatenate("a", "b"));
+            while (true)
+            {
+                try
+                {
+                    pipeServer = new PipeServerWithCallback<IUIController, IBackendController>("firelightpipe", () => new FirelightBackendController());
+                    // TODO: Reconnections are still a bit unstable. Pipes must be closed and recreated properly. As of now, client can only reconnect once.
+                    // Subsequent reconnections won't work
+
+                    // pipeServer.SetLogger(message => Debug.WriteLine(message));
+                    await pipeServer.WaitForConnectionAsync();
+                    Debug.WriteLine("Pipeline connected");
+                    await pipeServer.WaitForRemotePipeCloseAsync();
+                    pipeServer.Dispose();
+                    Debug.WriteLine("Pipeline disconnected. Waiting for reconnection...");
+                } catch (Exception e)
+                {
+                    Debug.WriteLine(e.Message + " // " + e.StackTrace);
+
+                }
+                
+            }
+
         }
 
         private static void RenderTrayIcon()

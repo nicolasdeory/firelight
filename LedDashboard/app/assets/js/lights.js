@@ -38,22 +38,6 @@ function getLightFrame() {
 
 $(document).ready(() => {
 
-    var request = {
-        "method": "GET",
-        "url": "/lights/initialize",
-        "parameters": null,
-        "postData": null
-    };
-    window.cefQuery({
-        request: JSON.stringify(request),
-        onSuccess: function (response) {
-        }, onFailure: function (err, msg) {
-            console.log(err, msg);
-        }
-    });
-    setTimeout(() => {
-        setInterval(getLightFrame, 30);
-    }, 1500);
-    
+    setInterval(getLightFrame, 30);
 
 });

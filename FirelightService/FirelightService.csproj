@@ -4,7 +4,7 @@
     <OutputType>WinExe</OutputType>
     <TargetFramework>netcoreapp3.1</TargetFramework>
     <ApplicationIcon />
-    <StartupObject>FirelightService.Program</StartupObject>
+    <StartupObject></StartupObject>
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
     <LangVersion>8.0</LangVersion>
     <RuntimeIdentifier>win-x64</RuntimeIdentifier>

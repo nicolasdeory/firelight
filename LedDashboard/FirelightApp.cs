@@ -2,13 +2,13 @@
 using Chromely.Core;
 using Chromely.Core.Host;
 using Chromely.Core.Network;
-using FirelightService.Controllers;
-using FirelightService.CustomHandlers;
+using FirelightUI.CustomHandlers;
+using FirelightUI.Controllers;
 using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace FirelightService
+namespace FirelightUI
 {
     class FirelightApp : ChromelyBasicApp
     {
