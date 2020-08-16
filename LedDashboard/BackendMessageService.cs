@@ -19,6 +19,7 @@ namespace FirelightUI
         static PipeClientWithCallback<IBackendController, IUIController> pipeClient;
 
         public static bool IsInitialized { get; private set; } = false;
+
         /// <summary>
         /// Establishes a connection to the backend. Blocks until client is connected.
         /// </summary>
