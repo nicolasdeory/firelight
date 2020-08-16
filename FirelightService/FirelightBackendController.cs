@@ -19,7 +19,7 @@ namespace FirelightService
                 data = LightManager.Instance.LastDisplayedFrame.Leds;
             //Debug.WriteLine(string.Join(',',(object[])data.Keyboard));
             List<string[]> ledList = new List<string[]>();
-            for (int i = 0; i < 6; i++)
+            for (int i = 0; i <= 6; i++)
             {
                 Led[] arr;
                 switch (i)

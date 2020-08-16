@@ -1,8 +1,4 @@
 ﻿function setKeyboardColor(index, hex) {
-    if (hex == "000000")
-        hex = "rgba(255,255,255,0.05)";
-    else
-        hex = "#" + hex;
     if (index == 46) {
         $("#k46").attr("fill", hex);
         $("#k46-1").attr("fill", hex);
@@ -11,9 +7,54 @@
     }
 }
 
+function setLedColor(prefix, index, hex) {
+    $("#" + prefix + index).attr("fill", hex);
+}
+
+
+function sanitizeHex(hex) {
+    if (hex == "000000")
+        hex = "rgba(255,255,255,0.05)";
+    else
+        hex = "#" + hex;
+    return hex;
+}
+
 function setLightColors(lightArr) {
+    // Keyboard
     for (let i = 0; i < lightArr[0].length; i++) {
-        setKeyboardColor(i, lightArr[0][i])
+        let hex = sanitizeHex(lightArr[0][i])
+        setKeyboardColor(i, hex);
+    }
+    // Strip
+   /* for (let i = 0; i < lightArr[1].length; i++) {
+        let hex = sanitizeHex(lightArr[0][i])
+        setKeyboardColor(i, hex);
+    }*/
+    // Mouse
+    for (let i = 0; i < lightArr[2].length; i++) {
+        let hex = sanitizeHex(lightArr[2][i])
+        setLedColor('m', i, hex);
+    }
+    // Mousepad
+    for (let i = 0; i < lightArr[3].length; i++) {
+        let hex = sanitizeHex(lightArr[3][i])
+        setLedColor('mp', i, hex);
+    }
+    // Headset
+    for (let i = 0; i < lightArr[4].length; i++) {
+        let hex = sanitizeHex(lightArr[4][i])
+        setLedColor('h', i, hex);
+    }
+    // Keypad
+    for (let i = 0; i < lightArr[5].length; i++) {
+        let hex = sanitizeHex(lightArr[5][i])
+        setLedColor('kp', i, hex);
+    }
+    // General
+    for (let i = 0; i < lightArr[6].length; i++) {
+        let hex = sanitizeHex(lightArr[6][i])
+        setLedColor('g', i, hex);
     }
 }
 
