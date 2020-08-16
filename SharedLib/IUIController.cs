@@ -6,6 +6,6 @@ namespace FirelightCommon
 {
     interface IUIController
     {
-        public void SendError(string err);
+        void SendError(string err);
     }
 }

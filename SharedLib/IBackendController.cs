@@ -6,8 +6,8 @@ namespace FirelightCommon
 {
     interface IBackendController
     {
-        public List<string[]> GetLights();
+        List<string[]> GetLights();
 
-        public void LogMessage(string message);
+        void LogMessage(string message);
     }
 }

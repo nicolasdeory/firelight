@@ -8,14 +8,11 @@
 
   <ItemGroup>
     <None Remove="ChromaAppInfo.xml" />
-    <None Remove="RazerChroma.Net.dll" />
     <None Remove="Resources\keyboardLayout.json" />
   </ItemGroup>
 
   <ItemGroup>
     <Content Include="ChromaAppInfo.xml" />
-    <Content Include="RazerChroma.Net.dll" />
-    <Content Include="RazerChromaFrameEngine.dll" />
     <Content Include="Resources\keyboardLayout.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
@@ -52,21 +49,14 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Update="CChromaEditorLibrary64.dll">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
     <None Update="DesktopDuplication.dll">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Update="SharpDX.Direct3D11.dll">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Update="SharpDX.dll">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="SharpDX.DXGI.dll">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
   </ItemGroup>
+
+  <Import Project="..\SharedLib\SharedLib.projitems" Label="Shared" />
 
 </Project>
