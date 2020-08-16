@@ -7,10 +7,12 @@ using FirelightUI.Controllers;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using Chromely.Core.Helpers;
+using Chromely.CefGlue.Browser.EventParams;
 
 namespace FirelightUI
 {
-    class FirelightApp : ChromelyBasicApp
+    class FirelightApp : ChromelyEventedApp
     {
         public override void Configure(IChromelyContainer container)
         {
@@ -22,6 +24,11 @@ namespace FirelightUI
             // Custom handlers
             container.RegisterSingleton(typeof(IChromelyNativeHost), typeof(IChromelyNativeHost).Name, typeof(CustomNativeWindow));
 
+        }
+
+        protected override void OnBeforeClose(object sender, BeforeCloseEventArgs eventArgs)
+        {
+            BackendMessageService.Disconnect();
         }
     }
 }

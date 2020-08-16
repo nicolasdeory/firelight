@@ -1,6 +1,7 @@
 ﻿using PipeMethodCalls;
 using System;
 using System.Diagnostics;
+using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -35,20 +36,32 @@ namespace FirelightService
         {
             // The first type parameter is the controller interface that exposes methods to be called
             // by this client. The second one is the one that exposes methods to be called from another client.
+            Random random = new Random();
             while (true)
             {
                 try
                 {
-                    pipeServer = new PipeServerWithCallback<IUIController, IBackendController>("firelightpipe", () => new FirelightBackendController());
+                    int randomNum = random.Next(0, 1000000);
+                    string pipeName = "firelightpipe-" + randomNum.ToString();
+                    using (StreamWriter f = File.CreateText("pipename"))
+                    {
+                        f.Write(pipeName);
+                    };
+
+                    pipeServer = new PipeServerWithCallback<IUIController, IBackendController>(pipeName, () => new FirelightBackendController());
                     // TODO: Reconnections are still a bit unstable. Pipes must be closed and recreated properly. As of now, client can only reconnect once.
                     // Subsequent reconnections won't work
 
                     // pipeServer.SetLogger(message => Debug.WriteLine(message));
                     await pipeServer.WaitForConnectionAsync();
-                    Debug.WriteLine("Pipeline connected");
+                    Debug.WriteLine("Pipeline connected - name " + pipeName);
+
+                    // Delete the pipe name file
+                    File.Delete("pipename");
+
                     await pipeServer.WaitForRemotePipeCloseAsync();
                     pipeServer.Dispose();
-                    Debug.WriteLine("Pipeline disconnected. Waiting for reconnection...");
+                    Debug.WriteLine("Pipeline disconnected.");
                 } catch (Exception e)
                 {
                     Debug.WriteLine(e.Message + " // " + e.StackTrace);

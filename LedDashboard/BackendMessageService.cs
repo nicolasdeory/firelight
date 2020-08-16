@@ -24,13 +24,19 @@ namespace FirelightUI
         /// </summary>
         public static async Task InitConnection()
         {
-            pipeClient = new PipeClientWithCallback<IBackendController, IUIController>("firelightpipe", () => new FirelightUIController());
+            string pipeName = File.ReadAllText("pipename");
+            pipeClient = new PipeClientWithCallback<IBackendController, IUIController>(pipeName, () => new FirelightUIController());
             //pipeClient.SetLogger(message => Debug.WriteLine(message));
 
             await pipeClient.ConnectAsync();
 
             Debug.WriteLine("Pipe connected");
             IsInitialized = true;
+        }
+
+        public static void Disconnect()
+        {
+            pipeClient.Dispose();
         }
 
         /// <summary>
