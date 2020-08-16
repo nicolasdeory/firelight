@@ -49,8 +49,6 @@ namespace FirelightService
                     };
 
                     pipeServer = new PipeServerWithCallback<IUIController, IBackendController>(pipeName, () => new FirelightBackendController());
-                    // TODO: Reconnections are still a bit unstable. Pipes must be closed and recreated properly. As of now, client can only reconnect once.
-                    // Subsequent reconnections won't work
 
                     // pipeServer.SetLogger(message => Debug.WriteLine(message));
                     await pipeServer.WaitForConnectionAsync();

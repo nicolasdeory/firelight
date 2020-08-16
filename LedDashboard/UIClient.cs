@@ -33,6 +33,9 @@ namespace FirelightUI
 
             _ = BackendMessageService.InitConnection();
 
+            // Setup logger
+            Trace.Listeners.Add(new FirelightLogger());
+
             // Chromely initialization
             AppBuilder
             .Create()

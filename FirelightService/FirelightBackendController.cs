@@ -53,5 +53,10 @@ namespace FirelightService
             }
             return ledList;
         }
+
+        public void LogMessage(string message)
+        {
+            Debug.WriteLine($"[UI Client] {message}");
+        }
     }
 }

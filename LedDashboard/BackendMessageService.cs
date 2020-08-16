@@ -27,7 +27,6 @@ namespace FirelightUI
             string pipeName = File.ReadAllText("pipename");
             pipeClient = new PipeClientWithCallback<IBackendController, IUIController>(pipeName, () => new FirelightUIController());
             //pipeClient.SetLogger(message => Debug.WriteLine(message));
-
             await pipeClient.ConnectAsync();
 
             Debug.WriteLine("Pipe connected");
@@ -51,9 +50,13 @@ namespace FirelightUI
 
             List<string[]> res = null;
             res = await pipeClient.InvokeAsync(x => x.GetLights());
-
             return res;
 
+        }
+
+        public static void LogMessage(string message)
+        {
+            _ = pipeClient.InvokeAsync(x => x.LogMessage(message));
         }
     }
 }
