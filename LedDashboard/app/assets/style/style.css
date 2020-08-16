@@ -88,6 +88,14 @@ body {
 
 #ledstrip-container {
     margin-right: 100vw;
+    position: relative;
+}
+
+#ledstrip-canvas {
+    position: absolute;
+    top: 44px;
+    left: 1px;
+    width: 880px;
 }
 
 .lighting-container {

@@ -87,8 +87,18 @@ function sanitizeHex(hex) {
     if (luminosity < 0.2)
         hex = lerpColor("#2D2D2D", hex, luminosity);
     else
-        hex = "#" + hex
+        hex = "#" + hex;
     return hex;
+}
+
+function clearLedStripCanvas()
+{
+    ledStripContext.clearRect(0, 0, $("#ledstrip-canvas").width(), $("#ledstrip-canvas").height());
+}
+
+function setLedStripColor(index, hex) {
+    ledStripContext.fillStyle = hex;
+    ledStripContext.fillRect(index * 5, 0, 5, 5);
 }
 
 function setLightColors(lightArr) {
@@ -98,10 +108,11 @@ function setLightColors(lightArr) {
         setKeyboardColor(i, hex);
     }
     // Strip
-   /* for (let i = 0; i < lightArr[1].length; i++) {
-        let hex = sanitizeHex(lightArr[0][i])
-        setKeyboardColor(i, hex);
-    }*/
+    clearLedStripCanvas();
+    for (let i = 0; i < lightArr[1].length; i++) {
+        let hex = sanitizeHex(lightArr[1][i])
+        setLedStripColor(i, hex);
+    }
     // Mouse
     for (let i = 0; i < lightArr[2].length; i++) {
         let hex = sanitizeHex(lightArr[2][i])
@@ -147,8 +158,10 @@ function getLightFrame() {
     });
 }
 
-
+var ledStripContext = null;
 $(document).ready(() => {
+
+    ledStripContext = $("#ledstrip-canvas")[0].getContext("2d");
 
     setInterval(getLightFrame, 30);
 
