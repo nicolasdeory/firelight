@@ -268,15 +268,18 @@ namespace FirelightCore
         private void SendKeyboardData(LEDData data)
         {
             byte[] colorArray = data.Keyboard.ToByteArray();
-            int black = ChromaAnimationAPI.GetRGB(0, 0, 0);
-            foreach (Keyboard.RZKEY key in numPadKeys)
-            {
-                ChromaAnimationAPI.SetKeyColor(baseKeyboardAnim, 0, (int)key, black);
-            }
+            
             for (int i = 0; i < 88; i++) // TODO: NUMPAD
             {
                 int color = ChromaAnimationAPI.GetRGB(colorArray[i * 3], colorArray[i * 3 + 1], colorArray[i * 3 + 2]);
                 ChromaAnimationAPI.SetKeyColor(baseKeyboardAnim, 0, (int)indexKeyMap[i], color);
+            }
+            int j = 88;
+            foreach (Keyboard.RZKEY key in numPadKeys)
+            {
+                int color = ChromaAnimationAPI.GetRGB(colorArray[j * 3], colorArray[j * 3 + 1], colorArray[j * 3 + 2]);
+                ChromaAnimationAPI.SetKeyColor(baseKeyboardAnim, 0, (int)key, color);
+                j++;
             }
         }
 
