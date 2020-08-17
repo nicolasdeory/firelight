@@ -49,10 +49,19 @@ namespace FirelightUI
                 //throw new InvalidOperationException("Pipe not initialized yet. Call InitConnection() first");
                 return new List<string[]>();
 
-            List<string[]> res = null;
-            res = await pipeClient.InvokeAsync(x => x.GetLights());
-            return res;
-
+            return await Task.Run(() =>
+            {
+                Task<List<string[]>> task = pipeClient.InvokeAsync(x => x.GetLights());
+                bool completedInTime = task.Wait(2000);
+                if (!completedInTime)
+                {
+                    Debug.WriteLine("Connection to main process timed out");
+                    Application.Restart();
+                    Environment.Exit(0);
+                }
+                return task.Result;
+            });
+            
         }
 
         public static void LogMessage(string message)
