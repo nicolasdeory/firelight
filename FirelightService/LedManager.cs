@@ -218,16 +218,18 @@ namespace FirelightService
         private void SendLedData(LEDFrame frame)
         {
             LastDisplayedFrame = frame;
-          /*  byte[] colorArray = frame.Leds.Keyboard.ToByteArray();
-            if (colorArray.Any(x => x != 0))
+            lightControllers.ForEach(controller =>
             {
-                Debug.WriteLine("lm not black!");
-            }
-            else
-            {
-                Debug.WriteLine("lm black!");
-            }*/
-           lightControllers.ForEach(controller => controller.SendData(frame));
+                if (controller.Errored)
+                {
+                    string controllerName = controller.GetType().Name;
+                    FrontendMessageService.SendError("hardware-"+ controllerName, controller.ErrorCode);
+                } else
+                {
+                    controller.SendData(frame);
+                }
+            });
+
            // DisplayUpdated?.Invoke(frame);
         }
 

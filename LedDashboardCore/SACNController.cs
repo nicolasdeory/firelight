@@ -98,5 +98,9 @@ namespace FirelightCore
 
         public void Dispose() { }
         public bool Enabled { get; set; }
+
+        public bool Errored => false;
+
+        public string ErrorCode => null;
     }
 }

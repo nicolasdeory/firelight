@@ -158,11 +158,59 @@ function getLightFrame() {
     });
 }
 
+var currentlyDisplayedError = null;
+
+function handleErrors(errors) {
+    console.log(errors);
+    if (errors.length == 0) {
+        dismissError();
+    } else {
+        let mostRecentError = errors[errors.length - 1];
+        if (currentlyDisplayedError && currentlyDisplayedError.Id == mostRecentError.Id)
+            return;
+        if (!currentlyDisplayedError)
+            showError();
+        currentlyDisplayedError = mostRecentError;
+        $("#error-title").text(currentlyDisplayedError.Title);
+        $("#error-cta").text(currentlyDisplayedError.CtaText);
+    }
+
+    
+}
+
+function dismissError() {
+    $("#error-container").removeClass("visible");
+}
+
+function showError() {
+    $("#error-container").addClass("visible");
+}
+
+function getErrors() {
+    var request = {
+        "method": "GET",
+        "url": "/global/errors",
+        "parameters": null,
+        "postData": null
+    };
+    window.cefQuery({
+        request: JSON.stringify(request),
+        onSuccess: function (response) {
+            respObject = JSON.parse(response);
+            handleErrors(respObject.Data);
+        }, onFailure: function (err, msg) {
+            console.log(err, msg);
+        }
+    });
+}
+
 var ledStripContext = null;
 $(document).ready(() => {
 
     ledStripContext = $("#ledstrip-canvas")[0].getContext("2d");
 
     setInterval(getLightFrame, 30);
+
+    setInterval(getErrors, 200)
 
 });

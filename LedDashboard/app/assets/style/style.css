@@ -72,6 +72,31 @@ body {
     background-color: #222;
 }
 
+#error-container {
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+    height: 50px;
+    background-color: #FF3737;
+    color: white;
+    display: flex;
+    flex-direction: row;
+    padding: 0 60px;
+    justify-content: space-between;
+    align-items: center;
+    font-weight: 600;
+    transform: translateY(50px);
+    transition: transform 0.2s ease-out;
+}
+
+#error-container.visible {
+    transform: translateY(0);
+}
+
+#error-container button {
+    color: #FFE14D;
+}
+
 .lights-container {
     padding: 50px;
     display: flex;

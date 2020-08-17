@@ -10,7 +10,6 @@ namespace FirelightService
 {
     class FirelightService
     {
-        static PipeServerWithCallback<IUIController, IBackendController> pipeServer;
         static void Main(string[] args)
         {
 
@@ -32,43 +31,7 @@ namespace FirelightService
             Application.Run();
         }
 
-        private static async Task StartPipeline()
-        {
-            // The first type parameter is the controller interface that exposes methods to be called
-            // by this client. The second one is the one that exposes methods to be called from another client.
-            Random random = new Random();
-            while (true)
-            {
-                try
-                {
-                    int randomNum = random.Next(0, 1000000);
-                    string pipeName = "firelightpipe-" + randomNum.ToString();
-                    using (StreamWriter f = File.CreateText("pipename"))
-                    {
-                        f.Write(pipeName);
-                    };
-
-                    pipeServer = new PipeServerWithCallback<IUIController, IBackendController>(pipeName, () => new FirelightBackendController());
-
-                    // pipeServer.SetLogger(message => Debug.WriteLine(message));
-                    await pipeServer.WaitForConnectionAsync();
-                    Debug.WriteLine("Pipeline connected - name " + pipeName);
-
-                    // Delete the pipe name file
-                    File.Delete("pipename");
-
-                    await pipeServer.WaitForRemotePipeCloseAsync();
-                    pipeServer.Dispose();
-                    Debug.WriteLine("Pipeline disconnected.");
-                } catch (Exception e)
-                {
-                    Debug.WriteLine(e.Message + " // " + e.StackTrace);
-
-                }
-                
-            }
-
-        }
+        
 
         private static void RenderTrayIcon()
         {
@@ -105,8 +68,8 @@ namespace FirelightService
 
         private static void OpenFirelightUI()
         {
-            _ = StartPipeline();
-            Process[] processes = Process.GetProcessesByName("Firelight");
+            _ = FrontendMessageService.StartPipeline();
+            Process[] processes = Process.GetProcessesByName("FirelightUI");
             if (processes.Length > 0)
             {
                 IntPtr handle = processes[0].MainWindowHandle;
@@ -115,7 +78,7 @@ namespace FirelightService
             }
             else
             {
-                Process p = Process.Start("Firelight.exe");
+                Process p = Process.Start("FirelightUI.exe");
                 ChildProcessTracker.AddProcess(p);
             }           
         }

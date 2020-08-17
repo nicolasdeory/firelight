@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.29326.143
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Firelight", "LedDashboard\Firelight.csproj", "{AD75C0B1-A782-4A79-888D-A7D2DAFA6B75}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FirelightUI", "LedDashboard\FirelightUI.csproj", "{AD75C0B1-A782-4A79-888D-A7D2DAFA6B75}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ChromaSDK", "ChromaSDK\ChromaSDK.csproj", "{74B5CFA3-8F45-4DB8-8DD6-BA8126A4F4BD}"
 EndProject

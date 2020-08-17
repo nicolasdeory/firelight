@@ -155,6 +155,9 @@ namespace FirelightCore
         private static int KEYBOARD_LED_COUNT = MAX_KEYBOARD_COLS * MAX_KEYBOARD_ROWS;
         private static int MOUSE_LED_COUNT = 16;
 
+        public bool Errored { get; private set; }
+        public string ErrorCode { get; private set; }
+
         public static RazerChromaController Create()
         {
             return new RazerChromaController();
@@ -191,9 +194,21 @@ namespace FirelightCore
                         errorString = "The Chroma SDK service is not active. This is usually caused because Razer Synapse VERSION 3 is not installed or updated to the latest version.";
                         break;
                 }
-                MessageBox.Show("Error initializing Razer Chroma controller. Status=" + status + "\n" + errorString);
-                throw new InvalidOperationException("Error initializing Razer Chroma controller. Is Razer Synapse installed?", e);
+                //MessageBox.Show("Error initializing Razer Chroma controller. Status=" + status + "\n" + errorString);
+                //throw new InvalidOperationException("Error initializing Razer Chroma controller. Is Razer Synapse installed?", e);
+                Errored = true;
+                if (e is DllNotFoundException)
+                {
+                    ErrorCode = "dll";
+                } else
+                {
+                    ErrorCode = status.ToString();
+                }
+                return;
             }
+
+            Errored = false;
+            ErrorCode = null;
 
             baseKeyboardAnim = CreateAnimation(ChromaAnimationAPI.DeviceType.DE_2D, (int)ChromaAnimationAPI.Device2D.Keyboard);
             //ChromaAnimationAPI.AddFrame(baseKeyboardAnim, 1, new int[MAX_KEYBOARD_COLS * MAX_KEYBOARD_ROWS], MAX_KEYBOARD_COLS * MAX_KEYBOARD_ROWS);
@@ -402,6 +417,8 @@ namespace FirelightCore
             /*   if (api != null) api.Dispose();
                api = null;
                keyboardFrame = null;*/
+            if (Errored) 
+                return;
             disposed = true;
             ChromaAnimationAPI.StopAll();
             ChromaAnimationAPI.CloseAll();

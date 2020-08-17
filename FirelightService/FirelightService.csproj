@@ -17,7 +17,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\LedDashboard\Firelight.csproj" />
+    <ProjectReference Include="..\LedDashboard\FirelightUI.csproj" />
   </ItemGroup>
 
   <ItemGroup>

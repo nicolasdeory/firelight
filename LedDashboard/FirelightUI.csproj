@@ -19,6 +19,8 @@
   </PropertyGroup>
   <PropertyGroup>
     <StartupObject />
+    <RootNamespace>FirelightUI</RootNamespace>
+    <AssemblyName>FirelightUI</AssemblyName>
   </PropertyGroup>
   <ItemGroup>
     <Content Include="ChromaAppInfo.xml">

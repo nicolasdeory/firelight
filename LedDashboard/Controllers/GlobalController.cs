@@ -9,13 +9,16 @@ using System.Threading.Tasks;
 
 namespace FirelightUI.Controllers
 {
-    class LightController : ChromelyController
+    /// <summary>
+    /// Handles global routes such as app errors
+    /// </summary>
+    class GlobalController : ChromelyController
     {
-        [HttpGet(Route = "/lights/lastframe")]
-        public async Task<ChromelyResponse> GetLights(ChromelyRequest request)
+        [HttpGet(Route = "/global/errors")]
+        public ChromelyResponse GetErrors(ChromelyRequest request)
         {
             ChromelyResponse resp = new ChromelyResponse(request.Id);
-            resp.Data = await BackendMessageService.GetLights();
+            resp.Data = GlobalAppState.Errors;
             return resp;
         }
     }

@@ -8,5 +8,8 @@ namespace FirelightCore
 
         //public void SendData(int ledCount, byte[] data, LightingMode mode);
         public void SendData(LEDFrame data);
+
+        public bool Errored { get; }
+        public string ErrorCode { get; }
     }
 }
