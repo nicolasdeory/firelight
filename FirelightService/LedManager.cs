@@ -90,6 +90,7 @@ namespace FirelightService
         private void InitLeds(bool reverseOrder = false)
         {
             lightControllers.Add(RazerChromaController.Create());
+            lightControllers.Add(NZXTController.Create());
             lightControllers.Add(SACNController.Create(reverseOrder));
         }
 

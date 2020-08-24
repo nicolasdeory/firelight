@@ -429,10 +429,5 @@ namespace FirelightCore
             }
         }
 
-        public bool IsEnabled()
-        {
-            return enabled;
-        }
-
     }
 }
