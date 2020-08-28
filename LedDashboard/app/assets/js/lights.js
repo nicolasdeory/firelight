@@ -161,7 +161,6 @@ function getLightFrame() {
 var currentlyDisplayedError = null;
 
 function handleErrors(errors) {
-    console.log(errors);
     if (errors.length == 0) {
         dismissError();
     } else {

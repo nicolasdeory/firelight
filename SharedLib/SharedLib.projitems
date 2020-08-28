@@ -12,6 +12,12 @@
     <None Include="$(MSBuildThisFileDirectory)CChromaEditorLibrary64.dll">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Include="$(MSBuildThisFileDirectory)ConstantQTransform.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="$(MSBuildThisFileDirectory)ConstantQTransform.pdb">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Include="$(MSBuildThisFileDirectory)DesktopDuplication.dll">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>

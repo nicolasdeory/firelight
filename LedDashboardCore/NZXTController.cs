@@ -68,9 +68,18 @@ namespace FirelightCore
 
             Task.Run(async () =>
             {
-                device = await SmartDeviceV2.OpenDeviceAsync(config);
-                if (device == null)
-                    Debug.WriteLine("[NZXTController] No devices detected");
+                try
+                {
+                    device = await SmartDeviceV2.OpenDeviceAsync(config);
+                    if (device == null)
+                        Debug.WriteLine("[NZXTController] No devices detected");
+                }
+                catch (Exception e)
+                {
+                    Debug.WriteLine("Something bad happened");
+                    Debug.WriteLine(e.Message + "//" + e.StackTrace);
+                }
+
                 initialized = true;
             });
             disposed = false;

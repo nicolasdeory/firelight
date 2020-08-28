@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "FirelightService": {
+      "commandName": "Project",
+      "nativeDebugging": false
+    }
+  }
+}

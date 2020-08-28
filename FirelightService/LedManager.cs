@@ -8,6 +8,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using FirelightCore.Modules.FourierAudioLED;
 
 namespace FirelightService
 {
@@ -130,7 +131,7 @@ namespace FirelightService
 
             // TODO: Broken, doesn't return to previous module
 
-            if (CurrentLEDModule is BlinkWhiteModule)
+            if (CurrentLEDModule is FourierAudioLED)
                 return;
 
             Task.Run(async () =>
@@ -139,12 +140,13 @@ namespace FirelightService
                 ProcessListenerService.Stop();
                 await Task.Delay(100);
                 LEDModule lastActiveModule = CurrentLEDModule;
-                LEDModule blinkModule = BlinkWhiteModule.Create();
+                LEDModule blinkModule = FourierAudioLED.Create();
                 blinkModule.NewFrameReady += UpdateLEDDisplay;
                 CurrentLEDModule = blinkModule;
-                await Task.Delay(31000);
+                // await Task.Delay(31000);
+                await Task.Delay(150000);
                 ProcessListenerService.Start();
-                if (CurrentLEDModule is BlinkWhiteModule)
+                if (CurrentLEDModule is FourierAudioLED)
                     CurrentLEDModule = lastActiveModule;
             }).CatchExceptions();
 

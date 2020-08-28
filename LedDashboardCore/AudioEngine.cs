@@ -11,8 +11,12 @@ namespace FirelightCore
         public event NewDataHandler NewData;
 
 
-        public const int BUFFERSIZE = 1024;
-        public const int RATE = 44100;
+        //  public const int BUFFERSIZE = 32768*2;
+        // public const int BUFFERSIZE = 32768 / 2;
+        // public const int BUFFERSIZE = 1024;
+        public const int BUFFERSIZE = 2048;
+        //public const int BUFFERSIZE = 2048;
+        public const int RATE = 48000;
 
         private int sampleRate;
 
@@ -59,10 +63,12 @@ namespace FirelightCore
             sampleRate = RATE;
             Debug.WriteLine("Running at a sample rate of " + sampleRate);
             wi.BufferMilliseconds = (int)((double)BUFFERSIZE / (double)RATE * 1000.0);
+            //wi.BufferMilliseconds = 21;
             wi.RecordingStopped += waveIn_RecordingStopped;
             wi.DataAvailable += waveIn_DataAvailable;
 
             bwp = new BufferedWaveProvider(wi.WaveFormat);
+            // bwp.BufferLength = BUFFERSIZE * 2;
             bwp.BufferLength = BUFFERSIZE * 2;
             bwp.DiscardOnBufferOverflow = true;
 
