@@ -131,7 +131,7 @@ namespace FirelightService
 
             // TODO: Broken, doesn't return to previous module
 
-            if (CurrentLEDModule is FourierAudioLED)
+            if (CurrentLEDModule is BlinkWhiteModule)
                 return;
 
             Task.Run(async () =>
@@ -140,13 +140,13 @@ namespace FirelightService
                 ProcessListenerService.Stop();
                 await Task.Delay(100);
                 LEDModule lastActiveModule = CurrentLEDModule;
-                LEDModule blinkModule = FourierAudioLED.Create();
+                LEDModule blinkModule = BlinkWhiteModule.Create();
                 blinkModule.NewFrameReady += UpdateLEDDisplay;
                 CurrentLEDModule = blinkModule;
                 // await Task.Delay(31000);
                 await Task.Delay(150000);
                 ProcessListenerService.Start();
-                if (CurrentLEDModule is FourierAudioLED)
+                if (CurrentLEDModule is BlinkWhiteModule)
                     CurrentLEDModule = lastActiveModule;
             }).CatchExceptions();
 

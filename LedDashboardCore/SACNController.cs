@@ -16,6 +16,12 @@ namespace FirelightCore
         SACNSender sender;
         bool reverseOrder;
 
+
+        const int TOTAL_STRIP_LEDS = 300;
+        const int OFFSET = 100; // must be >=0
+        const bool REVERSE_ORDER = false;
+        const bool MIRROR_MODE = false; // TODO
+
         private SACNController(bool reverseOrder)
         {
             this.reverseOrder = reverseOrder;
@@ -30,71 +36,46 @@ namespace FirelightCore
             }
         }
 
-      /*  public void SendData(int ledCount, byte[] data, LightingMode mode)
-        {
-            Task.Run(() => sender.Send(1, SanitizeDataArray(ledCount, data, mode)));
-        }*/
-
         public void SendData(LEDFrame frame)
         {
             if (!frame.Zones.HasFlag(LightZone.Strip))
                 return;
             LEDData data = frame.Leds;
             //sender.Send(1, SanitizeDataArray(ledCount, data, mode))
-            sender.Send(1, data.Strip.ToByteArray(this.reverseOrder));
+            sender.Send(1, GetByteArray(data.Strip));
         }
 
-        /*private byte[] SanitizeDataArray(int ledCount, byte[] data, LightingMode mode)
+        byte[] GetByteArray(Led[] leds)
         {
-            switch (mode)
+            byte[] data = new byte[TOTAL_STRIP_LEDS * 3];
+            if (REVERSE_ORDER)
             {
-                case LightingMode.Line:
-                    return data;
-                case LightingMode.Point:
-                    var bytes = new List<byte>();
-                    for (int i = 0; i < ledCount; i++)
-                    {
-                        bytes.Add(data[0]);
-                        bytes.Add(data[1]);
-                        bytes.Add(data[2]);
-                    }
-                    return bytes.ToArray();
-                case LightingMode.Keyboard:
-                    return GetKeyboardToLedStripArray(data).ToByteArray();
-                default:
-                    Console.Error.WriteLine("SACN: Invalid lighting mode");
-                    throw new ArgumentException("Invalid lighting mode");
-            }
-        }*/
-
-        /*public static Led[] GetKeyboardToLedStripArray(byte[] data)
-        {
-            int ledStripLength = 170; // TODO: hardcoded number, standard led strip length?
-            Led[] ls = new Led[ledStripLength];
-            for (int i = 0; i < ledStripLength; i++)
-            {
-                ls[i] = new Led();
-            }
-            List<Point> pts;
-            for (int i = 0; i < ledStripLength; i++)
-            {
-
-                int x = GetNearestXForLed(i);
-                for (int j = 0; j < 6; j++)
+                for (int i = leds.Length * 3 - 1; i >= 0; i -= 3)
                 {
-                    int key = KeyUtils.PointToKey(new Point(x, j));
-                    if (key == -1) continue;
-                    byte[] col = new byte[3] { data[key * 3], data[key * 3 + 1], data[key * 3 + 2] };
-                    ls[i].MixNewColor(HSVColor.FromRGB(col));
+                    if (i - OFFSET*3 - 2 < 0)
+                        break;
+                    int index = (leds.Length * 3 - 1) - i ;
+                    byte[] col = leds[index / 3].color.ToRGB();
+                    data[i - OFFSET * 3] = col[2];
+                    data[i - OFFSET * 3 - 1] = col[1];
+                    data[i - OFFSET * 3 - 2] = col[0];
                 }
             }
-            return ls;
-        }
+            else
+            {
+                for (int i = 0; i < leds.Length * 3; i += 3)
+                {
+                    if (i + OFFSET * 3 > data.Length - 3)
+                        break;
+                    byte[] col = leds[i / 3].color.ToRGB();
+                    data[i + OFFSET*3] = col[0];
+                    data[i + OFFSET * 3 + 1] = col[1];
+                    data[i + OFFSET * 3 + 2] = col[2];
+                }
+            }
 
-        private static int GetNearestXForLed(int led)
-        {
-            return (int)Utils.Scale(led, 0, 170, 0, 19);
-        }*/
+            return data;
+        }
 
         public void Dispose() { }
         public bool Enabled { get; set; }
