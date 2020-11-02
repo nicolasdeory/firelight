@@ -9,18 +9,35 @@ using System.Collections.Generic;
 using System.Text;
 using Chromely.Core.Helpers;
 using Chromely.CefGlue.Browser.EventParams;
+using System.Reflection;
+using System.Linq;
+using System.Diagnostics;
 
 namespace FirelightUI
 {
     class FirelightApp : ChromelyEventedApp
     {
+        private static List<Type> GetControllers<T>()
+            where T : Attribute
+        {
+            // TODO: This is a generally useful function that uses reflection, must be abstracted elsewhere
+            return Assembly.GetExecutingAssembly().GetTypes().Where(t => t.GetCustomAttributes(typeof(T), true).Length > 0).ToList();
+        }
+
         public override void Configure(IChromelyContainer container)
         {
             base.Configure(container);
 
             // Controllers
-            container.RegisterSingleton(typeof(ChromelyController), Guid.NewGuid().ToString(), typeof(LightController));
-            container.RegisterSingleton(typeof(ChromelyController), Guid.NewGuid().ToString(), typeof(GlobalController));
+
+            List<Type> controllers = GetControllers<AppControllerAttribute>();
+
+            foreach (Type t in controllers)
+            {
+                container.RegisterSingleton(typeof(ChromelyController), Guid.NewGuid().ToString(), t);
+            }
+
+            //container.RegisterSingleton(typeof(ChromelyController), Guid.NewGuid().ToString(), typeof(GlobalController));
 
             // Custom handlers
             container.RegisterSingleton(typeof(IChromelyNativeHost), typeof(IChromelyNativeHost).Name, typeof(CustomNativeWindow));

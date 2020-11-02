@@ -81,7 +81,7 @@ namespace FirelightService
 
             UpdateLEDDisplay(LEDFrame.CreateEmpty(this));
             Task.Run(UpdateLoop).CatchExceptions();
-            DoLightingTest();
+            //DoLightingTest();
 
 
         }
@@ -144,7 +144,7 @@ namespace FirelightService
                 blinkModule.NewFrameReady += UpdateLEDDisplay;
                 CurrentLEDModule = blinkModule;
                 // await Task.Delay(31000);
-                await Task.Delay(150000);
+                await Task.Delay(30000);
                 ProcessListenerService.Start();
                 if (CurrentLEDModule is BlinkWhiteModule)
                     CurrentLEDModule = lastActiveModule;

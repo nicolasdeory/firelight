@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 
 namespace FirelightUI.Controllers
 {
+    [AppController]
     class LightController : ChromelyController
     {
         [HttpGet(Route = "/lights/lastframe")]

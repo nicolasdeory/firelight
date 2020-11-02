@@ -176,6 +176,7 @@ body {
     letter-spacing: 2px;
     user-select: none;
     cursor: pointer;
+    text-align: center;
 }
 
 .sidebar-button:hover {
