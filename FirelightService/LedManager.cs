@@ -74,6 +74,12 @@ namespace FirelightService
             Debug.WriteLine("Initializing LedManager");
             InitLeds();
 
+            ModuleManager.Init(new List<ModuleAttributes>()
+            {
+                new LeagueOfLegendsModuleAttributes()
+            });
+            ModuleManager.LoadSettings();
+
             ProcessListenerService.ProcessInFocusChanged += OnProcessChanged;
             ProcessListenerService.Start();
             ProcessListenerService.Register("League of Legends"); // Listen when league of legends is opened
@@ -81,8 +87,7 @@ namespace FirelightService
 
             UpdateLEDDisplay(LEDFrame.CreateEmpty(this));
             Task.Run(UpdateLoop).CatchExceptions();
-            //DoLightingTest();
-
+           // DoLightingTest();
 
         }
 
@@ -162,7 +167,6 @@ namespace FirelightService
         }
 
         bool queueClearRequested;
-        //bool updatingDisplay = false;
         /// <summary>
         /// Updates the LED display
         /// </summary>
@@ -288,7 +292,6 @@ namespace FirelightService
                 ModuleOptions[moduleId].Add(option, value);
             }
             RestartManager();
-
         }
 
     }

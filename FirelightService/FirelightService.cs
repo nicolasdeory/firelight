@@ -31,7 +31,7 @@ namespace FirelightService
             Application.Run();
         }
 
-        
+
 
         private static void RenderTrayIcon()
         {
@@ -80,7 +80,7 @@ namespace FirelightService
             {
                 Process p = Process.Start("FirelightUI.exe");
                 ChildProcessTracker.AddProcess(p);
-            }           
+            }
         }
 
         [System.Runtime.InteropServices.DllImport("User32.dll")]

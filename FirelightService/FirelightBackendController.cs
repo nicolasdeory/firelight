@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Diagnostics;
+using Newtonsoft.Json;
 
 namespace FirelightService
 {
@@ -57,6 +58,19 @@ namespace FirelightService
         public void LogMessage(string message)
         {
             Debug.WriteLine($"[UI Client] {message}");
+        }
+
+        public Dictionary<string, string> GetSettings(string gameId)
+        {
+            return ModuleManager.AttributeDict[gameId].SettingsDictionary;
+        }
+
+        public void UpdateSettings(string gameId, IDictionary<string, string> settings)
+        {
+            foreach (var kp in settings)
+            {
+                ModuleManager.AttributeDict[gameId].SettingsDictionary[kp.Key] = kp.Value;
+            }
         }
     }
 }

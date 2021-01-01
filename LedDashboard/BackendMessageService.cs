@@ -1,4 +1,5 @@
 ﻿using FirelightCommon;
+using FirelightUI.ControllerModel;
 using PipeMethodCalls;
 using System;
 using System.Collections.Generic;
@@ -29,8 +30,8 @@ namespace FirelightUI
             pipeClient = new PipeClientWithCallback<IBackendController, IUIController>(pipeName, () => new FirelightUIController());
             //pipeClient.SetLogger(message => Debug.WriteLine(message));
             await pipeClient.ConnectAsync();
-
             Debug.WriteLine("Pipe connected");
+            await Task.Delay(1200);
             IsInitialized = true;
         }
 
@@ -49,9 +50,33 @@ namespace FirelightUI
                 //throw new InvalidOperationException("Pipe not initialized yet. Call InitConnection() first");
                 return new List<string[]>();
 
-            return await Task.Run(() =>
+            return await Task.Run(() => 
             {
                 Task<List<string[]>> task = pipeClient.InvokeAsync(x => x.GetLights());
+                bool completedInTime = task.Wait(2000);
+                if (!completedInTime)
+                {
+                    Debug.WriteLine("Connection to main process timed out");
+                    // MessageBox.Show("Sorry, something went wrong. Please open the app again.");
+                    Application.Exit();
+                    //Environment.Exit(0);
+                }
+                return task.Result;
+            });
+        }
+
+        /// <summary>
+        /// Gets settings from a certain game
+        /// </summary>
+        public static async Task<Dictionary<string, string>> GetSettings(Game g)
+        {
+            if (!IsInitialized)
+                //throw new InvalidOperationException("Pipe not initialized yet. Call InitConnection() first");
+                return null;
+
+            return await Task.Run(() =>
+            {
+                Task<Dictionary<string, string>> task = pipeClient.InvokeAsync(x => x.GetSettings(g.Id));
                 bool completedInTime = task.Wait(2000);
                 if (!completedInTime)
                 {
@@ -61,12 +86,21 @@ namespace FirelightUI
                 }
                 return task.Result;
             });
-            
+        }
+
+        /// <summary>
+        /// Updates settings from a certain game
+        /// </summary>
+        public static void UpdateSettings(Game g, IDictionary<string, string> settings)
+        {
+            if (IsInitialized)
+                _ = pipeClient.InvokeAsync(x => x.UpdateSettings(g.Id, settings));
         }
 
         public static void LogMessage(string message)
         {
-            _ = pipeClient.InvokeAsync(x => x.LogMessage(message));
+            if (IsInitialized)
+                _ = pipeClient.InvokeAsync(x => x.LogMessage(message));
         }
     }
 }

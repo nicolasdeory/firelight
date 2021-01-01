@@ -19,18 +19,21 @@ namespace FirelightService
         static PipeServerWithCallback<IUIController, IBackendController> pipeServer;
 
         static bool connected = false;
+        static bool pipelinerunning = false;
 
         public static async Task StartPipeline()
         {
+            if (pipelinerunning)
+                return;
+
+            pipelinerunning = true;
             // The first type parameter is the controller interface that exposes methods to be called
             // by this client. The second one is the one that exposes methods to be called from another client.
-            Random random = new Random();
             while (true)
             {
                 try
                 {
-                    int randomNum = random.Next(0, 1000000);
-                    string pipeName = "firelightpipe-" + randomNum.ToString();
+                    string pipeName = "firelightpipe-" + Convert.ToBase64String(Guid.NewGuid().ToByteArray());
                     using (StreamWriter f = File.CreateText("pipename"))
                     {
                         f.Write(pipeName);

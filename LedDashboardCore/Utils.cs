@@ -1,4 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Reflection;
 using System.Text;
 
 namespace FirelightCore
@@ -44,6 +47,12 @@ namespace FirelightCore
             return a;
         }
 
+        public static List<Type> GetTypesWithAttribute<T>()
+            where T : Attribute
+        {
+            // TODO: This is a generally useful function that uses reflection, must be abstracted elsewhere
+            return Assembly.GetExecutingAssembly().GetTypes().Where(t => t.GetCustomAttributes(typeof(T), true).Length > 0).ToList();
+        }
 
     }
 }

@@ -27,7 +27,6 @@ namespace FirelightUI
         public override void Configure(IChromelyContainer container)
         {
             base.Configure(container);
-
             // Controllers
 
             List<Type> controllers = GetControllers<AppControllerAttribute>();
