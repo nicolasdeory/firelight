@@ -24,7 +24,7 @@ namespace FirelightUI
             config.WindowOptions.Title = "Firelight";
             config.WindowOptions.RelativePathToIconFile = "app/assets/icon.ico";
             //config.WindowOptions.WindowFrameless = true;
-            config.StartUrl = "local://app/lights.html";
+            config.StartUrl = "local://app/lights.html?firstload";
 #if RELEASE
             config.DebuggingMode = false;
 #endif

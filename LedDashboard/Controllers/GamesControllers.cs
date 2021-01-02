@@ -35,7 +35,6 @@ namespace FirelightUI.Controllers
         [HttpGet(Route = "/games")]
         public ChromelyResponse GetGameList(ChromelyRequest request)
         {
-            Debug.WriteLine("dasasd");
             ChromelyResponse resp = new ChromelyResponse(request.Id);
             resp.Data = Games;
             return resp;

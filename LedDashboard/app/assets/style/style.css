@@ -16,6 +16,18 @@ body {
     -moz-osx-font-smoothing: grayscale;
 }
 
+#loading-overlay {
+    position: absolute;
+    width: 100%;
+    top: 0;
+    height: 100%;
+    background: linear-gradient(45deg, #333, #444);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+
 .header-container {
     display: flex;
     flex-direction: row;
@@ -444,6 +456,21 @@ body {
     font-size: 18pt;
     width: 64px;
     height: 64px;
+    cursor: pointer;
+    word-break: break-all;
+    transition: background-color 0.1s, color 0.1s;
+    text-align: center;
+    user-select: none;
+}
+
+.binding-box.smaller {
+    font-size: 9pt;
+    padding: 1px;
+}
+
+.binding-box.selected {
+    background-color: #FFE14D;
+    color: #222;
 }
 
 .setting-section-restore-default {
@@ -460,6 +487,11 @@ body {
     color: #FFE14D;
     margin-left: 10px;
     transform: translateY(-8px);
+}
+
+.mdl-button:focus:not(:active)
+{
+    background-color: rgba(0,0,0,0);
 }
 
 .search-bar {
@@ -525,3 +557,4 @@ body {
     height: 100%;
     z-index: -50;
 }
+

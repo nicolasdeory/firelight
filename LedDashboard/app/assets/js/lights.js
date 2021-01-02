@@ -147,15 +147,25 @@ function getLightFrame() {
         "parameters": null,
         "postData": null
     };
+
+    let timeout = setTimeout(onTimedOut, 2000);
+
     window.cefQuery({
         request: JSON.stringify(request),
         onSuccess: function (response) {
+            clearTimeout(timeout);
             respObject = JSON.parse(response);
             setLightColors(respObject.Data);
         }, onFailure: function (err, msg) {
             console.log(err, msg);
         }
     });
+}
+
+function onTimedOut()
+{
+    alert("Something wrong happened. Please try opening the app again.");
+    window.close();
 }
 
 var currentlyDisplayedError = null;

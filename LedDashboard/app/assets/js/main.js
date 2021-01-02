@@ -35,5 +35,5 @@
     $("input[type='text']").blur(function () {
         $(this).parents().eq(1).children().find("path").attr("fill", "#767676");
     });
-
+    
 });

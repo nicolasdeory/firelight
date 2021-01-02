@@ -780,6 +780,23 @@
             </svg>
         </div>
     </div>
+    <div id="loading-overlay" style="display: none;">
+        <div class="logo-container">
+            <img src="assets/icon.png" />
+            <span>Firelight</span>
+        </div>
+    </div>
+    <script>
+        if (window.location.search.indexOf("firstload") >= 0) {
+            $("#loading-overlay").show();
+            setTimeout(() => {
+                $("#loading-overlay").fadeOut(200);
+                for (var i = 0; i < 10; i++) {
+                    history.pushState(null, "lights", "lights.html");
+                }
+            }, 1000)
+        }
+    </script>
 </body>
 
 </html>
