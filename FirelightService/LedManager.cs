@@ -175,7 +175,11 @@ namespace FirelightService
         public void UpdateLEDDisplay(LEDFrame frame)
         {
             CheckFrame(frame);
-            if (frame.Priority) queueClearRequested = true;
+            //if (frame.Priority) queueClearRequested = true;
+            if (frame.Priority)
+            {
+                FrameQueue.Clear();
+            }
             FrameQueue.Enqueue(frame);
             //Debug.WriteLine("Frame received. " + frame.LastSender.GetType().Name + " Queue=" + FrameQueue.Count);
         }
@@ -207,15 +211,14 @@ namespace FirelightService
                     return;
                 if (FrameQueue.Count > 0)
                 {
-                    
                     LEDFrame next = FrameQueue.Dequeue();
                     if (next != null)
                         SendLedData(next);
-                    if (queueClearRequested)
-                    {
-                        FrameQueue.Clear();
-                        queueClearRequested = false;
-                    }
+                    //if (queueClearRequested)
+                    //{
+                    //    FrameQueue.Clear();
+                    //    queueClearRequested = false;
+                    //}
                 }
                 await Task.Delay(30); // 33 fps
                                       // await Task.Delay(15);

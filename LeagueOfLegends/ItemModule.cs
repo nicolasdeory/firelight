@@ -68,7 +68,15 @@ namespace Games.LeagueOfLegends
 
         protected abstract void OnItemActivated(object s, EventArgs e);
 
-        protected override void OnMouseClick(object s, MouseEventArgs e)
+        protected override void OnMouseDown(object s, MouseEventArgs e)
+        {
+            if (e.Button == MouseButtons.Right)
+            {
+                itemIsSelected = false;
+            }
+        }
+
+        protected override void OnMouseUp(object s, MouseEventArgs e)
         {
             if (e.Button == MouseButtons.Right)
             {

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
@@ -15,6 +16,7 @@ namespace FirelightCore
         static string currentOpenedProcess = "";
 
         static CancellationTokenSource cancelToken;
+
         public static void Start() // TODO: Handle two registered processes running at the same time
         {
             cancelToken?.Cancel();
@@ -23,7 +25,7 @@ namespace FirelightCore
             {
                 bool processChangedToARegisteredOne = false;
                 bool atLeastARegisteredProcessIsRunning = false;
-                for (; ; )
+                while (true)
                 {
                     if (cancelToken.IsCancellationRequested)
                         return;
@@ -72,6 +74,15 @@ namespace FirelightCore
         public static void Register(string name)
         {
             listenedProcesses.Add(name);
+        }
+
+        public static int GetProcessId(string name)
+        {
+            Process[] pname = Process.GetProcessesByName(name);
+            if (pname.Length == 0)
+                throw new InvalidOperationException($"No processes with name ${name} are running");
+            return pname[0].Id;
+
         }
     }
 }

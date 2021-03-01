@@ -200,12 +200,20 @@ namespace Games.LeagueOfLegends
             return ChampionAttributes.FromData(championData.data[championName]);
         }
 
-        protected override void OnMouseClick(object s, MouseEventArgs e)
+        protected override void OnMouseDown(object s, MouseEventArgs e)
         {
-            //Debug.WriteLine("Mouse click. Selected: " + SelectedAbility);
             if (e.Button == MouseButtons.Right)
             {
-                if (SelectedAbility != AbilityKey.None && CanRecastAbility(SelectedAbility) && !AbilityCastModes[SelectedAbility].RecastOnKeyUp)
+                if (SelectedAbility != AbilityKey.None && !CanRecastAbility(SelectedAbility) && !AbilityCastModes[SelectedAbility].RecastOnKeyUp)
+                    SelectedAbility = AbilityKey.None;
+            }
+        }
+
+        protected override void OnMouseUp(object s, MouseEventArgs e)
+        {
+            if (e.Button == MouseButtons.Right)
+            {
+                if (SelectedAbility != AbilityKey.None && !CanRecastAbility(SelectedAbility) && !AbilityCastModes[SelectedAbility].RecastOnKeyUp)
                     SelectedAbility = AbilityKey.None;
             }
             else if (e.Button == MouseButtons.Left) // cooldowns are accounted for here aswell in case between key press and click user died, or did zhonyas...

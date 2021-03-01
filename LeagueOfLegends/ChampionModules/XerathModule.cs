@@ -32,7 +32,7 @@ namespace Games.LeagueOfLegends.ChampionModules
         protected override AbilityCastMode GetECastMode() => AbilityCastMode.Normal();
         protected override AbilityCastMode GetRCastMode() => AbilityCastMode.Instant(10000, 3, AbilityCastMode.Instant());
 
-        protected override void OnMouseClick(object s, MouseEventArgs e)
+        protected override void OnMouseDown(object s, MouseEventArgs e)
         {
             if (e.Button == MouseButtons.Right && chargesRemaining > 0)
             {

@@ -24,7 +24,7 @@
     <PackageReference Include="kadmium-sacn-core" Version="0.0.11" />
     <PackageReference Include="NAudio" Version="1.10.0" />
     <PackageReference Include="NzxtRGB" Version="1.0.2" />
-    <PackageReference Include="Winook" Version="0.2.0" />
+    <PackageReference Include="Winook" Version="1.1.1" />
   </ItemGroup>
 
   <ItemGroup>

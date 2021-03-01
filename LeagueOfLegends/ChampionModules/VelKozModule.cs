@@ -14,7 +14,6 @@ namespace Games.LeagueOfLegends.ChampionModules
 
         // Champion-specific Variables
 
-        bool qCastInProgress = false;
         bool rCastInProgress = false; // this is used to make the animation for Vel'Koz's R to take preference over other animations
 
         public VelKozModule(GameState gameState, AbilityCastPreference preferredCastMode)
@@ -34,33 +33,28 @@ namespace Games.LeagueOfLegends.ChampionModules
             // The code will slightly change between each champion, because you might want to implement custom animation logic.
 
             // Trigger the start animation.
+            if (rCastInProgress)
+                return;
+
             await Task.Delay(100);
-            if (!rCastInProgress)
-            {
-                RunAnimationOnce("q_start", LightZone.Desk, timeScale: 0.9f);
-            }
+            RunAnimationOnce("q_start", LightZone.Desk, timeScale: 1f);
 
             // The Q cast is in progress.
-            qCastInProgress = true;
 
             // After 1.15s, if user didn't press Q again already, the Q split animation plays.
-            // TODO: Q runs a bit slow.
 
-            Animator.HoldLastFrame(LightZone.Desk, 1.15f);
-            if (!rCastInProgress && qCastInProgress)
-            {
-                RunAnimationOnce("q_recast", LightZone.Desk, priority: false);
-            }
-            qCastInProgress = false;
+            Animator.HoldLastFrame(LightZone.Desk, 0.4f);
+            RunAnimationOnce("q_recast", LightZone.Desk, priority: false, timeScale: 1.2f);
         }
+
         protected override async Task OnCastW()
         {
+            if (rCastInProgress)
+                return;
+
             RunAnimationOnce("w_cast", LightZone.Desk);
-            Animator.HoldLastFrame(LightZone.Desk, 1.8f);
-            if (!rCastInProgress)
-            {
-                Animator.ColorBurst(HSVColor.FromRGB(229, 115, 255), LightZone.Desk, 0.8f, false);
-            }
+            Animator.HoldLastFrame(LightZone.Desk, 1f);
+            Animator.ColorBurst(HSVColor.FromRGB(229, 115, 255), LightZone.Desk, 0.8f, false);
         }
         protected override async Task OnCastE()
         {
@@ -72,7 +66,7 @@ namespace Games.LeagueOfLegends.ChampionModules
         }
         protected override async Task OnCastR()
         {
-            Animator.StopCurrentAnimation();
+            //Animator.StopCurrentAnimation();
             RunAnimationInLoop("r_loop", LightZone.Desk, 2.3f, 2f);
             rCastInProgress = true;
 
@@ -82,15 +76,10 @@ namespace Games.LeagueOfLegends.ChampionModules
 
         protected override async Task OnRecastQ()
         {
-            if (qCastInProgress)
+            if (!rCastInProgress)
             {
-                // Would there ever be a Q recast while R is being cast?
-                if (!rCastInProgress)
-                {
-                    RunAnimationOnce("q_recast", LightZone.Desk);
-                }
+                RunAnimationOnce("q_recast", LightZone.Desk);
             }
-            qCastInProgress = false;
         }
         protected override async Task OnRecastR()
         {

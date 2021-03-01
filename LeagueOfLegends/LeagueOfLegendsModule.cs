@@ -11,6 +11,7 @@ using System.Net;
 using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Diagnostics;
 
 namespace Games.LeagueOfLegends
 {
