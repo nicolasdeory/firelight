@@ -54,8 +54,6 @@ namespace FirelightService
 
         bool enabled = true;
 
-
-
         public LEDFrame LastDisplayedFrame { get; private set; } = LEDFrame.Empty;
 
         /// <summary>

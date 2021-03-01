@@ -67,7 +67,7 @@ namespace Games.LeagueOfLegends.ChampionModules
         protected override async Task OnCastR()
         {
             //Animator.StopCurrentAnimation();
-            RunAnimationInLoop("r_loop", LightZone.Desk, 2.3f, 2f);
+            RunAnimationInLoop("r_loop", LightZone.Desk, 2.3f, 1f);
             rCastInProgress = true;
 
             await Task.Delay(2300);

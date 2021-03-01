@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
+using System.Diagnostics;
 
 namespace Games.LeagueOfLegends
 {
@@ -61,8 +62,8 @@ namespace Games.LeagueOfLegends
             WardView(data, gameState);
             GoldView(data, gameState);
             lastFrame = data;
-            data.Mouse[0].Color(HealthColor);
-            return new LEDFrame(this, data, LightZone.All);
+            //data.Mouse[0].Color(HealthColor);
+            return new LEDFrame(this, data, LightZone.All, true);
         }
 
         private void GoldView(LEDData data, GameState gameState)
@@ -71,10 +72,16 @@ namespace Games.LeagueOfLegends
             if (gameState.ActivePlayer.CurrentGold >= GoldNotificationThreshold)
             {
                 col = GoldColor;
-            }
-            foreach (int k in goldKeys)
-            {
-                data.Keyboard[k].Color(col);
+                foreach (int k in goldKeys)
+                {
+                    data.Keyboard[k].Color(col);
+                }
+
+                // mouse
+                for (int i = 0; i < LEDData.NUMLEDS_MOUSE; i++)
+                {
+                    data.Mouse[i].Color(GoldColor);
+                }
             }
         }
 
@@ -119,12 +126,35 @@ namespace Games.LeagueOfLegends
 
         }
 
+        private static void UpdateHealthLed(Led[] arr, int i, int ledsToTurnOn, bool reversed = false)
+        {
+            int index = i;
+            if (reversed)
+                index = arr.Length - 1 - i;
+            if (i < ledsToTurnOn)
+                arr[index].MixNewColor(HealthColor, true, 0.2f);
+            else
+            {
+                if (arr[index].color.AlmostEqual(HealthColor))
+                {
+                    arr[index].Color(HurtColor);
+                }
+                else
+                {
+                    arr[index].FadeToBlackBy(0.05f);
+                }
+            }
+        }
+
         private static List<int> alreadyTouchedLeds = new List<int>(); // fixes a weird flickering bug
         private static void HealthBar(LEDData data, LEDData lastFrame, GameState gameState)
         {
             if (lastFrame != null)
             {
                 data.Keyboard = lastFrame.Keyboard;
+                data.Mouse = lastFrame.Mouse;
+                data.Mousepad = lastFrame.Mousepad;
+                data.Strip = lastFrame.Strip;
             }
             float maxHealth = gameState.ActivePlayer.Stats.MaxHealth;
             float currentHealth = gameState.ActivePlayer.Stats.CurrentHealth;
@@ -170,24 +200,35 @@ namespace Games.LeagueOfLegends
                 alreadyTouchedLeds.AddRange(listLedsToTurnOn);
 
             }
+            int ledsToTurnOn;
+            // MOUSE LIGHTING
+            if (gameState.ActivePlayer.CurrentGold < GoldNotificationThreshold)
+            {
+                data.Mouse[0].Color(HealthColor);
+                data.Mouse[1].Color(HealthColor);
+                ledsToTurnOn = Math.Max((int)(healthPercentage * 7), 1);
+                for (int i = 0; i < 7; i++)
+                {
+                    UpdateHealthLed(data.Mouse, i, ledsToTurnOn, true);
+                }
+                for (int i = 0; i < 7; i++)
+                {
+                    UpdateHealthLed(data.Mouse, i + 7, ledsToTurnOn + 7, true);
+                }
+            }
+
+            // MOUSEPAD LIGHTING
+            ledsToTurnOn = Math.Max((int)(healthPercentage * LEDData.NUMLEDS_MOUSEPAD), 1);
+            for (int i = 0; i < LEDData.NUMLEDS_MOUSEPAD; i++)
+            {
+                UpdateHealthLed(data.Mousepad, i, ledsToTurnOn);
+            }
 
             // LED STRIP LIGHTING
-            int ledsToTurnOn = Math.Max((int)(healthPercentage * LEDData.NUMLEDS_STRIP), 1);
+            ledsToTurnOn = Math.Max((int)(healthPercentage * LEDData.NUMLEDS_STRIP), 1);
             for (int i = 0; i < LEDData.NUMLEDS_STRIP; i++)
             {
-                if (i < ledsToTurnOn)
-                    data.Strip[i].MixNewColor(HealthColor, true, 0.2f);
-                else
-                {
-                    if (data.Strip[i].color.AlmostEqual(HealthColor))
-                    {
-                        data.Strip[i].Color(HurtColor);
-                    }
-                    else
-                    {
-                        data.Strip[i].FadeToBlackBy(0.05f);
-                    }
-                }
+                UpdateHealthLed(data.Strip, i, ledsToTurnOn);
             }
         }
     }

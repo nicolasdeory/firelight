@@ -36,8 +36,7 @@ namespace Games.LeagueOfLegends
 
         ItemModule[] ItemModules = new ItemModule[7];
 
-        ulong msSinceLastExternalFrameReceived = 30000;
-        ulong msAnimationTimerThreshold = 1500; // how long to wait for animation data until health bar kicks back in.
+        int lastExternalFrameReceivedTimer = 0;
         double currentGameTimestamp = 0;
 
         CancellationTokenSource masterCancelToken = new CancellationTokenSource();
@@ -248,7 +247,7 @@ namespace Games.LeagueOfLegends
             {
                 if (masterCancelToken.IsCancellationRequested)
                     return;
-                if (msSinceLastExternalFrameReceived >= msAnimationTimerThreshold)
+                if (lastExternalFrameReceivedTimer == 0)
                 {
                     if (!CheckIfDead())
                     {
@@ -257,7 +256,9 @@ namespace Games.LeagueOfLegends
                     }
                 }
                 await Task.Delay(30);
-                msSinceLastExternalFrameReceived += 30;
+                lastExternalFrameReceivedTimer -= 30;
+                if (lastExternalFrameReceivedTimer < 0)
+                    lastExternalFrameReceivedTimer = 0;
             }
         }
 
@@ -291,7 +292,7 @@ namespace Games.LeagueOfLegends
             if (frame.LastSender != Animator && frame.LastSender != CurrentLEDSource)
                 return; // If it's from a different source that what we're listening to, ignore it
             InvokeNewFrameReady(frame);
-            msSinceLastExternalFrameReceived = 0;
+            lastExternalFrameReceivedTimer += 30; // add 30ms
         }
 
         /// <summary>
@@ -328,6 +329,7 @@ namespace Games.LeagueOfLegends
         /// <returns></returns>
         private bool CheckIfDead()
         {
+            // TODO: Transition from dead to alive a bit slow
             if (GameState.PlayerChampion.IsDead)
             {
                 Animator.HoldColor(DeadColor, LightZone.All, 1f, true);
