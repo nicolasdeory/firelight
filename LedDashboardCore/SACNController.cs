@@ -18,8 +18,8 @@ namespace FirelightCore
 
 
         const int TOTAL_STRIP_LEDS = 300;
-        const int OFFSET = 100; // must be >=0
-        const bool REVERSE_ORDER = false;
+        const int OFFSET = 0; // must be >=0
+        const bool REVERSE_ORDER = true;
         const bool MIRROR_MODE = false; // TODO
 
         private SACNController(bool reverseOrder)
@@ -50,27 +50,28 @@ namespace FirelightCore
             byte[] data = new byte[TOTAL_STRIP_LEDS * 3];
             if (REVERSE_ORDER)
             {
-                for (int i = leds.Length * 3 - 1; i >= 0; i -= 3)
+                for (int i = 0; i < leds.Length; i++)
                 {
-                    if (i - OFFSET*3 - 2 < 0)
+                    int idx = data.Length - 1 - i * 3;
+                    byte[] col = leds[leds.Length - 1 - i].color.ToRGB();
+                    if (data.Length - 3 - i*3 - OFFSET*3 < 0)
                         break;
-                    int index = (leds.Length * 3 - 1) - i ;
-                    byte[] col = leds[index / 3].color.ToRGB();
-                    data[i - OFFSET * 3] = col[2];
-                    data[i - OFFSET * 3 - 1] = col[1];
-                    data[i - OFFSET * 3 - 2] = col[0];
+                    data[idx - OFFSET * 3] = col[2];
+                    data[idx - OFFSET * 3 - 1] = col[1];
+                    data[idx - OFFSET * 3 - 2] = col[0];
                 }
             }
             else
             {
-                for (int i = 0; i < leds.Length * 3; i += 3)
+                for (int i = 0; i < leds.Length; i++)
                 {
+                    int idx = i * 3;
                     if (i + OFFSET * 3 > data.Length - 3)
                         break;
-                    byte[] col = leds[i / 3].color.ToRGB();
-                    data[i + OFFSET*3] = col[0];
-                    data[i + OFFSET * 3 + 1] = col[1];
-                    data[i + OFFSET * 3 + 2] = col[2];
+                    byte[] col = leds[i].color.ToRGB();
+                    data[idx + OFFSET*3] = col[0];
+                    data[idx + OFFSET * 3 + 1] = col[1];
+                    data[idx + OFFSET * 3 + 2] = col[2];
                 }
             }
 

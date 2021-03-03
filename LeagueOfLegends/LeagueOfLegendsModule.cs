@@ -45,6 +45,7 @@ namespace Games.LeagueOfLegends
         bool wasDeadLastFrame = false;
 
         HUDModule hudModule = new HUDModule();
+        LEDData lastHudFrame = LEDData.Empty;
 
         // Events
 
@@ -252,6 +253,7 @@ namespace Games.LeagueOfLegends
                     if (!CheckIfDead())
                     {
                         LEDFrame frame = hudModule.DoFrame(GameState);
+                        lastHudFrame = frame.Leds;
                         InvokeNewFrameReady(frame);
                     }
                 }
@@ -291,6 +293,31 @@ namespace Games.LeagueOfLegends
             }
             if (frame.LastSender != Animator && frame.LastSender != CurrentLEDSource)
                 return; // If it's from a different source that what we're listening to, ignore it
+
+            if (frame.Zones != LightZone.All) // TODO: Do proper layering
+            {
+                LEDData hud = lastHudFrame;
+
+                if (!frame.Zones.HasFlag(LightZone.Keyboard))
+                    frame.Leds.Keyboard = hud.Keyboard;
+                if (!frame.Zones.HasFlag(LightZone.Mouse))
+                    frame.Leds.Mouse = hud.Mouse;
+                if (!frame.Zones.HasFlag(LightZone.Mousepad))
+                    frame.Leds.Mousepad = hud.Mousepad;
+                if (!frame.Zones.HasFlag(LightZone.Headset))
+                    frame.Leds.Headset = hud.Headset;
+                if (!frame.Zones.HasFlag(LightZone.Keypad))
+                    frame.Leds.Keypad = hud.Keypad;
+                if (!frame.Zones.HasFlag(LightZone.Strip))
+                    frame.Leds.Strip = hud.Strip;
+                if (!frame.Zones.HasFlag(LightZone.General))
+                    frame.Leds.General = hud.General;
+
+                // We merge hud led data with received data
+                LEDFrame newFrame = new LEDFrame(this, frame.Leds, LightZone.All, frame.Priority);
+                frame = newFrame;
+            }
+
             InvokeNewFrameReady(frame);
             lastExternalFrameReceivedTimer += 30; // add 30ms
         }

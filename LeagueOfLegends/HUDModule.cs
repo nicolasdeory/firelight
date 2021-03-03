@@ -20,6 +20,9 @@ namespace Games.LeagueOfLegends
         static HSVColor HealthColor = new HSVColor(0.29f, 0.79f, 1f);
         static HSVColor HurtColor = new HSVColor(0.09f, 0.8f, 1f);
 
+        static HSVColor ManaColor = new HSVColor(0.52f, 0.66f, 1f);
+        //static HSVColor DeadColor { get; } = new HSVColor(0f, 0f, 0.77f);
+
         static HSVColor YellowTrinketColor = new HSVColor(0.15f, 0.8f, 1f);
         static HSVColor RedTrinketColor = new HSVColor(0.01f, 0.8f, 1f);
         static HSVColor BlueTrinketColor = new HSVColor(0.58f, 0.8f, 1f);
@@ -58,12 +61,67 @@ namespace Games.LeagueOfLegends
         public LEDFrame DoFrame(GameState gameState)
         {
             LEDData data = LEDData.Empty;
-            HealthBar(data, lastFrame, gameState);
-            WardView(data, gameState);
-            GoldView(data, gameState);
+            if (gameState?.ActivePlayer != null)
+            {
+                HealthBar(data, lastFrame, gameState);
+                ManaBar(data, lastFrame, gameState);
+                WardView(data, gameState);
+                GoldView(data, gameState);
+            }
             lastFrame = data;
             //data.Mouse[0].Color(HealthColor);
             return new LEDFrame(this, data, LightZone.All, true);
+        }
+
+        private void ManaBar(LEDData data, LEDData lastFrame, GameState gameState)
+        {
+            if (lastFrame != null)
+            {
+                data.Keyboard = lastFrame.Keyboard;
+            }
+            float maxMana = gameState.ActivePlayer.Stats.ResourceMax;
+            float currentMana = gameState.ActivePlayer.Stats.ResourceValue;
+            float manaPercentage = currentMana / maxMana;
+            alreadyTouchedLeds.Clear();
+
+            // KEYBOARD LIGHTING
+            int blueManaLeds = (int)Math.Round(Utils.Scale(manaPercentage, 0, 1, 0, 6));
+            for (int i = 1; i <= 5; i++)
+            {
+                List<int> listLedsToTurnOn = new List<int>(3); // light the whole row
+                for (int j = 0; j < 4; j++)
+                {
+                    listLedsToTurnOn.Add(KeyUtils.PointToKey(new Point(19+j, 5 - i)));
+                }
+
+                if (i < blueManaLeds)
+                {
+                    foreach (int idx in listLedsToTurnOn.Where(x => x != -1))
+                    {
+                        if (alreadyTouchedLeds.Contains(idx))
+                            continue;
+                        data.Keyboard[idx].MixNewColor(ManaColor, true, 0.2f);
+                    }
+                }
+                else
+                {
+                    foreach (int idx in listLedsToTurnOn.Where(x => x != -1))
+                    {
+                        if (alreadyTouchedLeds.Contains(idx))
+                            continue;
+                        if (data.Keyboard[idx].color.AlmostEqual(ManaColor))
+                        {
+                            data.Keyboard[idx].Color(HSVColor.White);
+                        }
+                        else
+                        {
+                            data.Keyboard[idx].FadeToBlackBy(0.08f);
+                        }
+
+                    }
+                }
+                alreadyTouchedLeds.AddRange(listLedsToTurnOn);
+            }
         }
 
         private void GoldView(LEDData data, GameState gameState)
@@ -81,6 +139,12 @@ namespace Games.LeagueOfLegends
                 for (int i = 0; i < LEDData.NUMLEDS_MOUSE; i++)
                 {
                     data.Mouse[i].Color(GoldColor);
+                }
+
+                // keypad
+                for (int i = 0; i < LEDData.NUMLEDS_KEYPAD; i++)
+                {
+                    data.Keypad[i].Color(HealthColor);
                 }
             }
         }
@@ -198,7 +262,6 @@ namespace Games.LeagueOfLegends
                     }
                 }
                 alreadyTouchedLeds.AddRange(listLedsToTurnOn);
-
             }
             int ledsToTurnOn;
             // MOUSE LIGHTING
@@ -228,8 +291,25 @@ namespace Games.LeagueOfLegends
             ledsToTurnOn = Math.Max((int)(healthPercentage * LEDData.NUMLEDS_STRIP), 1);
             for (int i = 0; i < LEDData.NUMLEDS_STRIP; i++)
             {
-                UpdateHealthLed(data.Strip, i, ledsToTurnOn);
+                UpdateHealthLed(data.Strip, i, ledsToTurnOn, true);
             }
+
+            // Rest of devices
+            for (int i = 0; i < LEDData.NUMLEDS_HEADSET; i++)
+            {
+                data.Headset[i].Color(HealthColor);
+            }
+
+            for (int i = 0; i < LEDData.NUMLEDS_KEYPAD; i++)
+            {
+                data.Keypad[i].Color(HealthColor);
+            }
+
+            for (int i = 0; i < LEDData.NUMLEDS_GENERAL; i++)
+            {
+                data.General[i].Color(HealthColor);
+            }
+
         }
     }
 }

@@ -220,9 +220,16 @@ namespace FirelightCore.Modules.BasicAnimation
             int frames = (int)Math.Round(fadeoutDuration * FPS);
             List<Led[]> frameLightArrays = frameData.GetArraysForZones(zones);
 
-            for (int i = 0; i < frames; i++)
+            for (int i = 0; i < frames + 13; i++)
             {
-                float fadeout = (float)Utils.Scale(i, 0, frames, 0, 1);
+                float fadeout;
+                if (i >= frames)
+                {
+                    fadeout = 1;
+                } else
+                {
+                    fadeout = (float)Utils.Scale(i, 0, frames, 0f, 1.5f);
+                }
                 LEDData newFrame = LEDData.Empty;
                 List<Led[]> newFrameLightArrays = newFrame.GetArraysForZones(zones);
 

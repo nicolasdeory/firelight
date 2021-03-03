@@ -53,7 +53,7 @@ namespace Games.LeagueOfLegends.ChampionModules
                 return;
 
             RunAnimationOnce("w_cast", LightZone.Desk);
-            Animator.HoldLastFrame(LightZone.Desk, 1f);
+            Animator.HoldLastFrame(LightZone.Desk, 0.9f);
             Animator.ColorBurst(HSVColor.FromRGB(229, 115, 255), LightZone.Desk, 0.8f, false);
         }
         protected override async Task OnCastE()
@@ -78,7 +78,7 @@ namespace Games.LeagueOfLegends.ChampionModules
         {
             if (!rCastInProgress)
             {
-                RunAnimationOnce("q_recast", LightZone.Desk);
+                RunAnimationOnce("q_recast", LightZone.Desk, timeScale: 1.2f);
             }
         }
         protected override async Task OnRecastR()

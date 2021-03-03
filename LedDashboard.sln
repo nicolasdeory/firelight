@@ -20,6 +20,10 @@ EndProject
 Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
 		SharedLib\SharedLib.projitems*{0c2c4dd9-ee7b-4aa6-aec6-9ae04ad39c8a}*SharedItemsImports = 13
+		SharedLib\SharedLib.projitems*{552f632d-3c3b-432f-b2dd-e6d225013534}*SharedItemsImports = 5
+		SharedLib\SharedLib.projitems*{ad75c0b1-a782-4a79-888d-a7d2dafa6b75}*SharedItemsImports = 5
+		SharedLib\SharedLib.projitems*{b36757f6-ecc4-409e-bbb6-dfe1dc55c083}*SharedItemsImports = 5
+		SharedLib\SharedLib.projitems*{cc6bc956-15c9-423e-89ff-c6979b9e33f1}*SharedItemsImports = 5
 	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU

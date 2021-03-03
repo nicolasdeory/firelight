@@ -209,14 +209,14 @@ namespace FirelightService
                     return;
                 if (FrameQueue.Count > 0)
                 {
-                    LEDFrame next = FrameQueue.Dequeue();
-                    if (next != null)
-                        SendLedData(next);
-                    //if (queueClearRequested)
-                    //{
-                    //    FrameQueue.Clear();
-                    //    queueClearRequested = false;
-                    //}
+                    try
+                    {
+                        LEDFrame next = FrameQueue.Dequeue();
+                        if (next != null)
+                            SendLedData(next);
+                    }
+                    catch { /* solves race condition */ }
+
                 }
                 await Task.Delay(30); // 33 fps
                                       // await Task.Delay(15);
