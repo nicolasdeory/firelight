@@ -199,13 +199,17 @@ namespace FirelightCore
             }
             else if (e.MessageCode == (int)MouseMessageCode.XButtonDown)
             {
-                messageQueue.Add(HookMessage.MouseDown(MouseButtons.XButton1, e.X, e.Y));
-                // TODO XButton1 and XButton2 difference
+                if (e.XButtons == (short)MouseXButtons.Button1)
+                    messageQueue.Add(HookMessage.MouseDown(MouseButtons.XButton1, e.X, e.Y));
+                if (e.XButtons == (short)MouseXButtons.Button2)
+                    messageQueue.Add(HookMessage.MouseDown(MouseButtons.XButton2, e.X, e.Y));
             }
             else if (e.MessageCode == (int)MouseMessageCode.XButtonUp)
             {
-                messageQueue.Add(HookMessage.MouseUp(MouseButtons.XButton1, e.X, e.Y));
-                // TODO XButton1 and XButton2 difference
+                if (e.XButtons == (short)MouseXButtons.Button1)
+                    messageQueue.Add(HookMessage.MouseUp(MouseButtons.XButton1, e.X, e.Y));
+                if (e.XButtons == (short)MouseXButtons.Button2)
+                    messageQueue.Add(HookMessage.MouseUp(MouseButtons.XButton2, e.X, e.Y));
             }
         }
 
