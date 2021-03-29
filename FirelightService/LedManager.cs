@@ -22,19 +22,11 @@ namespace FirelightService
 
         public delegate void UpdateDisplayHandler(LEDFrame frame);
 
-        /// <summary>
-        /// Raised when the LED display is updated.
-        /// </summary>
-        public event UpdateDisplayHandler DisplayUpdated;
-
-        bool reverseOrder;
         List<LightController> lightControllers = new List<LightController>();
-
-        private Dictionary<string, Dictionary<string, string>> ModuleOptions = new Dictionary<string, Dictionary<string, string>>();
 
         Queue<LEDFrame> FrameQueue = new Queue<LEDFrame>();
 
-        CancellationTokenSource updateLoopCancelToken = new CancellationTokenSource();
+        CancellationTokenSource updateLoopCancelToken;
 
         public LEDModule CurrentLEDModule
         {
@@ -52,7 +44,7 @@ namespace FirelightService
         }
         LEDModule _currentLEDModule;
 
-        bool enabled = true;
+        bool enabled = false;
 
         public LEDFrame LastDisplayedFrame { get; private set; } = LEDFrame.Empty;
 
@@ -70,13 +62,14 @@ namespace FirelightService
         public LightManager()
         {
             Debug.WriteLine("Initializing LedManager");
-            InitLeds();
+            //InitLeds();
 
             ModuleManager.Init(new List<ModuleAttributes>()
             {
                 new LeagueOfLegendsModuleAttributes()
             });
             ModuleManager.LoadSettings();
+            ModuleManager.SettingChanged += (s, e) => RestartManager();
 
             ProcessListenerService.ProcessInFocusChanged += OnProcessChanged;
             ProcessListenerService.Start();
@@ -84,8 +77,7 @@ namespace FirelightService
             ProcessListenerService.Register("RocketLeague");
 
             UpdateLEDDisplay(LEDFrame.CreateEmpty(this));
-            Task.Run(UpdateLoop).CatchExceptions();
-           // DoLightingTest();
+            //DoLightingTest();
 
         }
 
@@ -93,28 +85,31 @@ namespace FirelightService
         /// <param name="reverseOrder">Set to true if you want the lights to be reverse in order (i.e. Color for LED 0 will be applied to the last LED in the strip)</param>
         private void InitLeds(bool reverseOrder = false)
         {
+            updateLoopCancelToken = new CancellationTokenSource();
+            Task.Run(UpdateLoop).CatchExceptions();
             lightControllers.Add(RazerChromaController.Create());
-            lightControllers.Add(NZXTController.Create());
-            lightControllers.Add(SACNController.Create(reverseOrder));
+            //lightControllers.Add(NZXTController.Create());
+            lightControllers.Add(SACNController.Create(reverseOrder)); // TODO: Load this from module attributes. This will come when LED strip settings are implemented
         }
 
         private void UninitLeds()
         {
             updateLoopCancelToken.Cancel();
             lightControllers.ForEach(lc => lc.Dispose());
+            lightControllers.Clear();
         }
 
         private void OnProcessChanged(string name, int pid)
         {
             if (name == "League of Legends" && !(CurrentLEDModule is LeagueOfLegendsModule)) // TODO: Account for client disconnections
             {
-                LEDModule lolModule = LeagueOfLegendsModule.Create(ModuleOptions.ContainsKey("lol") ? ModuleOptions["lol"] : new Dictionary<string, string>());
+                LEDModule lolModule = LeagueOfLegendsModule.Create();
                 lolModule.NewFrameReady += UpdateLEDDisplay;
                 CurrentLEDModule = lolModule;
             }
             else if (name == "RocketLeague" && !(CurrentLEDModule is RocketLeagueModule)) // TODO: Account for client disconnections
             {
-                LEDModule rlModule = RocketLeagueModule.Create(ModuleOptions.ContainsKey("rocketleague") ? ModuleOptions["rocketleague"] : new Dictionary<string, string>());
+                LEDModule rlModule = RocketLeagueModule.Create();
                 rlModule.NewFrameReady += UpdateLEDDisplay;
                 CurrentLEDModule = rlModule;
             }
@@ -160,11 +155,14 @@ namespace FirelightService
             if (this.enabled != enable)
             {
                 this.enabled = enable;
-                lightControllers.ForEach(c => c.Enabled = enable);
+                if (enabled)
+                    InitLeds();
+                else
+                    UninitLeds();
+                //lightControllers.ForEach(c => c.Enabled = enable);
             }
         }
 
-        bool queueClearRequested;
         /// <summary>
         /// Updates the LED display
         /// </summary>
@@ -173,13 +171,11 @@ namespace FirelightService
         public void UpdateLEDDisplay(LEDFrame frame)
         {
             CheckFrame(frame);
-            //if (frame.Priority) queueClearRequested = true;
             if (frame.Priority)
             {
                 FrameQueue.Clear();
             }
             FrameQueue.Enqueue(frame);
-            //Debug.WriteLine("Frame received. " + frame.LastSender.GetType().Name + " Queue=" + FrameQueue.Count);
         }
 
         private void CheckFrame(LEDFrame frame)
@@ -241,59 +237,49 @@ namespace FirelightService
            // DisplayUpdated?.Invoke(frame);
         }
 
-
-        /*/// <summary>
-        /// Sets the light controller to be used
-        /// </summary>
-        public void SetController(LightControllerType type, int ledCount = 0, bool reverseOrder = false)
-        {
-            ((IDisposable)lightController).Dispose();
-            if (type == LightControllerType.LED_Strip)
-            {
-                lightController = SACNController.Create();
-                this.preferredMode = LightingMode.Line;
-            }
-            else if (type == LightControllerType.RazerChroma)
-            {
-                lightController = RazerChromaController.Create();
-                this.preferredMode = LightingMode.Keyboard;
-            }
-            RestartManager(this.preferredMode, ledCount, reverseOrder);
-        }*/
-
+        private bool isRestarting; // this is to wait for a bit and avoid very frequent restarts
+        private CancellationTokenSource restartCancellationTokenSource;
         private void RestartManager() // TODO: Keep game state (i.e. league of legends cooldowns etc)
         {
-            UninitLeds();
-            CurrentLEDModule = null; // restart the whole service (force module reload)
-            ProcessListenerService.Stop();
-            InitLeds(reverseOrder);
-            ProcessListenerService.Start();
+            if (isRestarting)
+            {
+                restartCancellationTokenSource.Cancel();
+            }
+            isRestarting = true;
+            restartCancellationTokenSource = new CancellationTokenSource();
+            Task t = Task.Run(async () =>
+            {
+                if (restartCancellationTokenSource.IsCancellationRequested)
+                    return;
+                SetEnabled(false);
+                //UninitLeds();
+                CurrentLEDModule = null; // restart the whole service (force module reload)
+                await Task.Delay(500);
+                ProcessListenerService.Stop();
+                //SetEnabled(true);
+                //InitLeds();
+                ProcessListenerService.Start();
+                isRestarting = false;
+            }).CatchExceptions(true);
+            
         }
 
-        /*/// <summary>
-        /// Sends LED data to a wireless LED strip using the E1.31 sACN protocol.
-        /// </summary>
-        public void SendData(LightingMode mode)
-        {
-            lightController.SendData(this.leds.Strip.Length, this.leds.Strip.ToByteArray(this.reverseOrder), mode);
-        }*/
-
-        public void SetModuleOption(string moduleId, string option, string value)
-        {
-            if (!ModuleOptions.ContainsKey(moduleId))
-            {
-                ModuleOptions.Add(moduleId, new Dictionary<string, string>());
-            }
-            if (ModuleOptions[moduleId].ContainsKey(option))
-            {
-                ModuleOptions[moduleId][option] = value;
-            }
-            else
-            {
-                ModuleOptions[moduleId].Add(option, value);
-            }
-            RestartManager();
-        }
+        //public void SetModuleOption(string moduleId, string option, string value)
+        //{
+        //    if (!ModuleOptions.ContainsKey(moduleId))
+        //    {
+        //        ModuleOptions.Add(moduleId, new Dictionary<string, string>());
+        //    }
+        //    if (ModuleOptions[moduleId].ContainsKey(option))
+        //    {
+        //        ModuleOptions[moduleId][option] = value;
+        //    }
+        //    else
+        //    {
+        //        ModuleOptions[moduleId].Add(option, value);
+        //    }
+        //    RestartManager();
+        //}
 
     }
 }
