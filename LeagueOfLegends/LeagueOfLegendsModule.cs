@@ -18,8 +18,15 @@ namespace Games.LeagueOfLegends
     // TODO: Refactor this into a separate project
     public class LeagueOfLegendsModule : BaseGameModule
     {
+        public const string GAME_ID = "leagueoflegends";
+
         private static List<Type> ChampionControllers = GetChampionControllers();
         private static List<Type> ItemControllers = GetItemControllers();
+
+        protected GameState GameState;
+
+        public static List<string> ChampionNames = ChampionControllers
+                .Select(x => ((ChampionAttribute)Attribute.GetCustomAttribute(x, typeof(ChampionAttribute))).ChampionName).ToList();
 
         // Constants
 
@@ -47,20 +54,16 @@ namespace Games.LeagueOfLegends
         HUDModule hudModule = new HUDModule();
         LEDData lastHudFrame = LEDData.Empty;
 
+
         // Events
 
         /// <summary>
         /// Creates a new <see cref="LeagueOfLegendsModule"/> instance.
         /// </summary>
         /// <param name="ledCount">Number of LEDs in the strip</param>
-        public static LeagueOfLegendsModule Create(Dictionary<string, string> options)
+        public static LeagueOfLegendsModule Create()
         {
-            AbilityCastPreference castMode = AbilityCastPreference.Normal;
-            if (options.ContainsKey("castMode"))
-            {
-                castMode = GetCastPreference(options["castMode"]);
-            }
-            return new LeagueOfLegendsModule(castMode);
+            return new LeagueOfLegendsModule();
         }
 
         private static AbilityCastPreference GetCastPreference(string castMode)
@@ -73,11 +76,13 @@ namespace Games.LeagueOfLegends
             };
         }
 
-        private LeagueOfLegendsModule(AbilityCastPreference castMode)
-            : base(new GameState(), castMode)
-        {
-            // League of Legends integration Initialization
+        private new LeagueOfLegendsModuleAttributes ModuleAttributes;
 
+        private LeagueOfLegendsModule() : base(GAME_ID) 
+        {
+            GameState = new GameState();
+            ModuleAttributes = base.ModuleAttributes as LeagueOfLegendsModuleAttributes;
+            // League of Legends integration Initialization
             // Init Item Attributes
             ItemUtils.Init();
             ItemCooldownController.Init();
@@ -114,7 +119,7 @@ namespace Games.LeagueOfLegends
                     //throw new InvalidOperationException("Couldn't connect with the game client", e);
                 }
 
-                await Task.Delay(1000);
+                await Task.Delay(2000);
                 PlayLoadingAnimation();
             }
             await OnGameInitialized();
@@ -136,13 +141,13 @@ namespace Games.LeagueOfLegends
             // Load champion module. Different modules will be loaded depending on the champion.
             // If there is no suitable module for the selected champion, just the health bar will be displayed.
 
-            string champName = GameState.PlayerChampion.RawChampionName.ToLower();
+            string champName = GameState.PlayerChampion.RawChampionName;
 
-            Type champType = ChampionControllers.FirstOrDefault(x => champName.Contains(x.GetCustomAttribute<ChampionAttribute>().ChampionName.ToLower()));
+            Type champType = ChampionControllers.FirstOrDefault(x => champName.Contains(x.GetCustomAttribute<ChampionAttribute>().ChampionName));
             if (champType != null)
             {
                 championModule = champType.GetConstructors().First()
-                                    .Invoke(new object[] { GameState, PreferredCastMode })
+                                    .Invoke(new object[] { GameState })
                                     as ChampionModule;
                 championModule.NewFrameReady += NewFrameReadyHandler;
                 championModule.TriedToCastOutOfMana += OnAbilityCastNoMana;
@@ -219,7 +224,7 @@ namespace Games.LeagueOfLegends
                 {
                     ItemModules[item.Slot]?.Dispose();
                     ItemModules[item.Slot] = itemType.GetConstructors().First()
-                                        .Invoke(new object[] { GameState, item.Slot, PreferredCastMode })
+                                        .Invoke(new object[] { GameState, item.Slot, ModuleAttributes.ItemCastPreference })
                                         as ItemModule;
                     ItemModules[item.Slot].RequestActivation += OnItemActivated;
                     ItemModules[item.Slot].NewFrameReady += NewFrameReadyHandler;

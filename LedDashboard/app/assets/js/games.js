@@ -15,6 +15,28 @@ function mouseCodeToString(btn) {
             return "Mouse ?";
     }
 }
+
+function getGameSettings(gameId) {
+
+    var request = {
+        "method": "GET",
+        "url": `/games/${gameId}`
+    };
+
+    return new Promise((resolve, reject) => {
+        window.cefQuery({
+            request: JSON.stringify(request),
+            onSuccess: function (response) {
+                data = JSON.parse(response).Data;
+                resolve(data);
+            }, onFailure: function (err, msg) {
+                console.log(err, msg);
+                reject();
+            }
+        });
+    });
+}
+
 $(document).ready(() => {
 
     var currentGameId = null;
@@ -23,7 +45,7 @@ $(document).ready(() => {
     function populateGameSettings(gameId) {
         $.get(`/gamesettings/${gameId}.html`)
             .then(html => {
-                getGameSettings(gameId).then((settings) => {
+                getGameSettings(gameId).then(settings => {
                     currentGameId = gameId;
                     $("#game-content").html(html);
                     fillSettingsValues(settings);
@@ -32,28 +54,6 @@ $(document).ready(() => {
                     console.error(err);
                 });
             });
-    }
-
-    function getGameSettings(gameId) {
-
-        var request = {
-            "method": "GET",
-            "url": `/games/${gameId}`
-        };
-
-        return new Promise((resolve, reject) => {
-            window.cefQuery({
-                request: JSON.stringify(request),
-                onSuccess: function (response) {
-                    data = JSON.parse(response).Data;
-                    resolve(data);
-                }, onFailure: function (err, msg) {
-                    console.log(err, msg);
-                    reject();
-                }
-            });
-        });
-        
     }
 
     function onTabSelected() {
@@ -191,7 +191,7 @@ $(document).ready(() => {
                 // checkbox
                 let ch = val === 'true';
                 $(`input[name="${key}"]`).prop("checked", ch);
-            } else if (val == "1" || val == "2" || val == "3") {
+            } else if (val == "1" || val == "2" || val == "3" || val == "4") {
                 // radio
                 $(`input[name="${key}"]`).val([val]);
             } else if (val.indexOf("k") == 0) {

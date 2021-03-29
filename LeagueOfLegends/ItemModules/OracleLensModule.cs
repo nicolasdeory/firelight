@@ -16,8 +16,8 @@ namespace Games.LeagueOfLegends.ItemModules
 
         // Cooldown
 
-        public OracleLensModule(int ledCount, GameState gameState, int itemSlot, AbilityCastPreference preferredCastMode)
-            : base(ITEM_ID, ITEM_NAME, itemSlot, gameState, preferredCastMode, true)
+        public OracleLensModule(int ledCount, GameState gameState, int itemSlot)
+            : base(ITEM_ID, ITEM_NAME, itemSlot, gameState, true)
         {
             // Initialization for the item module occurs here.
         }

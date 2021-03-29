@@ -417,8 +417,11 @@ namespace FirelightCore
             /*   if (api != null) api.Dispose();
                api = null;
                keyboardFrame = null;*/
-            if (Errored) 
+            if (Errored || disposed)
+            {
+                Debug.WriteLine("WARNING: Tried to dispose chroma when disposed or errored");
                 return;
+            }
             disposed = true;
             ChromaAnimationAPI.StopAll();
             ChromaAnimationAPI.CloseAll();

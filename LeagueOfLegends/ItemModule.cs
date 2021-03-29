@@ -3,6 +3,7 @@ using Games.LeagueOfLegends.Model;
 using FirelightCore;
 using System;
 using System.Windows.Forms;
+using System.Collections.Generic;
 
 namespace Games.LeagueOfLegends
 {
@@ -42,19 +43,22 @@ namespace Games.LeagueOfLegends
 
         private int itemSlot;
 
-        private char activationKey;
+        private MouseKeyBinding activationKey;
 
-        private char lastPressedKey = '\0';
+        private Keys lastPressedKey = Keys.None;
+
+        private AbilityCastPreference itemCastPreference;
 
         public int ItemID { get; protected set; }
 
-        protected ItemModule(int itemID, string name, int itemSlot, GameState state, AbilityCastPreference preferredCastMode, bool preloadAllAnimations = false)
-            : base(name, state, preferredCastMode, preloadAllAnimations)
+        protected ItemModule(int itemID, string name, int itemSlot, GameState state, bool preloadAllAnimations = false)
+            : base(name, state, preloadAllAnimations)
         {
             ItemAttributes = ItemUtils.GetItemAttributes(itemID);
             this.ItemID = itemID;
             this.itemSlot = itemSlot;
-            this.activationKey = GetKeyForItemSlot(itemSlot); // TODO: Handle key rebinds...
+            this.activationKey = ModuleAttributes.GetItemBinding(itemSlot); // TODO: Handle key rebinds...
+            this.itemCastPreference = ModuleAttributes.ItemCastPreference[itemSlot];
 
             ItemCast += OnItemActivated;
             ItemCastMode = GetItemCastMode();
@@ -74,6 +78,13 @@ namespace Games.LeagueOfLegends
             {
                 itemIsSelected = false;
             }
+            if (e.Button != MouseButtons.Left)
+            {
+                if (activationKey.BindType == BindType.Mouse && activationKey.MouseButton == e.Button)
+                {
+                    DoCastLogic(false);
+                }
+            }
         }
 
         protected override void OnMouseUp(object s, MouseEventArgs e)
@@ -89,32 +100,31 @@ namespace Games.LeagueOfLegends
                     if (CanActivateItem)
                         ActivateItem();
                 }
+            } else
+            {
+                if (activationKey.BindType == BindType.Mouse && activationKey.MouseButton == e.Button)
+                {
+                    DoCastLogic(true);
+                }
             }
         }
 
         protected override void OnKeyRelease(object s, KeyEventArgs e)
         {
-            var keyCode = e.KeyCode; // HACK why dont just use Keys enum as event arg instead of this
-            int index = 0;
-            if (keyCode >= Keys.D0 && keyCode <= Keys.D9)
-            {
-                index = 1;
-            }
-            char keyChar = char.ToLower(keyCode.ToString()[index]);
-            ProcessKeyPress(s, keyChar, true);
+            ProcessKeyPress(s, e.KeyCode, true);
         }
 
         protected override void OnKeyPress(object s, KeyEventArgs e)
         {
-            ProcessKeyPress(s, e.KeyCode.ToString().ToLower()[0]);
+            ProcessKeyPress(s, e.KeyCode);
         }
 
-        protected override void ProcessKeyPress(object s, char keyChar, bool keyUp = false)
+        protected override void ProcessKeyPress(object s, Keys key, bool keyUp = false)
         {
-            if (keyChar == lastPressedKey && !keyUp)
+            if (key == lastPressedKey && !keyUp)
                 return; // prevent duplicate calls. Without this, this gets called every frame a key is pressed.
-            lastPressedKey = keyUp ? '\0' : keyChar;
-            if (keyChar == activationKey)
+            lastPressedKey = keyUp ? Keys.None : key;
+            if (activationKey.BindType == BindType.Key && activationKey.KeyCode == key)
             {
                 DoCastLogic(keyUp);
             }
@@ -135,15 +145,15 @@ namespace Games.LeagueOfLegends
 
             if (ItemCastMode.IsNormal) // item has normal activation
             {
-                if (PreferredCastMode == AbilityCastPreference.Normal)
+                if (itemCastPreference == AbilityCastPreference.Normal)
                 {
                     itemIsSelected = true;
                 }
-                if (PreferredCastMode == AbilityCastPreference.Quick)
+                if (itemCastPreference == AbilityCastPreference.Quick)
                 {
                     ActivateItem();
                 }
-                if (PreferredCastMode == AbilityCastPreference.QuickWithIndicator)
+                if (itemCastPreference == AbilityCastPreference.QuickWithIndicator)
                 {
                     if (keyUp && itemIsSelected) // Key released, so CAST IT if it's selected
                     {
@@ -194,21 +204,6 @@ namespace Games.LeagueOfLegends
         protected static int GetCooldownDuration(double baseCooldown, double levelReduction, double averageLevel)
         {
             return (int)((baseCooldown - levelReduction * averageLevel) * 1000);
-        }
-
-        private static char GetKeyForItemSlot(int slot)
-        {
-            return slot switch
-            {
-                0 => '1',
-                1 => '2',
-                2 => '3',
-                3 => '5',
-                4 => '6',
-                5 => '7',
-                6 => '4',
-                _ => '\0'
-            };
         }
     }
 }

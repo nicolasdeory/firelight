@@ -221,11 +221,11 @@ namespace FirelightCore
             {
                 if (message.messageType == HookMessageType.KeyDown)
                 {
-                    OnKeyReleased?.Invoke(this, new KeyEventArgs(message.key));
+                    OnKeyPressed?.Invoke(this, new KeyEventArgs(message.key));
                 }
                 else if (message.messageType == HookMessageType.KeyUp)
                 {
-                    OnKeyPressed?.Invoke(this, new KeyEventArgs(message.key));
+                    OnKeyReleased?.Invoke(this, new KeyEventArgs(message.key));
                 }
                 else if (message.messageType == HookMessageType.MouseDown)
                 {

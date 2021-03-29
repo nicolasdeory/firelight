@@ -2,6 +2,7 @@ using Games.LeagueOfLegends.ChampionModules.Common;
 using Games.LeagueOfLegends.Model;
 using FirelightCore;
 using System.Threading.Tasks;
+using System.Collections.Generic;
 
 namespace Games.LeagueOfLegends.ChampionModules
 {
@@ -15,8 +16,8 @@ namespace Games.LeagueOfLegends.ChampionModules
 
         // Champion-specific Variables
 
-        public AzirModule(GameState gameState, AbilityCastPreference preferredCastMode)
-            : base(CHAMPION_NAME, gameState, preferredCastMode, true)
+        public AzirModule(GameState gameState)
+            : base(CHAMPION_NAME, gameState, true)
         {
             // Initialization for the champion module occurs here.
         }

@@ -10,11 +10,14 @@ namespace FirelightCore
     {
         const TaskRunnerLogLevel LOG_LEVEL = TaskRunnerLogLevel.Normal;
 
-        public static Task CatchExceptions(this Task t)
+        public static Task CatchExceptions(this Task t, bool throwException = false)
         {
             return t.ContinueWith((t) =>
             {
                 Exception e = t.Exception;
+                if (throwException)
+                    throw e;
+
                 Debug.WriteLine("Exception ocurred in task: " + e);
                 Debug.WriteLine(e.Message);
                 if (e.InnerException != null) Debug.WriteLine("Inner: " + e.InnerException);

@@ -2,6 +2,7 @@
 using Games.LeagueOfLegends.Model;
 using FirelightCore;
 using System.Threading.Tasks;
+using System.Collections.Generic;
 
 namespace Games.LeagueOfLegends.ChampionModules
 {
@@ -15,8 +16,8 @@ namespace Games.LeagueOfLegends.ChampionModules
         HSVColor RColor = new HSVColor(0.81f, 0.43f, 1);
         HSVColor RColor2 = new HSVColor(0.91f, 0.87f, 1);
 
-        public TwistedFateModule(GameState gameState, AbilityCastPreference preferredCastMode)
-            : base(CHAMPION_NAME, gameState, preferredCastMode, true)
+        public TwistedFateModule(GameState gameState)
+            : base(CHAMPION_NAME, gameState, true)
         {
             // Initialization for the champion module occurs here.
         }

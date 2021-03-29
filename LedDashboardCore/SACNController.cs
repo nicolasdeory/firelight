@@ -79,7 +79,7 @@ namespace FirelightCore
         }
 
         public void Dispose() { }
-        public bool Enabled { get; set; }
+        public bool Enabled { get; set; } = true;
 
         public bool Errored => false;
 

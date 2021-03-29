@@ -36,6 +36,7 @@ namespace Games.LeagueOfLegends
         public MouseKeyBinding Item6Binding => GetBinding("item6-binding");
         public MouseKeyBinding Item7Binding => GetBinding("item7-binding");
 
+
         private AbilityCastPreference GetCastMode(string key)
         {
             if (!SettingsDictionary.ContainsKey(key))
@@ -48,7 +49,20 @@ namespace Games.LeagueOfLegends
                 "1" => AbilityCastPreference.Normal,
                 "2" => AbilityCastPreference.Quick,
                 "3" => AbilityCastPreference.QuickWithIndicator,
+                "4" => GetCastMode("default-cast-mode"),
                 _ => throw new FormatException("Invalid cast mode")
+            };
+        }
+
+        public ChampionCastPreference GetChampionCastPreference(string name)
+        {
+            return new ChampionCastPreference()
+            {
+                Name = name,
+                Q = GetCastMode("champion-" + name + "-q-cast-mode"),
+                W = GetCastMode("champion-" + name + "-w-cast-mode"),
+                E = GetCastMode("champion-" + name + "-e-cast-mode"),
+                R = GetCastMode("champion-" + name + "-r-cast-mode")
             };
         }
 
@@ -63,6 +77,21 @@ namespace Games.LeagueOfLegends
                 Item5 = GetCastMode("item5-cast-mode"),
                 Item6 = GetCastMode("item6-cast-mode"),
                 Item7 = GetCastMode("item7-cast-mode"),
+            };
+        }
+
+        public MouseKeyBinding GetItemBinding(int slot)
+        {
+            return (slot) switch
+            {
+                0 => Item1Binding,
+                1 => Item2Binding,
+                2 => Item3Binding,
+                3 => Item4Binding,
+                4 => Item5Binding,
+                5 => Item6Binding,
+                6 => Item7Binding,
+                _ => null
             };
         }
 
@@ -98,25 +127,21 @@ namespace Games.LeagueOfLegends
                 { "item6-binding", "k54" },
                 { "item7-binding", "k55" }
             };
+            foreach (string champ in LeagueOfLegendsModule.ChampionNames)
+            {
+                DefaultValues.Add("champion-" + champ + "-q-cast-mode", "4");
+                DefaultValues.Add("champion-" + champ + "-w-cast-mode", "4");
+                DefaultValues.Add("champion-" + champ + "-e-cast-mode", "4");
+                DefaultValues.Add("champion-" + champ + "-r-cast-mode", "4");
+            }
         }
 
         public override void GenerateDefaultSettings()
         {
-            List<Type> champions = Utils.GetTypesWithAttribute<ChampionAttribute>();
-            List<string> championNames = champions
-                .Select(x => ((ChampionAttribute)Attribute.GetCustomAttribute(champions[0], typeof(ChampionAttribute))).ChampionName).ToList();
 
             foreach (var item in DefaultValues)
             {
                 SettingsDictionary.Add(item.Key, item.Value);
-            }
-
-            foreach (string champ in championNames)
-            {
-                SettingsDictionary.Add(champ + "-q-cast-mode", "1");
-                SettingsDictionary.Add(champ + "-w-cast-mode", "1");
-                SettingsDictionary.Add(champ + "-e-cast-mode", "1");
-                SettingsDictionary.Add(champ + "-r-cast-mode", "1");
             }
         }
 
@@ -142,6 +167,14 @@ namespace Games.LeagueOfLegends
                 {
                     ValidateSetting($"item{i}-cast-mode", () => GetCastMode($"item{i}-cast-mode"));
                     ValidateSetting($"item{i}-binding", () => GetBinding($"item{i}-binding"));
+                }
+
+                foreach (string champ in LeagueOfLegendsModule.ChampionNames)
+                {
+                    ValidateSetting("champion-" + champ + "-q-cast-mode", () => GetCastMode("champion-" + champ + "-q-cast-mode"));
+                    ValidateSetting("champion-" + champ + "-w-cast-mode", () => GetCastMode("champion-" + champ + "-w-cast-mode"));
+                    ValidateSetting("champion-" + champ + "-e-cast-mode", () => GetCastMode("champion-" + champ + "-e-cast-mode"));
+                    ValidateSetting("champion-" + champ + "-r-cast-mode", () => GetCastMode("champion-" + champ + "-r-cast-mode"));
                 }
 
             }

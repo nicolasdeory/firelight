@@ -2,6 +2,7 @@
 using Games.LeagueOfLegends.Model;
 using FirelightCore;
 using System.Threading.Tasks;
+using System.Collections.Generic;
 
 namespace Games.LeagueOfLegends.ChampionModules
 {
@@ -18,8 +19,8 @@ namespace Games.LeagueOfLegends.ChampionModules
         static HSVColor EColor = new HSVColor(0.08f, 1, 0.64f);
         static HSVColor RColor = new HSVColor(0.54f, 1, 1);
 
-        public UdyrModule(GameState gameState, AbilityCastPreference preferredCastMode)
-            : base(CHAMPION_NAME, gameState, preferredCastMode)
+        public UdyrModule(GameState gameState)
+            : base(CHAMPION_NAME, gameState)
         {
             // Initialization for the champion module occurs here.
         }

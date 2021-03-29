@@ -28,6 +28,8 @@ namespace FirelightCore
                     ValidateSettingsDictionary();
                     ModuleManager.SaveSettings();
                 };
+                if (DefaultValues != null) // if instance is initialized
+                    ValidateSettingsDictionary();
             }
         }
 

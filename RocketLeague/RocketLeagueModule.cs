@@ -43,7 +43,7 @@ namespace Games.RocketLeague
         /// Creates a new <see cref="RocketLeague"/> instance.
         /// </summary>
         /// <param name="ledCount">Number of LEDs in the strip</param>
-        public static RocketLeagueModule Create(Dictionary<string, string> options)
+        public static RocketLeagueModule Create()
         {
             return new RocketLeagueModule();
         }

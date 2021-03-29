@@ -102,6 +102,6 @@
 
     public enum AbilityCastPreference
     {
-        Normal = 1, Quick = 2, QuickWithIndicator = 4
+        Invalid = 0, Normal = 1, Quick = 2, QuickWithIndicator = 4
     }
 }

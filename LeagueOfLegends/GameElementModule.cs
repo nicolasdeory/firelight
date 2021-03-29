@@ -5,6 +5,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.Collections.Generic;
 
 namespace Games.LeagueOfLegends
 {
@@ -21,16 +22,23 @@ namespace Games.LeagueOfLegends
         protected abstract string ModuleTypeName { get; }
         protected string ModuleAnimationPath => $"Animations/LeagueOfLegends/{ModuleTypeName}s/";
 
-        private char lastPressedKey = '\0';
-
-        private MouseKeyboardHook keyboardHook;
+        private Keys lastPressedKey = Keys.None;
 
         // TODO: Handle champions with cooldown resets?
 
-        protected GameElementModule(string name, GameState gameState, AbilityCastPreference preferredCastMode, bool preloadAllAnimations = false)
-            : base(gameState, preferredCastMode)
+        protected GameState GameState;
+
+        private int processId;
+
+        protected new LeagueOfLegendsModuleAttributes ModuleAttributes;
+
+        protected GameElementModule(string name, GameState gameState, bool preloadAllAnimations = false) : base(LeagueOfLegendsModule.GAME_ID)
         {
             Name = name;
+            GameState = gameState;
+            ModuleAttributes = ModuleManager.AttributeDict["leagueoflegends"] as LeagueOfLegendsModuleAttributes;
+
+            processId = ProcessListenerService.GetProcessId("League of Legends");
 
             if (preloadAllAnimations)
                 PreloadAllAnimations();
@@ -76,11 +84,10 @@ namespace Games.LeagueOfLegends
         protected void AddInputHandlers()
         {
             //keyboardHook = new KeyboardHook();
-            int id = ProcessListenerService.GetProcessId("League of Legends");
-            MouseKeyboardHook.GetInstance(id).OnMouseDown += OnMouseDown;
-            MouseKeyboardHook.GetInstance(id).OnMouseUp += OnMouseUp;
-            MouseKeyboardHook.GetInstance(id).OnKeyPressed += OnKeyPress;
-            MouseKeyboardHook.GetInstance(id).OnKeyReleased += OnKeyRelease;
+            MouseKeyboardHook.GetInstance(processId).OnMouseDown += OnMouseDown;
+            MouseKeyboardHook.GetInstance(processId).OnMouseUp += OnMouseUp;
+            MouseKeyboardHook.GetInstance(processId).OnKeyPressed += OnKeyPress;
+            MouseKeyboardHook.GetInstance(processId).OnKeyReleased += OnKeyRelease;
         }
 
         protected abstract void OnMouseDown(object s, MouseEventArgs e);
@@ -91,11 +98,11 @@ namespace Games.LeagueOfLegends
         /// <summary>
         /// Processes a key press. When overriden, the base versions of this virtual function must be called first.
         /// </summary>
-        protected virtual void ProcessKeyPress(object s, char keyChar, bool keyUp = false)
+        protected virtual void ProcessKeyPress(object s, Keys key, bool keyUp = false)
         {
-            if (keyChar == lastPressedKey && !keyUp)
+            if (key == lastPressedKey && !keyUp)
                 return; // prevent duplicate calls. Without this, this gets called every frame a key is pressed.
-            lastPressedKey = keyUp ? '\0' : keyChar;
+            lastPressedKey = keyUp ? Keys.None : key;
         }
 
         protected virtual void OnGameStateUpdated(GameState state) { }
@@ -112,12 +119,11 @@ namespace Games.LeagueOfLegends
         public override void Dispose()
         {
             Animator?.Dispose();
-            if (keyboardHook != null)
+            if (MouseKeyboardHook.GetInstance(processId) != null)
             {
-                keyboardHook.OnMouseDown -= OnMouseDown;
-                keyboardHook.OnKeyPressed -= OnKeyPress;
-                keyboardHook.OnKeyReleased -= OnKeyRelease;
-                //keyboardHook.Unhook();
+                MouseKeyboardHook.GetInstance(processId).OnMouseDown -= OnMouseDown;
+                MouseKeyboardHook.GetInstance(processId).OnKeyPressed -= OnKeyPress;
+                MouseKeyboardHook.GetInstance(processId).OnKeyReleased -= OnKeyRelease;
             }
         }
 

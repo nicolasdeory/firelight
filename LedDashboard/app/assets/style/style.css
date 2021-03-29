@@ -487,6 +487,7 @@ body {
     color: #FFE14D;
     margin-left: 10px;
     transform: translateY(-8px);
+    margin-right: auto;
 }
 
 .mdl-button:focus:not(:active)
@@ -499,6 +500,7 @@ body {
     width: 320px;
     margin-left: 12px;
     margin-bottom: 1px;
+    height: fit-content;
 }
 
 .search-icon {

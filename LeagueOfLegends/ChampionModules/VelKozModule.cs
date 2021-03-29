@@ -2,6 +2,7 @@
 using Games.LeagueOfLegends.Model;
 using FirelightCore;
 using System.Threading.Tasks;
+using System.Collections.Generic;
 
 namespace Games.LeagueOfLegends.ChampionModules
 {
@@ -16,8 +17,8 @@ namespace Games.LeagueOfLegends.ChampionModules
 
         bool rCastInProgress = false; // this is used to make the animation for Vel'Koz's R to take preference over other animations
 
-        public VelKozModule(GameState gameState, AbilityCastPreference preferredCastMode)
-            : base(CHAMPION_NAME, gameState, preferredCastMode, true)
+        public VelKozModule(GameState gameState)
+            : base(CHAMPION_NAME, gameState, true)
         {
             // Initialization for the champion module occurs here.
         }

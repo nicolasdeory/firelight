@@ -68,11 +68,20 @@ namespace Games.LeagueOfLegends
             [AbilityKey.Passive] = 0
         };
 
+        /// <summary>
+        /// The preferred cast modes for abilities (e.g. Q -> Quick Cast, W -> Smart Cast)
+        /// </summary>
+        protected ChampionCastPreference championCastPreference;
+
+
         // TODO: Handle champions with cooldown resets?
 
-        protected ChampionModule(string champName, GameState gameState, AbilityCastPreference preferredCastMode, bool preloadAllAnimations = false) // TODO: Pass gamestate instead of active player
-            : base(champName, gameState, preferredCastMode, preloadAllAnimations)
+
+        protected ChampionModule(string champName, GameState gameState, bool preloadAllAnimations = false) // TODO: Pass gamestate instead of active player
+            : base(champName, gameState, preloadAllAnimations)
         {
+            championCastPreference = ModuleAttributes.GetChampionCastPreference(champName);
+
             AbilityCastModes = new Dictionary<AbilityKey, AbilityCastMode>
             {
                 [AbilityKey.Q] = GetQCastMode(),
@@ -149,14 +158,14 @@ namespace Games.LeagueOfLegends
         protected abstract AbilityCastMode GetECastMode();
         protected abstract AbilityCastMode GetRCastMode();
 
-        protected virtual async Task OnCastQ() { }
-        protected virtual async Task OnCastW() { }
-        protected virtual async Task OnCastE() { }
-        protected virtual async Task OnCastR() { }
-        protected virtual async Task OnRecastQ() { }
-        protected virtual async Task OnRecastW() { }
-        protected virtual async Task OnRecastE() { }
-        protected virtual async Task OnRecastR() { }
+        protected virtual Task OnCastQ() => Task.CompletedTask;
+        protected virtual Task OnCastW() => Task.CompletedTask;
+        protected virtual Task OnCastE() => Task.CompletedTask;
+        protected virtual Task OnCastR() => Task.CompletedTask;
+        protected virtual Task OnRecastQ() => Task.CompletedTask;
+        protected virtual Task OnRecastW() => Task.CompletedTask;
+        protected virtual Task OnRecastE() => Task.CompletedTask;
+        protected virtual Task OnRecastR() => Task.CompletedTask;
 
         private void LoadChampionInformation(string champName)
         {
@@ -207,6 +216,25 @@ namespace Games.LeagueOfLegends
                 if (SelectedAbility != AbilityKey.None && !CanRecastAbility(SelectedAbility) && !AbilityCastModes[SelectedAbility].RecastOnKeyUp)
                     SelectedAbility = AbilityKey.None;
             }
+            else if (e.Button != MouseButtons.Left)
+            {
+                if (ModuleAttributes.QBinding.BindType == BindType.Mouse && e.Button == ModuleAttributes.QBinding.MouseButton)
+                {
+                    DoCastLogicForAbility(AbilityKey.Q, false);
+                }
+                else if (ModuleAttributes.WBinding.BindType == BindType.Mouse && e.Button == ModuleAttributes.WBinding.MouseButton)
+                {
+                    DoCastLogicForAbility(AbilityKey.W, false);
+                }
+                else if (ModuleAttributes.EBinding.BindType == BindType.Mouse && e.Button == ModuleAttributes.EBinding.MouseButton)
+                {
+                    DoCastLogicForAbility(AbilityKey.E, false);
+                }
+                else if (ModuleAttributes.RBinding.BindType == BindType.Mouse && e.Button == ModuleAttributes.RBinding.MouseButton)
+                {
+                    DoCastLogicForAbility(AbilityKey.R, false);
+                }
+            }
         }
 
         protected override void OnMouseUp(object s, MouseEventArgs e)
@@ -232,37 +260,55 @@ namespace Games.LeagueOfLegends
                         CastAbility(SelectedAbility);
                     }
                 }
+            } else
+            {
+                if (ModuleAttributes.QBinding.BindType == BindType.Mouse && e.Button == ModuleAttributes.QBinding.MouseButton)
+                {
+                    DoCastLogicForAbility(AbilityKey.Q, false);
+                }
+                else if (ModuleAttributes.WBinding.BindType == BindType.Mouse && e.Button == ModuleAttributes.WBinding.MouseButton)
+                {
+                    DoCastLogicForAbility(AbilityKey.W, false);
+                }
+                else if (ModuleAttributes.EBinding.BindType == BindType.Mouse && e.Button == ModuleAttributes.EBinding.MouseButton)
+                {
+                    DoCastLogicForAbility(AbilityKey.E, false);
+                }
+                else if (ModuleAttributes.RBinding.BindType == BindType.Mouse && e.Button == ModuleAttributes.RBinding.MouseButton)
+                {
+                    DoCastLogicForAbility(AbilityKey.R, false);
+                }
             }
         }
 
         protected override void OnKeyRelease(object s, KeyEventArgs e)
         {
-            ProcessKeyPress(s, e.KeyCode.ToString().ToLower()[0], true);
+            ProcessKeyPress(s, e.KeyCode, true);
         }
 
         protected override void OnKeyPress(object s, KeyEventArgs e)
         {
-            ProcessKeyPress(s, e.KeyCode.ToString().ToLower()[0]);
+            ProcessKeyPress(s, e.KeyCode);
         }
 
-        protected override void ProcessKeyPress(object s, char keyChar, bool keyUp = false)
+        protected override void ProcessKeyPress(object s, Keys key, bool keyUp = false)
         {
-            base.ProcessKeyPress(s, keyChar, keyUp);
+            base.ProcessKeyPress(s, key, keyUp);
             // TODO: quick cast with indicator bug - repro: hold w, then hold q, then right click, then release w, then release q. The ability is cast, even when it shouldn't.
             // Debug.WriteLine("Keypressed. Selected: " + SelectedAbility);
-            if (keyChar == 'q')
+            if (ModuleAttributes.QBinding.BindType == BindType.Key && key == ModuleAttributes.QBinding.KeyCode)
             {
                 DoCastLogicForAbility(AbilityKey.Q, keyUp);
             }
-            if (keyChar == 'w')
+            if (ModuleAttributes.WBinding.BindType == BindType.Key && key == ModuleAttributes.WBinding.KeyCode)
             {
                 DoCastLogicForAbility(AbilityKey.W, keyUp);
             }
-            if (keyChar == 'e')
+            if (ModuleAttributes.EBinding.BindType == BindType.Key && key == ModuleAttributes.EBinding.KeyCode)
             {
                 DoCastLogicForAbility(AbilityKey.E, keyUp);
             }
-            if (keyChar == 'r')
+            if (ModuleAttributes.RBinding.BindType == BindType.Key && key == ModuleAttributes.RBinding.KeyCode)
             {
                 DoCastLogicForAbility(AbilityKey.R, keyUp);
             }
@@ -291,7 +337,7 @@ namespace Games.LeagueOfLegends
                     RecastAbility(key);
                     return;
                 }
-                if (PreferredCastMode == AbilityCastPreference.Normal)
+                if (championCastPreference[key] == AbilityCastPreference.Normal)
                 {
                     if (castMode.RecastMode.IsNormal)
                     {
@@ -304,12 +350,12 @@ namespace Games.LeagueOfLegends
                     }
                     return;
                 }
-                if (PreferredCastMode == AbilityCastPreference.Quick)
+                if (championCastPreference[key] == AbilityCastPreference.Quick)
                 {
                     RecastAbility(key);
                     return;
                 }
-                if (PreferredCastMode == AbilityCastPreference.QuickWithIndicator)
+                if (championCastPreference[key] == AbilityCastPreference.QuickWithIndicator)
                 {
                     if (castMode.RecastMode.RecastOnKeyUp && keyUp && SelectedAbility == key)
                     {
@@ -340,19 +386,19 @@ namespace Games.LeagueOfLegends
 
             if (castMode.IsNormal) // ability has normal cast
             {
-                if (PreferredCastMode == AbilityCastPreference.Normal)
+                if (championCastPreference[key] == AbilityCastPreference.Normal)
                 {
                     SelectedAbility = key;
                     return;
                 }
 
-                if (PreferredCastMode == AbilityCastPreference.Quick)
+                if (championCastPreference[key] == AbilityCastPreference.Quick)
                 {
                     CastAbility(key);
                     return;
                 }
 
-                if (PreferredCastMode == AbilityCastPreference.QuickWithIndicator)
+                if (championCastPreference[key] == AbilityCastPreference.QuickWithIndicator)
                 {
                     if (keyUp && SelectedAbility == key) // Key released, so CAST IT if it's selected
                     {

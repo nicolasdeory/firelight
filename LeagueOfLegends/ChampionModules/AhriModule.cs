@@ -2,6 +2,7 @@
 using Games.LeagueOfLegends.Model;
 using FirelightCore;
 using System.Threading.Tasks;
+using System.Collections.Generic;
 
 namespace Games.LeagueOfLegends.ChampionModules
 {
@@ -17,8 +18,8 @@ namespace Games.LeagueOfLegends.ChampionModules
 
         int rCastInProgress = 0;
 
-        public AhriModule(GameState gameState, AbilityCastPreference preferredCastMode)
-            : base(CHAMPION_NAME, gameState, preferredCastMode, true)
+        public AhriModule(GameState gameState)
+            : base(CHAMPION_NAME, gameState, true)
         {
             // Initialization for the champion module occurs here.
         }

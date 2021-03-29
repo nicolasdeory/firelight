@@ -20,8 +20,8 @@ namespace Games.LeagueOfLegends.ItemModules
 
         // Cooldown
 
-        public HeraldEyeModule(GameState gameState, int itemSlot, AbilityCastPreference preferredCastMode)
-            : base(ITEM_ID, ITEM_NAME, itemSlot, gameState, preferredCastMode, true)
+        public HeraldEyeModule(GameState gameState, int itemSlot)
+            : base(ITEM_ID, ITEM_NAME, itemSlot, gameState, true)
         {
             // Initialization for the item module occurs here.
 

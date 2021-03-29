@@ -8,6 +8,16 @@ using System.Text;
 
 namespace FirelightCore
 {
+    public class SettingChangedEventArgs {
+
+        public string Key { get; private set; }
+        public SettingChangedEventArgs(string key)
+        {
+            this.Key = key;
+        }
+    }
+
+
     public static class ModuleManager
     {
         private static string AppData = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
@@ -16,6 +26,7 @@ namespace FirelightCore
 
         public static Dictionary<string, ModuleAttributes> AttributeDict;
 
+        public static event EventHandler<SettingChangedEventArgs> SettingChanged;
         
         public static void Init(List<ModuleAttributes> modules)
         {
@@ -69,6 +80,7 @@ namespace FirelightCore
                     if (attributes.ContainsKey(key))
                     {
                         AttributeDict[key].SettingsDictionary = new ObservableDictionary<string, string>(attributes[key]);
+                        AttributeDict[key].SettingsDictionary.Modified += () => OnSettingChanged(key);
                     }
                     else
                     {
@@ -84,6 +96,11 @@ namespace FirelightCore
                 SaveSettings();
             }
             return true;
+        }
+
+        private static void OnSettingChanged(string key)
+        {
+            SettingChanged.Invoke(typeof(ModuleManager), new SettingChangedEventArgs(key));
         }
     }
 }

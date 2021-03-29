@@ -8,6 +8,10 @@
         public string DisplayName;
         public int ItemID;
         public int Price;
+
+        /// <summary>
+        /// zero based
+        /// </summary>
         public int Slot;
     }
 }

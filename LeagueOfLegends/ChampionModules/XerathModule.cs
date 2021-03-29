@@ -3,6 +3,7 @@ using Games.LeagueOfLegends.Model;
 using FirelightCore;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.Collections.Generic;
 
 namespace Games.LeagueOfLegends.ChampionModules
 {
@@ -21,8 +22,8 @@ namespace Games.LeagueOfLegends.ChampionModules
 
         public int MaxRCasts => GameState.ActivePlayer.Abilities.R_Level + 2;
 
-        public XerathModule(GameState gameState, AbilityCastPreference preferredCastMode)
-            : base(CHAMPION_NAME, gameState, preferredCastMode, true)
+        public XerathModule(GameState gameState)
+            : base(CHAMPION_NAME, gameState, true)
         {
             // Initialization for the champion module occurs here.
         }
