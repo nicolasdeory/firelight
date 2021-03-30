@@ -17,6 +17,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Fortnite\Fortnite.csproj" />
     <ProjectReference Include="..\LedDashboard\FirelightUI.csproj" />
   </ItemGroup>
 

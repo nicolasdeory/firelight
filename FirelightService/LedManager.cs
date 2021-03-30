@@ -9,6 +9,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using FirelightCore.Modules.FourierAudioLED;
+using Games.Fortnite;
 
 namespace FirelightService
 {
@@ -75,6 +76,7 @@ namespace FirelightService
             ProcessListenerService.Start();
             ProcessListenerService.Register("League of Legends"); // Listen when league of legends is opened
             ProcessListenerService.Register("RocketLeague");
+            ProcessListenerService.Register("FortniteClient-Win64-Shipping");
 
             UpdateLEDDisplay(LEDFrame.CreateEmpty(this));
             //DoLightingTest();
@@ -112,6 +114,12 @@ namespace FirelightService
                 LEDModule rlModule = RocketLeagueModule.Create();
                 rlModule.NewFrameReady += UpdateLEDDisplay;
                 CurrentLEDModule = rlModule;
+            }
+            else if (name == "FortniteClient-Win64-Shipping" && !(CurrentLEDModule is FortniteModule)) // TODO: Account for client disconnections
+            {
+                LEDModule fortniteModule = FortniteModule.Create();
+                fortniteModule.NewFrameReady += UpdateLEDDisplay;
+                CurrentLEDModule = fortniteModule;
             }
             else if (name.Length == 0)
             {
@@ -249,6 +257,7 @@ namespace FirelightService
             restartCancellationTokenSource = new CancellationTokenSource();
             Task t = Task.Run(async () =>
             {
+                await Task.Delay(3000);
                 if (restartCancellationTokenSource.IsCancellationRequested)
                     return;
                 SetEnabled(false);

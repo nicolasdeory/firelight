@@ -17,6 +17,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FirelightService", "Firelig
 EndProject
 Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "SharedLib", "SharedLib\SharedLib.shproj", "{0C2C4DD9-EE7B-4AA6-AEC6-9AE04AD39C8A}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Fortnite", "Fortnite\Fortnite.csproj", "{AA6E1534-08C6-4A7D-B970-815B4A16B94C}"
+EndProject
 Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
 		SharedLib\SharedLib.projitems*{0c2c4dd9-ee7b-4aa6-aec6-9ae04ad39c8a}*SharedItemsImports = 13
@@ -80,6 +82,14 @@ Global
 		{CC6BC956-15C9-423E-89FF-C6979B9E33F1}.Release|Any CPU.Build.0 = Release|Any CPU
 		{CC6BC956-15C9-423E-89FF-C6979B9E33F1}.Release|x64.ActiveCfg = Release|Any CPU
 		{CC6BC956-15C9-423E-89FF-C6979B9E33F1}.Release|x64.Build.0 = Release|Any CPU
+		{AA6E1534-08C6-4A7D-B970-815B4A16B94C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AA6E1534-08C6-4A7D-B970-815B4A16B94C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AA6E1534-08C6-4A7D-B970-815B4A16B94C}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{AA6E1534-08C6-4A7D-B970-815B4A16B94C}.Debug|x64.Build.0 = Debug|Any CPU
+		{AA6E1534-08C6-4A7D-B970-815B4A16B94C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AA6E1534-08C6-4A7D-B970-815B4A16B94C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AA6E1534-08C6-4A7D-B970-815B4A16B94C}.Release|x64.ActiveCfg = Release|Any CPU
+		{AA6E1534-08C6-4A7D-B970-815B4A16B94C}.Release|x64.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
