@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Runtime.InteropServices;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -33,8 +34,12 @@ namespace FirelightCore
                     atLeastARegisteredProcessIsRunning = false;
                     foreach (var process in listenedProcesses)
                     {
+                        //Process[] prss = Process.GetProcesses();
                         Process[] pname = Process.GetProcessesByName(process); // TODO: Sometimes not firing on first boot?
-                        if (pname.Length == 0) continue;
+                        IntPtr handleInFocus = GetForegroundWindow();
+                        int processInFocus;
+                        GetWindowThreadProcessId(handleInFocus, out processInFocus);
+                        if (pname.Length == 0 || pname[0].Id != processInFocus) continue;
                         if (process != currentOpenedProcess)
                         {
                             currentOpenedProcess = process;
@@ -84,5 +89,11 @@ namespace FirelightCore
             return pname[0].Id;
 
         }
+
+        [DllImport("user32.dll")]
+        private static extern IntPtr GetForegroundWindow();
+
+        [DllImport("user32.dll", CharSet = CharSet.Auto, SetLastError = true)]
+        private static extern int GetWindowThreadProcessId(IntPtr handle, out int processId);
     }
 }

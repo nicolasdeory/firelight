@@ -27,7 +27,10 @@ namespace FirelightCore
             // Load animation module
             Animator = AnimationModule.Create();
             CurrentLEDSource = Animator;
-            ModuleAttributes = ModuleManager.AttributeDict[gameId];
+            if (ModuleManager.AttributeDict.ContainsKey(gameId))
+                ModuleAttributes = ModuleManager.AttributeDict[gameId];
+            else 
+                ModuleAttributes = null;
         }
 
         protected void AddAnimatorEvent()
