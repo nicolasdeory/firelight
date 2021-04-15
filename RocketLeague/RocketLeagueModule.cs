@@ -34,6 +34,9 @@ namespace Games.RocketLeague
         ulong msSinceLastExternalFrameReceived = 30000;
         ulong msAnimationTimerThreshold = 1500; // how long to wait for animation data until boost bar kicks back in.
 
+        ulong ingameTimerThreshold = 500; // how long we should have "INGAME" status until boost & goal start working. Intended to smooth out misdetections
+        ulong msSinceLastNotIngameDetected = 20000; // how long we should have "INGAME" status until boost & goal start working. Intended to smooth out misdetections
+
         CancellationTokenSource masterCancelToken = new CancellationTokenSource();
 
         BoostModule boostModule = new BoostModule();
@@ -84,14 +87,27 @@ namespace Games.RocketLeague
                     {
                         if (screenCaptureFrame != null)
                         {
-                            CheckIfNotIngame(screenCaptureFrame);
-                            goalModule.DoFrame(screenCaptureFrame);
-                            if (!goalModule.IsPlayingAnimation)
+                            //Debug.WriteLine(msSinceLastNotIngameDetected);
+                            if (IsIngame(screenCaptureFrame))
                             {
-                                LEDFrame frame = boostModule.DoFrame(screenCaptureFrame); // TODO: Idle animation after goal or when not ingame
-                                if (frame != null)
-                                    InvokeNewFrameReady(frame);
+                                msSinceLastNotIngameDetected += 30;
+                                if (msSinceLastNotIngameDetected > ingameTimerThreshold)
+                                {
+                                    goalModule.DoFrame(screenCaptureFrame);
+                                    if (!goalModule.IsPlayingAnimation)
+                                    {
+                                        LEDFrame frame = boostModule.DoFrame(screenCaptureFrame); // TODO: Idle animation after goal or when not ingame
+                                        if (frame != null)
+                                            InvokeNewFrameReady(frame);
+                                    }
+                                }
+                            } else
+                            {
+                                msSinceLastNotIngameDetected = 0;
+                                LEDFrame frame = GenerateIdleFrame();
+                                InvokeNewFrameReady(frame);
                             }
+                            
                         }
                     }
 
@@ -116,7 +132,7 @@ namespace Games.RocketLeague
         }
 
 
-        private bool CheckIfNotIngame(Bitmap frame)
+        private bool IsIngame(Bitmap frame)
         {
             using (ImageFactory imageFactory = new ImageFactory(preserveExifData: true))
             {
@@ -131,6 +147,8 @@ namespace Games.RocketLeague
 
                     Bitmap grayscaleFrame = new Bitmap(memStream); // TODO: Refactor all grayscale images, pass to grayscale once.
 
+
+                    // This will check if theres a black bar at the bottom, which means the player has paused.
                     double luminositySum = 0;
 
                     for (int i = 0; i < 1920; i++) // TODO: It's hardcoded for 1920x1080!!
@@ -142,18 +160,42 @@ namespace Games.RocketLeague
                         }
                     }
                     double averageLuminosity = luminositySum / (1920.0 * 5 * 255);
-                   // Debug.WriteLine(averageLuminosity);
-                    if (averageLuminosity < 0.06)
+
+                    // This will check that the middle part of the score counter is kinda black
+                    double luminosityScoreCounterSum = 0;
+                    int half = 1920 / 2;
+                    for (int i = half - 20; i < half + 20; i++)
                     {
-                        Debug.WriteLine("You are not in a game. Did you pause?");
+                        for (int j = 2; j < 20; j++)
+                        {
+                            luminosityScoreCounterSum += grayscaleFrame.GetPixel(i, j).R;
+                        }
+                    }
+                    double averageLuminosityScoreCounter = luminosityScoreCounterSum / (40 * 18);
+
+                    //Debug.WriteLine(averageLuminosityScoreCounter);
+                    Debug.WriteLine("scorecounter " + averageLuminosityScoreCounter + " blackbar " + averageLuminosity);
+                    if (averageLuminosity < 0.16 || averageLuminosityScoreCounter > 45) // NOT SURE ABOUT DOING AND/OR CONDITION... each generates their own artifacts
+                    {
+                        //Debug.WriteLine(averageLuminosity);
+                        //   Debug.WriteLine("You are not in a game. Did you pause?");
+                        return false;
                     }
                     else
                     {
                         //Debug.Write
+                        return true;
                     }
-                    return false;
+                   // return false;
                 }
             }
+        }
+
+        private LEDFrame GenerateIdleFrame()
+        {
+            LEDData data = LEDData.Empty;
+            data.SetAllToColor(HSVColor.White);
+            return new LEDFrame(this, data, LightZone.Desk);
         }
 
         public override void Dispose()

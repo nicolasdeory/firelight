@@ -19,7 +19,7 @@ namespace Games.RocketLeague
 
         public static HSVColor BurstColor { get; } = new HSVColor(0.12f, 0.1f, 1f);
 
-        private static int GOAL_COOLDOWN_MS = 5000;
+        private static int GOAL_COOLDOWN_MS = 10000;
 
         private static string GOAL_ANIM_PATH = "Animations/RocketLeague/goal.txt";
 
@@ -177,7 +177,7 @@ namespace Games.RocketLeague
                             g.DrawImage(bpls, new Point(0, 0));
                             g.DrawString(differentPixels.ToString(), drawFont, drawBrush, 10, 10);
                         }*/
-                        bpls.Save($"debugcaptures/img{ix}.png");
+                        //bpls.Save($"debugcaptures/img{ix}.png");
                         ix++;
                         //Debug.WriteLine(differentPixels);
                         if (differentPixels > DIFFERENT_THRESHOLD_MIN && differentPixels < DIFFERENT_THRESHOLD_MAX)

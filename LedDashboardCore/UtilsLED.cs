@@ -129,6 +129,18 @@ namespace FirelightCore
                 led.Color(col);
             }
         }
+
+        public static void SetAllToColor(this LEDData ledData, HSVColor col)
+        {
+            ledData.Keyboard.SetAllToColor(col);
+            ledData.Mouse.SetAllToColor(col);
+            ledData.Mousepad.SetAllToColor(col);
+            ledData.Keypad.SetAllToColor(col);
+            ledData.Headset.SetAllToColor(col);
+            ledData.Strip.SetAllToColor(col);
+            ledData.General.SetAllToColor(col);
+        }
+
         public static void SetAllToBlack(this Led[] leds)
         {
             leds.SetAllToColor(HSVColor.Black);

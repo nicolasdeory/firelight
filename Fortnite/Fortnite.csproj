@@ -12,4 +12,10 @@
     <ProjectReference Include="..\LedDashboardCore\FirelightCore.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Update="Animations\Fortnite\dance.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
 </Project>

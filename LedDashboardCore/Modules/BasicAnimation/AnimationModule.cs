@@ -82,7 +82,7 @@ namespace FirelightCore.Modules.BasicAnimation
         public void RunAnimationInLoop(string animPath, LightZone zones, float loopDuration, float fadeoutDuration = 0, bool priority = true, float timeScale = 1)
         {
             LEDColorData[] anim = LoadAnimation(animPath).Frames;
-            float animDuration = anim.Length * 0.03f;
+            float animDuration = anim.Length * 0.03f * 1/timeScale;
             float loopRatio = (int)(loopDuration / animDuration);
             float time = 0;
             LEDData data = null;

@@ -3,6 +3,7 @@ using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Runtime.InteropServices;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -67,7 +68,7 @@ namespace FirelightCore
         /// <summary>
         /// Creates a <see cref="MouseKeyboardHook"/> instance.
         /// </summary>
-        /// <param name="processId"></param>
+        /// <param name="processId">If set to -1, it's a global hook</param>
         /// <returns></returns>
         public static MouseKeyboardHook CreateInstance(int processId)
         {
@@ -86,7 +87,7 @@ namespace FirelightCore
         /// <summary>
         /// Disposes of the <see cref="MouseKeyboardHook"/> instance associated to the given processId and unhooks events.
         /// </summary>
-        /// <param name="processId"></param>
+        /// <param name="processId">If set to -1, it's a global hook</param>
         public static void DisposeInstance(int processId)
         {
             if (InstanceDictionary == null || !InstanceDictionary.ContainsKey(processId))
@@ -99,7 +100,7 @@ namespace FirelightCore
         /// <summary>
         /// Gets the <see cref="MouseKeyboardHook"/> instance associated to the given processId or creates it if it doesn't exist.
         /// </summary>
-        /// <param name="processId"></param>
+        /// <param name="processId">If set to -1, it's a global hook</param>
         /// <returns></returns>
         public static MouseKeyboardHook GetInstance(int processId)
         {
@@ -140,18 +141,35 @@ namespace FirelightCore
 
         private BlockingCollection<HookMessage> messageQueue;
 
+        bool isGlobal;
+        IKeyboardMouseEvents globalEvents;
+
         private MouseKeyboardHook(int processId)
         {
+            isGlobal = processId == -1;
+            if (isGlobal)
+            {
+                //RegisterHotKey(Process.GetCurrentProcess().Handle, 1, 0x0000, (int)Keys.B);
+                //globalEvents = Hook.GlobalEvents();
+                ////globalEvents.
+                //globalEvents.KeyDown += (s, e) => { Debug.WriteLine("h"); };
+                //globalEvents.KeyUp += OnKeyRelease;
+                GlobalHooker.OnKeyDown += (s, e) => { messageQueue.Add(HookMessage.KeyDown(e.KeyCode)); };
+                GlobalHooker.OnKeyUp += (s, e) => { messageQueue.Add(HookMessage.KeyUp(e.KeyCode)); };
+
+            } else
+            {
+
+                mouseHook = new MouseHook(processId);
+                mouseHook.MessageReceived += OnMouseHookMessageReceived;
+                mouseHook.InstallAsync();
+
+                keyboardHook = new KeyboardHook(processId);
+                keyboardHook.MessageReceived += OnKeyboardHookMessageReceived;
+                keyboardHook.InstallAsync();
+            }
+
             messageQueue = new BlockingCollection<HookMessage>();
-
-            mouseHook = new MouseHook(processId);
-            mouseHook.MessageReceived += OnMouseHookMessageReceived;
-            mouseHook.InstallAsync();
-
-            keyboardHook = new KeyboardHook(processId);
-            keyboardHook.MessageReceived += OnKeyboardHookMessageReceived;
-            keyboardHook.InstallAsync();
-
             Task.Run(MessageLoop).CatchExceptions();
 
         }
@@ -254,30 +272,41 @@ namespace FirelightCore
             }
         }
 
-        private void OnKeyRelease(Keys key)
+        private void OnKeyRelease(object s, KeyEventArgs args)
         {
-            KeyEventArgs args = new KeyEventArgs(key);
+            //KeyEventArgs args = new KeyEventArgs(key);
 
-            Task.Run(() =>
-            {
-                OnKeyReleased?.Invoke(this, args);
-            });
+            messageQueue.Add(HookMessage.KeyUp(args.KeyCode));
+
+            //Task.Run(() =>
+            //{
+            //    OnKeyReleased?.Invoke(this, args);
+            //});
         }
 
-        private void OnKeyPress(Keys key)
+        private void OnKeyDown(object s, KeyEventArgs args)
         {
-            KeyEventArgs args = new KeyEventArgs(key);
+            //KeyEventArgs args = new KeyEventArgs(key);
+            messageQueue.Add(HookMessage.KeyDown(args.KeyCode));
 
-            Task.Run(() =>
-            {
-                OnKeyPressed?.Invoke(this, args);
-            });
+            //Task.Run(() =>
+            //{
+            //    OnKeyPressed?.Invoke(this, args);
+            //});
         }
 
         public void Unhook()
         {
-            messageQueue.CompleteAdding();
-            mouseHook.Dispose();
+            if (isGlobal)
+            {
+                globalEvents.Dispose();
+                //globalHook.Dispose();
+            }
+            else
+            {
+                messageQueue.CompleteAdding();
+                mouseHook.Dispose();
+            }
         }
     }
 }

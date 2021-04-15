@@ -17,7 +17,7 @@ namespace Games.Fortnite
     // TODO: Refactor this into a separate project
     public class FortniteModule : BaseGameModule
     {
-        const string GAME_ID = "Fortnite";
+        public const string GAME_ID = "Fortnite";
         // Constants
 
         public static HSVColor LoadingColor { get; } = new HSVColor(0.09f, 0.8f, 1f);
@@ -35,6 +35,7 @@ namespace Games.Fortnite
         CancellationTokenSource masterCancelToken = new CancellationTokenSource();
 
         HealthModule healthModule = new HealthModule();
+        DanceModule danceModule = new DanceModule();
 
         /// <summary>
         /// Creates a new <see cref="RocketLeague"/> instance.
@@ -48,11 +49,11 @@ namespace Games.Fortnite
         private FortniteModule()
             : base(GAME_ID)
         {
-            // Rocket League module initialization
+            // Fortnite module initialization
 
             AddAnimatorEvent();
 
-            //goalModule.NewFrameReady += NewFrameReadyHandler;
+            danceModule.NewFrameReady += NewFrameReadyHandler;
 
             //PlayLoadingAnimation();
             _ = FrameTimer().CatchExceptions();

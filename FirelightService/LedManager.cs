@@ -10,6 +10,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using FirelightCore.Modules.FourierAudioLED;
 using Games.Fortnite;
+using Gma.System.MouseKeyHook;
 
 namespace FirelightService
 {
@@ -64,6 +65,8 @@ namespace FirelightService
         {
             Debug.WriteLine("Initializing LedManager");
             //InitLeds();
+
+            GlobalHooker.Init();
 
             ModuleManager.Init(new List<ModuleAttributes>()
             {

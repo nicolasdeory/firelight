@@ -98,8 +98,7 @@ namespace Games.Fortnite
 
         private LEDFrame GetLedFrameFromStats(float[] stats)
         {
-            LEDFrame frame = LEDFrame.Empty;
-            LEDData data = frame.Leds;
+            LEDData data = LEDData.Empty;
 
 
             alreadyTouchedLeds.Clear();
