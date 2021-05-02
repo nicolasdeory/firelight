@@ -1,7 +1,7 @@
-# leagueoflegends-led
+# Firelight
 ![dotnet-ci](https://github.com/nicolasdeory/leagueoflegends-led/workflows/dotnet-ci/badge.svg)
 
-A modular League of Legends integration for Razer Chroma and RGB LED devices.
+A modular game integration for Razer Chroma and other RGB LED devices for League of Legends, Rocket League, Fortnite and many more.
 
 ![](repo/video-gif.gif)
 
