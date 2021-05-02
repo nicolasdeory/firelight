@@ -7,7 +7,7 @@ A modular game integration for Razer Chroma and other RGB LED devices for League
 
 You can join our [Discord server](https://discord.gg/KtTRPZt) to follow the latest updates.
 
-## Features
+## Features compatible with League of Legends
 - Health Bar
 - Custom spellcast animations for several champions and items
 - Trinket notifications - lights up when you have a ward available
