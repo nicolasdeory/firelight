@@ -1,11 +1,15 @@
 # Firelight RGB
 ![dotnet-ci](https://github.com/nicolasdeory/leagueoflegends-led/workflows/dotnet-ci/badge.svg)
 
+> **NOTE**: The update that adds support for Fortnite and Rocket League hasn't been released yet. Stay tuned!
+> 
+Join our [Discord server](https://discord.gg/KtTRPZt) to follow the latest updates.
+
 A modular game integration for Razer Chroma and other RGB LED devices for League of Legends, Rocket League, Fortnite and many more to come.
 
 ![](repo/video-gif.gif)
 
-You can join our [Discord server](https://discord.gg/KtTRPZt) to follow the latest updates.
+
 
 ## Features compatible with League of Legends
 - Health Bar
