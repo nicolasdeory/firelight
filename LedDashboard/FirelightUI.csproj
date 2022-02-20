@@ -1,6 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.WindowsDesktop">
   <PropertyGroup>
-    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <TargetFramework>net6.0-windows</TargetFramework>
     <OutputType>WinExe</OutputType>
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
     <UseWindowsForms>true</UseWindowsForms>
@@ -29,9 +29,9 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="ar1st0crat.SciColorMaps.Portable" Version="1.0.2" />
-    <PackageReference Include="Chromely" Version="5.0.83" />
+    <PackageReference Include="Chromely" Version="5.1.96.1" />
     <PackageReference Include="Chromely.CefGlue" Version="5.0.83" />
-    <PackageReference Include="Chromely.Core" Version="5.0.0.6" />
+    <PackageReference Include="Chromely.Core" Version="5.1.4" />
     <PackageReference Include="kadmium-sacn-core" Version="0.0.11" />
     <PackageReference Include="NAudio" Version="1.10.0" />
     <PackageReference Include="NETStandard.Library" Version="2.0.3" />
@@ -43,6 +43,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Remove="KeyboardLayout.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\.editorconfig" Link=".editorconfig" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\LeagueOfLegends\LeagueOfLegends.csproj" />

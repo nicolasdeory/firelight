@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.WindowsDesktop">
 
   <PropertyGroup>
-    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <TargetFramework>net5.0-windows</TargetFramework>
     <LangVersion>latest</LangVersion>
     <UseWindowsForms>true</UseWindowsForms>
   </PropertyGroup>
@@ -24,6 +24,7 @@
     <PackageReference Include="kadmium-sacn-core" Version="0.0.11" />
     <PackageReference Include="NAudio" Version="1.10.0" />
     <PackageReference Include="NzxtRGB" Version="1.0.2" />
+    <PackageReference Include="OpenRGB.NET" Version="1.7.0" />
     <PackageReference Include="Winook" Version="1.2.0" />
   </ItemGroup>
 
