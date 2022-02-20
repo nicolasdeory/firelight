@@ -82,7 +82,7 @@ namespace FirelightService
             ProcessListenerService.Register("FortniteClient-Win64-Shipping");
 
             UpdateLEDDisplay(LEDFrame.CreateEmpty(this));
-            //DoLightingTest();
+            DoLightingTest();
 
         }
 

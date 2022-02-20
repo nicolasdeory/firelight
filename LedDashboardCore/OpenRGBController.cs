@@ -38,6 +38,12 @@ namespace FirelightCore
             }
 
             this.devices = client.GetAllControllerData();
+            for (int i = 0; i < devices.Length; i++)
+            {
+                var device = devices[i];
+                var directModeIndex = device.Modes.ToList().FindIndex(x => x.Name == "Direct");
+                client.SetMode(i, directModeIndex);
+            }
         }
 
 
