@@ -1,4 +1,5 @@
-﻿using Chromely.Core;
+﻿using Chromely;
+using Chromely.Core;
 using Chromely.Core.Configuration;
 using System;
 using System.Diagnostics;
@@ -31,6 +32,8 @@ namespace FirelightUI
             config.WindowOptions.Size = new WindowSize(1200, 700);
             config.WindowOptions.StartCentered = true;
 
+            //config.UrlSchemes.Add(new Chromely.Core.Network.UrlScheme("http", "firelightapi.com", Chromely.Core.Network.UrlSchemeType.Command));
+
             _ = BackendMessageService.InitConnection();
 
             // Setup logger
@@ -40,7 +43,7 @@ namespace FirelightUI
             AppBuilder
             .Create()
             .UseApp<FirelightApp>()
-            .UseConfiguration<IChromelyConfiguration>(config)
+            .UseConfig<IChromelyConfiguration>(config)
             .Build()
             .Run(args);
         }

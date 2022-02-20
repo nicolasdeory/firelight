@@ -14,7 +14,7 @@ namespace FirelightUI.Controllers
     /// <summary>
     /// Returns a list of compatible games
     /// </summary>
-    [AppController]
+    [ControllerProperty(Name = "GamesController")]
     class GamesControllers : ChromelyController
     {
 
@@ -27,31 +27,30 @@ namespace FirelightUI.Controllers
         {
             foreach(Game g in Games)
             {
-                RegisterGetRequestAsync("/games/" + g.Id, async (req) => await GetGameSettings(req, g));
-                RegisterPostRequest("/games/" + g.Id, (req) => PostGameSettings(req, g));
+                RegisterRequestAsync("/games/" + g.Id + "/settings/get", async (req) => await GetGameSettings(req, g));
+                RegisterRequest("/games/" + g.Id + "/settings/post", (req) => PostGameSettings(req, g));
             }
         }
 
-        [HttpGet(Route = "/games")]
-        public ChromelyResponse GetGameList(ChromelyRequest request)
+        [RequestAction(RouteKey = "/games/get")]
+        public IChromelyResponse GetGameList(IChromelyRequest request)
         {
             ChromelyResponse resp = new ChromelyResponse(request.Id);
             resp.Data = Games;
             return resp;
         }
 
-        public async Task<ChromelyResponse> GetGameSettings(ChromelyRequest request, Game g)
+        public async Task<IChromelyResponse> GetGameSettings(IChromelyRequest request, Game g)
         {
             ChromelyResponse resp = new ChromelyResponse(request.Id);
             resp.Data = await BackendMessageService.GetSettings(g);
             return resp;
         }
 
-        public ChromelyResponse PostGameSettings(ChromelyRequest request, Game g)
+        public IChromelyResponse PostGameSettings(IChromelyRequest request, Game g)
         {
             ChromelyResponse resp = new ChromelyResponse(request.Id);
-            string json = request.PostData.ToJson();
-            var obj = JsonConvert.DeserializeObject<Dictionary<string,string>>(json);
+            var obj = request.PostData as Dictionary<string, string>;
             BackendMessageService.UpdateSettings(g, obj);
             return resp;
         }

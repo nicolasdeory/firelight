@@ -12,11 +12,11 @@ namespace FirelightUI.Controllers
     /// <summary>
     /// Handles global routes such as app errors
     /// </summary>
-    [AppController]
+    [ControllerProperty(Name ="GlobalController")]
     class GlobalController : ChromelyController
     {
-        [HttpGet(Route = "/global/errors")]
-        public ChromelyResponse GetErrors(ChromelyRequest request)
+        [RequestAction(RouteKey = "/global/errors/get")]
+        public IChromelyResponse GetErrors(IChromelyRequest request)
         {
             ChromelyResponse resp = new ChromelyResponse(request.Id);
             resp.Data = GlobalAppState.Errors;

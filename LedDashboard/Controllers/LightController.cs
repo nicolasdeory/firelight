@@ -9,14 +9,14 @@ using System.Threading.Tasks;
 
 namespace FirelightUI.Controllers
 {
-    [AppController]
+    [ControllerProperty(Name = "LightController")]
     class LightController : ChromelyController
     {
-        [HttpGet(Route = "/lights/lastframe")]
-        public async Task<ChromelyResponse> GetLights(ChromelyRequest request)
+        [RequestAction(RouteKey = "/lights/lastframe/get")]
+        public IChromelyResponse GetLights(IChromelyRequest request)
         {
             ChromelyResponse resp = new ChromelyResponse(request.Id);
-            resp.Data = await BackendMessageService.GetLights();
+            resp.Data = BackendMessageService.GetLights().Result;
             return resp;
         }
     }

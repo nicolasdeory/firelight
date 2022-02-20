@@ -143,17 +143,17 @@ function setLightColors(lightArr) {
 function getLightFrame() {
     var request = {
         "method": "GET",
-        "url": "/lights/lastframe",
+        "url": "/lights/lastframe/get",
         "parameters": null,
         "postData": null
     };
 
-    let timeout = setTimeout(onTimedOut, 2000);
+    //let timeout = setTimeout(onTimedOut, 2000);
 
     window.cefQuery({
         request: JSON.stringify(request),
         onSuccess: function (response) {
-            clearTimeout(timeout);
+            //clearTimeout(timeout);
             respObject = JSON.parse(response);
             setLightColors(respObject.Data);
         }, onFailure: function (err, msg) {
@@ -198,7 +198,7 @@ function showError() {
 function getErrors() {
     var request = {
         "method": "GET",
-        "url": "/global/errors",
+        "url": "/global/errors/get",
         "parameters": null,
         "postData": null
     };

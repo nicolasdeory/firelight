@@ -177,5 +177,8 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
   </ItemGroup>
+  <ItemGroup>
+    <Folder Include="CustomHandlers\" />
+  </ItemGroup>
   <Import Project="..\SharedLib\SharedLib.projitems" Label="Shared" />
 </Project>
