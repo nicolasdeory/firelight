@@ -470,13 +470,13 @@ namespace Games.LeagueOfLegends
         {
             AbilityLoadout abilities = GameState.ActivePlayer.Abilities;
             ChampionCosts costs = ChampionInfo.Costs;
-            float cdr = GameState.ActivePlayer.Stats.CooldownReduction;
+            float haste = GameState.ActivePlayer.Stats.AbilityHaste;
             return ability switch
             {
-                AbilityKey.Q => (int)(costs.Q_Cooldown[abilities.Q_Level - 1] * (1 - cdr)),
-                AbilityKey.W => (int)(costs.W_Cooldown[abilities.W_Level - 1] * (1 - cdr)),
-                AbilityKey.E => (int)(costs.E_Cooldown[abilities.E_Level - 1] * (1 - cdr)),
-                AbilityKey.R => (int)(costs.R_Cooldown[abilities.R_Level - 1] * (1 - cdr)),
+                AbilityKey.Q => (int)(costs.Q_Cooldown[abilities.Q_Level - 1] / (1 + haste)),
+                AbilityKey.W => (int)(costs.W_Cooldown[abilities.W_Level - 1] / (1 + haste)),
+                AbilityKey.E => (int)(costs.E_Cooldown[abilities.E_Level - 1] / (1 + haste)),
+                AbilityKey.R => (int)(costs.R_Cooldown[abilities.R_Level - 1] / (1 + haste)),
 
                 _ => 0,
             };

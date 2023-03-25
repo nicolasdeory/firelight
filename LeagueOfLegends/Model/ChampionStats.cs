@@ -2,6 +2,7 @@
 {
     public class ChampionStats
     {
+        public float AbilityHaste;
         public float AbilityPower;
         public float Armor;
         public float ArmorPenetrationFlat;
@@ -11,7 +12,6 @@
         public float AttackSpeed;
         public float BonusArmorPenetrationPercent;
         public float BonusMagicPenetrationPercent;
-        public float CooldownReduction;
         public float CritChance;
         public float CritDamage;
         public float CurrentHealth;
@@ -23,7 +23,9 @@
         public float MagicResist;
         public float MaxHealth;
         public float MoveSpeed;
+        public float Omnivamp;
         public float PhysicalLethality;
+        public float PhysicalVamp;
         public float ResourceMax;
         public float ResourceRegenRate;
         public string ResourceType;
