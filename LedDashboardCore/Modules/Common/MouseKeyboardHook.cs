@@ -108,7 +108,6 @@ namespace FirelightCore
             {
                 return CreateInstance(processId);
             }
-
             return InstanceDictionary[processId];
         }
 
@@ -132,12 +131,20 @@ namespace FirelightCore
         /// </summary>
         public event KeyEventHandler OnKeyReleased;
 
+        // pass a method
+        public void SubscribeToOnKeyPressed(KeyEventHandler handler)
+        {
+            OnKeyPressed += handler;
+        }
+
         //public event KeyEventHandler OnKeyDown; // this shouldn't be needed
 
         //Hooker hooker;
 
         private MouseHook mouseHook;
         private KeyboardHook keyboardHook;
+
+        private int processId;
 
         private BlockingCollection<HookMessage> messageQueue;
 
@@ -146,6 +153,7 @@ namespace FirelightCore
 
         private MouseKeyboardHook(int processId)
         {
+            this.processId = processId;
             isGlobal = processId == -1;
             if (isGlobal)
             {
@@ -267,7 +275,7 @@ namespace FirelightCore
                 Task.Run(() =>
                 {
                     OnMouseDown?.Invoke(this, args);
-                });
+                }).CatchExceptions(true);
 
             }
         }

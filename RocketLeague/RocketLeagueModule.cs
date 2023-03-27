@@ -149,17 +149,27 @@ namespace Games.RocketLeague
 
 
                     // This will check if theres a black bar at the bottom, which means the player has paused.
-                    double luminositySum = 0;
+                    //double luminositySum = 0;
 
-                    for (int i = 0; i < 1920; i++) // TODO: It's hardcoded for 1920x1080!!
+                    //for (int i = 0; i < 1920; i++) // TODO: It's hardcoded for 1920x1080!!
+                    //{
+                    //    for (int j = 0; j < 5; j++)
+                    //    {
+                    //        Color c = grayscaleFrame.GetPixel(i, 1080 - 1 - j);
+                    //        luminositySum += c.R; // it's grayscale so it doesn't matter which channel
+                    //    }
+                    //}
+                    //double averageLuminosity = luminositySum / (1920.0 * 5 * 255);
+
+                    double distanceSum = 0;
+
+                    for (int i = 500; i < 1600; i++)
                     {
-                        for (int j = 0; j < 5; j++)
-                        {
-                            Color c = grayscaleFrame.GetPixel(i, 1080 - 1 - j);
-                            luminositySum += c.R; // it's grayscale so it doesn't matter which channel
-                        }
+                        Color c = frame.GetPixel(i, 1045);
+                        distanceSum += Math.Pow(c.R - 34, 2) + Math.Pow(c.G - 64, 2) + Math.Pow(c.B - 88, 2);
                     }
-                    double averageLuminosity = luminositySum / (1920.0 * 5 * 255);
+
+                    double averagebottombarcolor = distanceSum / (1600 - 500);
 
                     // This will check that the middle part of the score counter is kinda black
                     double luminosityScoreCounterSum = 0;
@@ -174,8 +184,8 @@ namespace Games.RocketLeague
                     double averageLuminosityScoreCounter = luminosityScoreCounterSum / (40 * 18);
 
                     //Debug.WriteLine(averageLuminosityScoreCounter);
-                    Debug.WriteLine("scorecounter " + averageLuminosityScoreCounter + " blackbar " + averageLuminosity);
-                    if (averageLuminosity < 0.16 || averageLuminosityScoreCounter > 45) // NOT SURE ABOUT DOING AND/OR CONDITION... each generates their own artifacts
+                    Debug.WriteLine("scorecounter " + averageLuminosityScoreCounter + " blackbar " + averagebottombarcolor);
+                    if (averagebottombarcolor < 100 || averageLuminosityScoreCounter > 56) // NOT SURE ABOUT DOING AND/OR CONDITION... each generates their own artifacts
                     {
                         //Debug.WriteLine(averageLuminosity);
                         //   Debug.WriteLine("You are not in a game. Did you pause?");

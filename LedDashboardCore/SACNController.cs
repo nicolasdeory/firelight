@@ -47,6 +47,7 @@ namespace FirelightCore
 
         byte[] GetByteArray(Led[] leds)
         {
+            // TODO: ADD SCALING SUPPORT HERE + OFFSET. Right now only it does 170 leds max, ignores TOTAL_STRIP_LEDS.
             byte[] data = new byte[TOTAL_STRIP_LEDS * 3];
             if (REVERSE_ORDER)
             {

@@ -19,6 +19,9 @@ namespace Games.LeagueOfLegends
 
         public static ItemAttributes GetItemAttributes(int itemID)
         {
+            if (itemAttributeDict == null)
+                throw new InvalidOperationException("ItemUtils not initialized");
+
             if (!itemAttributeDict.ContainsKey(itemID))
             {
                 return null; // Either an invalid itemID is given, or dictionary hasn't loaded yet (race condition).
@@ -26,13 +29,13 @@ namespace Games.LeagueOfLegends
             return itemAttributeDict[itemID];
         }
 
-        public static void Init()
+        public static async Task Init()
         {
             itemAttributeDict = new Dictionary<int, ItemAttributes>();
-            Task.Run(RetrieveItemInfo);
+            await RetrieveItemInfo();
         }
 
-        private static async void RetrieveItemInfo()
+        private static async Task RetrieveItemInfo()
         {
             string latestVersion;
             try

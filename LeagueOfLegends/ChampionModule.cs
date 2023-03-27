@@ -7,6 +7,10 @@ using System.Collections.Generic;
 using System.Net;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.Text.RegularExpressions;
+using System.Reflection;
+using System.Linq;
+using System.Diagnostics;
 
 namespace Games.LeagueOfLegends
 {
@@ -38,6 +42,9 @@ namespace Games.LeagueOfLegends
 
         private AbilityKey SelectedAbility = AbilityKey.None; // Currently selected ability (for example, if you pressed Q but you haven't yet clicked LMB to cast the ability)
         private char lastPressedKey = '\0';
+
+        private SummonerSpellModule SpellModule_D;
+        private SummonerSpellModule SpellModule_F;
 
         /// <summary>
         /// Mana that the champion had in the last frame. Useful for point and click cast detection
@@ -172,9 +179,10 @@ namespace Games.LeagueOfLegends
             Task.Run(async () =>
             {
                 ChampionInfo = await GetChampionInformation(champName);
+                InitializeSummoners();
                 AddInputHandlers();
                 ChampionInfoLoaded?.Invoke(ChampionInfo);
-            });
+            }).CatchExceptions(true);
         }
 
         /// <summary>
@@ -207,6 +215,50 @@ namespace Games.LeagueOfLegends
             }
             dynamic championData = JsonConvert.DeserializeObject<dynamic>(championJSON);
             return ChampionAttributes.FromData(championData.data[championName]);
+        }
+
+        private static List<Type> SummonerSpellControllers = GetControllers<SpellAttribute>();
+
+        private static List<Type> GetControllers<T>()
+            where T : Attribute
+        {
+            // TODO: This is a generally useful function that uses reflection, must be abstracted elsewhere
+            return Assembly.GetExecutingAssembly().GetTypes().Where(t => t.GetCustomAttributes(typeof(T), true).Length > 0).ToList();
+        }
+
+        /// <summary>
+        /// Initializes the summoner spells and adds the input handlers.
+        /// </summary>
+        private void InitializeSummoners()
+        {
+            SummonerSpellLoadout loadout = GameState.PlayerChampion.SummonerSpells;
+            if (loadout != null)
+            {
+                
+                string rawSpell1 = GameState.PlayerChampion.SummonerSpells.SummonerSpellOne.RawDisplayName;
+                string spell1 = Regex.Match(rawSpell1, @"(?<=GeneratedTip_SummonerSpell_)(.*)(?=_DisplayName)").Value;
+                Type spellType = SummonerSpellControllers.FirstOrDefault(x => spell1.Contains(x.GetCustomAttribute<SpellAttribute>().SpellName));
+                if (spellType != null)
+                {
+                    SpellModule_D = spellType.GetConstructors().First()
+                                        .Invoke(new object[] { GameState, SpellKey.D, Animator })
+                                        as SummonerSpellModule;
+                    SpellModule_D.NewFrameReady += NewFrameReadyHandler;
+                }
+
+                string rawSpell2 = GameState.PlayerChampion.SummonerSpells.SummonerSpellTwo.RawDisplayName;
+                string spell2 = Regex.Match(rawSpell2, @"(?<=GeneratedTip_SummonerSpell_)(.*)(?=_DisplayName)").Value;
+                spellType = SummonerSpellControllers.FirstOrDefault(x => spell2.Contains(x.GetCustomAttribute<SpellAttribute>().SpellName));
+                if (spellType != null)
+                {
+                    SpellModule_F = spellType.GetConstructors().First()
+                                        .Invoke(new object[] { GameState, SpellKey.F, Animator })
+                                        as SummonerSpellModule;
+                    SpellModule_F.NewFrameReady += NewFrameReadyHandler;
+                }
+
+                System.Diagnostics.Debug.WriteLine("detected spell names were " + spell1 + " and " + spell2);
+            }
         }
 
         protected override void OnMouseDown(object s, MouseEventArgs e)

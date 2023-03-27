@@ -84,7 +84,6 @@ namespace Games.LeagueOfLegends
             ModuleAttributes = base.ModuleAttributes as LeagueOfLegendsModuleAttributes;
             // League of Legends integration Initialization
             // Init Item Attributes
-            ItemUtils.Init();
             ItemCooldownController.Init();
 
             AddAnimatorEvent();
@@ -106,6 +105,7 @@ namespace Games.LeagueOfLegends
             {
                 if (masterCancelToken.IsCancellationRequested)
                     return;
+
                 try
                 {
                     if (await WebRequestUtil.IsLive("https://127.0.0.1:2999/liveclientdata/allgamedata"))
@@ -141,7 +141,7 @@ namespace Games.LeagueOfLegends
             // Load champion module. Different modules will be loaded depending on the champion.
             // If there is no suitable module for the selected champion, just the health bar will be displayed.
 
-            string champName = GameState.PlayerChampion.RawChampionName;
+            string champName = GameState.PlayerChampion.RawChampionName.Replace("game_character_displayname_", "");
 
             Type champType = ChampionControllers.FirstOrDefault(x => champName.Contains(x.GetCustomAttribute<ChampionAttribute>().ChampionName));
             if (champType != null)
@@ -152,6 +152,7 @@ namespace Games.LeagueOfLegends
                 championModule.NewFrameReady += NewFrameReadyHandler;
                 championModule.TriedToCastOutOfMana += OnAbilityCastNoMana;
             }
+            Debug.WriteLine("Detected player is playing " + championModule?.GetType().Name ?? "unsupported champion");
             CurrentLEDSource = championModule;
 
             // Initialize endless player info checking check
@@ -177,6 +178,7 @@ namespace Games.LeagueOfLegends
         /// </summary>
         private async Task QueryPlayerInfo(bool firstTime = false)
         {
+            await ItemUtils.Init();
             string json;
             try
             {
@@ -223,8 +225,8 @@ namespace Games.LeagueOfLegends
                 if (ItemModules[item.Slot] == null || !(ItemModules[item.Slot].GetType().IsAssignableFrom(itemType)))
                 {
                     ItemModules[item.Slot]?.Dispose();
-                    ItemModules[item.Slot] = itemType.GetConstructors().First()
-                                        .Invoke(new object[] { GameState, item.Slot, ModuleAttributes.ItemCastPreference })
+                    ItemModules[item.Slot] = itemType.GetConstructors().FirstOrDefault()
+                                        .Invoke(new object[] { GameState, item.Slot })
                                         as ItemModule;
                     ItemModules[item.Slot].RequestActivation += OnItemActivated;
                     ItemModules[item.Slot].NewFrameReady += NewFrameReadyHandler;
@@ -423,6 +425,8 @@ namespace Games.LeagueOfLegends
             CurrentLEDSource = championModule;
         }
 
+        // TODO: On dispose fix ItemAttributes being still fetched unsafely
+        // TODO: On dispose fix ledmodule not being disposed properly (leds still on chroma but bugged
         public override void Dispose()
         {
             masterCancelToken.Cancel();

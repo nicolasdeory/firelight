@@ -86,7 +86,8 @@ namespace Games.LeagueOfLegends
             //keyboardHook = new KeyboardHook();
             MouseKeyboardHook.GetInstance(processId).OnMouseDown += OnMouseDown;
             MouseKeyboardHook.GetInstance(processId).OnMouseUp += OnMouseUp;
-            MouseKeyboardHook.GetInstance(processId).OnKeyPressed += OnKeyPress;
+            MouseKeyboardHook.GetInstance(processId).SubscribeToOnKeyPressed(OnKeyPress);
+            //MouseKeyboardHook.GetInstance(processId).OnKeyPressed += OnKeyPress;
             MouseKeyboardHook.GetInstance(processId).OnKeyReleased += OnKeyRelease;
         }
 
@@ -118,6 +119,7 @@ namespace Games.LeagueOfLegends
 
         public override void Dispose()
         {
+            Debug.WriteLine("disposing");
             Animator?.Dispose();
             if (MouseKeyboardHook.GetInstance(processId) != null)
             {

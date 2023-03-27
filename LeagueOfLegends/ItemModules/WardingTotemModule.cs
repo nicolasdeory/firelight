@@ -32,6 +32,7 @@ namespace Games.LeagueOfLegends.ItemModules
 
         protected override void OnItemActivated(object s, EventArgs e)
         {
+            // TODO: Add an animation here and fix the HUD integration.
             int wardCharges = 0;
             int cd = ItemCooldownController.GetCooldownRemaining(this.ItemID);
             int cdpercharge = GetCooldownPerCharge();

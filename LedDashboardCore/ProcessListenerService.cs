@@ -61,7 +61,7 @@ namespace FirelightCore
 
                 }
 
-            }).CatchExceptions();
+            }).CatchExceptions(true);
         }
 
 

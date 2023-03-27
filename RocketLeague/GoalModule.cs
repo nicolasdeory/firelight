@@ -68,6 +68,8 @@ namespace Games.RocketLeague
             // TODO: After goal, maybe capture the timer to figure out when kick off has started
             // TODO: Or maybe look at the lower part of the screen to check for black stripes.
 
+            // TODO: GOALS ARE BEING REPORTED DUPLICATE
+
             // Get the screen frame
             if (screenFrame != null)
             {

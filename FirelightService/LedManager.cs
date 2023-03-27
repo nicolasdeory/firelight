@@ -210,6 +210,7 @@ namespace FirelightService
 
         private async Task UpdateLoop()
         {
+            // TODO: Investigate LAG
             while (true)
             {
                 if (updateLoopCancelToken.IsCancellationRequested)

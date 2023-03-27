@@ -1,5 +1,6 @@
 ﻿using FirelightCore;
 using Games.LeagueOfLegends.ChampionModules.Common;
+using Games.LeagueOfLegends.Model;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -9,7 +10,7 @@ using System.Windows.Forms;
 
 namespace Games.LeagueOfLegends
 {
-   // [LEDModuleAttributes(typeof(LeagueOfLegendsModule))]
+    // [LEDModuleAttributes(typeof(LeagueOfLegendsModule))]
     public class LeagueOfLegendsModuleAttributes : GameModuleAttributes
     {
 
@@ -64,6 +65,11 @@ namespace Games.LeagueOfLegends
                 E = GetCastMode("champion-" + name + "-e-cast-mode"),
                 R = GetCastMode("champion-" + name + "-r-cast-mode")
             };
+        }
+        // TODO: Add setting for this
+        public AbilityCastPreference GetSpellCastPreference()
+        {
+            return AbilityCastPreference.Normal;
         }
 
         private ItemCastPreference GetItemCastPreference()

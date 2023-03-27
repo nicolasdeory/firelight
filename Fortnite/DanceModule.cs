@@ -72,6 +72,7 @@ namespace Games.Fortnite
         //protected abstract void OnMouseUp(object s, MouseEventArgs e);
         protected void OnKeyRelease(object s, KeyEventArgs e)
         {
+            // TODO: when user presses WASD stop dancing, play forever
             if (e.KeyCode == Keys.B) // TODO: Configurable binding
             {
                 Animator.RunAnimationInLoop(GetAnimationPath("dance"), LightZone.Keyboard, 5f, timeScale: 2, fadeoutDuration: 1f);
