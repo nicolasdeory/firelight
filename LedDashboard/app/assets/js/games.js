@@ -20,7 +20,7 @@ function getGameSettings(gameId) {
 
     var request = {
         "method": "GET",
-        "url": `/games/${gameId}`
+        "url": `/games/${gameId}/settings/get`
     };
 
     return new Promise((resolve, reject) => {
@@ -67,7 +67,7 @@ $(document).ready(() => {
     function populateTabs() {
         var request = {
             "method": "GET",
-            "url": "/games"
+            "url": "/games/get"
         };
         window.cefQuery({
             request: JSON.stringify(request),
@@ -106,14 +106,14 @@ $(document).ready(() => {
         let value = Boolean($(this).prop("checked"));
         let updateObj = {};
         updateObj[$(this).attr('name')] = value;
-        post(`/games/${currentGameId}`, updateObj);
+        post(`/games/${currentGameId}/settings/post`, updateObj);
     }
 
     function onMultichoiceChanged() {
         let value = $(this).val();
         let updateObj = {};
         updateObj[$(this).attr('name')] = value;
-        post(`/games/${currentGameId}`, updateObj);
+        post(`/games/${currentGameId}/settings/post`, updateObj);
     }
 
     function onBindingClicked() {

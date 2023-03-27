@@ -11,10 +11,10 @@ using System.Threading.Tasks;
 using FirelightCore.Modules.FourierAudioLED;
 using Games.Fortnite;
 using Gma.System.MouseKeyHook;
+using System.Runtime.Versioning;
 
 namespace FirelightService
 {
-
     class LightManager
     {
         /// <summary>
@@ -64,7 +64,7 @@ namespace FirelightService
         public LightManager()
         {
             Debug.WriteLine("Initializing LedManager");
-            //InitLeds();
+            //InitLeds
 
             GlobalHooker.Init();
 
@@ -82,7 +82,7 @@ namespace FirelightService
             ProcessListenerService.Register("FortniteClient-Win64-Shipping");
 
             UpdateLEDDisplay(LEDFrame.CreateEmpty(this));
-            //DoLightingTest();
+            DoLightingTest();
 
         }
 
@@ -94,6 +94,7 @@ namespace FirelightService
             Task.Run(UpdateLoop).CatchExceptions();
             lightControllers.Add(RazerChromaController.Create());
             //lightControllers.Add(NZXTController.Create());
+            lightControllers.Add(OpenRGBController.Create());
             lightControllers.Add(SACNController.Create(reverseOrder)); // TODO: Load this from module attributes. This will come when LED strip settings are implemented
         }
 
