@@ -264,8 +264,8 @@ namespace Games.LeagueOfLegends
                         InvokeNewFrameReady(frame);
                     }
                 }
-                await Task.Delay(30);
-                lastExternalFrameReceivedTimer -= 30;
+                await Task.Delay(1);
+                lastExternalFrameReceivedTimer -= 1;
                 if (lastExternalFrameReceivedTimer < 0)
                     lastExternalFrameReceivedTimer = 0;
             }
@@ -326,7 +326,7 @@ namespace Games.LeagueOfLegends
             }
 
             InvokeNewFrameReady(frame);
-            lastExternalFrameReceivedTimer += 30; // add 30ms
+            lastExternalFrameReceivedTimer += 1; // add 1ms
         }
 
         /// <summary>

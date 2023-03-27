@@ -227,7 +227,7 @@ namespace FirelightService
                     catch { /* solves race condition */ }
 
                 }
-                await Task.Delay(30); // 33 fps
+                await Task.Delay(1); // 33 fps
                                       // await Task.Delay(15);
             }
         }

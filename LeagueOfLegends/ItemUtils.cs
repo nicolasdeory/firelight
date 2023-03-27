@@ -22,6 +22,7 @@ namespace Games.LeagueOfLegends
             if (itemAttributeDict == null)
                 throw new InvalidOperationException("ItemUtils not initialized");
 
+            // TODO: FIX CONSISTENT CRASH HERE
             if (!itemAttributeDict.ContainsKey(itemID))
             {
                 return null; // Either an invalid itemID is given, or dictionary hasn't loaded yet (race condition).
