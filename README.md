@@ -3,7 +3,7 @@
 
 > **NOTE**: The update that adds support for Fortnite and Rocket League hasn't been released yet. Stay tuned!
 > 
-Join our [Discord server](https://discord.gg/KtTRPZt) to follow the latest updates.
+Join our [Discord server](https://discord.gg/KtTRPZt) to follow the latest updates. You can find the latest changes on the `dev` branch.
 
 A modular game integration for Razer Chroma and other RGB LED devices for League of Legends, Rocket League, Fortnite and many more to come.
 
